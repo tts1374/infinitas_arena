@@ -458,3 +458,13 @@ Ph2以降で以下を追加可能。
 - 未同定タイトルの管理UI
 - 複数ソース対応の統合ログ
 - 監視中の詳細デバッグ表示
+
+---
+
+## 8. Host開催へのsource接続
+
+- 既存parser、title normalize、difficulty mapping、`observed_key == expected_key`、source別の新着/重複判定を再実装しない。通常room/開催roomの提出先contextだけを切り替えるadapterを置く。
+- 開催ではserver-authoritativeな`PLAYING`、自分が当該`round_id`の対象、準備済み、未提出である場合だけ新着結果を`EVENT_ACTION(SUBMIT)`へ送る。event/round/expected_keyを必ず照合し、通常のnotebook timestamp dedupeを維持する。
+- 新曲開始や再接続で、監視済み結果を新しいプレーとして再送しない。端末側判定だけを安全境界とせず、serverのround/資格/最初の有効提出/idempotency検証と組み合わせる。
+- 準備/開始条件はsource parser成功と分離する。source読取り不能でも既存`SOURCE_UNAVAILABLE`表示と本人`SKIP`導線を提供する。
+- 専任Hostにはsource設定・監視・架空提出を要求しない。通常roomの監視、expected key、異常通知、legacy source方針は変更しない。
