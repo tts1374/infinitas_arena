@@ -37,6 +37,9 @@ jobs:
       - name: Check agent definition consistency
         run: npm run check:agents
 
+      - name: Check design contract consistency
+        run: npm run check:design-contracts
+
       - name: Lint TypeScript
         run: npm run lint
 
@@ -50,8 +53,14 @@ jobs:
       - name: Run client stats tests
         run: npm run test:client-stats
 
+      - name: Run client unit tests
+        run: npm --workspace @infinitas/client run test
+
       - name: Run Worker tests
         run: npm run test:worker
+
+      - name: Run Host Event integration scenarios
+        run: npx tsx --test scripts/host-event-e2e.test.mjs
 
       - name: Set up Rust toolchain
         if: ${{ inputs.profile == 'full' }}
@@ -69,6 +78,11 @@ jobs:
         if: ${{ inputs.profile == 'full' }}
         working-directory: apps/client/src-tauri
         run: cargo check
+
+      - name: Run Tauri Rust tests
+        if: ${{ inputs.profile == 'full' }}
+        working-directory: apps/client/src-tauri
+        run: cargo test
 
       - name: Bundle Worker with Wrangler dry-run
         if: ${{ inputs.profile == 'full' }}
