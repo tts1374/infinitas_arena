@@ -10,6 +10,13 @@ import type { SoundEffectKey } from "../constants/audio";
 import type { WsEmptyPayload } from "./common";
 import type { ServerEnvelope } from "./envelope";
 import type { ServerMessageType } from "./message-types";
+import type {
+  EventActionAckPayload,
+  EventErrorPayload,
+  EventJoinAcceptedPayload,
+  EventResultsPayload,
+  EventStatePayload,
+} from "./host-event";
 
 export type RoomJoinAcceptedSessionRole = "HOST" | "PLAYER" | "SPECTATOR";
 
@@ -215,6 +222,11 @@ export interface ServerMessagePayloadMap {
   STATE_SNAPSHOT: StateSnapshotPayload;
   ERROR: ErrorMessagePayload;
   PONG: WsEmptyPayload;
+  EVENT_JOIN_ACCEPTED: EventJoinAcceptedPayload;
+  EVENT_STATE: EventStatePayload;
+  EVENT_ACTION_ACK: EventActionAckPayload;
+  EVENT_RESULTS: EventResultsPayload;
+  EVENT_ERROR: EventErrorPayload;
 }
 
 export type ServerMessage<

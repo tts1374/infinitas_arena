@@ -1,4 +1,5 @@
 export * from "./audio";
+export * from "./host-event";
 export * from "./lobby";
 export * from "./local";
 export * from "./matchmaking";

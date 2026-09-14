@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "tsx --test src/durable/room-state.test.mjs src/durable/room-object.test.mjs src/durable/lobby-directory-object.test.mjs src/durable/matchmaking-object.test.mjs src/durable/contract-guards.test.mjs src/master/chart-master.test.mjs src/routes/join.test.mjs src/routes/lobby.test.mjs src/routes/matchmaking.test.mjs src/routes/rooms.test.mjs",
+    "test": "tsx --test src/durable/room-state.test.mjs src/durable/event-room-state.test.mjs src/durable/event-room-controller.test.mjs src/durable/room-object.test.mjs src/durable/lobby-directory-object.test.mjs src/durable/matchmaking-object.test.mjs src/durable/contract-guards.test.mjs src/master/chart-master.test.mjs src/routes/capabilities.test.mjs src/routes/event-rooms.test.mjs src/routes/join.test.mjs src/routes/lobby.test.mjs src/routes/matchmaking.test.mjs src/routes/rooms.test.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
