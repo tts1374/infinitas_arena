@@ -45,6 +45,9 @@ export interface RuntimeE2EConfig {
   watchDir: string | null;
   runtimeDir: string | null;
   logDir: string | null;
+  roomKind: "NORMAL" | "HOST_EVENT";
+  eventRoundCount: number;
+  eventDisconnectHost: boolean;
 }
 
 function readSearchParam(name: string): string | undefined {
@@ -196,7 +199,8 @@ const instanceId =
   profile;
 const displayName = readSearchParam("name");
 const playerId = readSearchParam("playerId");
-const apiBaseUrlFromEnv = import.meta.env.VITE_WORKER_API_BASE_URL?.trim();
+const viteEnv = import.meta.env ?? {};
+const apiBaseUrlFromEnv = viteEnv.VITE_WORKER_API_BASE_URL?.trim();
 const apiBaseUrl =
   apiBaseUrlFromEnv && apiBaseUrlFromEnv.length > 0 ? apiBaseUrlFromEnv : readSearchParam("api");
 const e2eEnabled = isTruthyValue(readRuntimeParam(["INF_ARENA_E2E", "e2e"]));
@@ -229,6 +233,10 @@ const e2eMatchCount =
   Number.isFinite(e2eMatchCountFromRuntime) && e2eMatchCountFromRuntime >= 1
     ? e2eMatchCountFromRuntime
     : 1;
+const e2eRoomKind = readRuntimeParam(["INF_ARENA_E2E_ROOM_KIND", "e2eRoomKind"])?.toUpperCase() === "HOST_EVENT"
+  ? "HOST_EVENT" as const
+  : "NORMAL" as const;
+const e2eEventRoundCount = Math.max(1, Math.trunc(readNumberParam("e2eEventRoundCount", 2)));
 const baseSourcePaths: RuntimeSourcePathDefaults = {
   dakenTodayUpdateXml: readSearchParam("dakenPath"),
   notebookExportRecentJson: readSearchParam("notebookPath"),
@@ -238,13 +246,13 @@ const baseSourcePaths: RuntimeSourcePathDefaults = {
 };
 const e2eSourcePaths = resolveE2ESourcePaths(source, e2eEnabled ? e2eWatchDir : null);
 const updaterTarget =
-  readSearchParam("updateTarget") ?? import.meta.env.VITE_UPDATER_TARGET?.trim() ?? "windows-x86_64";
-const updaterTimeoutEnvRaw = import.meta.env.VITE_UPDATER_CHECK_TIMEOUT_MS?.trim();
+  readSearchParam("updateTarget") ?? viteEnv.VITE_UPDATER_TARGET?.trim() ?? "windows-x86_64";
+const updaterTimeoutEnvRaw = viteEnv.VITE_UPDATER_CHECK_TIMEOUT_MS?.trim();
 const updaterTimeoutEnv =
   updaterTimeoutEnvRaw && updaterTimeoutEnvRaw.length > 0
     ? Number(updaterTimeoutEnvRaw)
     : Number.NaN;
-const debugUiEnabled = readOptionalFlagParam("debugUi") ?? import.meta.env.DEV;
+const debugUiEnabled = readOptionalFlagParam("debugUi") ?? viteEnv.DEV;
 
 export const runtimeConfig: RuntimeConfig = {
   debugUiEnabled,
@@ -285,6 +293,9 @@ export const runtimeConfig: RuntimeConfig = {
     watchDir: e2eWatchDir,
     runtimeDir: e2eRuntimeDir,
     logDir: e2eLogDir,
+    roomKind: e2eRoomKind,
+    eventRoundCount: e2eEventRoundCount,
+    eventDisconnectHost: readFlagParam("e2eEventDisconnectHost"),
   },
 };
 

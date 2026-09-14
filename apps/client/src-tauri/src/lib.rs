@@ -6,6 +6,7 @@ mod watchers;
 use commands::{
     get_source_watcher_state, pick_directory, start_source_watcher, stop_source_watcher,
     validate_source_directory, write_e2e_binary_file, write_e2e_text_file,
+    save_event_result_json,
 };
 use commands::save_local_result_json;
 use commands::show_match_history_window;
@@ -53,6 +54,7 @@ pub fn run() {
             get_source_watcher_state,
             pick_directory,
             save_local_result_json,
+            save_event_result_json,
             show_match_history_window,
             start_source_watcher,
             stop_source_watcher,

@@ -10,13 +10,16 @@ import {
   ROOM_COMMENT_MAX_LENGTH,
   VISIBILITIES,
   WIN_METRICS,
+  type EventRoomSettings,
   type LobbyRoomSummary,
   type RoomSettings,
 } from "@infinitas/shared";
 import { AlertCircle, Eye, EyeOff, Key, Lock, MessageSquare, Plus, RefreshCcw, Search, Trophy, Users, X, Zap } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { createRoom } from "../services/worker-api-client";
+import { EventCreateModal } from "../features/event/EventCreateModal";
+import { createEventRoom, createRoom } from "../services/worker-api-client";
+import { isEventCreateIdentityReady, isEventJoinIdentityReady } from "../services/event-join-policy";
 import { lobbyStore, useLobbyStore } from "../stores/lobby-store";
 import { roomStore, useRoomStore } from "../stores/room-store";
 import { isRoomEntryReady, useSettingsStore } from "../stores/settings-store";
@@ -111,6 +114,9 @@ interface LobbyPageProps {
   onConsumePendingRecoveryJoin?: () => void;
   onNavigateToAutoMatch?: () => void;
   onSpectateRoom: (input: { roomId: string; joinCode: string | null }) => void;
+  hostEventsAvailable?: boolean;
+  hostEventCreationAvailable?: boolean;
+  onJoinHostEvent?: (input: { roomId: string; joinCode: string }) => void;
 }
 
 export function LobbyPage({
@@ -120,6 +126,9 @@ export function LobbyPage({
   onConsumePendingRecoveryJoin,
   onNavigateToAutoMatch,
   onSpectateRoom,
+  hostEventsAvailable = false,
+  hostEventCreationAvailable = false,
+  onJoinHostEvent,
 }: LobbyPageProps) {
   const savedSettings = useSettingsStore((state) => state.saved);
   const rooms = useLobbyStore((state) => state.rooms);
@@ -130,10 +139,13 @@ export function LobbyPage({
   const [createDraft, setCreateDraft] = useState<RoomSettings>(defaultCreateDraft);
   const [manualRoomId, setManualRoomId] = useState("");
   const [manualJoinCode, setManualJoinCode] = useState("");
-  const [busyAction, setBusyAction] = useState<"create" | "join" | null>(null);
+  const [busyAction, setBusyAction] = useState<"create" | "create-event" | "join" | null>(null);
   const [localMessage, setLocalMessage] = useState<string | null>(null);
   const [showManualJoin, setShowManualJoin] = useState(false);
+  const [manualJoinKind, setManualJoinKind] = useState<"NORMAL" | "HOST_EVENT">("NORMAL");
   const [showCreateRoom, setShowCreateRoom] = useState(false);
+  const [showCreateEvent, setShowCreateEvent] = useState(false);
+  const [eventCreateError, setEventCreateError] = useState<string | null>(null);
   const [showManualJoinCode, setShowManualJoinCode] = useState(false);
   const [showCreateJoinCode, setShowCreateJoinCode] = useState(false);
   const [createValidationSummary, setCreateValidationSummary] = useState<string | null>(null);
@@ -148,9 +160,12 @@ export function LobbyPage({
   const [levelFilter, setLevelFilter] = useState<(typeof LEVEL_FILTERS)[number] | "">("");
   const [searchDraft, setSearchDraft] = useState("");
   const createRoomInFlightRef = useRef(false);
+  const createEventInFlightRef = useRef(false);
   const createFormBodyRef = useRef<HTMLDivElement | null>(null);
   const createJoinCodeInputRef = useRef<HTMLInputElement | null>(null);
   const roomEntryReady = isRoomEntryReady(savedSettings);
+  const eventJoinIdentityReady = isEventJoinIdentityReady(savedSettings);
+  const normalParticipationActive = roomConnectionStatus !== "DISCONNECTED";
   const roomEntryRequiredMessage = "DJ NAME と DATA SOURCE を設定してからルーム作成・参加を行ってください。";
 
   const manualJoinCodeError = validateJoinCode(manualJoinCode);
@@ -191,6 +206,7 @@ export function LobbyPage({
     setShowManualJoin(false);
     setManualRoomId("");
     setManualJoinCode("");
+    setManualJoinKind("NORMAL");
   }
 
   function closeCreateRoomModal(): void {
@@ -200,6 +216,34 @@ export function LobbyPage({
     setCreateValidationSummary(null);
     setCreateValidationFocusField(null);
     setLocalMessage(null);
+  }
+
+  function createHostEvent(settings: EventRoomSettings): void {
+    if (createEventInFlightRef.current || normalParticipationActive) return;
+    if (!hostEventCreationAvailable) {
+      setEventCreateError("接続先serverは新しい開催の作成を受け付けていません。");
+      return;
+    }
+    if (!isEventCreateIdentityReady(savedSettings, settings.host_plays, roomEntryReady)) {
+      setEventCreateError(settings.host_plays ? "プレー兼任HostにはDATA SOURCE設定が必要です。" : "Player IDとDJ NAMEを設定してください。");
+      return;
+    }
+    createEventInFlightRef.current = true;
+    setBusyAction("create-event");
+    setEventCreateError(null);
+    void createEventRoom(savedSettings.apiBaseUrl, {
+      host_player_id: savedSettings.playerId,
+      host_display_name: savedSettings.displayName,
+      settings,
+    }).then((response) => {
+      onJoinHostEvent?.({ roomId: response.room_id, joinCode: response.join_code });
+      setShowCreateEvent(false);
+    }).catch((error) => {
+      setEventCreateError(error instanceof Error ? error.message : "開催を作成できませんでした。");
+    }).finally(() => {
+      createEventInFlightRef.current = false;
+      setBusyAction(null);
+    });
   }
 
   async function enterRoom(roomId: string, joinCode?: string | null): Promise<void> {
@@ -345,12 +389,38 @@ export function LobbyPage({
           <button
             type="button"
             onClick={() => {
+              setManualJoinKind("NORMAL");
               setShowManualJoinCode(false);
               setShowManualJoin(true);
             }}
             className="flex items-center gap-2 rounded-lg border border-white/10 bg-[#2d2d30] px-5 py-2.5 text-sm font-bold transition-all hover:bg-[#353538] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Key size={18} className="text-gray-400" /> IDを手動入力
+          </button>
+          <button
+            type="button"
+            disabled={!eventJoinIdentityReady || !hostEventsAvailable || normalParticipationActive}
+            title={hostEventsAvailable ? "開催へ参加" : "接続先serverは開催モードに対応していません"}
+            onClick={() => {
+              setManualJoinKind("HOST_EVENT");
+              setShowManualJoinCode(false);
+              setShowManualJoin(true);
+            }}
+            className="flex items-center gap-2 rounded-lg border border-amber-400/20 bg-amber-500/10 px-5 py-2.5 text-sm font-bold text-amber-200 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Trophy size={18} /> 開催へ参加
+          </button>
+          <button
+            type="button"
+            disabled={!eventJoinIdentityReady || !hostEventCreationAvailable || normalParticipationActive}
+            title={hostEventCreationAvailable ? "開催を作成" : "接続先serverは新しい開催の作成を受け付けていません"}
+            onClick={() => {
+              setEventCreateError(null);
+              setShowCreateEvent(true);
+            }}
+            className="flex items-center gap-2 rounded-lg bg-amber-400 px-5 py-2.5 text-sm font-black text-black shadow-[0_0_20px_rgba(251,191,36,0.25)] transition-all hover:bg-amber-300 disabled:cursor-not-allowed disabled:bg-gray-700 disabled:text-gray-400 disabled:shadow-none"
+          >
+            <Plus size={18} /> 開催を作成
           </button>
           <button
             type="button"
@@ -441,7 +511,7 @@ export function LobbyPage({
       {!roomEntryReady ? (
         <div className="mb-6 flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm font-bold text-amber-200">
           <AlertCircle size={16} />
-          <span>{roomEntryRequiredMessage}</span>
+          <span>通常ルームへの参加、または開催でプレーするにはDJ NAMEとDATA SOURCEを設定してください。</span>
         </div>
       ) : null}
 
@@ -515,6 +585,19 @@ export function LobbyPage({
         </div>
       </div>
 
+      {showCreateEvent ? (
+        <EventCreateModal
+          busy={busyAction === "create-event"}
+          errorMessage={eventCreateError}
+          identityReady={eventJoinIdentityReady}
+          participantSourceReady={roomEntryReady}
+          onClose={() => {
+            if (busyAction !== "create-event") setShowCreateEvent(false);
+          }}
+          onSubmit={createHostEvent}
+        />
+      ) : null}
+
       {showManualJoin ? (
         <ModalPortal>
           <div className="fixed inset-0 z-[1000]">
@@ -524,7 +607,7 @@ export function LobbyPage({
                 <div className="flex items-center justify-between border-b border-white/5 bg-white/[0.02] px-8 py-6">
                   <h2 className="flex items-center gap-3 text-xl font-bold text-white">
                     <Key size={22} className="text-cyan-400" />
-                    Room ID を手動入力
+                    {manualJoinKind === "HOST_EVENT" ? "開催へ参加" : "Room ID を手動入力"}
                   </h2>
                   <button
                     type="button"
@@ -585,13 +668,20 @@ export function LobbyPage({
                     </button>
                     <button
                       type="button"
-                      disabled={!roomEntryReady || busyAction !== null || manualRoomId.trim().length === 0 || manualJoinCodeError !== null}
+                      disabled={(manualJoinKind === "HOST_EVENT" ? !eventJoinIdentityReady : !roomEntryReady) || busyAction !== null || manualRoomId.trim().length === 0 || manualJoinCodeError !== null || (manualJoinKind === "HOST_EVENT" && manualJoinCode.length === 0)}
                       className={`flex-1 rounded-xl py-4 font-black transition-all shadow-[0_10px_20px_rgba(6,182,212,0.2)] ${
-                        !roomEntryReady || busyAction !== null || manualRoomId.trim().length === 0 || manualJoinCodeError !== null
+                        (manualJoinKind === "HOST_EVENT" ? !eventJoinIdentityReady : !roomEntryReady) || busyAction !== null || manualRoomId.trim().length === 0 || manualJoinCodeError !== null || (manualJoinKind === "HOST_EVENT" && manualJoinCode.length === 0)
                           ? "cursor-not-allowed bg-gray-800 text-gray-600"
                           : "bg-cyan-500 text-white hover:bg-cyan-400"
                       }`}
                       onClick={() => {
+                        if (manualJoinKind === "HOST_EVENT") {
+                          if (manualJoinCode.trim().length > 0) {
+                            onJoinHostEvent?.({ roomId: manualRoomId.trim(), joinCode: manualJoinCode.trim() });
+                            closeManualJoinModal();
+                          }
+                          return;
+                        }
                         setBusyAction("join");
                         void enterRoom(manualRoomId.trim(), manualJoinCode.trim() || null).finally(() => {
                           setBusyAction(null);
@@ -600,7 +690,7 @@ export function LobbyPage({
                     >
                       参加を確定
                     </button>
-                    <button
+                    {manualJoinKind === "NORMAL" ? <button
                       type="button"
                       disabled={busyAction !== null || manualRoomId.trim().length === 0 || manualJoinCodeError !== null}
                       className="rounded-xl border border-emerald-400/25 bg-emerald-500/15 py-4 font-black text-emerald-100 transition-all hover:bg-emerald-400 hover:text-black disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-gray-800 disabled:text-gray-600"
@@ -613,7 +703,7 @@ export function LobbyPage({
                       }}
                     >
                       観戦する
-                    </button>
+                    </button> : <div />}
                   </div>
                 </div>
               </div>
