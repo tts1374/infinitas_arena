@@ -9,7 +9,7 @@ import type { SongUnlockSettings } from "../models/song-unlock";
 import type { SourceType } from "../enums/source";
 
 export interface EventJoinPayload {
-  host_event_protocol: 1;
+  host_event_protocol: 2;
   client_version: string;
   join_code: string;
   display_name: string;
@@ -48,11 +48,6 @@ export interface ConfirmPickAction extends EventStartedActionBase {
 
 export interface CancelPickAction extends EventSelectionActionBase {
   action: "CANCEL_PICK";
-}
-
-export interface SetEventReadyAction extends EventSelectionActionBase {
-  action: "SET_READY";
-  ready: boolean;
 }
 
 export interface StartEventRoundAction extends EventSelectionActionBase {
@@ -115,7 +110,6 @@ export type EventRoomAction =
   | StartEventAction
   | ConfirmPickAction
   | CancelPickAction
-  | SetEventReadyAction
   | StartEventRoundAction
   | SubmitEventResultAction
   | SkipEventRoundAction

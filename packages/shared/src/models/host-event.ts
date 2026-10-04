@@ -39,7 +39,15 @@ export interface EventParticipantState {
   player_id: string;
   display_name: string;
   connection_state: EventParticipantConnectionState;
-  ready: boolean;
+  pending_next: boolean;
+  round_status: EventParticipantRoundStatus | null;
+}
+
+/** Persisted history DTO. Live snapshot fields are not a history schema contract. */
+export interface EventHistoryParticipant {
+  player_id: string;
+  display_name: string;
+  connection_state: EventParticipantConnectionState;
   pending_next: boolean;
   round_status: EventParticipantRoundStatus | null;
 }
@@ -81,7 +89,7 @@ export interface EventOverallResultEntry {
 }
 
 export interface EventRoomSnapshot {
-  schema_version: 1;
+  schema_version: 2;
   room_kind: "HOST_EVENT";
   room_id: string;
   generation: number;
@@ -98,6 +106,8 @@ export interface EventRoomSnapshot {
   scoring_size_n: number | null;
   selected_chart: EventChart | null;
   current_round_id: string | null;
+  /** Startable members of the frozen selection, including disconnected seats. Empty before selection. */
+  current_eligible_player_ids: string[];
   current_playing_player_ids: string[];
   host_disconnect_deadline: ISO8601String | null;
   latest_result: EventRoundResult | null;

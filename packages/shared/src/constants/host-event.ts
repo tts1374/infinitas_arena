@@ -1,11 +1,11 @@
-export const HOST_EVENT_PROTOCOL = 1 as const;
+export const HOST_EVENT_PROTOCOL = 2 as const;
 export const HOST_EVENT_ACCEPT_NEW = false as const;
-export const HOST_EVENT_ROOM_SCHEMA_VERSION = 1 as const;
+export const HOST_EVENT_ROOM_SCHEMA_VERSION = 2 as const;
 export const EVENT_MAX_PLAYERS = 20 as const;
 export const HOST_EVENT_DISCONNECT_GRACE_SECONDS = 300 as const;
 export const HOST_EVENT_CLOSED_RETENTION_SECONDS = 1_800 as const;
 export const HOST_EVENT_RESULTS_PAGE_SIZE = 50 as const;
-export const HOST_EVENT_HISTORY_SCHEMA_VERSION = 1 as const;
+export const HOST_EVENT_HISTORY_SCHEMA_VERSION = 2 as const;
 // Event names intentionally share the normal room-comment input contract.
 export const HOST_EVENT_NAME_MAX_LENGTH = ROOM_COMMENT_MAX_LENGTH;
 export const HOST_EVENT_NAME_ALLOW_EMPTY = ROOM_COMMENT_ALLOW_EMPTY;
