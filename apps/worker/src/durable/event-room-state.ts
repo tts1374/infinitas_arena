@@ -28,7 +28,6 @@ interface EventParticipantRecord {
   connection_state: EventConnectionState;
   source: SourceType;
   song_unlocks: SongUnlockSettings;
-  ready: boolean;
   pending_next: boolean;
 }
 
@@ -62,7 +61,7 @@ interface IdempotencyEntry {
 }
 
 export interface EventRoomStatePersistenceRecord {
-  schema_version: 1;
+  schema_version: 2;
   room_kind: "HOST_EVENT";
   room_id: string;
   generation: number;
@@ -83,7 +82,6 @@ export interface EventRoomStatePersistenceRecord {
   host_ever_connected: boolean;
   host_initial_connect_deadline: string | null;
   host_disconnect_deadline: string | null;
-  // Current-round ready_player_ids are derived from participants[].ready and are not duplicated.
   participants: EventParticipantRecord[];
   fixed_roster_player_ids: string[];
   scoring_size_n: number | null;
@@ -276,7 +274,6 @@ function isParticipant(value: unknown): value is EventParticipantRecord {
     typeof value.song_unlocks.allow_leggendaria === "boolean" &&
     Array.isArray(value.song_unlocks.owned_pack_ids) &&
     value.song_unlocks.owned_pack_ids.every((id) => Number.isInteger(id) && (id as number) > 0) &&
-    typeof value.ready === "boolean" &&
     typeof value.pending_next === "boolean"
   );
 }
@@ -416,7 +413,7 @@ function isIdempotencyEntry(value: unknown): value is IdempotencyEntry {
 }
 
 function isPersistenceRecord(value: unknown): value is EventRoomStatePersistenceRecord {
-  if (!isRecord(value) || value.schema_version !== 1 || value.room_kind !== "HOST_EVENT") return false;
+  if (!isRecord(value) || value.schema_version !== 2 || value.room_kind !== "HOST_EVENT") return false;
   if (
     typeof value.room_id !== "string" || !Number.isInteger(value.generation) || (value.generation as number) < 1 ||
     (value.event_id !== null && typeof value.event_id !== "string") || !isSettings(value.settings) ||
@@ -763,7 +760,6 @@ export class EventRoomState {
     };
     this.rounds.set(roundId, round);
     this.currentRoundId = roundId;
-    for (const participant of this.participants.values()) participant.ready = false;
     this.touchSelection();
     round.selection_revision = this.selectionRevision;
     this.touch();
@@ -780,29 +776,7 @@ export class EventRoomState {
     }
     this.rounds.delete(roundId);
     this.currentRoundId = null;
-    for (const participant of this.participants.values()) participant.ready = false;
     this.touchSelection();
-    this.touch();
-    return { ok: true, changed: true };
-  }
-
-  setReady(playerId: string, roundId: string, expectedSelectionRevision: number, ready: boolean, now: Date): EventStateResult {
-    if (this.expireHostDeadline(now)) return { ok: false, reason: "HOST_DISCONNECTED" };
-    if (!this.hostConnected) return { ok: false, reason: "HOST_DISCONNECTED" };
-    const round = this.currentRound();
-    const participant = this.participants.get(playerId);
-    if (
-      this.phase !== "PICKING" ||
-      round === null ||
-      round.started_at !== null ||
-      round.round_id !== roundId ||
-      expectedSelectionRevision !== this.selectionRevision
-    ) return { ok: false, reason: "INVALID_STATE" };
-    if (participant === undefined || participant.connection_state !== "CONNECTED" || participant.pending_next) {
-      return { ok: false, reason: "NOT_ELIGIBLE" };
-    }
-    if (!round.eligible_player_ids.includes(playerId)) return { ok: false, reason: "NOT_ELIGIBLE" };
-    participant.ready = ready;
     this.touch();
     return { ok: true, changed: true };
   }
@@ -818,23 +792,15 @@ export class EventRoomState {
       round.round_id !== roundId ||
       expectedSelectionRevision !== this.selectionRevision
     ) return { ok: false, reason: "INVALID_STATE" };
-    const expected = round.eligible_player_ids
-      .map((id) => this.participants.get(id))
-      .filter((participant): participant is EventParticipantRecord =>
-        participant !== undefined && participant.connection_state !== "LEFT" && participant.connection_state !== "KICKED",
-      );
-    const ready = expected.filter((participant) => participant.ready);
-    if (ready.length === 0) return { ok: false, reason: "START_REQUIRES_READY_PLAYER" };
-    if (this.settings.event_type === "TOURNAMENT" && ready.length !== expected.length) {
-      return { ok: false, reason: "TOURNAMENT_REQUIRES_ALL_READY" };
-    }
+    const expected = this.roundEligibleParticipants(round);
+    if (expected.length === 0) return { ok: false, reason: "START_REQUIRES_ELIGIBLE_PLAYER" };
     round.playing_player_ids =
-      this.settings.event_type === "TOURNAMENT" ? [...this.fixedRosterPlayerIds] : ready.map((entry) => entry.player_id);
+      this.settings.event_type === "TOURNAMENT" ? [...this.fixedRosterPlayerIds] : expected.map((entry) => entry.player_id);
     round.started_at = now.toISOString();
     if (this.settings.event_type === "TOURNAMENT") {
       for (const id of round.playing_player_ids) {
         const participant = this.participants.get(id);
-        if (participant === undefined || participant.connection_state === "LEFT" || participant.connection_state === "KICKED") {
+        if (participant === undefined || participant.connection_state === "LEFT" || participant.connection_state === "KICKED" || participant.pending_next) {
           round.submissions[id] = this.absence("NOT_PRESENT", now);
         }
       }
@@ -906,7 +872,6 @@ export class EventRoomState {
     const participant = this.participants.get(playerId);
     if (participant === undefined || participant.connection_state === "KICKED") return { ok: false, reason: "NOT_PARTICIPANT" };
     participant.connection_state = "LEFT";
-    participant.ready = false;
     participant.pending_next = true;
     const round = this.currentRound();
     if (this.phase === "PLAYING" && this.roundPhase === "ACTIVE" && round?.playing_player_ids.includes(playerId)) {
@@ -929,7 +894,6 @@ export class EventRoomState {
     // A matching idempotency record proves that LEAVE was already durably applied.
     // Re-impose only its membership effect after reconnect; do not advance/finalize a round.
     participant.connection_state = "LEFT";
-    participant.ready = false;
     participant.pending_next = true;
     this.touchSelectionIfUnfrozen();
     this.touch();
@@ -943,7 +907,6 @@ export class EventRoomState {
     const participant = this.participants.get(targetPlayerId);
     if (participant === undefined || participant.connection_state === "KICKED") return { ok: false, reason: "NOT_PARTICIPANT" };
     participant.connection_state = "KICKED";
-    participant.ready = false;
     participant.pending_next = true;
     const round = this.currentRound();
     if (this.phase === "PLAYING" && this.roundPhase === "ACTIVE" && round?.playing_player_ids.includes(targetPlayerId)) {
@@ -966,7 +929,6 @@ export class EventRoomState {
     this.roundPhase = null;
     this.currentRoundId = null;
     for (const participant of this.participants.values()) {
-      participant.ready = false;
       if (participant.connection_state === "CONNECTED" || participant.connection_state === "DISCONNECTED") {
         participant.pending_next = false;
       }
@@ -998,7 +960,6 @@ export class EventRoomState {
       this.currentRoundId = null;
       this.phase = "PICKING";
       this.roundPhase = null;
-      for (const participant of this.participants.values()) participant.ready = false;
       this.touchSelection();
     }
     return { ok: true, changed: true };
@@ -1067,7 +1028,7 @@ export class EventRoomState {
     const current = this.currentRound();
     const latestResult = this.getPublicResults().at(-1) ?? null;
     const snapshot: EventRoomSnapshot = {
-      schema_version: 1,
+      schema_version: 2,
       room_kind: "HOST_EVENT",
       room_id: this.roomId,
       generation: this.generation,
@@ -1087,7 +1048,6 @@ export class EventRoomState {
         player_id: participant.player_id,
         display_name: participant.display_name,
         connection_state: participant.connection_state,
-        ready: participant.ready,
         pending_next: participant.pending_next,
         round_status: this.publicRoundStatus(participant.player_id, current),
       })),
@@ -1095,6 +1055,7 @@ export class EventRoomState {
       scoring_size_n: this.scoringSizeN,
       selected_chart: current === null ? null : cloneChart(current.chart),
       current_round_id: this.currentRoundId,
+      current_eligible_player_ids: current === null ? [] : this.roundEligibleParticipants(current).map((entry) => entry.player_id),
       current_playing_player_ids: current === null ? [] : [...current.playing_player_ids],
       host_disconnect_deadline: this.hostEverConnected ? this.hostDisconnectDeadline : this.hostInitialConnectDeadline,
       latest_result: latestResult,
@@ -1109,7 +1070,7 @@ export class EventRoomState {
   toPersistenceRecord(): EventRoomStatePersistenceRecord {
     this.assertInitialized();
     return structuredClone({
-      schema_version: 1,
+      schema_version: 2,
       room_kind: "HOST_EVENT",
       room_id: this.roomId,
       generation: this.generation,
@@ -1179,7 +1140,6 @@ export class EventRoomState {
       connection_state: "CONNECTED",
       source: input.source!,
       song_unlocks: normalizedUnlocks(input.song_unlocks),
-      ready: false,
       pending_next: false,
     };
   }
@@ -1351,12 +1311,22 @@ export class EventRoomState {
     return submission.absence_reason === "SKIP" ? "SKIPPED" : "ABSENT";
   }
 
+  private roundEligibleParticipants(round: EventRoundRecord): EventParticipantRecord[] {
+    return round.eligible_player_ids
+      .map((id) => this.participants.get(id))
+      .filter((participant): participant is EventParticipantRecord =>
+        participant !== undefined &&
+        (participant.connection_state === "CONNECTED" || participant.connection_state === "DISCONNECTED") &&
+        !participant.pending_next,
+      );
+  }
+
   private selectionParticipants(): EventParticipantRecord[] {
     if (this.settings.event_type === "TOURNAMENT" && this.eventId !== null) {
       return this.fixedRosterPlayerIds
         .map((id) => this.participants.get(id))
         .filter((participant): participant is EventParticipantRecord =>
-          participant !== undefined && participant.connection_state !== "LEFT" && participant.connection_state !== "KICKED",
+          participant !== undefined && participant.connection_state !== "LEFT" && participant.connection_state !== "KICKED" && !participant.pending_next,
         );
     }
     return this.activeParticipants().filter((participant) => !participant.pending_next);

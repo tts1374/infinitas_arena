@@ -135,8 +135,8 @@ test("RESULT_READY payload follows structured per_round/per_player contract", ()
   assert.equal(Array.isArray(firstPlayer.rounds), true);
 });
 
-test("host event protocol is additive and uses dedicated message families", () => {
-  assert.equal(HOST_EVENT_PROTOCOL, 1);
+test("host event protocol2 preserves the separate normal message family", () => {
+  assert.equal(HOST_EVENT_PROTOCOL, 2);
   assert.deepEqual(HOST_EVENT_PHASES, ["LOBBY", "PICKING", "PLAYING", "RESULT", "CLOSED"]);
   assert.equal(CLIENT_MESSAGE_TYPES.includes("ROOM_JOIN"), true);
   assert.equal(CLIENT_MESSAGE_TYPES.includes("EVENT_JOIN"), true);

@@ -104,7 +104,7 @@ function beginSelectedRound(state, playerIds, eventType = "CASUAL") {
 }
 
 test("host event constants preserve the protocol and capacity contract", () => {
-  assert.equal(HOST_EVENT_PROTOCOL, 1);
+  assert.equal(HOST_EVENT_PROTOCOL, 2);
   assert.equal(EVENT_MAX_PLAYERS, 20);
   assert.equal(HOST_EVENT_DISCONNECT_GRACE_SECONDS, 300);
 });
@@ -165,7 +165,7 @@ test("event id is null in LOBBY and issued with START_EVENT", () => {
   assert.equal(state.toSnapshot().phase, "PICKING");
 });
 
-test("selection uses the unlock intersection and resets ready on cancellation", () => {
+test("selection uses the unlock intersection and clears eligible projection on cancellation", () => {
   const state = createState();
   assert.equal(joinHost(state).ok, true);
   assert.equal(joinPlayer(state, "p1", 2).ok, true);
@@ -175,21 +175,21 @@ test("selection uses the unlock intersection and resets ready on cancellation", 
   assert.equal(state.confirmPick("host", "pack-chart", revision, "round-bad", at(5)).reason, "CHART_NOT_AVAILABLE_TO_ALL");
   assert.equal(state.confirmPick("host", "score-chart", revision, "round-1", at(6)).ok, true);
   revision = state.toSnapshot().selection_revision;
-  assert.equal(state.setReady("p1", "round-1", revision, true, at(7)).ok, true);
   assert.equal(state.cancelPick("host", "round-1", revision, at(8)).ok, true);
-  assert.equal(state.toSnapshot().participants.find((player) => player.player_id === "p1")?.ready, false);
+  assert.deepEqual(state.toSnapshot().current_eligible_player_ids, []);
 });
 
-test("casual starts with ready players only and never creates absence for waiting players", () => {
+test("casual starts all eligible players without a ready action and waits for every submission", () => {
   const state = createState();
   const selectionRevision = beginSelectedRound(state, ["p1", "p2"]);
-  assert.equal(state.setReady("p1", "round-1", selectionRevision, true, at(22)).ok, true);
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
-  assert.deepEqual(state.toSnapshot().current_playing_player_ids, ["p1"]);
+  assert.deepEqual(state.toSnapshot().current_playing_player_ids, ["p1", "p2"]);
   const key = state.toSnapshot().selected_chart.expected_key;
-  assert.equal(state.submit("p1", "round-1", key, 2000, { score: 2000 }, at(24)).round_finalized, true);
+  assert.equal(state.submit("p1", "round-1", key, 2000, { score: 2000 }, at(24)).round_finalized, false);
+  assert.equal(state.toSnapshot().latest_result, null);
+  assert.equal(state.submit("p2", "round-1", key, 1000, null, at(25)).round_finalized, true);
   const result = state.toSnapshot().latest_result;
-  assert.deepEqual(result.results.map((entry) => entry.player_id), ["p1"]);
+  assert.deepEqual(result.results.map((entry) => entry.player_id), ["p1", "p2"]);
   assert.equal("tournament_points" in result.results[0], false);
   assert.equal(JSON.stringify(state.toSnapshot()).includes("source_meta"), false);
 });
@@ -203,7 +203,6 @@ for (const source of ["inf_daken_counter", "inf-notebook", "reflux"]) {
     const pickRevision = state.toSnapshot().selection_revision;
     assert.equal(state.confirmPick("host", "score-chart", pickRevision, "round-1", at(4)).ok, true);
     const readyRevision = state.toSnapshot().selection_revision;
-    assert.equal(state.setReady("p1", "round-1", readyRevision, true, at(5)).ok, true);
     assert.equal(state.startRound("host", "round-1", readyRevision, at(6)).ok, true);
     const { chart_id: _chartId, ...observedWithoutChartId } = state.toSnapshot().selected_chart.expected_key;
     assert.equal(state.submit("p1", "round-1", observedWithoutChartId, 1000, null, at(7)).ok, true);
@@ -219,7 +218,6 @@ test("daken_counter_v3 rejects a missing observed chart_id and all sources rejec
     const pickRevision = state.toSnapshot().selection_revision;
     assert.equal(state.confirmPick("host", "score-chart", pickRevision, "round-1", at(4)).ok, true);
     const readyRevision = state.toSnapshot().selection_revision;
-    assert.equal(state.setReady("p1", "round-1", readyRevision, true, at(5)).ok, true);
     assert.equal(state.startRound("host", "round-1", readyRevision, at(6)).ok, true);
     const expected = state.toSnapshot().selected_chart.expected_key;
     assert.equal(state.submit("p1", "round-1", { ...expected, chart_id: 999 }, 1000, null, at(7)).reason, "RESULT_KEY_MISMATCH");
@@ -230,12 +228,9 @@ test("daken_counter_v3 rejects a missing observed chart_id and all sources rejec
   }
 });
 
-test("tournament freezes N, requires all active targets ready, and scores tied submissions", () => {
+test("tournament freezes N, starts all active targets, and scores tied submissions", () => {
   const state = createState("TOURNAMENT");
   const selectionRevision = beginSelectedRound(state, ["p1", "p2", "p3", "p4"], "TOURNAMENT");
-  for (const id of ["p1", "p2", "p3", "p4"]) {
-    assert.equal(state.setReady(id, "round-1", selectionRevision, true, at(22)).ok, true);
-  }
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
   const key = state.toSnapshot().selected_chart.expected_key;
   assert.equal(state.submit("p1", "round-1", key, 2000, null, at(24)).ok, true);
@@ -278,7 +273,6 @@ test("snapshot is the authoritative source for fixed tournament roster and scori
 test("MISSCOUNT sorts ascending and uses 9999 for absence", () => {
   const state = createState("TOURNAMENT", false, "MISSCOUNT");
   const selectionRevision = beginSelectedRound(state, ["p1", "p2"], "TOURNAMENT");
-  for (const id of ["p1", "p2"]) assert.equal(state.setReady(id, "round-1", selectionRevision, true, at(22)).ok, true);
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
   const key = state.toSnapshot().selected_chart.expected_key;
   assert.equal(state.submit("p1", "round-1", key, 4, null, at(24)).ok, true);
@@ -293,7 +287,6 @@ test("MISSCOUNT sorts ascending and uses 9999 for absence", () => {
 test("published round orders ranked submissions before absences", () => {
   const state = createState("TOURNAMENT");
   const selectionRevision = beginSelectedRound(state, ["p1", "p2", "p3"], "TOURNAMENT");
-  for (const id of ["p1", "p2", "p3"]) assert.equal(state.setReady(id, "round-1", selectionRevision, true, at(22)).ok, true);
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
   const key = state.toSnapshot().selected_chart.expected_key;
   assert.equal(state.skip("p1", "round-1", at(24)).ok, true);
@@ -320,15 +313,16 @@ test("casual player joining after pick is pending_next and excluded from that ro
   const selectionRevision = beginSelectedRound(state, ["p1"]);
   assert.equal(joinPlayer(state, "late", 22).ok, true);
   assert.equal(state.toSnapshot().participants.find((player) => player.player_id === "late")?.pending_next, true);
-  assert.equal(state.setReady("late", "round-1", selectionRevision, true, at(23)).reason, "NOT_ELIGIBLE");
+  assert.deepEqual(state.toSnapshot().current_eligible_player_ids, ["p1"]);
+  assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
+  assert.deepEqual(state.toSnapshot().current_playing_player_ids, ["p1"]);
 });
 
-test("tournament readiness denominator keeps disconnected slots and excludes left slots", () => {
+test("tournament eligible projection keeps disconnected slots and excludes left slots", () => {
   const state = createState("TOURNAMENT");
   const selectionRevision = beginSelectedRound(state, ["p1", "p2"], "TOURNAMENT");
-  assert.equal(state.setReady("p1", "round-1", selectionRevision, true, at(22)).ok, true);
   assert.equal(state.disconnect("p2", at(23)).ok, true);
-  assert.equal(state.startRound("host", "round-1", selectionRevision, at(24)).reason, "TOURNAMENT_REQUIRES_ALL_READY");
+  assert.deepEqual(state.toSnapshot().current_eligible_player_ids, ["p1", "p2"]);
   assert.equal(joinPlayer(state, "p2", 25, { accept_new: false }).ok, true);
   assert.equal(state.leave("p2", at(26)).ok, true);
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(27)).ok, true);
@@ -348,7 +342,6 @@ test("zero active participants in PICKING cannot create an empty round", () => {
 test("leave and kick make active missing players absent while preserving submitted results", () => {
   const state = createState("TOURNAMENT");
   const selectionRevision = beginSelectedRound(state, ["p1", "p2"], "TOURNAMENT");
-  for (const id of ["p1", "p2"]) assert.equal(state.setReady(id, "round-1", selectionRevision, true, at(22)).ok, true);
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
   const key = state.toSnapshot().selected_chart.expected_key;
   assert.equal(state.submit("p1", "round-1", key, 1000, null, at(24)).ok, true);
@@ -363,7 +356,6 @@ test("leave and kick make active missing players absent while preserving submitt
 test("invalidating the latest round removes it from overall scoring and keeps history", () => {
   const state = createState("TOURNAMENT");
   const selectionRevision = beginSelectedRound(state, ["p1"], "TOURNAMENT");
-  assert.equal(state.setReady("p1", "round-1", selectionRevision, true, at(22)).ok, true);
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
   const key = state.toSnapshot().selected_chart.expected_key;
   assert.equal(state.submit("p1", "round-1", key, 1000, null, at(24)).round_finalized, true);
@@ -378,7 +370,6 @@ test("invalidating the latest round removes it from overall scoring and keeps hi
 test("result remains until NEXT_PICK and no timer advances it", () => {
   const state = createState();
   const selectionRevision = beginSelectedRound(state, ["p1"]);
-  assert.equal(state.setReady("p1", "round-1", selectionRevision, true, at(22)).ok, true);
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
   const key = state.toSnapshot().selected_chart.expected_key;
   assert.equal(state.submit("p1", "round-1", key, 1000, null, at(24)).ok, true);
@@ -391,7 +382,6 @@ test("result remains until NEXT_PICK and no timer advances it", () => {
 test("host disconnect accepts submissions without publishing until reconnect", () => {
   const state = createState();
   const selectionRevision = beginSelectedRound(state, ["p1"]);
-  assert.equal(state.setReady("p1", "round-1", selectionRevision, true, at(22)).ok, true);
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
   assert.equal(state.disconnect("host", at(24)).ok, true);
   const key = state.toSnapshot().selected_chart.expected_key;
@@ -420,7 +410,6 @@ test("absolute host deadline is not extended and now >= deadline wins", () => {
 test("host deadline invalidates an active round without publishing private submissions", () => {
   const state = createState();
   const selectionRevision = beginSelectedRound(state, ["p1", "p2"]);
-  for (const id of ["p1", "p2"]) assert.equal(state.setReady(id, "round-1", selectionRevision, true, at(22)).ok, true);
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
   const key = state.toSnapshot().selected_chart.expected_key;
   assert.equal(state.submit("p1", "round-1", key, 4321, { private_score: 4321 }, at(24)).ok, true);
@@ -469,28 +458,30 @@ test("idempotency distinguishes duplicate from conflicting payload and survives 
   assert.equal(restored.checkIdempotency("p1", "request-1", "a").kind, "DUPLICATE");
 });
 
-test("settings.event_name and participant.ready are the unique persistence-to-snapshot mapping", () => {
+test("schema2 persists settings.event_name and projects eligibility without ready", () => {
   const state = createState();
   assert.equal(joinHost(state).ok, true);
   assert.equal(joinPlayer(state, "p1", 2).ok, true);
   assert.equal(state.startEvent("host", "event-1", at(3)).ok, true);
   const pickRevision = state.toSnapshot().selection_revision;
   assert.equal(state.confirmPick("host", "score-chart", pickRevision, "round-1", at(4)).ok, true);
-  const readyRevision = state.toSnapshot().selection_revision;
-  assert.equal(state.setReady("p1", "round-1", readyRevision, true, at(5)).ok, true);
   const record = state.toPersistenceRecord();
   assert.equal("event_name" in record, false);
   assert.equal("ready_player_ids" in record, false);
   const restored = new EventRoomState(createChartMaster());
   restored.hydrate(record);
   assert.equal(restored.toSnapshot().settings.event_name, "Sunday session");
-  assert.equal(restored.toSnapshot().participants.find(({ player_id }) => player_id === "p1")?.ready, true);
+  assert.equal(record.schema_version, 2);
+  assert.equal(restored.toSnapshot().schema_version, 2);
+  assert.equal("ready" in record.participants[0], false);
+  assert.equal("ready" in restored.toSnapshot().participants[0], false);
+  assert.deepEqual(restored.toSnapshot().current_eligible_player_ids, ["p1"]);
 });
 
 test("hydrate rejects old or foreign records instead of creating an empty event", () => {
   const state = new EventRoomState(createChartMaster());
   assert.throws(() => state.hydrate({ schema_version: 0, room_kind: "HOST_EVENT" }), /ROOM_STATE_LOST/);
-  assert.throws(() => state.hydrate({ schema_version: 1, room_kind: "NORMAL" }), /ROOM_STATE_LOST/);
+  assert.throws(() => state.hydrate({ schema_version: 2, room_kind: "NORMAL" }), /ROOM_STATE_LOST/);
 });
 
 test("hydrate rejects malformed enums, collections, phase/round links, and tournament roster N", () => {
@@ -538,7 +529,6 @@ test("hydrate enforces host lifecycle, absolute deadlines, and current-round pha
 
   const playing = createState();
   const playingRevision = beginSelectedRound(playing, ["p1"]);
-  assert.equal(playing.setReady("p1", "round-1", playingRevision, true, at(22)).ok, true);
   assert.equal(playing.startRound("host", "round-1", playingRevision, at(23)).ok, true);
   const playingRecord = playing.toPersistenceRecord();
 
@@ -591,7 +581,6 @@ test("hydrate accepts only canonical terminal phase and end_reason pairs", () =>
 
   const playing = createState();
   const playingRevision = beginSelectedRound(playing, ["p1"]);
-  assert.equal(playing.setReady("p1", "round-1", playingRevision, true, at(22)).ok, true);
   assert.equal(playing.startRound("host", "round-1", playingRevision, at(23)).ok, true);
   const playingRecord = playing.toPersistenceRecord();
 
@@ -644,9 +633,6 @@ test("hydrate accepts only canonical terminal phase and end_reason pairs", () =>
 test("hydrate rejects public results inconsistent with their round and private submissions", () => {
   const state = createState("TOURNAMENT");
   const selectionRevision = beginSelectedRound(state, ["p1", "p2"], "TOURNAMENT");
-  for (const id of ["p1", "p2"]) {
-    assert.equal(state.setReady(id, "round-1", selectionRevision, true, at(22)).ok, true);
-  }
   assert.equal(state.startRound("host", "round-1", selectionRevision, at(23)).ok, true);
   const key = state.toSnapshot().selected_chart.expected_key;
   assert.equal(state.submit("p1", "round-1", key, 1000, null, at(24)).ok, true);
@@ -690,4 +676,180 @@ test("hydrate rejects public results inconsistent with their round and private s
     assert.throws(() => corruptRestore.hydrate(record), /ROOM_STATE_LOST/);
     assert.equal(corruptRestore.isInitialized(), false);
   }
+});
+
+for (const eventType of ["CASUAL", "TOURNAMENT"]) {
+  for (const metric of ["SCORE", "MISSCOUNT"]) {
+    for (const beforePick of [false, true]) {
+      test(`${eventType}/${metric} 14/15 waits for disconnected slot (${beforePick ? "before" : "after"} pick)`, () => {
+        const state = createState(eventType, false, metric);
+        const ids = Array.from({ length: 15 }, (_, i) => `p${i}`);
+        assert.equal(joinHost(state).ok, true);
+        ids.forEach((id, i) => assert.equal(joinPlayer(state, id, i + 2).ok, true));
+        assert.equal(state.startEvent("host", "event-15", at(20)).ok, true);
+        if (beforePick) assert.equal(state.disconnect("p14", at(21)).ok, true);
+        assert.equal(state.confirmPick("host", "score-chart", state.toSnapshot().selection_revision, "round-1", at(22)).ok, true);
+        if (!beforePick) assert.equal(state.disconnect("p14", at(23)).ok, true);
+        assert.deepEqual(state.toSnapshot().current_eligible_player_ids, ids);
+        assert.equal(state.startRound("host", "round-1", state.toSnapshot().selection_revision, at(24)).ok, true);
+        assert.deepEqual(state.toSnapshot().current_playing_player_ids, ids);
+        const key = state.toSnapshot().selected_chart.expected_key;
+        ids.slice(0, 14).forEach((id, i) => {
+          const value = metric === "SCORE" ? (i < 2 ? 2000 : 2000 - i) : (i < 2 ? 0 : i);
+          assert.equal(state.submit(id, "round-1", key, value, { secret: 314159 }, at(25 + i)).ok, true);
+        });
+        assert.equal(state.toSnapshot().round_phase, "ACTIVE");
+        assert.equal(state.toSnapshot().latest_result, null);
+        assert.equal(state.toSnapshot().participants.find((p) => p.player_id === "p14").round_status, "PENDING");
+        assert.equal(JSON.stringify(state.toSnapshot()).includes("314159"), false);
+        const restored = new EventRoomState(createChartMaster());
+        restored.hydrate(state.toPersistenceRecord());
+        assert.equal(restored.toSnapshot().round_phase, "ACTIVE");
+        assert.equal(restored.closeRound("host", "round-1", at(40)).ok, true);
+        const result = restored.toSnapshot().latest_result;
+        const absent = result.results.find((p) => p.player_id === "p14");
+        assert.equal(absent.absence_reason, "DEADLINE");
+        assert.equal(absent.rank, null);
+        assert.equal(absent.metric_value, metric === "SCORE" ? 0 : 9999);
+        if (eventType === "TOURNAMENT") {
+          assert.equal(restored.toSnapshot().scoring_size_n, 15);
+          assert.deepEqual(result.results.slice(0, 3).map((p) => [p.rank, p.tournament_points]), [[1, 15], [1, 15], [3, 13]]);
+          assert.equal(absent.tournament_points, 0);
+        } else assert.equal("tournament_points" in absent, false);
+        assert.equal(joinPlayer(restored, "p14", 41, { accept_new: false }).ok, true);
+        assert.equal(restored.submit("p14", "round-1", key, 100, null, at(42)).ok, false);
+        assert.equal(restored.nextPick("host", "round-1", at(43)).ok, true);
+        assert.equal(restored.confirmPick("host", "score-chart", restored.toSnapshot().selection_revision, "round-2", at(44)).ok, true);
+        assert.deepEqual(restored.toSnapshot().current_eligible_player_ids, ids);
+        assert.equal(restored.startRound("host", "round-2", restored.toSnapshot().selection_revision, at(45)).ok, true);
+        assert.deepEqual(restored.toSnapshot().current_playing_player_ids, ids);
+      });
+    }
+  }
+
+  test(`${eventType} temporary reconnect accepts first same-round submission before deadline`, () => {
+    const state = createState(eventType);
+    const revision = beginSelectedRound(state, ["p1", "p2"], eventType);
+    assert.equal(state.disconnect("p2", at(22)).ok, true);
+    assert.equal(state.startRound("host", "round-1", revision, at(23)).ok, true);
+    const key = state.toSnapshot().selected_chart.expected_key;
+    assert.equal(state.submit("p1", "round-1", key, 1000, null, at(24)).round_finalized, false);
+    assert.equal(joinPlayer(state, "p2", 25, { accept_new: false }).ok, true);
+    assert.equal(state.toSnapshot().participants.find((p) => p.player_id === "p2").pending_next, false);
+    assert.equal(state.submit("p2", "round-1", key, 2000, null, at(26)).round_finalized, true);
+    assert.equal(state.submit("p2", "round-1", key, 3000, null, at(27)).ok, false);
+    assert.equal(state.toSnapshot().latest_result.results.find((p) => p.player_id === "p2").metric_value, 2000);
+  });
+
+  test(`${eventType} LEFT return and KICK stay excluded and zero eligible cannot start`, () => {
+    const state = createState(eventType);
+    const revision = beginSelectedRound(state, ["p1", "p2", "p3"], eventType);
+    assert.equal(state.leave("p2", at(22)).ok, true);
+    assert.equal(joinPlayer(state, "p2", 23, { accept_new: false }).ok, true);
+    assert.equal(state.kick("host", "p3", at(24)).ok, true);
+    assert.deepEqual(state.toSnapshot().current_eligible_player_ids, ["p1"]);
+    const copy = new EventRoomState(createChartMaster());
+    copy.hydrate(state.toPersistenceRecord());
+    assert.equal(copy.leave("p1", at(25)).ok, true);
+    assert.deepEqual(copy.toSnapshot().current_eligible_player_ids, []);
+    assert.equal(copy.startRound("host", "round-1", revision, at(26)).reason, "START_REQUIRES_ELIGIBLE_PLAYER");
+    assert.equal(state.startRound("host", "round-1", revision, at(25)).ok, true);
+    if (eventType === "TOURNAMENT") {
+      assert.equal(state.toSnapshot().scoring_size_n, 3);
+      const record = state.toPersistenceRecord();
+      assert.equal(record.rounds[0].submissions.p2.absence_reason, "NOT_PRESENT");
+      assert.equal(record.rounds[0].submissions.p3.absence_reason, "NOT_PRESENT");
+    } else assert.deepEqual(state.toSnapshot().current_playing_player_ids, ["p1"]);
+  });
+
+  test(`${eventType} all disconnected eligible slots still permit Host start`, () => {
+    const state = createState(eventType);
+    const revision = beginSelectedRound(state, ["p1", "p2"], eventType);
+    assert.equal(state.disconnect("p1", at(22)).ok, true);
+    assert.equal(state.disconnect("p2", at(23)).ok, true);
+    assert.equal(state.startRound("host", "round-1", revision, at(24)).ok, true);
+    assert.deepEqual(state.toSnapshot().current_playing_player_ids, ["p1", "p2"]);
+    assert.equal(state.toSnapshot().round_phase, "ACTIVE");
+    assert.equal(state.toSnapshot().latest_result, null);
+  });
+}
+
+for (const elapsed of [299999, 300000, 300001]) {
+  test(`restored Host reconnect at ${elapsed}ms obeys original absolute deadline`, () => {
+    const state = createState();
+    const revision = beginSelectedRound(state, ["p1"]);
+    assert.equal(state.startRound("host", "round-1", revision, at(23)).ok, true);
+    assert.equal(state.disconnect("host", at(24)).ok, true);
+    const key = state.toSnapshot().selected_chart.expected_key;
+    assert.equal(state.submit("p1", "round-1", key, 7654, { secret: 7654 }, at(25)).ok, true);
+    assert.equal(state.toSnapshot().latest_result, null);
+    const restored = new EventRoomState(createChartMaster());
+    restored.hydrate(state.toPersistenceRecord());
+    assert.equal(restored.getNextAlarmAt().getTime(), at(24).getTime() + 300000);
+    const result = restored.join({ player_id: "host", display_name: "Host", accept_new: false, now: new Date(at(24).getTime() + elapsed) });
+    if (elapsed < 300000) {
+      assert.equal(result.ok, true);
+      assert.equal(restored.toSnapshot().latest_result.results[0].metric_value, 7654);
+    } else {
+      assert.equal(result.reason, "HOST_DISCONNECTED");
+      assert.equal(restored.toSnapshot().end_reason, "HOST_DISCONNECTED");
+      assert.equal(JSON.stringify(restored.getPublicResults()).includes("7654"), false);
+    }
+  });
+}
+
+test("schema1 records at every phase fail closed without mutating their original data", () => {
+  const state = createState("TOURNAMENT");
+  const records = [state.toPersistenceRecord()];
+  const revision = beginSelectedRound(state, ["p1"], "TOURNAMENT");
+  records.push(state.toPersistenceRecord());
+  assert.equal(state.startRound("host", "round-1", revision, at(23)).ok, true);
+  records.push(state.toPersistenceRecord());
+  assert.equal(state.submit("p1", "round-1", state.toSnapshot().selected_chart.expected_key, 9876, null, at(24)).ok, true);
+  records.push(state.toPersistenceRecord());
+  assert.equal(state.endEvent("host", at(25)).ok, true);
+  records.push(state.toPersistenceRecord());
+  records.push({ ...state.toPersistenceRecord(), phase: "CLOSED", end_reason: "ROOM_STATE_LOST" });
+  assert.deepEqual([...new Set(records.map((record) => record.phase))], ["LOBBY", "PICKING", "PLAYING", "RESULT", "CLOSED"]);
+  for (const record of records) {
+    record.schema_version = 1;
+    for (const participant of record.participants) participant.ready = true;
+    const original = structuredClone(record);
+    const restored = new EventRoomState(createChartMaster());
+    assert.throws(() => restored.hydrate(record), /ROOM_STATE_LOST/);
+    assert.equal(restored.isInitialized(), false);
+    assert.deepEqual(record, original);
+  }
+});
+
+test("Host start enforces authority, selected round and revision even without ready", () => {
+  const state = createState();
+  const revision = beginSelectedRound(state, ["p1"]);
+  assert.equal(state.startRound("p1", "round-1", revision, at(22)).reason, "NOT_HOST");
+  assert.equal(state.startRound("host", "old-round", revision, at(22)).reason, "INVALID_STATE");
+  assert.equal(state.startRound("host", "round-1", revision - 1, at(22)).reason, "INVALID_STATE");
+  assert.equal(state.disconnect("host", at(23)).ok, true);
+  assert.equal(state.startRound("host", "round-1", revision, at(24)).reason, "HOST_DISCONNECTED");
+  assert.equal(joinHost(state, 25).ok, true);
+  assert.equal(state.cancelPick("host", "round-1", revision, at(26)).ok, true);
+  assert.equal(state.startRound("host", "round-1", revision, at(27)).reason, "INVALID_STATE");
+});
+
+test("latest-round invalidation is ordered against next-round start and zero valid rounds has no winner", () => {
+  const state = createState("TOURNAMENT");
+  assert.deepEqual(state.toSnapshot().overall_results, []);
+  const revision = beginSelectedRound(state, ["p1"], "TOURNAMENT");
+  assert.equal(state.startRound("host", "round-1", revision, at(22)).ok, true);
+  assert.equal(state.submit("p1", "round-1", state.toSnapshot().selected_chart.expected_key, 1234, null, at(23)).ok, true);
+  assert.equal(state.nextPick("host", "round-1", at(24)).ok, true);
+  assert.equal(state.confirmPick("host", "score-chart", state.toSnapshot().selection_revision, "round-2", at(25)).ok, true);
+  const copy = new EventRoomState(createChartMaster());
+  copy.hydrate(state.toPersistenceRecord());
+  assert.equal(state.invalidateRound("host", "round-1", at(26)).ok, true);
+  assert.deepEqual(state.toSnapshot().overall_results, []);
+  assert.equal(state.toSnapshot().current_round_id, "round-2");
+  assert.equal(copy.startRound("host", "round-2", copy.toSnapshot().selection_revision, at(26)).ok, true);
+  assert.equal(copy.invalidateRound("host", "round-1", at(26)).reason, "ROUND_LOCKED");
+  assert.equal(state.endEvent("host", at(27)).ok, true);
+  assert.deepEqual(state.toSnapshot().overall_results, []);
 });
