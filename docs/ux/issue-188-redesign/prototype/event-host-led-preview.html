@@ -1,0 +1,2854 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Event Host Led Prototype</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe id="codex-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="Event Host Led Prototype" data-srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot; data-visualize-standalone&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Event Host Led Prototype&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 10px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+.cursor-interaction {
+  cursor: var(--cursor-interaction, pointer);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: var(--cursor-interaction, pointer);
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+.widget {
+  min-width: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  box-shadow: 0 0 0 0.5px var(--border-strong, var(--border));
+  color: var(--foreground);
+  background: var(--background);
+}
+
+#widget &gt; :not(.card, .widget, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn,
+.nav-link {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover,
+.nav-link:not(:disabled):not([aria-disabled=&quot;true&quot;]):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+/* Shared preview chrome; product styles stay inside each variant. */
+.viz-dotted-background {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0.8px,
+    transparent 0.8px
+  );
+  background-position: center;
+  background-size: 16px 16px;
+}
+
+.viz-carousel {
+  position: relative;
+  min-width: 0;
+}
+
+.viz-carousel:has(&gt; .viz-carousel-controls) {
+  min-height: calc(60px + var(--viz-carousel-picker-height, 0px));
+  padding-bottom: 60px;
+}
+
+.viz-carousel &gt; [data-variant][hidden] {
+  display: none !important;
+}
+
+.viz-carousel &gt; [data-variant] {
+  isolation: isolate;
+}
+
+.viz-carousel-controls {
+  --viz-carousel-hover: light-dark(
+    color-mix(in srgb, var(--foreground) 5.4%, transparent),
+    color-mix(in srgb, var(--foreground) 7.8%, transparent)
+  );
+  position: absolute;
+  z-index: 2;
+  bottom: 8px;
+  left: 50%;
+  display: flex;
+  width: max-content;
+  /* Leave room for the host&#x27;s design-controls launcher at the trailing edge. */
+  max-width: calc(100% - 96px);
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  /* Match the settings dropdown chrome independently of the content font size. */
+  font-size: 13px;
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+/* Keep authored mockup button styles out of the shared carousel chrome. */
+.viz-carousel-controls button,
+.viz-carousel-picker &gt; summary {
+  display: flex !important;
+  height: auto !important;
+  min-height: 30px;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px;
+  padding: 0 6px !important;
+  -webkit-app-region: no-drag;
+  border: 0 !important;
+  border-radius: 14px !important;
+  color: inherit !important;
+  background: transparent !important;
+  font: inherit !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-picker &gt; summary {
+  position: relative;
+  isolation: isolate;
+}
+
+.viz-carousel-controls &gt; button {
+  --icon-size: 16px;
+  width: 30px !important;
+  padding: 0 !important;
+}
+
+.viz-carousel-picker &gt; summary {
+  padding-inline: 12px !important;
+}
+
+.viz-carousel-controls .viz-carousel-caret {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin: 0;
+  color: inherit;
+  transform: rotate(180deg);
+}
+
+.viz-carousel-controls &gt; button &gt; svg,
+.viz-carousel-controls .viz-carousel-caret,
+.viz-carousel-count {
+  opacity: 0.5;
+}
+
+.viz-carousel-controls &gt; button::before,
+.viz-carousel-picker &gt; summary::before {
+  position: absolute;
+  z-index: -1;
+  inset: 3px;
+  border-radius: 12px;
+  content: &quot;&quot;;
+  pointer-events: none;
+}
+
+.viz-carousel-controls &gt; button:hover::before,
+.viz-carousel-picker &gt; summary:hover::before {
+  background: var(--viz-carousel-hover);
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-controls [data-lucide],
+.viz-carousel-controls .lucide {
+  flex-shrink: 0;
+}
+
+.viz-carousel-picker {
+  min-width: 0;
+}
+
+.viz-carousel-picker &gt; summary {
+  min-width: 0;
+  list-style: none;
+}
+
+.viz-carousel-picker &gt; summary::-webkit-details-marker {
+  display: none;
+}
+
+.viz-carousel-count {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.viz-carousel-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viz-carousel-options {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 4px);
+  left: 0;
+  display: flex;
+  max-height: 240px;
+  flex-direction: column;
+  gap: 2px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  box-shadow: 0 4px 12px light-dark(rgb(0 0 0 / 6%), rgb(0 0 0 / 25%));
+}
+
+.viz-carousel-options &gt; button {
+  border-radius: max(0px, calc(var(--radius-lg) - 5px)) !important;
+  width: 100% !important;
+  min-height: 28px;
+  justify-content: flex-start !important;
+  padding: 4px 8px !important;
+  font-size: var(--font-size-small) !important;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.viz-carousel-options &gt; [aria-current=&quot;true&quot;],
+.viz-carousel-options &gt; button:hover {
+  background: var(--viz-carousel-hover) !important;
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled=&quot;true&quot;] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed=&quot;true&quot;],
+  [aria-selected=&quot;true&quot;],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.viz-carousel-controls :is(button, summary):focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
+@media (pointer: coarse) {
+  .viz-carousel:has(&gt; .viz-carousel-controls) {
+    min-height: calc(76px + var(--viz-carousel-picker-height, 0px));
+    padding-bottom: 76px;
+  }
+
+  .btn,
+  .nav-link,
+  .viz-carousel-controls button,
+  .viz-carousel-picker &gt; summary,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, var(--font-size-normal));
+  }
+
+  .form-control[type=&quot;file&quot;]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type=&quot;color&quot;] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;week&quot;]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: &quot;&quot;;
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+
+  .form-range::-webkit-slider-runnable-track {
+    height: 44px;
+  }
+
+  .form-range::-moz-range-track {
+    height: 44px;
+  }
+
+  .form-range::-webkit-slider-thumb {
+    margin-top: 12px;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;application/json&quot; id=&quot;codex-visualization-widget-state&quot;&gt;__CODEX_VISUALIZATION_WIDGET_STATE__&lt;/script&gt;
+&lt;script&gt;(() =&gt; {
+  const root = document.documentElement;
+  const mediaQuery = globalThis.matchMedia(&quot;(prefers-color-scheme: dark)&quot;);
+  const apply = Reflect.apply;
+  const isArray = Array.isArray;
+  const hasOwn = Object.hasOwn;
+  const parentWindow = globalThis.parent;
+  const stringify = JSON.stringify;
+  const parse = JSON.parse;
+  const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
+  const initialStateElement = document.getElementById(
+    &quot;codex-visualization-widget-state&quot;,
+  );
+  const initialGlobals = parse(initialStateElement?.textContent ?? &quot;{}&quot;);
+  initialStateElement?.remove();
+  /** @type {Record&lt;string, unknown&gt; | null} */
+  let state = initialGlobals.widgetState ?? null;
+  const statePersistence = initialGlobals.statePersistence ?? &quot;none&quot;;
+  let nextStateRequestId = 0;
+  /** @type {Map&lt;number, { resolve: () =&gt; void; reject: (error: Error) =&gt; void; timeout: ReturnType&lt;typeof globalThis.setTimeout&gt;; serializedState: string }&gt;} */
+  const pendingStateWrites = new Map();
+  const persistenceError = () =&gt;
+    Object.assign(
+      new Error(&quot;The host could not persist the widget state update&quot;),
+      {
+        code: -32000,
+        data: { code: &quot;widget_state_persistence_failed&quot;, retryable: false },
+      },
+    );
+  /**
+   * @param {object} prototype
+   * @param {string} property
+   */
+  const getPrototypeGetter = (prototype, property) =&gt; {
+    // oxlint-disable-next-line typescript/unbound-method -- invoked through captured Reflect.apply
+    const getter = Object.getOwnPropertyDescriptor(prototype, property)?.get;
+    if (getter == null) {
+      throw new Error(`Missing ${property} getter`);
+    }
+    return getter;
+  };
+  const getMessageData = getPrototypeGetter(MessageEvent.prototype, &quot;data&quot;);
+  const getMessagePorts = getPrototypeGetter(MessageEvent.prototype, &quot;ports&quot;);
+  const getMessageSource = getPrototypeGetter(MessageEvent.prototype, &quot;source&quot;);
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const addHostMessageListener = MessagePort.prototype.addEventListener;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const postHostMessage = MessagePort.prototype.postMessage;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const startHostPort = MessagePort.prototype.start;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const stopMessagePropagation = Event.prototype.stopImmediatePropagation;
+  /** @type {MessagePort | null} */
+  let hostPort = null;
+  const postToHost = (type, payload) =&gt; {
+    if (hostPort != null) {
+      apply(postHostMessage, hostPort, [{ type, ...payload }]);
+    }
+  };
+  const openExternal = ({ href }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;open-external&quot;, { href });
+    }
+  };
+  const sendFollowUpMessage = ({ context, prompt, title }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;follow-up&quot;, { context, prompt, title });
+    }
+    return Promise.resolve();
+  };
+  /**
+   * @param {Record&lt;string, unknown&gt; | ((previous: Record&lt;string, unknown&gt; | null) =&gt; Record&lt;string, unknown&gt;)} next
+   * @returns {Promise&lt;void&gt;}
+   */
+  const setWidgetState = async (next) =&gt; {
+    const nextState = typeof next === &quot;function&quot; ? next(state) : next;
+    if (
+      nextState == null ||
+      typeof nextState !== &quot;object&quot; ||
+      isArray(nextState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const inputState = stringify(
+      nextState,
+      (_key, /** @type {unknown} */ value) =&gt; {
+        if (
+          typeof value === &quot;undefined&quot; ||
+          typeof value === &quot;function&quot; ||
+          typeof value === &quot;symbol&quot; ||
+          (typeof value === &quot;number&quot; &amp;&amp; !Number.isFinite(value))
+        ) {
+          throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+        }
+        return value;
+      },
+    );
+    const parsedState = parse(inputState);
+    if (
+      parsedState == null ||
+      typeof parsedState !== &quot;object&quot; ||
+      isArray(parsedState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const storedState = {
+      modelContent: null,
+      privateContent: null,
+      ...parsedState,
+    };
+    const serializedState = stringify(storedState);
+    if (encode(serializedState).length &gt; 16 * 1024) {
+      throw new TypeError(
+        &quot;Widget state must be a JSON object of at most 16 KiB&quot;,
+      );
+    }
+    if (
+      hasOwn(storedState, &quot;imageIds&quot;) &amp;&amp;
+      (!isArray(storedState.imageIds) ||
+        storedState.imageIds.some(
+          (/** @type {unknown} */ id) =&gt; typeof id !== &quot;string&quot;,
+        ))
+    ) {
+      throw new TypeError(&quot;Widget state imageIds must be an array of strings&quot;);
+    }
+    if (storedState.imageIds?.length &gt; 0) {
+      throw Object.assign(
+        new TypeError(&quot;Visualization state does not support image attachments&quot;),
+        { code: -32602, data: { code: &quot;images_unsupported&quot; } },
+      );
+    }
+    state = storedState;
+    globalThis.openai.widgetState = state;
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: { widgetState: state } },
+      }),
+    );
+    if (statePersistence === &quot;none&quot;) {
+      throw persistenceError();
+    }
+    const id = ++nextStateRequestId;
+    return new Promise((resolve, reject) =&gt; {
+      const timeout = globalThis.setTimeout(() =&gt; {
+        pendingStateWrites.delete(id);
+        reject(persistenceError());
+      }, 30_000);
+      pendingStateWrites.set(id, { resolve, reject, timeout, serializedState });
+      postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+    });
+  };
+  const syncTheme = () =&gt; {
+    const theme = mediaQuery.matches ? &quot;dark&quot; : &quot;light&quot;;
+    root.dataset.theme = theme;
+    globalThis.openai = {
+      ...globalThis.openai,
+      openExternal,
+      sendFollowUpMessage,
+      setWidgetState,
+      theme,
+      visualizationStyleVariables: {},
+      visualizationTheme: theme,
+      widgetState: state,
+      statePersistence,
+      stateModelContext: &quot;none&quot;,
+    };
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: globalThis.openai },
+      }),
+    );
+  };
+  const sendHeight = () =&gt; {
+    postToHost(&quot;height&quot;, {
+      height: Math.ceil(
+        Math.max(
+          document.body.scrollHeight,
+          document.body.getBoundingClientRect().height,
+        ),
+      ),
+    });
+  };
+
+  globalThis.addEventListener(
+    &quot;message&quot;,
+    (event) =&gt; {
+      const data = apply(getMessageData, event, []);
+      const ports = apply(getMessagePorts, event, []);
+      const source = apply(getMessageSource, event, []);
+      if (
+        hostPort != null ||
+        source !== parentWindow ||
+        typeof data !== &quot;object&quot; ||
+        data?.type !== &quot;codex-visualization-initialize&quot; ||
+        !isArray(ports) ||
+        ports.length !== 1
+      ) {
+        return;
+      }
+      apply(stopMessagePropagation, event, []);
+      const nextHostPort = ports[0];
+      try {
+        apply(addHostMessageListener, nextHostPort, [
+          &quot;message&quot;,
+          (event) =&gt; {
+            const data = apply(getMessageData, event, []);
+            if (typeof data === &quot;object&quot; &amp;&amp; data?.type === &quot;measure&quot;) {
+              sendHeight();
+            } else if (
+              typeof data === &quot;object&quot; &amp;&amp;
+              data?.type === &quot;widget-state-result&quot;
+            ) {
+              /** @type {unknown} */
+              const id = data.id;
+              if (typeof id !== &quot;number&quot;) {
+                return;
+              }
+              const pending = pendingStateWrites.get(id);
+              if (pending != null) {
+                pendingStateWrites.delete(id);
+                globalThis.clearTimeout(pending.timeout);
+                if (data.ok === true) {
+                  pending.resolve();
+                } else {
+                  pending.reject(persistenceError());
+                }
+              }
+            }
+          },
+        ]);
+        apply(startHostPort, nextHostPort, []);
+      } catch {
+        return;
+      }
+      hostPort = nextHostPort;
+      for (const [id, { serializedState }] of pendingStateWrites) {
+        postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+      }
+      sendHeight();
+    },
+    { capture: true },
+  );
+  document.currentScript?.remove();
+  mediaQuery.addEventListener(&quot;change&quot;, syncTheme);
+  globalThis.addEventListener(&quot;click&quot;, (event) =&gt; {
+    if (event.defaultPrevented) {
+      return;
+    }
+    let element = null;
+    if (event.target instanceof globalThis.Element) {
+      element = event.target;
+    } else if (event.target instanceof globalThis.Node) {
+      element = event.target.parentElement;
+    }
+    const link = element?.closest(&quot;a[href]&quot;);
+    const href = link?.getAttribute(&quot;href&quot;);
+    if (href == null) {
+      return;
+    }
+    if (href.startsWith(&quot;#&quot;)) {
+      let id;
+      try {
+        id = decodeURIComponent(href.slice(1));
+      } catch {
+        return;
+      }
+      const target = id.length === 0 ? root : document.getElementById(id);
+      if (
+        target == null ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      event.preventDefault();
+      postToHost(&quot;scroll-to&quot;, {
+        top: target.getBoundingClientRect().top + globalThis.scrollY,
+      });
+      return;
+    }
+    event.preventDefault();
+    openExternal({ href });
+  });
+  new ResizeObserver(sendHeight).observe(document.body);
+  syncTheme();
+})();
+&lt;/script&gt;
+&lt;div id=&quot;event-host-led-prototype&quot; aria-label=&quot;合同プレー・大会の画面試作&quot;&gt;
+  &lt;div class=&quot;viz-controls&quot; aria-label=&quot;試作の確認条件&quot;&gt;
+    &lt;label class=&quot;form-label&quot;&gt;見る立場&lt;select class=&quot;form-select&quot; id=&quot;ef-role&quot;&gt;&lt;option value=&quot;host-only&quot;&gt;専任Host&lt;/option&gt;&lt;option value=&quot;host-player&quot;&gt;兼任Host&lt;/option&gt;&lt;option value=&quot;player&quot;&gt;参加者&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+    &lt;label class=&quot;form-label&quot;&gt;開催タイプ&lt;select class=&quot;form-select&quot; id=&quot;ef-kind&quot;&gt;&lt;option value=&quot;casual&quot;&gt;合同プレー&lt;/option&gt;&lt;option value=&quot;tournament&quot;&gt;大会&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+    &lt;label class=&quot;form-label&quot;&gt;画面を見る&lt;select class=&quot;form-select&quot; id=&quot;ef-scene&quot;&gt;&lt;option value=&quot;normal&quot;&gt;Top・通常対戦&lt;/option&gt;&lt;option value=&quot;entry&quot;&gt;開催の入口&lt;/option&gt;&lt;option value=&quot;create&quot;&gt;開催作成&lt;/option&gt;&lt;option value=&quot;join&quot;&gt;開催参加&lt;/option&gt;&lt;option value=&quot;lobby&quot;&gt;待機室&lt;/option&gt;&lt;option value=&quot;picking&quot;&gt;選曲&lt;/option&gt;&lt;option value=&quot;ready&quot;&gt;譜面確定・開始待ち&lt;/option&gt;&lt;option value=&quot;play&quot;&gt;プレー中&lt;/option&gt;&lt;option value=&quot;round&quot;&gt;曲別結果&lt;/option&gt;&lt;option value=&quot;final&quot;&gt;最終結果&lt;/option&gt;&lt;option value=&quot;history&quot;&gt;開催履歴&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+    &lt;button class=&quot;btn&quot; type=&quot;button&quot; id=&quot;ef-simulate&quot;&gt;Hostの開始・自動提出を再現&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; type=&quot;button&quot; id=&quot;ef-return-peer&quot; disabled&gt;切断した参加者の復帰を再現&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;details class=&quot;ef-preview-cases&quot;&gt;&lt;summary&gt;20人・切断などの状態を見る（試作の確認用）&lt;/summary&gt;&lt;div class=&quot;viz-controls&quot;&gt;&lt;label class=&quot;form-label&quot;&gt;確認する状態&lt;select class=&quot;form-select&quot; id=&quot;ef-case&quot;&gt;&lt;option value=&quot;standard&quot;&gt;通常の状態&lt;/option&gt;&lt;option value=&quot;twenty&quot;&gt;20人・次曲待ちあり&lt;/option&gt;&lt;option value=&quot;zero&quot;&gt;参加者0人&lt;/option&gt;&lt;option value=&quot;no-target&quot;&gt;この曲の対象者0人&lt;/option&gt;&lt;option value=&quot;pending-next&quot;&gt;選曲確定後の入室・次曲から参加&lt;/option&gt;&lt;option value=&quot;before-start-disconnect&quot;&gt;開始前に参加者切断・枠を残して進行&lt;/option&gt;&lt;option value=&quot;rest-notice&quot;&gt;通話で休憩を申告・枠を残して進行&lt;/option&gt;&lt;option value=&quot;host-lost&quot;&gt;Host切断・残り時間あり&lt;/option&gt;&lt;option value=&quot;host-expired&quot;&gt;Host切断・期限切れ&lt;/option&gt;&lt;option value=&quot;self-lost&quot;&gt;自分の一時切断&lt;/option&gt;&lt;option value=&quot;returning&quot;&gt;明示退出から復帰&lt;/option&gt;&lt;option value=&quot;source-fail&quot;&gt;連携ツール障害&lt;/option&gt;&lt;option value=&quot;unsubmitted&quot;&gt;未提出者あり&lt;/option&gt;&lt;option value=&quot;tie-absence&quot;&gt;同点と欠場&lt;/option&gt;&lt;option value=&quot;invalid&quot;&gt;無効曲&lt;/option&gt;&lt;option value=&quot;no-results&quot;&gt;確定0曲&lt;/option&gt;&lt;option value=&quot;no-common&quot;&gt;共通譜面なし&lt;/option&gt;&lt;option value=&quot;partial&quot;&gt;部分履歴&lt;/option&gt;&lt;option value=&quot;empty-history&quot;&gt;履歴0件&lt;/option&gt;&lt;option value=&quot;unknown-history&quot;&gt;未対応の履歴&lt;/option&gt;&lt;option value=&quot;not-supported&quot;&gt;接続先が開催非対応&lt;/option&gt;&lt;option value=&quot;full&quot;&gt;参加枠が満員&lt;/option&gt;&lt;option value=&quot;new-closed&quot;&gt;大会開始後の新規参加&lt;/option&gt;&lt;option value=&quot;kicked&quot;&gt;Kick後の再入室&lt;/option&gt;&lt;option value=&quot;state-lost&quot;&gt;開催状態を復元できない&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;/div&gt;&lt;/details&gt;
+  &lt;p id=&quot;ef-case-note&quot; class=&quot;text-small&quot; hidden&gt;&lt;/p&gt;
+  &lt;p id=&quot;ef-live&quot; class=&quot;sr-only&quot; aria-live=&quot;polite&quot;&gt;&lt;/p&gt;
+  &lt;div class=&quot;arena-sim&quot;&gt;
+    &lt;div class=&quot;arena-chrome&quot;&gt;&lt;span&gt;INFINITAS Arena&lt;/span&gt;&lt;span&gt;画面試作・架空データ&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;arena-frame&quot;&gt;&lt;nav class=&quot;arena-side&quot; aria-label=&quot;アプリの画面&quot;&gt;&lt;/nav&gt;&lt;main id=&quot;ef-main&quot;&gt;&lt;h1&gt;合同・大会&lt;/h1&gt;&lt;/main&gt;&lt;/div&gt;
+    &lt;dialog id=&quot;ef-dialog&quot; aria-labelledby=&quot;ef-dialog-title&quot;&gt;&lt;div id=&quot;ef-dialog-content&quot;&gt;&lt;/div&gt;&lt;/dialog&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;
+#event-host-led-prototype .ef-preview-cases{margin:10px 0 16px;font-size:14px}
+#event-host-led-prototype .ef-preview-cases summary{margin-bottom:8px}
+#event-host-led-prototype .arena-sim{--a-bg:#1e1e1e;--a-panel:#252526;--a-raised:#2d2d30;--a-text:#f3f3f5;--a-muted:#b6b7bf;--a-line:#404045;--a-primary:#06b6d4;--a-primary-bg:#14343b;--a-ink:#071b20;--a-warning:#efcc84;--a-warning-bg:#372d1b;--a-danger:#f3a5a5;--a-danger-bg:#3c2424;--a-ok:#a7dcb5;color-scheme:dark;background:var(--a-bg);color:var(--a-text);border:1px solid var(--a-line);border-radius:8px;font:14px/1.6 &#x27;Segoe UI&#x27;,&#x27;Yu Gothic UI&#x27;,sans-serif;position:relative;overflow:hidden}
+#event-host-led-prototype .arena-sim *{box-sizing:border-box}
+#event-host-led-prototype .arena-chrome{background:var(--a-panel);padding:9px 16px;border-bottom:1px solid var(--a-line);display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--a-muted)}
+#event-host-led-prototype .arena-frame{display:grid;grid-template-columns:138px minmax(0,1fr);min-height:640px}
+#event-host-led-prototype .arena-side{background:var(--a-panel);border-right:1px solid var(--a-line);padding:14px 9px;display:flex;flex-direction:column;gap:6px}
+#event-host-led-prototype .arena-side button{padding:10px;text-align:left;color:var(--a-muted);border:0;background:transparent;border-radius:6px}
+#event-host-led-prototype .arena-side button[aria-current=page]{background:var(--a-primary-bg);color:var(--a-primary)}
+#event-host-led-prototype .arena-side .arena-settings{margin-top:auto}
+#event-host-led-prototype .arena-side .arena-active-event{margin:2px 0 15px;border:1px solid var(--a-primary);font-size:12px;color:var(--a-text)}
+#event-host-led-prototype #ef-main{padding:24px;min-width:0}
+#event-host-led-prototype .arena-sim h1{font-size:23px;line-height:1.4;font-weight:600;margin:0 0 8px;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-sim h2{font-size:17px;font-weight:600;margin:0 0 9px}
+#event-host-led-prototype .arena-sim h3{font-size:14px;font-weight:600;margin:0 0 8px}
+#event-host-led-prototype .arena-sim p{margin:0 0 13px}
+#event-host-led-prototype .arena-muted{color:var(--a-muted)}
+#event-host-led-prototype .arena-small{font-size:12px;color:var(--a-muted)}
+#event-host-led-prototype .arena-sim button,#event-host-led-prototype .arena-sim input,#event-host-led-prototype .arena-sim select,#event-host-led-prototype .arena-sim textarea{font:inherit;min-width:0}
+#event-host-led-prototype .arena-sim button:focus-visible,#event-host-led-prototype .arena-sim input:focus-visible,#event-host-led-prototype .arena-sim select:focus-visible,#event-host-led-prototype .arena-sim summary:focus-visible{outline:2px solid var(--a-primary);outline-offset:3px}
+#event-host-led-prototype .arena-button{padding:9px 13px;border:1px solid var(--a-line);border-radius:6px;background:var(--a-raised);color:var(--a-text)}
+#event-host-led-prototype .arena-button.primary{background:var(--a-primary);border-color:var(--a-primary);color:var(--a-ink);font-weight:600}
+#event-host-led-prototype .arena-button.danger{background:var(--a-danger-bg);border-color:var(--a-danger);color:var(--a-danger)}
+#event-host-led-prototype .arena-button.subtle{background:transparent;border-color:transparent;color:var(--a-muted)}
+#event-host-led-prototype .arena-sim button:disabled{opacity:.45;cursor:not-allowed}
+#event-host-led-prototype .arena-sim .arena-button.primary:disabled{background:var(--a-raised);border-color:var(--a-line);color:var(--a-muted);opacity:.7}
+#event-host-led-prototype .arena-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+#event-host-led-prototype .arena-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:13px}
+#event-host-led-prototype .arena-heading{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:17px}
+#event-host-led-prototype .arena-panel{background:var(--a-panel);border:1px solid var(--a-line);border-radius:7px;padding:18px;min-width:0}
+#event-host-led-prototype .arena-split{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(240px,1fr);gap:16px;align-items:start}
+#event-host-led-prototype .arena-entry-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:stretch}
+#event-host-led-prototype .arena-sim label{display:block;margin:12px 0 6px}
+#event-host-led-prototype .arena-sim input,#event-host-led-prototype .arena-sim select,#event-host-led-prototype .arena-sim textarea{width:100%;padding:10px;border:1px solid var(--a-line);border-radius:5px;background:var(--a-bg);color:var(--a-text)}
+#event-host-led-prototype .arena-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+#event-host-led-prototype .arena-back{margin-bottom:13px;padding:0;border:0;background:transparent;color:var(--a-primary)}
+#event-host-led-prototype .arena-divider{margin:18px 0;border:0;border-top:1px solid var(--a-line)}
+#event-host-led-prototype .arena-steps{display:flex;gap:7px;flex-wrap:wrap;margin:6px 0 17px;font-size:12px;color:var(--a-muted)}
+#event-host-led-prototype .arena-steps span{border-bottom:2px solid transparent;padding:4px 3px}
+#event-host-led-prototype .arena-steps span.current{border-color:var(--a-primary);color:var(--a-text)}
+#event-host-led-prototype .arena-banner{padding:12px 14px;margin-bottom:14px;border:1px solid var(--a-line);border-radius:6px;background:var(--a-panel)}
+#event-host-led-prototype .arena-banner.warning{border-color:#796234;color:var(--a-warning);background:var(--a-warning-bg)}
+#event-host-led-prototype .arena-banner.danger{border-color:#805151;color:var(--a-danger);background:var(--a-danger-bg)}
+#event-host-led-prototype .arena-banner.return{border-color:var(--a-primary);background:var(--a-primary-bg)}
+#event-host-led-prototype .arena-self{margin-bottom:14px;border-left:3px solid var(--a-primary)}
+#event-host-led-prototype .arena-host-controls{margin-bottom:16px}
+#event-host-led-prototype .arena-song{margin-bottom:14px}
+#event-host-led-prototype .arena-song-title{font-size:21px;font-weight:600;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-roster{max-height:365px;overflow-y:auto;scrollbar-color:var(--a-primary-bg) transparent}
+#event-host-led-prototype .arena-person{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--a-line)}
+#event-host-led-prototype .arena-person:last-child{border-bottom:0}
+#event-host-led-prototype .arena-person span{overflow-wrap:anywhere}
+#event-host-led-prototype .arena-person.self{color:var(--a-primary)}
+#event-host-led-prototype .arena-person button{padding:4px 7px;font-size:12px}
+#event-host-led-prototype .arena-charts{display:grid;gap:9px;margin-top:14px}
+#event-host-led-prototype .arena-chart{padding:12px;background:var(--a-bg);border:1px solid var(--a-line);border-radius:5px;text-align:left;color:var(--a-text)}
+#event-host-led-prototype .arena-chart[aria-pressed=true]{border-color:var(--a-primary);background:var(--a-primary-bg)}
+#event-host-led-prototype .arena-result-wrap{max-height:410px;overflow:auto;scrollbar-color:var(--a-primary-bg) transparent}
+#event-host-led-prototype .arena-sim table{width:100%;border-collapse:collapse;text-align:left;table-layout:fixed;font-size:13px}
+#event-host-led-prototype .arena-sim th{color:var(--a-muted);font-weight:400;background:var(--a-panel);position:sticky;top:0}
+#event-host-led-prototype .arena-sim td,#event-host-led-prototype .arena-sim th{padding:10px 8px;border-bottom:1px solid var(--a-line);overflow-wrap:anywhere}
+#event-host-led-prototype .arena-sim th:first-child{width:58px}
+#event-host-led-prototype .arena-sim th:nth-child(3){width:108px}
+#event-host-led-prototype .arena-sim th:nth-child(4){width:65px}
+#event-host-led-prototype .arena-sim tr.self{background:var(--a-primary-bg)}
+#event-host-led-prototype .arena-sim .arena-history-item{display:block;width:100%;padding:16px;text-align:left;border:1px solid var(--a-line);border-radius:6px;background:var(--a-panel);color:var(--a-text);margin-bottom:10px}
+#event-host-led-prototype .arena-history-item strong{display:block;font-weight:600}
+#event-host-led-prototype .arena-self-rank{padding:12px 15px;margin:12px 0;background:var(--a-primary-bg);border-radius:5px}
+#event-host-led-prototype .arena-sim dialog{width:min(480px,calc(100% - 32px));max-height:85vh;overflow:auto;padding:22px;border:1px solid var(--a-line);border-radius:8px;background:var(--a-panel);color:var(--a-text)}
+#event-host-led-prototype .arena-sim dialog::backdrop{background:rgba(0,0,0,.75)}
+#event-host-led-prototype .arena-reference{padding:24px;background:var(--a-panel);border:1px solid var(--a-line);border-radius:6px}
+@media(max-width:700px){#event-host-led-prototype .arena-frame{grid-template-columns:1fr;grid-template-rows:auto 1fr}#event-host-led-prototype .arena-side{flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--a-line);padding:8px;gap:4px}#event-host-led-prototype .arena-side button{font-size:12px;padding:8px}#event-host-led-prototype .arena-side .arena-settings{margin:0}#event-host-led-prototype .arena-side .arena-active-event{margin:0}#event-host-led-prototype #ef-main{padding:16px}#event-host-led-prototype .arena-split,#event-host-led-prototype .arena-entry-grid,#event-host-led-prototype .arena-form-grid{grid-template-columns:1fr}#event-host-led-prototype .arena-sim table{font-size:12px}#event-host-led-prototype .arena-sim td,#event-host-led-prototype .arena-sim th{padding:8px 4px}#event-host-led-prototype .arena-sim th:first-child{width:43px}#event-host-led-prototype .arena-sim th:nth-child(3){width:66px}#event-host-led-prototype .arena-sim th:nth-child(4){width:42px}#event-host-led-prototype .arena-roster{max-height:280px}}
+@media(pointer:coarse){#event-host-led-prototype .arena-sim button{min-height:44px}#event-host-led-prototype .arena-sim input,#event-host-led-prototype .arena-sim select{font-size:16px}}
+#event-host-led-prototype .arena-sim{--a-bg:#1a1a1b;--a-panel:#252526;--a-raised:#303033;--a-line:#38383c;--a-muted:#9da3af;--a-primary:#06b6d4;--a-danger:#f87171;--a-ok:#22c55e;border-radius:12px;font-family:&#x27;Segoe UI&#x27;,&#x27;Yu Gothic UI&#x27;,sans-serif}
+#event-host-led-prototype .arena-chrome{padding:8px 14px;font-size:11px;letter-spacing:.06em}
+#event-host-led-prototype .arena-frame{grid-template-columns:76px minmax(0,1fr);min-height:680px}
+#event-host-led-prototype .arena-side{padding:15px 5px;gap:16px;align-items:center}
+#event-host-led-prototype .arena-side button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 4px;width:64px;text-align:center;border-radius:11px;font-size:11px;line-height:1.4}
+#event-host-led-prototype .arena-side button[aria-current=page]{border:1px solid #06b6d44d;background:#06b6d426;color:#22d3ee;box-shadow:0 0 14px #06b6d41a}
+#event-host-led-prototype .arena-side svg{width:22px;height:22px}
+#event-host-led-prototype .arena-side .arena-active-event{border:1px solid #06b6d44d;margin:0 0 10px;font-size:11px}
+#event-host-led-prototype #ef-main{padding:22px;min-width:0}
+#event-host-led-prototype .arena-sim h1{font-size:28px;letter-spacing:-.05em;font-weight:900;font-style:italic}
+#event-host-led-prototype .arena-sim h2{font-size:17px;font-weight:800;letter-spacing:-.025em}
+#event-host-led-prototype .arena-sim h3{font-size:13px;font-weight:700}
+#event-host-led-prototype .arena-panel{border-radius:14px;border-color:var(--a-line)}
+#event-host-led-prototype .arena-button{font-weight:700;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;gap:8px;line-height:1.45;white-space:normal}
+#event-host-led-prototype .arena-button.primary{font-weight:900;font-style:italic;box-shadow:0 0 24px #06b6d420}
+#event-host-led-prototype .arena-banner{border-radius:11px;font-size:13px}
+#event-host-led-prototype .arena-room-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+#event-host-led-prototype .arena-room-heading h1{font-size:19px;margin:0;color:var(--a-primary)}
+#event-host-led-prototype .arena-room-heading .arena-small{font-size:11px;letter-spacing:.035em}
+#event-host-led-prototype .arena-room-layout{display:grid;grid-template-columns:minmax(0,1fr) 182px;gap:18px;align-items:stretch}
+#event-host-led-prototype .arena-playfield{min-width:0;display:flex;flex-direction:column;gap:14px}
+#event-host-led-prototype .arena-stage-head{display:grid;grid-template-columns:100px minmax(0,1fr) 75px;gap:12px;align-items:center;padding:20px 18px;background:var(--a-panel);border:1px solid var(--a-line);border-radius:16px;min-height:125px}
+#event-host-led-prototype .arena-phase-label{color:var(--a-primary);font-weight:900;font-style:italic;font-size:16px;letter-spacing:-.04em}
+#event-host-led-prototype .arena-phase-label small{display:block;font-size:11px;font-style:normal;letter-spacing:0;font-weight:400;color:var(--a-muted);margin-top:5px}
+#event-host-led-prototype .arena-stage-head.play .arena-phase-label{color:var(--a-danger)}
+#event-host-led-prototype .arena-track{text-align:center;min-width:0}
+#event-host-led-prototype .arena-track-label{font-size:11px;color:var(--a-primary);font-weight:700;letter-spacing:.12em;margin-bottom:5px}
+#event-host-led-prototype .arena-track-name{font-weight:900;font-style:italic;font-size:36px;line-height:1.1;letter-spacing:-.055em;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-track-meta{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:9px;font-size:11px;font-weight:700;letter-spacing:.055em}
+#event-host-led-prototype .arena-difficulty{padding:3px 9px;background:#e92f3b;border-radius:20px;color:#fff;letter-spacing:.1em}
+#event-host-led-prototype .arena-difficulty.hyper{background:#cfa500;color:#151515}
+#event-host-led-prototype .arena-level{color:var(--a-primary);font-style:italic}
+#event-host-led-prototype .arena-round-count{text-align:right;color:var(--a-primary)}
+#event-host-led-prototype .arena-round-count small{font-size:11px;letter-spacing:.12em;display:block;color:var(--a-muted)}
+#event-host-led-prototype .arena-round-count strong{font-size:24px;line-height:1.3;font-style:italic;font-weight:900;color:var(--a-text)}
+#event-host-led-prototype .arena-progress-line{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px}
+#event-host-led-prototype .arena-progress-line strong{font-size:15px;font-style:italic;color:var(--a-primary)}
+#event-host-led-prototype .arena-players{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-height:410px;overflow-y:auto;padding:2px 5px 2px 1px;scrollbar-color:#16434a transparent;scrollbar-width:thin}
+#event-host-led-prototype .arena-player-card{position:relative;display:flex;flex-direction:column;gap:10px;justify-content:space-between;min-height:99px;padding:12px 10px;background:var(--a-panel);border:1px solid var(--a-line);border-radius:13px;min-width:0}
+#event-host-led-prototype .arena-player-card.ready{border-color:#06b6d47a;background:#06b6d40a}
+#event-host-led-prototype .arena-player-card.submitted{border-color:#22c55e80;background:#22c55e0a}
+#event-host-led-prototype .arena-player-card.self{border-width:2px;border-color:var(--a-primary);background:#06b6d40d}
+#event-host-led-prototype .arena-player-card.away{opacity:.72}
+#event-host-led-prototype .arena-player-name{display:flex;gap:7px;align-items:center;min-width:0}
+#event-host-led-prototype .arena-avatar{width:26px;height:28px;border-radius:8px;background:#24323d;color:#a1a9b7;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#event-host-led-prototype .arena-avatar svg{width:17px;height:17px}
+#event-host-led-prototype .ready .arena-avatar,#event-host-led-prototype .self .arena-avatar{background:var(--a-primary);color:var(--a-ink)}
+#event-host-led-prototype .arena-player-name strong{display:block;font-weight:900;font-style:italic;letter-spacing:-.03em;font-size:12px;overflow-wrap:anywhere;line-height:1.3}
+#event-host-led-prototype .arena-player-name small{font-size:11px;line-height:1.3;color:var(--a-primary)}
+#event-host-led-prototype .arena-player-card .arena-player-menu{position:absolute;right:3px;top:0;padding:2px 5px;font-size:12px;min-height:24px;opacity:.75}
+#event-host-led-prototype .arena-status{display:flex;gap:5px;align-items:center;font-size:11px;font-weight:700;line-height:1.4;color:var(--a-muted);min-height:25px;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-status svg{width:14px;height:14px;flex-shrink:0}
+#event-host-led-prototype .ready .arena-status{color:var(--a-primary)}
+#event-host-led-prototype .submitted .arena-status{color:var(--a-ok)}
+#event-host-led-prototype .arena-player-card .arena-button{font-size:12px;min-height:32px;padding:5px 7px;width:100%}
+#event-host-led-prototype .arena-bottom-bar{display:grid;grid-template-columns:minmax(0,1fr) minmax(175px,.8fr);gap:12px;margin-top:auto;padding-top:3px}
+#event-host-led-prototype .arena-bottom-message{background:var(--a-panel);border:1px solid var(--a-line);border-radius:12px;padding:13px 15px;font-size:12px;line-height:1.6;min-width:0}
+#event-host-led-prototype .arena-bottom-message strong{display:block;color:var(--a-primary);font-weight:600;margin-bottom:4px}
+#event-host-led-prototype .arena-bottom-message .arena-small{font-size:11px}
+#event-host-led-prototype .arena-bottom-bar&gt;.arena-button{font-size:16px;min-height:76px;font-style:italic;font-weight:900}
+#event-host-led-prototype .arena-auto-wait{background:var(--a-panel);border:1px solid var(--a-line);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-style:italic;font-size:15px;min-height:76px;color:var(--a-muted);padding:12px}
+#event-host-led-prototype .arena-hud{background:var(--a-panel);border-left:1px solid var(--a-line);padding:18px 14px;display:flex;flex-direction:column;gap:20px;min-width:0;border-radius:0 12px 12px 0}
+#event-host-led-prototype .arena-hud h2{font-size:11px;letter-spacing:.08em;color:var(--a-muted);font-style:normal;font-weight:600;margin-bottom:12px}
+#event-host-led-prototype .arena-past-round{display:flex;align-items:center;gap:9px;width:100%;padding:11px 9px;text-align:left;border:1px solid var(--a-line);background:var(--a-bg);color:var(--a-text);border-radius:11px;margin-bottom:9px}
+#event-host-led-prototype .arena-past-round strong{font-weight:800;font-style:italic;display:block;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-past-round small{font-size:11px;color:var(--a-primary);display:block}
+#event-host-led-prototype .arena-past-round svg{color:var(--a-muted);width:21px;flex-shrink:0}
+#event-host-led-prototype .arena-history-placeholder{padding:20px 10px;border:1px dashed var(--a-line);border-radius:12px;color:var(--a-muted);font-size:11px;text-align:center}
+#event-host-led-prototype .arena-hud-facts{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+#event-host-led-prototype .arena-hud-facts div{background:var(--a-bg);padding:9px 7px;border-radius:9px;min-width:0}
+#event-host-led-prototype .arena-hud-facts small{display:block;font-size:11px;color:var(--a-muted)}
+#event-host-led-prototype .arena-hud-facts strong{display:block;font-size:12px;font-weight:600;color:var(--a-primary);overflow-wrap:anywhere}
+#event-host-led-prototype .arena-hud details{font-size:12px;line-height:1.7}
+#event-host-led-prototype .arena-hud .arena-actions{gap:6px;margin-top:9px}
+#event-host-led-prototype .arena-hud .arena-button{font-size:12px;padding:8px;width:100%}
+#event-host-led-prototype .arena-hud .arena-admin{margin-top:auto;border-top:1px solid var(--a-line);padding-top:14px}
+#event-host-led-prototype .arena-source-alert{color:var(--a-warning);font-size:12px;line-height:1.6}
+#event-host-led-prototype .arena-self-brief{font-size:12px;line-height:1.7;color:var(--a-muted)}
+#event-host-led-prototype .arena-self-brief strong{color:var(--a-primary)}
+#event-host-led-prototype .arena-pick-launch{display:flex;align-items:center;justify-content:center;gap:12px;padding:24px;border:1px dashed #06b6d450;background:#06b6d408;border-radius:14px;color:var(--a-primary);font-size:18px;font-weight:900;font-style:italic;min-height:100px}
+#event-host-led-prototype .arena-search-panel{background:#161617;border:1px solid var(--a-line);border-radius:18px;overflow:hidden;padding:0}
+#event-host-led-prototype .arena-search-panel header{padding:18px;background:linear-gradient(100deg,#163a40,var(--a-panel));display:flex;align-items:center;justify-content:space-between;gap:8px}
+#event-host-led-prototype .arena-search-panel header strong{font-size:20px;font-style:italic;font-weight:900;letter-spacing:-.04em}
+#event-host-led-prototype .arena-search-panel .arena-search-body{padding:15px}
+#event-host-led-prototype .arena-search-panel .arena-chart{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;background:var(--a-panel)}
+#event-host-led-prototype .arena-chart-thumb{width:40px;height:43px;border-radius:9px;border:1px solid var(--a-line);border-bottom:3px solid #e92f3b;display:flex;align-items:center;justify-content:center;color:var(--a-muted);flex-shrink:0}
+#event-host-led-prototype .arena-chart-thumb svg{width:21px;height:21px}
+#event-host-led-prototype .arena-chart strong{font-size:17px;font-weight:900;font-style:italic;display:block;letter-spacing:-.04em}
+#event-host-led-prototype .arena-chart .arena-level{margin-left:auto;font-size:21px;font-weight:900}
+#event-host-led-prototype .arena-search-body .arena-actions{justify-content:flex-end}
+#event-host-led-prototype .arena-scorecards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:9px 0 4px}
+#event-host-led-prototype .arena-scorecards.with-self{grid-template-columns:repeat(4,minmax(0,1fr))}
+#event-host-led-prototype .arena-scorecard{border:2px solid var(--a-line);border-radius:22px;background:var(--a-panel);padding:20px 10px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;gap:9px}
+#event-host-led-prototype .arena-scorecard.winner{border-color:var(--a-primary);background:#062c32;box-shadow:0 0 22px #06b6d415}
+#event-host-led-prototype .arena-scorecard.self{border-color:#06b6d470}
+#event-host-led-prototype .arena-scorecard .arena-avatar{width:48px;height:48px;border-radius:50%;border:2px solid #475569;background:#182027;color:#b7beca}
+#event-host-led-prototype .arena-scorecard.winner .arena-avatar{border-color:var(--a-primary);color:var(--a-primary);background:#062c32}
+#event-host-led-prototype .arena-scorecard .arena-avatar svg{width:26px;height:26px}
+#event-host-led-prototype .arena-scorecard .arena-big-rank{font-size:31px;font-weight:900;font-style:italic;line-height:1.2;letter-spacing:-.06em}
+#event-host-led-prototype .arena-scorecard .arena-dj-name{font-size:12px;font-weight:900;font-style:italic;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-scorecard small{font-size:11px;color:var(--a-muted)}
+#event-host-led-prototype .arena-scorecard .arena-big-score{font-size:26px;font-weight:900;font-style:italic;letter-spacing:-.05em;color:var(--a-text);line-height:1.2}
+#event-host-led-prototype .arena-scorecard.winner .arena-big-score{color:var(--a-primary)}
+#event-host-led-prototype .arena-scorecard .arena-points{font-size:13px;color:var(--a-primary);font-weight:700}
+#event-host-led-prototype .arena-result-wrap{max-height:275px}
+#event-host-led-prototype .arena-result-caption{font-size:11px;color:var(--a-muted);margin:0 0 8px}
+#event-host-led-prototype .arena-result-tabs{display:flex;gap:18px;margin:0 0 10px;border-bottom:1px solid var(--a-line)}
+#event-host-led-prototype .arena-result-tabs button{background:transparent;color:var(--a-muted);border:0;border-radius:0;padding:7px 0;font-size:12px;box-shadow:none;font-style:normal}
+#event-host-led-prototype .arena-result-tabs button.primary{color:var(--a-primary);border-bottom:2px solid var(--a-primary)}
+#event-host-led-prototype .arena-result-tabs .arena-button.primary{background:transparent;box-shadow:none;border-color:transparent;border-bottom:2px solid var(--a-primary)}
+#event-host-led-prototype .arena-entry-title{display:flex;align-items:center;gap:14px;margin:12px 0 24px}
+#event-host-led-prototype .arena-entry-title&gt;div:first-child{background:#06b6d415;color:var(--a-primary);padding:14px;border-radius:16px;border:1px solid #06b6d440}
+#event-host-led-prototype .arena-entry-title svg{width:30px;height:30px}
+#event-host-led-prototype .arena-entry-title h1{font-size:34px;margin:0}
+#event-host-led-prototype .arena-entry-grid{grid-template-columns:1fr 1fr}
+#event-host-led-prototype .arena-entry-grid .arena-panel{padding:24px;display:flex;flex-direction:column}
+#event-host-led-prototype .arena-entry-grid .arena-panel&gt;svg{width:30px;height:30px;color:var(--a-primary);margin-bottom:20px}
+#event-host-led-prototype .arena-entry-grid h2{font-size:23px;font-weight:900;font-style:italic;letter-spacing:-.05em}
+#event-host-led-prototype .arena-entry-grid .arena-button{margin-top:auto;min-height:52px;font-size:16px}
+@media(max-width:950px){#event-host-led-prototype .arena-room-layout{grid-template-columns:minmax(0,1fr) 164px;gap:13px}#event-host-led-prototype #ef-main{padding:17px}#event-host-led-prototype .arena-players{grid-template-columns:repeat(3,minmax(0,1fr))}#event-host-led-prototype .arena-stage-head{grid-template-columns:85px minmax(0,1fr) 60px;padding:15px 12px;gap:8px}#event-host-led-prototype .arena-track-name{font-size:31px}#event-host-led-prototype .arena-scorecard{padding:18px 8px}#event-host-led-prototype .arena-scorecard .arena-big-score{font-size:23px}}
+@media(max-width:700px){#event-host-led-prototype .arena-frame{grid-template-columns:54px minmax(0,1fr);grid-template-rows:auto;min-height:620px}#event-host-led-prototype .arena-side{flex-direction:column;gap:12px;padding:13px 3px;border-right:1px solid var(--a-line);border-bottom:0}#event-host-led-prototype .arena-side button{width:47px;font-size:11px;padding:8px 2px;gap:4px}#event-host-led-prototype .arena-side .arena-settings{margin-top:auto}#event-host-led-prototype .arena-side svg{width:19px;height:19px}#event-host-led-prototype #ef-main{padding:13px 10px}#event-host-led-prototype .arena-room-layout{grid-template-columns:1fr}#event-host-led-prototype .arena-hud{border:1px solid var(--a-line);border-radius:12px;padding:14px;display:grid;grid-template-columns:1fr;gap:14px}#event-host-led-prototype .arena-hud-facts{grid-template-columns:repeat(2,1fr)}#event-host-led-prototype .arena-stage-head{grid-template-columns:1fr 1fr;padding:14px;gap:12px;min-height:0}#event-host-led-prototype .arena-track{grid-column:1/-1;grid-row:1;text-align:left}#event-host-led-prototype .arena-track-meta{justify-content:flex-start}#event-host-led-prototype .arena-track-name{font-size:31px}#event-host-led-prototype .arena-phase-label{font-size:15px}#event-host-led-prototype .arena-round-count strong{font-size:21px}#event-host-led-prototype .arena-players{grid-template-columns:repeat(2,minmax(0,1fr));max-height:350px;gap:8px}#event-host-led-prototype .arena-player-card{padding:12px 8px;min-height:100px}#event-host-led-prototype .arena-player-name{gap:5px;flex-wrap:wrap}#event-host-led-prototype .arena-player-name strong{font-size:12px}#event-host-led-prototype .arena-bottom-bar{grid-template-columns:1fr}#event-host-led-prototype .arena-bottom-bar&gt;.arena-button,#event-host-led-prototype .arena-auto-wait{min-height:56px}#event-host-led-prototype .arena-scorecards,#event-host-led-prototype .arena-scorecards.with-self{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#event-host-led-prototype .arena-scorecard{border-radius:15px;padding:14px 7px}#event-host-led-prototype .arena-scorecard .arena-big-rank{font-size:26px}#event-host-led-prototype .arena-scorecard .arena-big-score{font-size:23px}#event-host-led-prototype .arena-entry-grid{grid-template-columns:1fr}#event-host-led-prototype .arena-entry-grid .arena-panel{padding:18px}#event-host-led-prototype .arena-entry-title h1{font-size:25px}#event-host-led-prototype .arena-entry-title{gap:10px}#event-host-led-prototype .arena-entry-title&gt;div:first-child{padding:9px}#event-host-led-prototype .arena-entry-title svg{width:24px}#event-host-led-prototype .arena-panel{padding:13px}#event-host-led-prototype .arena-room-heading h1{font-size:17px}}
+@media(pointer:coarse){#event-host-led-prototype .arena-player-card .arena-button{min-height:44px}#event-host-led-prototype .arena-player-card .arena-player-menu{min-width:44px;min-height:44px;position:static;align-self:flex-end}#event-host-led-prototype .arena-sim input,#event-host-led-prototype .arena-sim select{font-size:16px}}
+
+&lt;/style&gt;
+&lt;script&gt;
+(() =&gt; {
+  const root=document.getElementById(&#x27;event-host-led-prototype&#x27;);
+  const main=root.querySelector(&#x27;#ef-main&#x27;);
+  const dialog=root.querySelector(&#x27;#ef-dialog&#x27;);
+  const roleControl=root.querySelector(&#x27;#ef-role&#x27;);
+  const kindControl=root.querySelector(&#x27;#ef-kind&#x27;);
+  const sceneControl=root.querySelector(&#x27;#ef-scene&#x27;);
+  const caseControl=root.querySelector(&#x27;#ef-case&#x27;);
+  const charts=[{id:&#x27;a&#x27;,title:&#x27;AA&#x27;,style:&#x27;SP&#x27;,difficulty:&#x27;ANOTHER&#x27;,level:12},{id:&#x27;b&#x27;,title:&#x27;V&#x27;,style:&#x27;SP&#x27;,difficulty:&#x27;ANOTHER&#x27;,level:12},{id:&#x27;c&#x27;,title:&#x27;Tomorrow Perfume&#x27;,style:&#x27;SP&#x27;,difficulty:&#x27;HYPER&#x27;,level:9}];
+  const defaults=()=&gt;({view:&#x27;entry&#x27;,role:&#x27;host-only&#x27;,kind:&#x27;casual&#x27;,phase:&#x27;lobby&#x27;,condition:&#x27;standard&#x27;,name:&#x27;週末の合同プレー&#x27;,style:&#x27;SP&#x27;,metric:&#x27;EX SCORE&#x27;,people:15,pending:0,ready:12,submitted:8,submittedIds:null,disconnectedIds:[],reviewRestIds:[],selfReady:false,selfStatus:&#x27;pending&#x27;,selfReason:null,round:1,chart:null,candidate:null,rounds:[],joined:false,started:false,fixedN:null,hostLost:false,selfLost:false,nextWait:false,casualWait:false,left:false,kicked:[],showAll:false,resultTab:&#x27;round&#x27;,detail:false,endReason:null,notice:&#x27;&#x27;,error:&#x27;&#x27;,joinId:&#x27;&#x27;,joinCode:&#x27;&#x27;,search:&#x27;&#x27;,sourceFail:false,noCommon:false,historyMode:&#x27;complete&#x27;,pendingConfirmation:null});
+  let s={...defaults(),role:&#x27;host-player&#x27;,view:&#x27;room&#x27;,phase:&#x27;ready&#x27;,chart:charts[0],joined:true,started:true,people:20,ready:12,pending:2};
+  const restored=window.openai?.widgetState?.privateContent;
+  if(restored&amp;&amp;restored.version===4)s={...s,...restored.state,pendingConfirmation:null,notice:&#x27;&#x27;,error:&#x27;&#x27;};
+  const host=()=&gt;s.role!==&#x27;player&#x27;;
+  const plays=()=&gt;s.role!==&#x27;host-only&#x27;;
+  const tournament=()=&gt;s.kind===&#x27;tournament&#x27;;
+  const pendingOthers=()=&gt;Math.max(0,s.pending-(s.nextWait?1:0));
+  const eligible=()=&gt;Array.from({length:s.people},(_,i)=&gt;i).filter(i=&gt;!s.kicked.includes(i)&amp;&amp;!(plays()&amp;&amp;s.nextWait&amp;&amp;i===selfIndex())&amp;&amp;(tournament()||i&lt;s.people-pendingOthers()));
+  const total=()=&gt;eligible().length;
+  const playing=()=&gt;s.playingIds||eligible().filter(i=&gt;!(plays()&amp;&amp;i===selfIndex()&amp;&amp;(s.nextWait||s.casualWait)));
+  const isSubmitted=id=&gt;plays()&amp;&amp;id===selfIndex()?s.selfStatus===&#x27;submitted&#x27;:s.submittedIds?s.submittedIds.includes(id):otherIndex(id)&lt;s.submitted;
+  const isDone=id=&gt;isSubmitted(id)||(plays()&amp;&amp;id===selfIndex()&amp;&amp;s.selfStatus===&#x27;absent&#x27;)||s.kicked.includes(id)||(s.absences||[]).some(a=&gt;a.id===id);
+  const pendingIds=()=&gt;playing().filter(id=&gt;!isDone(id));
+  const activeSelf=()=&gt;plays()&amp;&amp;playing().includes(selfIndex());
+  const otherIndex=i=&gt;i-(plays()&amp;&amp;i&gt;selfIndex()?1:0);
+  const selfIndex=()=&gt;Math.min(7,Math.max(0,s.people-1));
+  const displayName=i=&gt;i===selfIndex()&amp;&amp;plays()?&#x27;DJ SAMPLE（あなた）&#x27;:`PLAYER ${String(i+1).padStart(2,&#x27;0&#x27;)}`;
+  const typeLabel=()=&gt;tournament()?&#x27;大会&#x27;:&#x27;合同プレー&#x27;;
+  const roleLabel=()=&gt;s.role===&#x27;host-only&#x27;?&#x27;進行専任Host&#x27;:s.role===&#x27;host-player&#x27;?&#x27;プレー兼任Host&#x27;:&#x27;参加者&#x27;;
+  const esc=x=&gt;String(x??&#x27;&#x27;).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g,c=&gt;({&#x27;&amp;&#x27;:&#x27;&amp;amp;&#x27;,&#x27;&lt;&#x27;:&#x27;&amp;lt;&#x27;,&#x27;&gt;&#x27;:&#x27;&amp;gt;&#x27;,&#x27;&quot;&#x27;:&#x27;&amp;quot;&#x27;,&quot;&#x27;&quot;:&#x27;&amp;#39;&#x27;}[c]));
+  const button=(label,act,style=&#x27;&#x27;,disabled=false,extra=&#x27;&#x27;)=&gt;`&lt;button type=&quot;button&quot; class=&quot;arena-button cursor-interaction ${style}&quot; data-act=&quot;${act}&quot; ${disabled?&#x27;disabled&#x27;:&#x27;&#x27;} ${extra}&gt;${label}&lt;/button&gt;`;
+  const banner=(text,kind=&#x27;&#x27;)=&gt;`&lt;div class=&quot;arena-banner ${kind}&quot;&gt;${text}&lt;/div&gt;`;
+  const actions=items=&gt;`&lt;div class=&quot;arena-actions&quot;&gt;${items}&lt;/div&gt;`;
+  const stageLabel=()=&gt;({lobby:&#x27;開催前・待機室&#x27;,picking:&#x27;選曲中&#x27;,ready:&#x27;譜面確定・開始待ち&#x27;,play:&#x27;プレー・提出待ち&#x27;,round:&#x27;曲別結果&#x27;,final:&#x27;開催終了&#x27;})[s.phase];
+  const selected=()=&gt;s.chart||charts[0];
+  const song=()=&gt;`&lt;section class=&quot;arena-panel arena-song&quot;&gt;&lt;div class=&quot;arena-small&quot;&gt;第${s.round}曲${s.phase===&#x27;picking&#x27;?&#x27;・候補&#x27;:&#x27;&#x27;}&lt;/div&gt;&lt;div class=&quot;arena-song-title&quot;&gt;${esc(selected().title)}&lt;/div&gt;&lt;div class=&quot;arena-muted&quot;&gt;${s.style} · ${selected().difficulty} · Lv${selected().level} · ${s.metric}&lt;/div&gt;&lt;/section&gt;`;
+
+  function stats(){
+    if(s.phase===&#x27;lobby&#x27;)return `プレー参加者 ${total()}人 &lt;span class=&quot;arena-small&quot;&gt;最大20人・専任Hostは別枠&lt;/span&gt;`;
+    if([&#x27;picking&#x27;,&#x27;ready&#x27;].includes(s.phase))return `この曲の対象 ${total()}人 &lt;span class=&quot;arena-small&quot;&gt;最大20人&lt;/span&gt;${s.pending||s.nextWait?`&lt;div class=&quot;arena-small&quot;&gt;次曲から参加：${s.pending||1}人（今曲の対象外）&lt;/div&gt;`:&#x27;&#x27;}`;
+    if(s.phase===&#x27;play&#x27;)return `提出・欠場確定 ${playing().filter(isDone).length}/${playing().length}人 &lt;span class=&quot;arena-small&quot;&gt;スコアは曲確定後に公開&lt;/span&gt;`;
+    return `${s.rounds.filter(r=&gt;!r.invalid).length}曲の結果が確定しています`;
+  }
+  function rosterStatus(i){
+    if(s.kicked.includes(i))return (s.kickedSubmitted||[]).includes(i)?&#x27;Kick済み・提出保持&#x27;:&#x27;Kick済み&#x27;;
+    if((s.selfLost&amp;&amp;plays()&amp;&amp;i===selfIndex())||(s.disconnectedIds||[]).includes(i))return s.phase===&#x27;play&#x27;&amp;&amp;isSubmitted(i)?&#x27;提出済み・切断中&#x27;:&#x27;切断中・枠保持&#x27;;
+    if((!tournament()&amp;&amp;pendingOthers()&amp;&amp;i&gt;=s.people-pendingOthers())||(s.nextWait&amp;&amp;i===selfIndex()&amp;&amp;plays()))return &#x27;次曲から参加&#x27;;
+    if(s.phase===&#x27;lobby&#x27;)return &#x27;接続中&#x27;;
+    if(s.phase===&#x27;picking&#x27;)return &#x27;選曲待ち&#x27;;
+    if(s.phase===&#x27;ready&#x27;)return &#x27;この曲に参加&#x27;;
+    if(s.phase===&#x27;play&#x27;){if(!playing().includes(i))return &#x27;次曲から参加&#x27;;return i===selfIndex()&amp;&amp;plays()?(s.selfStatus===&#x27;submitted&#x27;?&#x27;提出済み&#x27;:s.selfStatus===&#x27;absent&#x27;?&#x27;欠場確定&#x27;:&#x27;未提出&#x27;):isSubmitted(i)?&#x27;提出済み&#x27;:&#x27;未提出&#x27;;}
+    return &#x27;結果公開済み&#x27;;
+  }
+  function makeResults(){
+    const ids=tournament()?(s.fixedRoster||Array.from({length:s.fixedN||s.people},(_,i)=&gt;i)):playing();
+    const entries=ids.map(i=&gt;({id:i,name:displayName(i),score:s.metric===&#x27;EX SCORE&#x27;?2800-i*31:6+i*2,absence:s.kicked.includes(i)&amp;&amp;!(s.kickedSubmitted||[]).includes(i)?&#x27;Kick&#x27;:(s.absences||[]).find(a=&gt;a.id===i)?.reason||(tournament()&amp;&amp;s.nextWait&amp;&amp;i===selfIndex()?&#x27;復帰待ち&#x27;:null)}));
+    if(s.condition===&#x27;tie-absence&#x27;&amp;&amp;entries.length&gt;2){entries[1].score=entries[0].score;entries.at(-1).absence=&#x27;未提出のまま締切&#x27;;}
+    const own=entries.find(e=&gt;e.id===selfIndex());if(plays()&amp;&amp;s.selfStatus===&#x27;absent&#x27;&amp;&amp;own)own.absence=s.selfReason||&#x27;スキップ&#x27;;
+    const valid=entries.filter(e=&gt;!e.absence).sort((a,b)=&gt;s.metric===&#x27;EX SCORE&#x27;?b.score-a.score:a.score-b.score);
+    for(let i=0;i&lt;valid.length;i++){valid[i].rank=i&gt;0&amp;&amp;valid[i].score===valid[i-1].score?valid[i-1].rank:i+1;valid[i].points=tournament()?(s.fixedN||ids.length)-valid[i].rank+1:null;}
+    for(const e of entries.filter(e=&gt;e.absence)){e.rank=null;e.points=tournament()?0:null;e.score=s.metric===&#x27;EX SCORE&#x27;?0:9999;}
+    return [...valid,...entries.filter(e=&gt;e.absence)];
+  }
+  function publish(invalid=false){s.phase=&#x27;round&#x27;;s.joined=true;if(!s.rounds.some(r=&gt;r.number===s.round))s.rounds.push({number:s.round,chart:selected(),entries:makeResults(),invalid});else if(invalid)s.rounds.find(r=&gt;r.number===s.round).invalid=true;s.showAll=false;}
+  function overall(){const values=new Map();for(const round of s.rounds.filter(r=&gt;!r.invalid))for(const e of round.entries){const old=values.get(e.id)||{id:e.id,name:e.name,points:0};old.points+=e.points||0;values.set(e.id,old);}const rows=[...values.values()].sort((a,b)=&gt;b.points-a.points);for(let i=0;i&lt;rows.length;i++)rows[i].rank=i&gt;0&amp;&amp;rows[i].points===rows[i-1].points?rows[i-1].rank:i+1;return rows;}
+  function table(entries,isOverall=false){let visible=entries;if(!host()&amp;&amp;!s.showAll){const own=entries.findIndex(e=&gt;e.id===selfIndex());const indexes=new Set([0,1,2,...Array.from({length:5},(_,i)=&gt;own-2+i)].filter(i=&gt;i&gt;=0&amp;&amp;i&lt;entries.length));visible=entries.filter((e,i)=&gt;indexes.has(i));}return `&lt;div class=&quot;arena-result-wrap&quot;&gt;&lt;table aria-label=&quot;${isOverall?&#x27;総合順位&#x27;:&#x27;曲別順位&#x27;}&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;順位&lt;/th&gt;&lt;th&gt;参加者&lt;/th&gt;&lt;th&gt;${isOverall?&#x27;総合pt&#x27;:s.metric}&lt;/th&gt;${tournament()&amp;&amp;!isOverall?&#x27;&lt;th&gt;獲得pt&lt;/th&gt;&#x27;:&#x27;&#x27;}&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;${visible.map(e=&gt;`&lt;tr class=&quot;${e.id===selfIndex()&amp;&amp;plays()?&#x27;self&#x27;:&#x27;&#x27;}&quot;&gt;&lt;td&gt;${e.rank===null?&#x27;欠場&#x27;:e.rank+&#x27;位&#x27;}&lt;/td&gt;&lt;td&gt;${esc(e.name)}${e.absence?`&lt;div class=&quot;arena-small&quot;&gt;${esc(e.absence)}&lt;/div&gt;`:&#x27;&#x27;}&lt;/td&gt;&lt;td&gt;${isOverall?e.points+&#x27;pt&#x27;:e.score}${e.absence?&#x27;&lt;div class=&quot;arena-small&quot;&gt;欠場扱い&lt;/div&gt;&#x27;:&#x27;&#x27;}&lt;/td&gt;${tournament()&amp;&amp;!isOverall?`&lt;td&gt;${e.points}pt&lt;/td&gt;`:&#x27;&#x27;}&lt;/tr&gt;`).join(&#x27;&#x27;)}&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;${!host()&amp;&amp;entries.length&gt;8?actions(button(s.showAll?&#x27;自分の周辺に戻す&#x27;:&#x27;全順位を見る&#x27;,&#x27;all-ranks&#x27;)):&#x27;&#x27;}`;}
+  function resultContent(history=false){
+    const last=s.detail?s.rounds.find(r=&gt;r.number===Number(s.detail))||s.rounds.at(-1):s.rounds.at(-1);
+    const valid=s.rounds.filter(r=&gt;!r.invalid);
+    if(s.phase===&#x27;final&#x27;&amp;&amp;!valid.length&amp;&amp;!s.detail)return `&lt;section class=&quot;arena-panel&quot;&gt;&lt;h2&gt;確定した曲はありません&lt;/h2&gt;&lt;p class=&quot;arena-muted&quot;&gt;${s.rounds.length?&#x27;プレーした曲は無効として履歴に残ります。&#x27;:&#x27;曲別結果はまだ確定していません。&#x27;}優勝者や順位は表示しません。&lt;/p&gt;${s.rounds.map(r=&gt;`&lt;p&gt;第${r.number}曲 ${esc(r.chart.title)}・無効&lt;/p&gt;`).join(&#x27;&#x27;)}&lt;/section&gt;`;
+    if((s.phase===&#x27;final&#x27;||s.resultTab===&#x27;overall&#x27;)&amp;&amp;tournament()&amp;&amp;!s.detail)return `&lt;section class=&quot;arena-panel&quot;&gt;&lt;h2&gt;総合結果&lt;/h2&gt;&lt;p class=&quot;arena-small&quot;&gt;大会開始時の${s.fixedN||s.people}人で配点。退出・欠場で配点人数は変わりません。同点は同順位です。&lt;/p&gt;${table(overall(),true)}&lt;/section&gt;${roundList(history)}`;
+    if(!last)return `&lt;section class=&quot;arena-panel&quot;&gt;&lt;p&gt;確定した曲はありません。&lt;/p&gt;&lt;/section&gt;`;
+    if(s.phase===&#x27;final&#x27;&amp;&amp;!tournament()&amp;&amp;!s.detail)return `&lt;section class=&quot;arena-panel&quot;&gt;&lt;h2&gt;開催の振り返り&lt;/h2&gt;&lt;p&gt;${valid.length}曲をプレーしました。合同プレーでは総合順位・ポイントを集計しません。&lt;/p&gt;${roundList(history)}&lt;/section&gt;`;
+    return `&lt;section class=&quot;arena-panel&quot;&gt;&lt;div class=&quot;arena-row&quot;&gt;&lt;h2&gt;第${last.number}曲 ${esc(last.chart.title)}&lt;/h2&gt;${last.invalid?&#x27;&lt;span class=&quot;arena-small&quot;&gt;無効・総合から除外&lt;/span&gt;&#x27;:&#x27;&lt;span class=&quot;arena-small&quot;&gt;公開・確定済み&lt;/span&gt;&#x27;}&lt;/div&gt;${last.invalid?banner(&#x27;この曲は無効です。以下は無効化前に公開された結果で、総合には加算しません。&#x27;,&#x27;warning&#x27;):&#x27;&#x27;}${plays()?`&lt;div class=&quot;arena-self-rank&quot;&gt;自分：${last.entries.find(e=&gt;e.id===selfIndex())?.rank?last.entries.find(e=&gt;e.id===selfIndex()).rank+&#x27;位&#x27;:&#x27;欠場または参加対象外&#x27;}${tournament()?&#x27;・&#x27;+(last.entries.find(e=&gt;e.id===selfIndex())?.points||0)+&#x27;pt&#x27;:&#x27;&#x27;}&lt;/div&gt;`:&#x27;&#x27;}${table(last.entries)}${host()&amp;&amp;!history&amp;&amp;s.phase!==&#x27;final&#x27;&amp;&amp;!last.invalid?`&lt;details&gt;&lt;summary&gt;この曲の管理&lt;/summary&gt;${actions(button(&#x27;この曲を無効にする&#x27;,&#x27;invalidate&#x27;,&#x27;danger&#x27;,s.hostLost,`data-round=&quot;${last.number}&quot;`))}&lt;/details&gt;`:&#x27;&#x27;}&lt;/section&gt;`;
+  }
+  function roundList(history=false){return `&lt;div style=&quot;margin-top:14px&quot;&gt;${s.rounds.map(r=&gt;`&lt;button type=&quot;button&quot; class=&quot;arena-history-item cursor-interaction&quot; data-act=&quot;round-detail&quot; data-round=&quot;${r.number}&quot;&gt;&lt;strong&gt;第${r.number}曲 ${esc(r.chart.title)} ${r.invalid?&#x27;・無効&#x27;:&#x27;&#x27;}&lt;/strong&gt;&lt;span class=&quot;arena-small&quot;&gt;曲別順位・${s.metric}${tournament()?&#x27;・大会pt&#x27;:&#x27;&#x27;}を見る&lt;/span&gt;&lt;/button&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;`;}
+  function startBlock(){
+    if(s.hostLost)return &#x27;Hostの再接続を待っています&#x27;;
+    if(!s.chart)return &#x27;譜面を確定してください&#x27;;
+    if(total()===0)return &#x27;この曲の対象者が0人です&#x27;;
+    return null;
+  }
+  const icon=name=&gt;`&lt;i data-lucide=&quot;${name}&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;`;
+  function stageHead(){
+    const labels={lobby:[&#x27;WAITING&#x27;,&#x27;参加者を待っています&#x27;],picking:[&#x27;PICK MUSIC&#x27;,&#x27;Hostが選曲&#x27;],ready:[&#x27;HOST START&#x27;,&#x27;開始待ち&#x27;],play:[&#x27;IN PLAY&#x27;,&#x27;プレー・提出待ち&#x27;],round:[&#x27;ROUND RESULT&#x27;,&#x27;曲別結果&#x27;],final:[&#x27;EVENT FINISHED&#x27;,&#x27;開催終了&#x27;]};
+    const [label,jp]=s.detail?[&#x27;ROUND RESULT&#x27;,&#x27;公開済みの結果&#x27;]:labels[s.phase];
+    const showTrack=![&#x27;lobby&#x27;,&#x27;picking&#x27;].includes(s.phase);
+    const track=showTrack?(s.detail?s.rounds.find(r=&gt;r.number===Number(s.detail))?.chart:selected()):null;
+    const title=track?.title||(s.phase===&#x27;lobby&#x27;?s.name:&#x27;次の曲を選ぼう&#x27;);
+    return `&lt;header class=&quot;arena-stage-head ${s.phase}&quot;&gt;&lt;div class=&quot;arena-phase-label&quot;&gt;${label}&lt;small&gt;${jp}&lt;/small&gt;&lt;/div&gt;&lt;div class=&quot;arena-track&quot;&gt;&lt;div class=&quot;arena-track-label&quot;&gt;${showTrack?&#x27;HOST SELECTED&#x27;:typeLabel()+&#x27; · INVITE ONLY&#x27;}&lt;/div&gt;&lt;div class=&quot;arena-track-name&quot;&gt;${esc(title||typeLabel())}&lt;/div&gt;${track?`&lt;div class=&quot;arena-track-meta&quot;&gt;&lt;span&gt;${s.style}&lt;/span&gt;&lt;span class=&quot;arena-difficulty ${track.difficulty===&#x27;HYPER&#x27;?&#x27;hyper&#x27;:&#x27;&#x27;}&quot;&gt;${track.difficulty}&lt;/span&gt;&lt;span class=&quot;arena-level&quot;&gt;Lv${track.level}&lt;/span&gt;&lt;/div&gt;`:`&lt;div class=&quot;arena-track-meta&quot;&gt;&lt;span&gt;${s.style}&lt;/span&gt;&lt;span&gt;${s.metric}&lt;/span&gt;&lt;/div&gt;`}&lt;/div&gt;&lt;div class=&quot;arena-round-count&quot;&gt;&lt;small&gt;${s.phase===&#x27;lobby&#x27;?&#x27;PLAYERS&#x27;:&#x27;ROUND&#x27;}&lt;/small&gt;&lt;strong&gt;${s.phase===&#x27;lobby&#x27;?total():s.detail||s.round}&lt;/strong&gt;&lt;small&gt;${s.phase===&#x27;lobby&#x27;?&#x27;最大20人&#x27;:s.metric}&lt;/small&gt;&lt;/div&gt;&lt;/header&gt;`;
+  }
+  function gamePlayers(){
+    const ids=Array.from({length:s.people},(_,i)=&gt;i);
+    if(plays()&amp;&amp;ids.includes(selfIndex()))ids.splice(0,0,...ids.splice(ids.indexOf(selfIndex()),1));
+    return `&lt;div class=&quot;arena-players&quot; aria-label=&quot;参加対象・接続・提出状況&quot;&gt;${s.people?ids.map(i=&gt;{
+      const own=plays()&amp;&amp;i===selfIndex(),status=rosterStatus(i),included=status===&#x27;この曲に参加&#x27;,submitted=status===&#x27;提出済み&#x27;,away=/切断|待ち|欠場|Kick/.test(status);
+      return `&lt;article class=&quot;arena-player-card ${own?&#x27;self&#x27;:&#x27;&#x27;} ${included?&#x27;ready&#x27;:&#x27;&#x27;} ${submitted?&#x27;submitted&#x27;:&#x27;&#x27;} ${away?&#x27;away&#x27;:&#x27;&#x27;}&quot;&gt;&lt;div class=&quot;arena-player-name&quot;&gt;&lt;span class=&quot;arena-avatar&quot;&gt;${icon(&#x27;user&#x27;)}&lt;/span&gt;&lt;div&gt;&lt;strong&gt;${own?&#x27;DJ SAMPLE&#x27;:esc(displayName(i))}&lt;/strong&gt;${own?`&lt;small&gt;あなた${host()?&#x27;・Host&#x27;:&#x27;&#x27;}&lt;/small&gt;`:&#x27;&#x27;}&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;arena-status&quot;&gt;${icon(submitted?&#x27;circle-check&#x27;:away?&#x27;circle-minus&#x27;:&#x27;circle&#x27;)}${status}&lt;/div&gt;${host()&amp;&amp;!own&amp;&amp;!s.kicked.includes(i)?button(&#x27;…&#x27;,&#x27;kick&#x27;,&#x27;subtle arena-player-menu&#x27;,s.hostLost||s.selfLost,`data-person=&quot;${i}&quot; aria-label=&quot;${esc(displayName(i))}の管理&quot;`):&#x27;&#x27;}&lt;/article&gt;`;
+    }).join(&#x27;&#x27;):`&lt;div class=&quot;arena-history-placeholder&quot; style=&quot;grid-column:1/-1;min-height:200px&quot;&gt;${icon(&#x27;users&#x27;)}&lt;p&gt;この曲の対象者はいません。参加を待つか、開催を終了できます。&lt;/p&gt;&lt;/div&gt;`}&lt;/div&gt;`;
+  }
+  function gameSelfNote(){
+    if(!plays())return &#x27;&#x27;;
+    if(s.selfLost)return banner(&#x27;接続が切れています。参加枠・同じ曲を保持しています。&#x27;+actions(button(&#x27;再接続して開催へ戻る&#x27;,&#x27;reconnect&#x27;,&#x27;primary&#x27;)),&#x27;warning&#x27;);
+    if(s.nextWait)return banner(tournament()?&#x27;明示退出から復帰しました。次の曲から参加します。この曲は欠場・0ptです。&#x27;:&#x27;次の曲から参加します。この曲はプレー・提出の対象外です。&#x27;,&#x27;warning&#x27;);
+    if(s.phase!==&#x27;play&#x27;)return &#x27;&#x27;;
+    const text=s.selfStatus===&#x27;submitted&#x27;?&#x27;提出済み。サーバーで受理されました。結果公開を待っています。&#x27;:s.selfStatus===&#x27;absent&#x27;?`欠場確定（${s.selfReason||&#x27;スキップ&#x27;}）。`:&#x27;この譜面をプレーすると、連携ツールから結果を自動送信します。&#x27;;
+    return `&lt;div class=&quot;arena-self-brief&quot;&gt;&lt;strong&gt;あなた：&lt;/strong&gt;${text}${s.sourceFail&amp;&amp;s.selfStatus===&#x27;pending&#x27;?`&lt;div class=&quot;arena-source-alert&quot;&gt;連携ツールの結果を読み取れません。接続やファイルを確認してください。復旧を待つか、Host接続中ならスキップできます。&lt;/div&gt;`:&#x27;&#x27;}&lt;/div&gt;`;
+  }
+  function gameActionBar(){
+    let primary=&#x27;&#x27;,message=&#x27;&#x27;,note=&#x27;&#x27;;
+    if(s.phase===&#x27;lobby&#x27;){
+      message=host()?&#x27;集まったら、開催を開始して選曲へ。&#x27;:&#x27;Hostの開催開始を待っています。&#x27;;
+      note=tournament()?&#x27;開始すると名簿と配点人数を固定します。&#x27;:&#x27;合同プレーは途中参加できます。&#x27;;
+      primary=host()?button(icon(&#x27;play&#x27;)+&#x27;開催を開始して選曲へ&#x27;,&#x27;start-event&#x27;,&#x27;primary&#x27;,total()===0||s.hostLost||s.selfLost):&#x27;&lt;div class=&quot;arena-auto-wait&quot;&gt;Hostの開始待ち&lt;/div&gt;&#x27;;
+      if(total()===0)message=&#x27;参加者が0人のため開始できません。招待して待つか、開催を終了できます。&#x27;;
+    }else if(s.phase===&#x27;picking&#x27;){
+      message=host()?&#x27;みんなが遊べる曲から選んで、譜面を確定します。&#x27;:&#x27;Hostが曲を選んでいます。&#x27;;
+      primary=host()?button(icon(&#x27;music-2&#x27;)+&#x27;曲を選ぶ&#x27;,&#x27;open-picker&#x27;,&#x27;primary&#x27;,s.hostLost||s.noCommon||s.selfLost):&#x27;&lt;div class=&quot;arena-auto-wait&quot;&gt;選曲を待っています&lt;/div&gt;&#x27;;
+      note=s.noCommon?&#x27;共通する譜面がありません。所持・解禁条件の確認が必要です。&#x27;:&#x27;曲間で待機室へ戻る必要はありません。&#x27;;
+    }else if(s.phase===&#x27;ready&#x27;){
+      const block=startBlock();
+      message=host()?(block||&#x27;通話・配信で曲と開始を共有したら、プレー開始。&#x27;):s.nextWait?&#x27;この曲は対象外です。次の曲から参加します。&#x27;:&#x27;Hostの開始の合図を待っています。&#x27;;
+      note=host()?&#x27;通話等でゲーム内の準備を確認します。休憩・切断者を待つか進めるかもHostが判断します。&#x27;:&#x27;曲・難易度・開始の合図は通話・配信で共有します。アプリの操作は不要です。&#x27;;
+      primary=host()?button(icon(&#x27;play&#x27;)+&#x27;この曲のプレーを開始&#x27;,&#x27;start-round&#x27;,&#x27;primary&#x27;,!!block||s.selfLost):&#x27;&lt;div class=&quot;arena-auto-wait&quot;&gt;&#x27;+(s.nextWait?&#x27;次の曲から参加&#x27;:&#x27;Hostの開始待ち&#x27;)+&#x27;&lt;/div&gt;&#x27;;
+    }else if(s.phase===&#x27;play&#x27;){
+      message=s.hostLost?&#x27;Hostの再接続待ち。結果確定は停止中です。&#x27;:&#x27;全員の提出・欠場が確定すると、曲別結果を公開します。&#x27;;
+      note=&#x27;プレー中のスコアと順位は、Hostにも表示しません。&#x27;;
+      primary=&#x27;&lt;div class=&quot;arena-auto-wait&quot;&gt;&#x27;+(s.casualWait||s.nextWait?&#x27;次曲を待っています&#x27;:plays()&amp;&amp;s.selfStatus===&#x27;submitted&#x27;?&#x27;提出済み · 結果公開待ち&#x27;:&#x27;自動提出・結果待ち&#x27;)+&#x27;&lt;/div&gt;&#x27;;
+    }else if(s.phase===&#x27;round&#x27;){
+      message=host()?&#x27;結果を見たら、次の曲へ。&#x27;:&#x27;結果が公開されました。次の曲はHostが進めます。&#x27;;
+      note=tournament()?`開催開始時の${s.fixedN||s.people}人で配点。`:&#x27;合同プレーは曲別結果だけを記録します。&#x27;;
+      primary=host()?button(icon(&#x27;skip-forward&#x27;)+&#x27;次の曲を選ぶ&#x27;,&#x27;next&#x27;,&#x27;primary&#x27;,s.hostLost||s.selfLost):&#x27;&lt;div class=&quot;arena-auto-wait&quot;&gt;Hostの次曲待ち&lt;/div&gt;&#x27;;
+    }else{
+      message=s.endReason||&#x27;開催が終了しました。&#x27;;note=s.historyMode===&#x27;partial&#x27;?&#x27;部分履歴：最後に受信した結果まで。&#x27;:&#x27;終了結果と公開済み曲を受信し、この端末に保存した状態です。&#x27;;
+      primary=button(icon(&#x27;history&#x27;)+&#x27;開催履歴を見る&#x27;,&#x27;history&#x27;,&#x27;primary&#x27;);
+    }
+    return `&lt;footer class=&quot;arena-bottom-bar&quot;&gt;&lt;div class=&quot;arena-bottom-message&quot;&gt;&lt;strong&gt;${message}&lt;/strong&gt;&lt;span class=&quot;arena-small&quot;&gt;${note}&lt;/span&gt;&lt;/div&gt;${primary}&lt;/footer&gt;`;
+  }
+  function gameHud(){
+    const prior=[&#x27;picking&#x27;,&#x27;ready&#x27;].includes(s.phase),playingNow=s.phase===&#x27;play&#x27;,ended=s.phase===&#x27;final&#x27;;
+    const historyItems=s.rounds.map(r=&gt;`&lt;button type=&quot;button&quot; class=&quot;arena-past-round cursor-interaction&quot; data-act=&quot;view-round&quot; data-round=&quot;${r.number}&quot;&gt;${icon(&#x27;music&#x27;)}&lt;span&gt;&lt;small&gt;ROUND ${r.number}${r.invalid?&#x27; · 無効&#x27;:&#x27;&#x27;}&lt;/small&gt;&lt;strong&gt;${esc(r.chart.title)}&lt;/strong&gt;&lt;/span&gt;&lt;/button&gt;`).join(&#x27;&#x27;);
+    const management=host()&amp;&amp;!ended?`${s.phase===&#x27;ready&#x27;?button(&#x27;譜面を選び直す&#x27;,&#x27;reselect&#x27;,&#x27;&#x27;,s.hostLost||s.selfLost):&#x27;&#x27;}${playingNow?button(`進行中の第${s.round}曲を締め切る`,&#x27;deadline&#x27;,&#x27;&#x27;,s.hostLost||s.selfLost)+button(`進行中の第${s.round}曲を無効にする`,&#x27;invalidate&#x27;,&#x27;danger&#x27;,s.hostLost||s.selfLost):&#x27;&#x27;}${prior&amp;&amp;s.rounds.length?button(&#x27;直前の曲を無効にする&#x27;,&#x27;invalidate&#x27;,&#x27;danger&#x27;,s.hostLost||s.selfLost,`data-round=&quot;${s.rounds.at(-1).number}&quot;`):&#x27;&#x27;}${button(&#x27;開催を終了する&#x27;,&#x27;end&#x27;,&#x27;&#x27;,s.hostLost||s.selfLost)}`:&#x27;&#x27;;
+    const skip=plays()&amp;&amp;playingNow&amp;&amp;activeSelf()&amp;&amp;s.selfStatus===&#x27;pending&#x27;&amp;&amp;!s.nextWait&amp;&amp;!s.casualWait?button(&#x27;この曲をスキップする&#x27;,&#x27;skip&#x27;,&#x27;&#x27;,s.hostLost||s.selfLost):&#x27;&#x27;;
+    return `&lt;aside class=&quot;arena-hud&quot;&gt;&lt;section&gt;&lt;h2&gt;ここまでの曲&lt;/h2&gt;${historyItems||&#x27;&lt;div class=&quot;arena-history-placeholder&quot;&gt;曲別結果は&lt;br&gt;ここに残ります&lt;/div&gt;&#x27;}&lt;/section&gt;&lt;section&gt;&lt;h2&gt;開催情報&lt;/h2&gt;&lt;div class=&quot;arena-hud-facts&quot;&gt;&lt;div&gt;&lt;small&gt;モード&lt;/small&gt;&lt;strong&gt;${typeLabel()}&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;small&gt;指標&lt;/small&gt;&lt;strong&gt;${s.metric}&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;small&gt;参加者&lt;/small&gt;&lt;strong&gt;${s.people-s.kicked.length} / 20&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;small&gt;Host&lt;/small&gt;&lt;strong&gt;${s.role===&#x27;host-player&#x27;?&#x27;プレー兼任&#x27;:&#x27;進行専任&#x27;}&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;${tournament()&amp;&amp;s.started?`&lt;p class=&quot;arena-small&quot; style=&quot;margin-top:10px&quot;&gt;配点人数 N=${s.fixedN||s.people}（固定）&lt;/p&gt;`:&#x27;&#x27;}&lt;/section&gt;${s.phase===&#x27;lobby&#x27;?`&lt;details&gt;&lt;summary&gt;招待情報&lt;/summary&gt;&lt;p style=&quot;margin-top:10px&quot;&gt;開催ID EV8DEMO2&lt;br&gt;参加コード K8PLAY22&lt;/p&gt;${button(&#x27;招待情報を表示&#x27;,&#x27;invite&#x27;)}&lt;span class=&quot;arena-small&quot;&gt;専任Hostにはプレー連携は不要です。&lt;/span&gt;&lt;/details&gt;`:&#x27;&#x27;}${management?`&lt;details class=&quot;arena-admin&quot;&gt;&lt;summary&gt;開催の管理&lt;/summary&gt;&lt;div class=&quot;arena-actions&quot;&gt;${management}&lt;/div&gt;&lt;/details&gt;`:&#x27;&#x27;}${skip?`&lt;div class=&quot;arena-actions&quot;&gt;${skip}&lt;/div&gt;`:&#x27;&#x27;}${!host()&amp;&amp;!ended?button(&#x27;開催から退出&#x27;,&#x27;leave&#x27;,&#x27;subtle&#x27;,s.hostLost||s.selfLost):ended?button(&#x27;開催の入口へ&#x27;,&#x27;entry&#x27;,&#x27;subtle&#x27;):&#x27;&#x27;}&lt;/aside&gt;`;
+  }
+  function gamePodium(){
+    if(s.detail)return &#x27;&#x27;;
+    const overallView=tournament()&amp;&amp;(s.phase===&#x27;final&#x27;||s.resultTab===&#x27;overall&#x27;);
+    if(!s.rounds.some(r=&gt;!r.invalid)&amp;&amp;s.phase===&#x27;final&#x27;)return &#x27;&#x27;;
+    const round=s.rounds.at(-1);
+    if(!round||round.invalid&amp;&amp;!overallView)return &#x27;&#x27;;
+    const entries=overallView?overall():round.entries;
+    const selectedEntries=entries.slice(0,3),own=entries.find(e=&gt;e.id===selfIndex());
+    if(plays()&amp;&amp;own&amp;&amp;!selectedEntries.some(e=&gt;e.id===own.id))selectedEntries.push(own);
+    return `&lt;div class=&quot;arena-scorecards ${selectedEntries.length===4?&#x27;with-self&#x27;:&#x27;&#x27;}&quot; aria-label=&quot;${overallView?&#x27;総合&#x27;:&#x27;曲別&#x27;}順位カード&quot;&gt;${selectedEntries.map(e=&gt;`&lt;article class=&quot;arena-scorecard ${e.rank===1?&#x27;winner&#x27;:&#x27;&#x27;} ${plays()&amp;&amp;e.id===selfIndex()?&#x27;self&#x27;:&#x27;&#x27;}&quot;&gt;&lt;span class=&quot;arena-avatar&quot;&gt;${icon(&#x27;user&#x27;)}&lt;/span&gt;&lt;div class=&quot;arena-big-rank&quot;&gt;${e.rank?e.rank+&#x27;位&#x27;:&#x27;欠場&#x27;}&lt;/div&gt;&lt;strong class=&quot;arena-dj-name&quot;&gt;${esc(e.name.replace(&#x27;（あなた）&#x27;,&#x27;&#x27;))}&lt;/strong&gt;${plays()&amp;&amp;e.id===selfIndex()?&#x27;&lt;small&gt;あなた&lt;/small&gt;&#x27;:&#x27;&#x27;}&lt;small&gt;${overallView?&#x27;総合ポイント&#x27;:s.metric}&lt;/small&gt;&lt;div class=&quot;arena-big-score&quot;&gt;${overallView?e.points+&#x27;pt&#x27;:e.score}&lt;/div&gt;${tournament()&amp;&amp;!overallView?`&lt;span class=&quot;arena-points&quot;&gt;+${e.points}pt&lt;/span&gt;`:&#x27;&#x27;}${e.absence?`&lt;small&gt;${esc(e.absence)}・欠場値&lt;/small&gt;`:&#x27;&#x27;}&lt;/article&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;`;
+  }
+  function gameResults(){
+    const tabs=tournament()&amp;&amp;s.phase===&#x27;round&#x27;&amp;&amp;!s.detail?`&lt;div class=&quot;arena-result-tabs&quot;&gt;${button(&#x27;曲別結果&#x27;,&#x27;round-tab&#x27;,s.resultTab===&#x27;round&#x27;?&#x27;primary&#x27;:&#x27;&#x27;)}${button(&#x27;ここまでの総合&#x27;,&#x27;overall-tab&#x27;,s.resultTab===&#x27;overall&#x27;?&#x27;primary&#x27;:&#x27;&#x27;)}&lt;/div&gt;`:&#x27;&#x27;;
+    return `${s.detail?button(&#x27;前の画面に戻る&#x27;,&#x27;close-detail&#x27;,&#x27;subtle&#x27;):&#x27;&#x27;}${tabs}${gamePodium()}${resultContent()}`;
+  }
+  function room(){
+    const ended=s.phase===&#x27;final&#x27;;
+    const heading=`&lt;div class=&quot;arena-room-heading&quot;&gt;&lt;div&gt;&lt;h1&gt;${esc(s.name||typeLabel()+&#x27; &#x27;+s.style)}&lt;/h1&gt;&lt;span class=&quot;arena-small&quot;&gt;${typeLabel()} · ${roleLabel()}${s.role===&#x27;host-only&#x27;?&#x27;（プレーしません）&#x27;:&#x27;&#x27;}&lt;/span&gt;&lt;/div&gt;${ended?&#x27;&lt;span class=&quot;arena-small&quot;&gt;開催終了&lt;/span&gt;&#x27;:`&lt;span class=&quot;arena-small&quot;&gt;招待制 · 最大20人&lt;/span&gt;`}&lt;/div&gt;`;
+    const lost=s.hostLost?banner(&#x27;Host再接続待ち · 残り 04:32。自動提出は継続できます。結果確定・開始・スキップ・退出は再接続後。&#x27;,&#x27;warning&#x27;):&#x27;&#x27;;
+    const disconnectNotice=host()&amp;&amp;s.disconnectedIds.length&amp;&amp;!ended&amp;&amp;!s.detail?banner(`切断中：${s.disconnectedIds.length}人。${s.phase===&#x27;round&#x27;?&#x27;席を保持しています。確定済みの結果は変わらず、次の曲にも参加対象として残ります。&#x27;:&#x27;席と参加対象を保持しています。通話で確認し、待つか進めるか判断してください。&#x27;}`,&#x27;warning&#x27;):&#x27;&#x27;;
+    const progress=[&#x27;round&#x27;,&#x27;final&#x27;].includes(s.phase)||s.detail?&#x27;&#x27;:`&lt;div class=&quot;arena-progress-line&quot;&gt;&lt;strong&gt;${stats()}&lt;/strong&gt;&lt;span class=&quot;arena-small&quot;&gt;${s.phase===&#x27;ready&#x27;?&#x27;ゲーム内で準備 · Hostが開始&#x27;:s.phase===&#x27;play&#x27;?&#x27;自動提出 · スコアは確定後に公開&#x27;:&#x27;&#x27;}&lt;/span&gt;&lt;/div&gt;`;
+    const picker=s.phase===&#x27;picking&#x27;&amp;&amp;host()&amp;&amp;s.pickerOpen?pickPanel():&#x27;&#x27;;
+    const viewResult=[&#x27;round&#x27;,&#x27;final&#x27;].includes(s.phase)||s.detail;
+    const content=viewResult?gameResults():`${picker}${gameSelfNote()}${gamePlayers()}`;
+    return `${heading}${lost}${disconnectNotice}${s.notice?banner(esc(s.notice)):&#x27;&#x27;}&lt;div class=&quot;arena-room-layout&quot;&gt;&lt;div class=&quot;arena-playfield&quot;&gt;${stageHead()}${progress}${content}${s.detail?&#x27;&#x27;:gameActionBar()}&lt;/div&gt;${gameHud()}&lt;/div&gt;`;
+  }
+  function pickPanel(){
+    return `&lt;section class=&quot;arena-search-panel&quot;&gt;&lt;header&gt;&lt;strong&gt;${icon(&#x27;music-2&#x27;)} PICK MUSIC&lt;/strong&gt;${button(&#x27;閉じる&#x27;,&#x27;close-picker&#x27;,&#x27;subtle&#x27;)}&lt;/header&gt;&lt;div class=&quot;arena-search-body&quot;&gt;&lt;input id=&quot;ef-search&quot; aria-label=&quot;曲を検索&quot; placeholder=&quot;曲名で検索&quot; value=&quot;${esc(s.search)}&quot;&gt;&lt;p class=&quot;arena-small&quot; style=&quot;margin-top:8px&quot;&gt;参加者全員の所持・解禁条件に合う譜面&lt;/p&gt;${s.noCommon?banner(&#x27;共通する譜面がありません。切断中の参加者を含めて所持・解禁条件を確認してください。&#x27;,&#x27;warning&#x27;):`&lt;div class=&quot;arena-charts&quot;&gt;${charts.filter(c=&gt;c.title.toLowerCase().includes(s.search.toLowerCase())).map(c=&gt;`&lt;button type=&quot;button&quot; class=&quot;arena-chart cursor-interaction&quot; data-act=&quot;pick&quot; data-chart=&quot;${c.id}&quot; aria-pressed=&quot;${s.candidate===c.id}&quot;&gt;&lt;span class=&quot;arena-chart-thumb&quot;&gt;${icon(&#x27;music&#x27;)}&lt;/span&gt;&lt;span&gt;&lt;strong&gt;${esc(c.title)}&lt;/strong&gt;&lt;span class=&quot;arena-small&quot;&gt;${s.style} · ${c.difficulty}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;arena-level&quot;&gt;Lv${c.level}&lt;/span&gt;&lt;/button&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;${s.candidate?`&lt;div class=&quot;arena-actions&quot;&gt;${button(&#x27;この譜面を確定する&#x27;,&#x27;confirm-pick&#x27;,&#x27;primary&#x27;)}&lt;/div&gt;`:&#x27;&#x27;}`}&lt;/div&gt;&lt;/section&gt;`;
+  }
+  function entry(){
+    return `&lt;div class=&quot;arena-entry-title&quot;&gt;&lt;div&gt;${icon(&#x27;users&#x27;)}&lt;/div&gt;&lt;div&gt;&lt;div class=&quot;arena-small&quot;&gt;INFINITAS ARENA · EVENT&lt;/div&gt;&lt;h1&gt;合同プレー・大会&lt;/h1&gt;&lt;/div&gt;&lt;/div&gt;&lt;p class=&quot;arena-muted&quot;&gt;招待された仲間と、Hostの選曲で遊ぼう。&lt;/p&gt;${s.joined&amp;&amp;s.phase!==&#x27;final&#x27;?banner(`&lt;div class=&quot;arena-row&quot;&gt;&lt;span&gt;参加中：${esc(s.name)}&lt;br&gt;&lt;small&gt;第${s.round}曲 · ${stageLabel()}&lt;/small&gt;&lt;/span&gt;${button(&#x27;開催へ戻る&#x27;,&#x27;room&#x27;,&#x27;primary&#x27;)}&lt;/div&gt;`,&#x27;return&#x27;):&#x27;&#x27;}${s.left?banner(&#x27;以前の開催から退出しています。復帰は次に選曲確定する曲から。&#x27;+actions(button(&#x27;以前の開催へ復帰する&#x27;,&#x27;return&#x27;,&#x27;primary&#x27;)),&#x27;warning&#x27;):&#x27;&#x27;}${s.condition===&#x27;not-supported&#x27;?banner(&#x27;接続先は開催に対応していません。通常対戦は利用できます。&#x27;,&#x27;warning&#x27;):&#x27;&#x27;}${s.notice?banner(esc(s.notice)):&#x27;&#x27;}&lt;div class=&quot;arena-entry-grid&quot;&gt;&lt;section class=&quot;arena-panel&quot;&gt;${icon(&#x27;ticket&#x27;)}&lt;h2&gt;招待から参加&lt;/h2&gt;&lt;p class=&quot;arena-muted&quot;&gt;Hostから受け取った情報で入室します。&lt;/p&gt;${button(&#x27;招待情報を入力して参加&#x27;,&#x27;join&#x27;,&#x27;primary&#x27;,s.condition===&#x27;not-supported&#x27;)}&lt;/section&gt;&lt;section class=&quot;arena-panel&quot;&gt;${icon(&#x27;flag&#x27;)}&lt;h2&gt;みんなで遊ぶ場を作る&lt;/h2&gt;&lt;p class=&quot;arena-muted&quot;&gt;合同プレー、またはポイントを競う大会。Hostはプレー兼任・進行専任を選べます。&lt;/p&gt;${button(&#x27;開催を作る&#x27;,&#x27;create&#x27;,&#x27;primary&#x27;,s.condition===&#x27;not-supported&#x27;)}&lt;/section&gt;&lt;/div&gt;&lt;hr class=&quot;arena-divider&quot;&gt;&lt;div class=&quot;arena-row&quot;&gt;&lt;span class=&quot;arena-small&quot;&gt;この端末に残した曲と結果&lt;/span&gt;${button(&#x27;開催履歴を見る&#x27;,&#x27;history&#x27;,&#x27;subtle&#x27;)}&lt;/div&gt;`;
+  }
+
+  function lobbyInfo(){return `&lt;section class=&quot;arena-panel&quot;&gt;&lt;h2&gt;参加者が集まるまで待機&lt;/h2&gt;&lt;p&gt;${tournament()?&#x27;開催開始で名簿と配点人数が固定されます。開始後は新規参加できません。&#x27;:&#x27;途中参加できます。選曲確定後に来た人は次の曲から参加します。&#x27;}&lt;/p&gt;&lt;div class=&quot;arena-small&quot;&gt;Host：DJ HOST · ${s.role===&#x27;host-player&#x27;?&#x27;プレー兼任&#x27;:&#x27;進行専任&#x27;}&lt;/div&gt;&lt;hr class=&quot;arena-divider&quot;&gt;&lt;h3&gt;招待情報&lt;/h3&gt;&lt;p&gt;開催ID：EV8DEMO2&lt;br&gt;参加コード：K8PLAY22&lt;/p&gt;${button(&#x27;招待情報を表示&#x27;,&#x27;invite&#x27;)}&lt;p class=&quot;arena-small&quot; style=&quot;margin-top:12px&quot;&gt;${plays()?&#x27;連携ツール：接続中。所持・解禁条件を使って共通譜面を選びます。&#x27;:&#x27;専任Hostには連携ツールの設定は不要です。&#x27;}&lt;/p&gt;&lt;/section&gt;`;}
+  function playHelp(){if(s.phase===&#x27;ready&#x27;)return &#x27;&#x27;;return `&lt;section class=&quot;arena-panel&quot;&gt;&lt;h2&gt;プレー・提出&lt;/h2&gt;&lt;p class=&quot;arena-muted&quot;&gt;${s.casualWait||s.nextWait?&#x27;自分はこの曲の提出対象ではありません。&#x27;:&#x27;曲名・難易度を確認してプレーしてください。厳密な同時スタートは必要ありません。&#x27;}&lt;/p&gt;&lt;p class=&quot;arena-small&quot;&gt;進行中のスコアや順位は、Hostにも表示されません。&lt;/p&gt;&lt;/section&gt;`;}
+  function resultSection(){return `${s.detail?button(&#x27;結果の概要に戻る&#x27;,&#x27;close-detail&#x27;,&#x27;subtle&#x27;):&#x27;&#x27;}${tournament()&amp;&amp;s.phase===&#x27;round&#x27;?actions(button(&#x27;曲別結果&#x27;,&#x27;round-tab&#x27;,s.resultTab===&#x27;round&#x27;?&#x27;primary&#x27;:&#x27;&#x27;)+button(&#x27;ここまでの総合&#x27;,&#x27;overall-tab&#x27;,s.resultTab===&#x27;overall&#x27;?&#x27;primary&#x27;:&#x27;&#x27;)):&#x27;&#x27;}${resultContent()}`;}
+  function create(){return `&lt;button type=&quot;button&quot; class=&quot;arena-back cursor-interaction&quot; data-act=&quot;entry&quot;&gt;← 合同・大会へ&lt;/button&gt;&lt;h1&gt;開催の待機室を作る&lt;/h1&gt;&lt;p class=&quot;arena-muted&quot;&gt;設定して招待します。開催の開始は、参加者が集まってから操作します。&lt;/p&gt;&lt;form id=&quot;ef-create-form&quot; class=&quot;arena-panel&quot;&gt;&lt;label&gt;開催名&lt;input name=&quot;name&quot; value=&quot;${esc(s.name)}&quot; maxlength=&quot;80&quot; placeholder=&quot;空欄でも作成できます&quot;&gt;&lt;/label&gt;&lt;div class=&quot;arena-form-grid&quot;&gt;&lt;label&gt;開催タイプ&lt;select name=&quot;kind&quot;&gt;&lt;option value=&quot;casual&quot; ${!tournament()?&#x27;selected&#x27;:&#x27;&#x27;}&gt;合同プレー&lt;/option&gt;&lt;option value=&quot;tournament&quot; ${tournament()?&#x27;selected&#x27;:&#x27;&#x27;}&gt;大会&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;label&gt;Hostの役割&lt;select name=&quot;role&quot;&gt;&lt;option value=&quot;host-only&quot; ${s.role===&#x27;host-only&#x27;?&#x27;selected&#x27;:&#x27;&#x27;}&gt;進行専任（プレーしない）&lt;/option&gt;&lt;option value=&quot;host-player&quot; ${s.role===&#x27;host-player&#x27;?&#x27;selected&#x27;:&#x27;&#x27;}&gt;プレー兼任&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;label&gt;プレースタイル&lt;select name=&quot;style&quot;&gt;&lt;option&gt;SP&lt;/option&gt;&lt;option ${s.style===&#x27;DP&#x27;?&#x27;selected&#x27;:&#x27;&#x27;}&gt;DP&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;label&gt;結果の指標&lt;select name=&quot;metric&quot;&gt;&lt;option&gt;EX SCORE&lt;/option&gt;&lt;option ${s.metric===&#x27;MISS COUNT&#x27;?&#x27;selected&#x27;:&#x27;&#x27;}&gt;MISS COUNT&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;/div&gt;&lt;div id=&quot;ef-create-note&quot; class=&quot;arena-banner&quot; style=&quot;margin-top:15px&quot;&gt;${typeNote()}&lt;/div&gt;&lt;p class=&quot;arena-small&quot;&gt;招待制・参加コードは自動生成。専任Hostは連携ツール不要、兼任Hostはプレー用の設定が必要です。&lt;/p&gt;&lt;div class=&quot;arena-actions&quot;&gt;&lt;button type=&quot;button&quot; data-act=&quot;submit-local&quot; class=&quot;arena-button primary cursor-interaction&quot;&gt;待機室を作る&lt;/button&gt;${button(&#x27;キャンセル&#x27;,&#x27;entry&#x27;)}&lt;/div&gt;&lt;/form&gt;`;}
+  function typeNote(){return tournament()?&#x27;大会：開催開始時に参加者と配点人数を固定します。途中の新規参加は不可。曲別順位と総合ポイントを表示します。&#x27;:&#x27;合同プレー：途中参加できます。曲別順位を表示し、総合順位・ポイントは集計しません。&#x27;;}
+  function join(){const err=s.error;return `&lt;button type=&quot;button&quot; class=&quot;arena-back cursor-interaction&quot; data-act=&quot;entry&quot;&gt;← 合同・大会へ&lt;/button&gt;&lt;h1&gt;開催に参加する&lt;/h1&gt;&lt;p class=&quot;arena-muted&quot;&gt;Hostから受け取った開催IDと参加コードを入力してください。&lt;/p&gt;&lt;form id=&quot;ef-join-form&quot; class=&quot;arena-panel&quot;&gt;&lt;label&gt;開催ID&lt;input name=&quot;roomId&quot; value=&quot;${esc(s.joinId)}&quot; placeholder=&quot;EV8DEMO2&quot; required&gt;&lt;/label&gt;&lt;label&gt;参加コード&lt;input name=&quot;joinCode&quot; value=&quot;${esc(s.joinCode)}&quot; placeholder=&quot;K8PLAY22&quot; maxlength=&quot;8&quot; required&gt;&lt;/label&gt;${err?`&lt;div role=&quot;alert&quot; class=&quot;arena-banner warning&quot;&gt;${esc(err)}&lt;/div&gt;`:&#x27;&#x27;}&lt;p class=&quot;arena-small&quot;&gt;プレー参加にはDJ NAME・連携ツールの設定が必要です。招待された開催にだけ入室できます。&lt;/p&gt;&lt;div class=&quot;arena-actions&quot;&gt;&lt;button type=&quot;button&quot; data-act=&quot;submit-local&quot; class=&quot;arena-button primary cursor-interaction&quot;&gt;開催に参加する&lt;/button&gt;${button(&#x27;サンプルの招待情報を入れる&#x27;,&#x27;sample-invite&#x27;)}&lt;/div&gt;&lt;/form&gt;`;}
+  function history(){const mode=s.historyMode;return `&lt;h1&gt;開催履歴&lt;/h1&gt;&lt;p class=&quot;arena-muted&quot;&gt;この端末に受信・保存した開催です。通常対戦の成績には含まれません。&lt;/p&gt;${s.detail?button(&#x27;開催履歴の一覧へ&#x27;,&#x27;history-list&#x27;,&#x27;subtle&#x27;):&#x27;&#x27;}${mode===&#x27;empty&#x27;?`&lt;section class=&quot;arena-panel&quot;&gt;&lt;h2&gt;開催履歴はありません&lt;/h2&gt;&lt;p class=&quot;arena-muted&quot;&gt;合同プレー・大会に参加すると、公開された結果がここに残ります。&lt;/p&gt;${button(&#x27;合同・大会へ&#x27;,&#x27;entry&#x27;,&#x27;primary&#x27;)}&lt;/section&gt;`:mode===&#x27;unknown&#x27;?banner(&#x27;未対応バージョンの開催履歴です。読み取れませんが、元のデータは保持しています。&#x27;,&#x27;warning&#x27;):s.detail?`${mode===&#x27;partial&#x27;?banner(&#x27;部分履歴：最後に受信した第1曲まで。開催終了後の結果は未受信です。最終受信：2026/10/04 20:15。&#x27;,&#x27;warning&#x27;):banner(&#x27;完全な履歴：終了結果と全公開曲を受信済み&#x27;)}&lt;div class=&quot;arena-heading&quot;&gt;&lt;div&gt;&lt;h2&gt;${esc(s.name)}&lt;/h2&gt;&lt;span class=&quot;arena-small&quot;&gt;${typeLabel()} · ${s.style} · ${s.metric}&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;${tournament()?table(overall(),true):&#x27;&#x27;}${s.rounds.map(r=&gt;`&lt;section class=&quot;arena-panel&quot; style=&quot;margin-top:14px&quot;&gt;&lt;h2&gt;第${r.number}曲 ${esc(r.chart.title)}${r.invalid?&#x27;・無効&#x27;:&#x27;&#x27;}&lt;/h2&gt;${r.invalid?&#x27;&lt;p class=&quot;arena-small&quot;&gt;総合から除外。記録は残しています。&lt;/p&gt;&#x27;:&#x27;&#x27;}${table(r.entries)}&lt;/section&gt;`).join(&#x27;&#x27;)}`:`${mode===&#x27;partial&#x27;?banner(&#x27;一部のみ受信した開催があります。未受信の結果を後日取得する保証はありません。&#x27;,&#x27;warning&#x27;):&#x27;&#x27;}&lt;button type=&quot;button&quot; class=&quot;arena-history-item cursor-interaction&quot; data-act=&quot;history-detail&quot;&gt;&lt;strong&gt;${esc(s.name)}&lt;/strong&gt;&lt;span class=&quot;arena-small&quot;&gt;2026/10/04 · ${typeLabel()} · ${s.rounds.length}曲受信 · ${mode===&#x27;partial&#x27;?&#x27;部分&#x27;:&#x27;完全&#x27;}&lt;/span&gt;&lt;/button&gt;`}`;}
+  function normal(){return `&lt;h1&gt;対戦ロビーを探す&lt;/h1&gt;&lt;p class=&quot;arena-muted&quot;&gt;公開中の通常対戦に参加できます。&lt;/p&gt;${s.joined&amp;&amp;s.phase!==&#x27;final&#x27;?banner(`&lt;div class=&quot;arena-row&quot;&gt;&lt;div&gt;開催に参加中です&lt;div class=&quot;arena-small&quot;&gt;画面移動は退出になりません。通常対戦への同時参加はできません。&lt;/div&gt;&lt;/div&gt;${button(&#x27;開催へ戻る&#x27;,&#x27;room&#x27;,&#x27;primary&#x27;)}&lt;/div&gt;`,&#x27;return&#x27;):&#x27;&#x27;}&lt;div class=&quot;arena-actions&quot;&gt;${button(&#x27;自動対戦&#x27;,&#x27;normal-reference&#x27;,&#x27;primary&#x27;,s.joined&amp;&amp;s.phase!==&#x27;final&#x27;)}${button(&#x27;ルームを作る&#x27;,&#x27;normal-reference&#x27;,&#x27;&#x27;,s.joined&amp;&amp;s.phase!==&#x27;final&#x27;)}${button(&#x27;IDで参加&#x27;,&#x27;normal-reference&#x27;,&#x27;&#x27;,s.joined&amp;&amp;s.phase!==&#x27;final&#x27;)}&lt;/div&gt;&lt;hr class=&quot;arena-divider&quot;&gt;&lt;section class=&quot;arena-panel&quot;&gt;&lt;div class=&quot;arena-row&quot;&gt;&lt;div&gt;&lt;h2&gt;Lv12を遊びましょう&lt;/h2&gt;&lt;span class=&quot;arena-small&quot;&gt;ARENA · SP · EX SCORE · 1 / 2人&lt;/span&gt;&lt;/div&gt;${button(&#x27;参加&#x27;,&#x27;normal-reference&#x27;,&#x27;&#x27;,s.joined&amp;&amp;s.phase!==&#x27;final&#x27;)}&lt;/div&gt;&lt;/section&gt;`;}
+  function render(){
+    if(![&#x27;entry&#x27;,&#x27;normal&#x27;,&#x27;create&#x27;,&#x27;join&#x27;,&#x27;room&#x27;,&#x27;history&#x27;,&#x27;reference&#x27;,&#x27;settings&#x27;].includes(s.view))s.view=&#x27;entry&#x27;;
+    root.querySelector(&#x27;.arena-side&#x27;).innerHTML=[[&#x27;normal&#x27;,&#x27;通常対戦&#x27;,&#x27;home&#x27;],[&#x27;entry&#x27;,&#x27;合同・大会&#x27;,&#x27;users&#x27;],[&#x27;stats&#x27;,&#x27;成績&#x27;,&#x27;chart-no-axes-column&#x27;],[&#x27;match-history&#x27;,&#x27;対戦履歴&#x27;,&#x27;history&#x27;],[&#x27;history&#x27;,&#x27;開催履歴&#x27;,&#x27;calendar-clock&#x27;]].map(([act,label,glyph])=&gt;`&lt;button type=&quot;button&quot; class=&quot;cursor-interaction&quot; data-act=&quot;${act}&quot; ${s.view===act||(act===&#x27;entry&#x27;&amp;&amp;[&#x27;room&#x27;,&#x27;create&#x27;,&#x27;join&#x27;].includes(s.view))?&#x27;aria-current=&quot;page&quot;&#x27;:&#x27;&#x27;}&gt;${icon(glyph)}&lt;span&gt;${label}&lt;/span&gt;&lt;/button&gt;${act===&#x27;entry&#x27;&amp;&amp;s.joined&amp;&amp;s.phase!==&#x27;final&#x27;?`&lt;button type=&quot;button&quot; class=&quot;arena-active-event cursor-interaction&quot; data-act=&quot;room&quot;&gt;${icon(&#x27;gamepad-2&#x27;)}&lt;span&gt;開催へ戻る&lt;/span&gt;&lt;/button&gt;`:&#x27;&#x27;}`).join(&#x27;&#x27;)+`&lt;button type=&quot;button&quot; class=&quot;arena-settings cursor-interaction&quot; data-act=&quot;settings&quot;&gt;${icon(&#x27;settings&#x27;)}&lt;span&gt;設定&lt;/span&gt;&lt;/button&gt;`;
+    main.innerHTML=({normal,entry,create,join,room,history,reference:()=&gt;`&lt;h1&gt;${esc(s.referenceTitle||&#x27;通常対戦&#x27;)}&lt;/h1&gt;&lt;section class=&quot;arena-reference&quot;&gt;&lt;p class=&quot;arena-muted&quot;&gt;通常対戦は従来の専用画面へ進みます。この試作では、開催への導線を確認できます。&lt;/p&gt;${button(&#x27;通常対戦のTopへ&#x27;,&#x27;normal&#x27;)}&lt;/section&gt;`,settings:()=&gt;`&lt;h1&gt;設定&lt;/h1&gt;&lt;section class=&quot;arena-panel&quot;&gt;&lt;h2&gt;DJ SAMPLE&lt;/h2&gt;&lt;p&gt;プレー用連携ツール：接続中&lt;br&gt;所持パック・BIT/DJP解禁：設定済み&lt;/p&gt;&lt;p class=&quot;arena-muted&quot;&gt;開催専任HostはDJ NAMEで利用できます。プレーする人は連携設定が必要です。&lt;/p&gt;${button(s.joined?&#x27;進行中の開催へ戻る&#x27;:&#x27;合同・大会へ&#x27;,s.joined?&#x27;room&#x27;:&#x27;entry&#x27;)}&lt;/section&gt;`})[s.view]();
+    roleControl.value=s.role;kindControl.value=s.kind;sceneControl.value=s.view===&#x27;room&#x27;?s.phase:s.view===&#x27;reference&#x27;||s.view===&#x27;settings&#x27;?&#x27;normal&#x27;:s.view;caseControl.value=s.condition;
+    root.querySelector(&#x27;#ef-simulate&#x27;).disabled=s.view!==&#x27;room&#x27;||![&#x27;ready&#x27;,&#x27;play&#x27;].includes(s.phase)||s.selfLost||(s.phase===&#x27;ready&#x27;&amp;&amp;(host()||!!startBlock()));
+    const caseNote=root.querySelector(&#x27;#ef-case-note&#x27;);caseNote.hidden=s.reviewRestIds.length===0;caseNote.textContent=s.reviewRestIds.length?&#x27;レビュー用：PLAYER 03が通話で休憩を申告した想定。アプリは休憩状態を自動判定せず、提出前は未提出として表示します。&#x27;:&#x27;&#x27;;
+    root.querySelector(&#x27;#ef-return-peer&#x27;).disabled=!s.disconnectedIds.length;
+    root.querySelector(&#x27;#ef-simulate&#x27;).textContent=s.hostLost&amp;&amp;s.submissionsComplete?&#x27;Hostの期限前の復帰を再現&#x27;:s.sourceFail?&#x27;連携ツールの復旧・提出を再現&#x27;:s.disconnectedIds.length||s.reviewRestIds.length?&#x27;接続中・プレーした人の提出を再現&#x27;:&#x27;Hostの開始・自動提出を再現&#x27;;
+    if(window.lucide)lucide.createIcons({attrs:{width:18,height:18}});
+    root.querySelectorAll(&#x27;.arena-sim button&#x27;).forEach(e=&gt;e.classList.add(&#x27;cursor-interaction&#x27;));
+    root.querySelector(&#x27;#ef-live&#x27;).textContent=`${roleLabel()}。${s.view===&#x27;room&#x27;?stageLabel():main.querySelector(&#x27;h1&#x27;)?.textContent||&#x27;&#x27;}。${s.notice}`;
+  }
+  function save(){const state={...s,pendingConfirmation:null,error:&#x27;&#x27;};const privateContent=new TextEncoder().encode(JSON.stringify(state)).length&lt;14000?{version:4,state}:{version:4,state:{role:s.role,kind:s.kind,name:s.name,view:&#x27;entry&#x27;}};window.openai?.setWidgetState?.({modelContent:{入口:&#x27;専用ページ&#x27;,立場:roleLabel(),タイプ:typeLabel(),場面:stageLabel(),状態:s.condition},privateContent})?.catch(()=&gt;{});}
+  function confirm(title,text,act,data={}){s.pendingConfirmation={act,data};root.querySelector(&#x27;#ef-dialog-content&#x27;).innerHTML=`&lt;h2 id=&quot;ef-dialog-title&quot;&gt;${esc(title)}&lt;/h2&gt;&lt;p&gt;${esc(text)}&lt;/p&gt;${actions(button(&#x27;キャンセル&#x27;,&#x27;cancel-confirm&#x27;)+button(&#x27;確認して実行&#x27;,&#x27;accept-confirm&#x27;,&#x27;danger&#x27;))}`;dialog.showModal();}
+
+  function request(act,el){
+    if([&#x27;open-picker&#x27;,&#x27;pick&#x27;,&#x27;confirm-pick&#x27;,&#x27;start-event&#x27;,&#x27;start-round&#x27;,&#x27;reselect&#x27;,&#x27;skip&#x27;,&#x27;deadline&#x27;,&#x27;invalidate&#x27;,&#x27;next&#x27;,&#x27;end&#x27;,&#x27;leave&#x27;,&#x27;kick&#x27;,&#x27;obsolete-action&#x27;].includes(act)&amp;&amp;(s.hostLost||s.selfLost))return;
+    if(act===&#x27;start-event&#x27;&amp;&amp;tournament())return confirm(&#x27;この人数で大会を開始しますか？&#x27;,`${total()}人の名簿と配点人数を固定します。このあと新しい参加者は追加できません。`,&#x27;start-event&#x27;);
+    if(act===&#x27;reselect&#x27;)return confirm(&#x27;譜面を選び直しますか？&#x27;,&#x27;確定した譜面を取り消し、選曲へ戻ります。新しい譜面は通話・配信で共有してください。&#x27;,&#x27;reselect&#x27;);
+    if(act===&#x27;skip&#x27;)return confirm(&#x27;この曲をスキップしますか？&#x27;,`この曲は欠場（スキップ）になります。${tournament()?&#x27;大会ポイントは0ptです。&#x27;:&#x27;&#x27;}あとから結果を提出できません。`,&#x27;skip&#x27;);
+    if(act===&#x27;deadline&#x27;)return confirm(&#x27;未提出の人を締め切りますか？&#x27;,`未提出の${pendingIds().length}人を欠場として確定します。締切後の提出は受け付けません。`,&#x27;deadline&#x27;);
+    if(act===&#x27;invalidate&#x27;){const number=Number(el?.dataset.round)||s.round;const round=s.rounds.find(r=&gt;r.number===number);return confirm(`第${number}曲「${round?.chart.title||selected().title}」を無効にしますか？`,&#x27;全員の総合集計から除外します。曲と無効の記録は開催履歴に残ります。&#x27;,&#x27;invalidate&#x27;,{number});}
+    if(act===&#x27;end&#x27;)return confirm(&#x27;開催を終了しますか？&#x27;,s.phase===&#x27;play&#x27;?&#x27;進行中の未確定曲は無効になります。確定済みの曲だけを最終結果に残します。&#x27;:&#x27;次の曲には進めなくなります。確定した結果は開催履歴に残ります。&#x27;,&#x27;end&#x27;);
+    if(act===&#x27;leave&#x27;)return confirm(&#x27;開催から退出しますか？&#x27;,`提出済みの結果は残ります。復帰は次に選曲確定する曲からです。${tournament()?&#x27;不在の曲は欠場・0ptになります。&#x27;:&#x27;&#x27;}`,&#x27;leave&#x27;);
+    if(act===&#x27;kick&#x27;){const person=Number(el.dataset.person);return confirm(`${displayName(person)}をKickしますか？`,&#x27;この開催には再参加できません。確定済み・提出済みの結果は残し、未提出なら欠場になります。&#x27;,&#x27;kick&#x27;,{person});}
+    apply(act,el?.dataset||{});
+  }
+  function apply(act,data={}){
+    s.notice=&#x27;&#x27;;s.error=&#x27;&#x27;;
+    if([&#x27;normal&#x27;,&#x27;entry&#x27;,&#x27;create&#x27;,&#x27;join&#x27;,&#x27;room&#x27;,&#x27;history&#x27;,&#x27;settings&#x27;].includes(act)){s.view=act;if(act===&#x27;history&#x27;){s.detail=false;if(!s.rounds.length&amp;&amp;s.historyMode===&#x27;complete&#x27;)s.historyMode=&#x27;empty&#x27;;}if(act===&#x27;create&#x27;&amp;&amp;s.role===&#x27;player&#x27;)s.role=&#x27;host-only&#x27;;}
+    else if([&#x27;normal-reference&#x27;,&#x27;stats&#x27;,&#x27;match-history&#x27;].includes(act)){s.view=&#x27;reference&#x27;;s.referenceTitle=act===&#x27;stats&#x27;?&#x27;通常対戦の成績&#x27;:act===&#x27;match-history&#x27;?&#x27;通常対戦の履歴&#x27;:&#x27;通常対戦&#x27;;}
+    else if(act===&#x27;sample-invite&#x27;){s.joinId=&#x27;EV8DEMO2&#x27;;s.joinCode=&#x27;K8PLAY22&#x27;;}
+    else if(act===&#x27;start-event&#x27;){if(total()===0)return;s.started=true;s.fixedRoster=tournament()?eligible():null;s.fixedN=tournament()?s.fixedRoster.length:null;s.phase=&#x27;picking&#x27;;}
+    else if(act===&#x27;pick&#x27;)s.candidate=data.chart;
+    else if(act===&#x27;open-picker&#x27;){s.pickerOpen=true;}
+    else if(act===&#x27;close-picker&#x27;){s.pickerOpen=false;}
+    else if(act===&#x27;view-round&#x27;){s.returnPhase=s.phase;s.detail=Number(data.round);}
+    else if(act===&#x27;confirm-pick&#x27;){s.pickerOpen=false;if(!s.candidate)return;s.chart=charts.find(c=&gt;c.id===s.candidate);s.phase=&#x27;ready&#x27;;s.selfReady=false;}
+    else if(act===&#x27;start-round&#x27;){if(startBlock())return;s.playingIds=eligible();s.phase=&#x27;play&#x27;;s.casualWait=false;s.selfStatus=&#x27;pending&#x27;;s.submitted=0;s.submittedIds=[];s.detail=false;s.submissionsComplete=false;s.absences=[];}
+    else if(act===&#x27;reselect&#x27;){s.phase=&#x27;picking&#x27;;s.pickerOpen=false;s.chart=null;s.candidate=null;s.ready=0;s.selfReady=false;}
+    else if(act===&#x27;simulate&#x27;){
+      if(s.phase===&#x27;ready&#x27;){
+        if(host()||startBlock()||s.selfLost)return;
+        s.playingIds=eligible();s.phase=&#x27;play&#x27;;s.selfStatus=&#x27;pending&#x27;;s.submitted=0;s.submittedIds=[];s.absences=[];
+        s.notice=&#x27;Hostが通話等で確認し、この曲を開始した状態です。&#x27;;
+      }else if(s.phase===&#x27;play&#x27;){
+        if(s.hostLost&amp;&amp;s.submissionsComplete){s.hostLost=false;s.condition=&#x27;standard&#x27;;s.notice=&#x27;Hostが期限前に復帰しました。全員完了の曲を確定しました。&#x27;;publish();}
+        else{
+          s.sourceFail=false;
+          const unavailable=new Set([...s.disconnectedIds,...s.reviewRestIds]);
+          s.submittedIds=playing().filter(id=&gt;!unavailable.has(id)&amp;&amp;!(plays()&amp;&amp;id===selfIndex())&amp;&amp;!s.kicked.includes(id));
+          s.submitted=s.submittedIds.length;
+          if(activeSelf()&amp;&amp;s.selfStatus!==&#x27;absent&#x27;&amp;&amp;!unavailable.has(selfIndex()))s.selfStatus=&#x27;submitted&#x27;;
+          s.submissionsComplete=pendingIds().length===0;
+          if(s.submissionsComplete&amp;&amp;!s.hostLost)publish();
+          else s.notice=s.hostLost?&#x27;提出を受け付けました。結果確定はHostの復帰を待っています。&#x27;:`未提出 ${pendingIds().length}人。Hostが待つか締め切るか判断します。まだ欠場は確定していません。`;
+        }
+      }
+    }
+    else if(act===&#x27;review-reconnect&#x27;){s.disconnectedIds=[];s.condition=&#x27;standard&#x27;;s.notice=&#x27;参加者が同じ席・同じ曲へ復帰した状態です。曲が締切済みなら、その曲へは提出できません。&#x27;;}
+    else if(act===&#x27;skip&#x27;){s.selfStatus=&#x27;absent&#x27;;s.selfReason=&#x27;スキップ&#x27;;}
+    else if(act===&#x27;deadline&#x27;){s.absences=pendingIds().map(id=&gt;({id,reason:&#x27;未提出のまま締切&#x27;}));if(s.absences.some(a=&gt;plays()&amp;&amp;a.id===selfIndex())){s.selfStatus=&#x27;absent&#x27;;s.selfReason=&#x27;未提出のまま締切&#x27;;}publish();}
+    else if(act===&#x27;invalidate&#x27;){const number=data.number||s.round;const round=s.rounds.find(r=&gt;r.number===number);if(round){round.invalid=true;s.notice=`第${number}曲を無効にしました。総合集計から除外しました。`;}else publish(true);}
+    else if(act===&#x27;next&#x27;){s.phase=&#x27;picking&#x27;;s.pickerOpen=false;s.round++;s.chart=null;s.candidate=null;s.selfReady=false;s.selfStatus=&#x27;pending&#x27;;s.ready=0;s.submitted=0;s.nextWait=false;s.casualWait=false;s.pending=0;s.detail=false;s.resultTab=&#x27;round&#x27;;s.playingIds=null;s.submittedIds=null;s.reviewRestIds=[];s.absences=[];s.submissionsComplete=false;}
+    else if(act===&#x27;end&#x27;){if(s.phase===&#x27;play&#x27;)publish(true);s.phase=&#x27;final&#x27;;s.detail=false;s.endReason=&#x27;Hostが終了&#x27;;s.historyMode=&#x27;complete&#x27;;}
+    else if(act===&#x27;leave&#x27;){s.left=true;s.joined=false;s.view=&#x27;entry&#x27;;s.historyMode=&#x27;partial&#x27;;}
+    else if(act===&#x27;return&#x27;){s.left=false;s.joined=true;s.started=true;s.fixedN=tournament()?(s.fixedN||s.people):null;s.view=&#x27;room&#x27;;s.phase=&#x27;ready&#x27;;s.chart=charts[0];s.nextWait=true;s.pending=tournament()?0:1;}
+    else if(act===&#x27;kick&#x27;){if(s.phase===&#x27;play&#x27;&amp;&amp;isSubmitted(data.person))s.kickedSubmitted=[...(s.kickedSubmitted||[]),data.person];s.kicked.push(data.person);s.notice=`${displayName(data.person)}をKickしました。${tournament()?&#x27;大会の配点人数は変わりません。&#x27;:&#x27;次の選曲対象から外れます。&#x27;}`;}
+    else if(act===&#x27;reconnect&#x27;){s.selfLost=false;s.condition=&#x27;standard&#x27;;s.notice=&#x27;再接続しました。同じ参加枠・同じ曲に戻っています。&#x27;;}
+    else if(act===&#x27;invite&#x27;){s.notice=`招待情報：${s.name} / 開催ID EV8DEMO2 / 参加コード K8PLAY22`;}
+    else if(act===&#x27;all-ranks&#x27;)s.showAll=!s.showAll;
+    else if(act===&#x27;round-tab&#x27;)s.resultTab=&#x27;round&#x27;;
+    else if(act===&#x27;overall-tab&#x27;)s.resultTab=&#x27;overall&#x27;;
+    else if(act===&#x27;round-detail&#x27;)s.detail=Number(data.round);
+    else if(act===&#x27;close-detail&#x27;){s.detail=false;s.returnPhase=null;}
+    else if(act===&#x27;history-detail&#x27;){s.detail=true;s.showAll=host();}
+    else if(act===&#x27;history-list&#x27;)s.detail=false;
+    render();save();
+  }
+  function setScene(scene){const role=s.role,kind=s.kind,name=s.name;s={...defaults(),role,kind,name};if([&#x27;normal&#x27;,&#x27;entry&#x27;,&#x27;create&#x27;,&#x27;join&#x27;,&#x27;history&#x27;].includes(scene)){s.view=scene;if(scene===&#x27;history&#x27;){s.started=true;s.fixedN=tournament()?15:null;s.chart=charts[0];publish();s.phase=&#x27;final&#x27;;s.view=&#x27;history&#x27;;}return;}s.joined=true;s.view=&#x27;room&#x27;;s.phase=scene;s.started=scene!==&#x27;lobby&#x27;;s.fixedN=tournament()&amp;&amp;s.started?15:null;if([&#x27;ready&#x27;,&#x27;play&#x27;,&#x27;round&#x27;,&#x27;final&#x27;].includes(scene))s.chart=charts[0];if([&#x27;round&#x27;,&#x27;final&#x27;].includes(scene)){publish();if(scene===&#x27;final&#x27;){s.phase=&#x27;final&#x27;;s.endReason=&#x27;Hostが終了&#x27;;}}}
+  function setCase(value){s.condition=value;s.error=&#x27;&#x27;;s.notice=&#x27;&#x27;;if(value===&#x27;standard&#x27;){setScene(sceneControl.value||&#x27;entry&#x27;);return;}const role=s.role,kind=s.kind;let scene=&#x27;play&#x27;;if([&#x27;twenty&#x27;,&#x27;no-target&#x27;,&#x27;pending-next&#x27;,&#x27;before-start-disconnect&#x27;,&#x27;rest-notice&#x27;].includes(value))scene=&#x27;ready&#x27;;if(value===&#x27;zero&#x27;)scene=&#x27;lobby&#x27;;if(value===&#x27;no-common&#x27;)scene=&#x27;picking&#x27;;if([&#x27;tie-absence&#x27;,&#x27;invalid&#x27;].includes(value))scene=&#x27;round&#x27;;if([&#x27;host-expired&#x27;,&#x27;no-results&#x27;,&#x27;state-lost&#x27;].includes(value))scene=&#x27;final&#x27;;if([&#x27;partial&#x27;,&#x27;empty-history&#x27;,&#x27;unknown-history&#x27;].includes(value))scene=&#x27;history&#x27;;if([&#x27;full&#x27;,&#x27;new-closed&#x27;,&#x27;kicked&#x27;].includes(value))scene=&#x27;join&#x27;;if([&#x27;not-supported&#x27;,&#x27;returning&#x27;].includes(value))scene=&#x27;entry&#x27;;setScene(scene);s.condition=value;s.role=role;s.kind=kind;
+    if(value===&#x27;twenty&#x27;){s.people=20;s.pending=tournament()?0:2;s.ready=12;s.fixedN=tournament()?20:null;s.fixedRoster=tournament()?Array.from({length:20},(_,i)=&gt;i):null;}
+    if(value===&#x27;zero&#x27;){s.people=0;s.role=&#x27;host-only&#x27;;s.started=false;s.fixedN=null;}
+    if(value===&#x27;no-target&#x27;){s.people=0;s.role=&#x27;host-only&#x27;;s.fixedN=tournament()?15:null;s.fixedRoster=tournament()?Array.from({length:15},(_,i)=&gt;i):null;s.pending=0;}
+    if(value===&#x27;pending-next&#x27;){s.role=&#x27;player&#x27;;s.nextWait=true;s.pending=tournament()?0:1;}
+    if(value===&#x27;before-start-disconnect&#x27;){s.disconnectedIds=[2];}
+    if(value===&#x27;rest-notice&#x27;){s.reviewRestIds=[2];}
+    if(value===&#x27;host-lost&#x27;){s.hostLost=true;s.submitted=8;}
+    if(value===&#x27;host-expired&#x27;){s.rounds=[];s.chart=charts[0];publish(true);s.phase=&#x27;final&#x27;;s.endReason=&#x27;Hostが戻らなかったため&#x27;;}
+    if(value===&#x27;self-lost&#x27;){s.role=&#x27;player&#x27;;s.selfLost=true;}
+    if(value===&#x27;returning&#x27;){s.role=&#x27;player&#x27;;s.left=true;s.joined=false;s.historyMode=&#x27;partial&#x27;;}
+    if(value===&#x27;source-fail&#x27;){s.role=role===&#x27;host-only&#x27;?&#x27;player&#x27;:role;s.sourceFail=true;}
+    if(value===&#x27;tie-absence&#x27;){s.kind=&#x27;tournament&#x27;;s.fixedN=15;s.rounds=[];publish();}
+    if(value===&#x27;invalid&#x27;)s.rounds[0].invalid=true;
+    if(value===&#x27;no-results&#x27;){s.rounds=[];s.phase=&#x27;final&#x27;;s.endReason=&#x27;Hostが終了&#x27;;}
+    if(value===&#x27;no-common&#x27;){s.noCommon=true;s.pickerOpen=true;}
+    if(value===&#x27;partial&#x27;){s.historyMode=&#x27;partial&#x27;;s.detail=true;}
+    if(value===&#x27;empty-history&#x27;){s.historyMode=&#x27;empty&#x27;;s.rounds=[];}
+    if(value===&#x27;unknown-history&#x27;)s.historyMode=&#x27;unknown&#x27;;
+    if(value===&#x27;full&#x27;)s.error=&#x27;参加者が20人で満員です。Hostに確認してください。&#x27;;
+    if(value===&#x27;new-closed&#x27;){s.kind=&#x27;tournament&#x27;;s.error=&#x27;この大会は開始済みです。新規参加はできません。以前の参加者としての復帰は可能です。&#x27;;}
+    if(value===&#x27;kicked&#x27;)s.error=&#x27;この開催からKickされたため、再参加できません。&#x27;;
+    if(value===&#x27;state-lost&#x27;){s.rounds=[];s.endReason=&#x27;開催状態を復元できないため&#x27;;s.historyMode=&#x27;partial&#x27;;}
+  }
+  root.addEventListener(&#x27;click&#x27;,e=&gt;{const el=e.target.closest(&#x27;[data-act]&#x27;);if(!el||el.disabled)return;const act=el.dataset.act;if(act===&#x27;submit-local&#x27;){submitLocal(el.closest(&#x27;form&#x27;));return;}if(act===&#x27;cancel-confirm&#x27;){dialog.close();s.pendingConfirmation=null;return;}if(act===&#x27;accept-confirm&#x27;){const pending=s.pendingConfirmation;dialog.close();s.pendingConfirmation=null;if(pending)apply(pending.act,pending.data);return;}request(act,el);});
+  function submitLocal(form){
+    if(!form.reportValidity())return;
+    const data=new FormData(form);
+    if(form.id===&#x27;ef-create-form&#x27;){s.name=String(data.get(&#x27;name&#x27;));s.kind=String(data.get(&#x27;kind&#x27;));s.role=String(data.get(&#x27;role&#x27;));s.style=String(data.get(&#x27;style&#x27;));s.metric=String(data.get(&#x27;metric&#x27;));s.view=&#x27;room&#x27;;s.phase=&#x27;lobby&#x27;;s.joined=true;s.started=false;s.fixedN=null;s.fixedRoster=null;s.playingIds=null;s.chart=null;s.rounds=[];s.notice=&#x27;待機室を作りました。招待情報を参加者に共有してください。&#x27;;}
+    if(form.id===&#x27;ef-join-form&#x27;){s.joinId=String(data.get(&#x27;roomId&#x27;)).trim();s.joinCode=String(data.get(&#x27;joinCode&#x27;)).trim().toUpperCase();const rejection={full:&#x27;参加者が20人で満員です。Hostに確認してください。&#x27;,&#x27;new-closed&#x27;:&#x27;この大会は開始済みです。新規参加はできません。以前の参加者としての復帰は可能です。&#x27;,kicked:&#x27;この開催からKickされたため、再参加できません。&#x27;}[s.condition];if(rejection){s.error=rejection;render();return;}if(s.joinId!==&#x27;EV8DEMO2&#x27;||s.joinCode!==&#x27;K8PLAY22&#x27;){s.error=&#x27;開催IDまたは参加コードを確認してください。入力内容は保持しています。&#x27;;render();return;}s.role=&#x27;player&#x27;;s.view=&#x27;room&#x27;;s.phase=&#x27;lobby&#x27;;s.joined=true;s.started=false;s.chart=null;s.rounds=[];s.notice=&#x27;開催に参加しました。Hostの開催開始を待っています。&#x27;;}
+    render();save();
+  }
+  root.addEventListener(&#x27;submit&#x27;,e=&gt;{e.preventDefault();submitLocal(e.target);});
+  root.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(e.key===&#x27;Enter&#x27;&amp;&amp;e.target.tagName===&#x27;INPUT&#x27;&amp;&amp;e.target.closest(&#x27;form&#x27;)){e.preventDefault();submitLocal(e.target.closest(&#x27;form&#x27;));}});
+  root.addEventListener(&#x27;input&#x27;,e=&gt;{if(e.target.id===&#x27;ef-search&#x27;){s.search=e.target.value;const caret=e.target.selectionStart;render();const input=root.querySelector(&#x27;#ef-search&#x27;);input.focus();input.setSelectionRange(caret,caret);}});
+  root.addEventListener(&#x27;change&#x27;,e=&gt;{if(e.target===roleControl){s.role=e.target.value;s.selfReady=false;render();save();}else if(e.target===kindControl){s.kind=e.target.value;s.name=tournament()?&#x27;週末の大会&#x27;:&#x27;週末の合同プレー&#x27;;s.fixedN=tournament()&amp;&amp;s.started?s.people:null;s.rounds=[];if([&#x27;round&#x27;,&#x27;final&#x27;].includes(s.phase)){const phase=s.phase;publish();s.phase=phase;}render();save();}else if(e.target===sceneControl){setScene(e.target.value);render();save();}else if(e.target===caseControl){setCase(e.target.value);render();save();}else if(e.target.name===&#x27;kind&#x27;&amp;&amp;e.target.closest(&#x27;#ef-create-form&#x27;)){s.kind=e.target.value;root.querySelector(&#x27;#ef-create-note&#x27;).textContent=typeNote();kindControl.value=s.kind;}});
+  root.querySelector(&#x27;#ef-simulate&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;apply(&#x27;simulate&#x27;));
+  root.querySelector(&#x27;#ef-return-peer&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;apply(&#x27;review-reconnect&#x27;));
+  dialog.addEventListener(&#x27;cancel&#x27;,()=&gt;{s.pendingConfirmation=null;});
+  window.addEventListener(&#x27;openai:set_globals&#x27;,e=&gt;{const restored=e.detail?.globals?.widgetState?.privateContent;if(restored?.version===4&amp;&amp;restored.state){s={...defaults(),...restored.state,pendingConfirmation:null};if(dialog.open)dialog.close();render();}});
+  render();
+})();
+&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (event) =&gt; {
+    for (const target of event.composedPath()) {
+      if (target?.nodeType === Node.ELEMENT_NODE) {
+        const trigger = target.closest(&quot;[data-tooltip]&quot;);
+        if (trigger) return trigger;
+      }
+    }
+    return null;
+  };
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) =&gt; {
+    lastPointerWasTouch =
+      event.type === &quot;pointerdown&quot; &amp;&amp; event.pointerType === &quot;touch&quot;;
+  };
+  const handleTouchClick = (event) =&gt; {
+    const isTouch = event.pointerType === &quot;touch&quot; || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch &amp;&amp; activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() =&gt; {
+      if (activeTrigger === trigger &amp;&amp; !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) =&gt; {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handlers = {
+    pointerover: handlePointerOpen,
+    pointerdown: handlePointer,
+    pointercancel: handlePointer,
+    click: handleTouchClick,
+    pointerout: handleLeave,
+    focusin: handleFocusIn,
+    focusout: handleLeave,
+    keydown: handleKeyDown,
+    contextmenu: handleContextMenu,
+  };
+  const roots = new Map();
+  const handledEvents = new WeakSet();
+  const handleEvent = (event) =&gt; {
+    if (handledEvents.has(event)) return;
+    handledEvents.add(event);
+    handlers[event.type](event);
+  };
+  const discoverRoots = (node) =&gt; {
+    if (node.shadowRoot) listen(node.shadowRoot);
+    for (const element of node.querySelectorAll(&quot;*&quot;)) {
+      if (element.shadowRoot) listen(element.shadowRoot);
+    }
+  };
+  const listen = (root) =&gt; {
+    if (roots.has(root)) return;
+    for (const type of Object.keys(handlers)) root.addEventListener(type, handleEvent);
+    const observer = new window.MutationObserver((records) =&gt; {
+      for (const { addedNodes } of records) {
+        for (const node of addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) discoverRoots(node);
+        }
+      }
+      for (const [root, cleanup] of roots) {
+        if (root.host &amp;&amp; !root.host.isConnected) {
+          cleanup();
+          roots.delete(root);
+        }
+      }
+      if (activeTrigger &amp;&amp; !activeTrigger.isConnected) closeTooltip(false);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    roots.set(root, () =&gt; {
+      observer.disconnect();
+      for (const type of Object.keys(handlers)) root.removeEventListener(type, handleEvent);
+    });
+    discoverRoots(root);
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    for (const cleanup of roots.values()) cleanup();
+    roots.clear();
+    tooltip = null;
+  };
+
+  // Events between children of one shadow root never reach the document.
+  listen(document);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-tabs&quot;&gt;
+(() =&gt; {
+  const selector = &#x27;.nav[role=&quot;tablist&quot;] [role=&quot;tab&quot;]&#x27;;
+  const disabled = &#x27;:disabled,[aria-disabled=&quot;true&quot;]&#x27;;
+  const selectTab = (selected) =&gt; {
+    const panelId = selected.getAttribute(&quot;aria-controls&quot;);
+    for (const tab of selected.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;)) {
+      const active = tab === selected;
+      tab.classList.toggle(&quot;active&quot;, active);
+      tab.setAttribute(&quot;aria-selected&quot;, String(active));
+      const id = tab.getAttribute(&quot;aria-controls&quot;);
+      const panel = id &amp;&amp; document.getElementById(id);
+      if (panel != null) {
+        panel.hidden = id !== panelId;
+        if (!panel.hidden &amp;&amp; selected.id) {
+          panel.setAttribute(&quot;aria-labelledby&quot;, selected.id);
+        }
+      }
+    }
+  };
+  const interact = (event) =&gt; {
+    const tab = event.target?.closest?.(selector);
+    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
+      return;
+    }
+    if (event.type === &quot;click&quot;) {
+      selectTab(tab);
+      return;
+    }
+    const tabs = Array.from(
+      tab.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;),
+    ).filter((candidate) =&gt; !candidate.matches(disabled));
+    const current = tabs.indexOf(tab);
+    let next;
+    if (event.key === &quot;ArrowRight&quot; || event.key === &quot;ArrowDown&quot;) {
+      next = (current + 1) % tabs.length;
+    } else if (event.key === &quot;ArrowLeft&quot; || event.key === &quot;ArrowUp&quot;) {
+      next = (current + tabs.length - 1) % tabs.length;
+    } else if (event.key === &quot;Home&quot;) {
+      next = 0;
+    } else if (event.key === &quot;End&quot;) {
+      next = tabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    tabs[next].focus();
+    selectTab(tabs[next]);
+  };
+
+  for (const list of document.querySelectorAll(&#x27;.nav[role=&quot;tablist&quot;]&#x27;)) {
+    const selected =
+      list.querySelector(&#x27;[role=&quot;tab&quot;][aria-selected=&quot;true&quot;]&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;].active&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;]&#x27;);
+    if (selected != null) {
+      selectTab(selected);
+    }
+  }
+  document.addEventListener(&quot;click&quot;, interact);
+  document.addEventListener(&quot;keydown&quot;, interact);
+  window.addEventListener(&quot;pagehide&quot;, () =&gt; {
+    document.removeEventListener(&quot;click&quot;, interact);
+    document.removeEventListener(&quot;keydown&quot;, interact);
+  }, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-carousel&quot;&gt;
+  (() =&gt; {
+    for (const root of document.querySelectorAll(&quot;.viz-carousel&quot;)) {
+      const panels = Array.from(
+        root.querySelectorAll(&quot;:scope &gt; [data-variant]&quot;),
+      );
+      if (panels.length === 0) {
+        continue;
+      }
+      root.setAttribute(&quot;role&quot;, &quot;group&quot;);
+      panels.forEach((panel, index) =&gt; {
+        panel.hidden = index !== 0;
+        panel.setAttribute(&quot;role&quot;, &quot;group&quot;);
+        if (!panel.hasAttribute(&quot;aria-label&quot;)) {
+          panel.setAttribute(&quot;aria-label&quot;, panel.dataset.variant);
+        }
+      });
+      root.dataset.activeVariant = panels[0].dataset.variant;
+      if (panels.length === 1) {
+        continue;
+      }
+
+      const controls = document.createElement(&quot;div&quot;);
+      controls.className = &quot;viz-carousel-controls&quot;;
+      // Portable copy of the settings dropdown&#x27;s legacy glyph; no 14px icon-package preset matches it.
+      // https://github.com/openai/openai/blob/master/codex/codex-apps/webview/src/icons/chevron.svg
+      controls.innerHTML = `
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-previous cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+      &lt;details class=&quot;viz-carousel-picker&quot;&gt;
+        &lt;summary class=&quot;cursor-interaction&quot;&gt;
+          &lt;span class=&quot;viz-carousel-count tabular-nums&quot;&gt;&lt;/span&gt;
+          &lt;span class=&quot;viz-carousel-name&quot;&gt;&lt;/span&gt;
+          &lt;svg class=&quot;viz-carousel-caret&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 20 21&quot; fill=&quot;none&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;
+            &lt;path d=&quot;M15.2793 7.71101C15.539 7.45131 15.961 7.45131 16.2207 7.71101C16.4804 7.97071 16.4804 8.39272 16.2207 8.65242L10.4707 14.4024C10.211 14.6621 9.78902 14.6621 9.52932 14.4024L3.77932 8.65242L3.69436 8.54792C3.52385 8.28979 3.55205 7.93828 3.77932 7.71101C4.00659 7.48374 4.3581 7.45554 4.61623 7.62605L4.72073 7.71101L10 12.9903L15.2793 7.71101Z&quot; fill=&quot;currentColor&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;0.6&quot; /&gt;
+          &lt;/svg&gt;
+        &lt;/summary&gt;
+        &lt;div class=&quot;viz-carousel-options&quot;&gt;&lt;/div&gt;
+      &lt;/details&gt;
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-next cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;`;
+      const previous = controls.querySelector(&quot;.viz-carousel-previous&quot;);
+      const next = controls.querySelector(&quot;.viz-carousel-next&quot;);
+      const picker = controls.querySelector(&quot;.viz-carousel-picker&quot;);
+      const summary = picker.querySelector(&quot;summary&quot;);
+      const count = controls.querySelector(&quot;.viz-carousel-count&quot;);
+      const name = controls.querySelector(&quot;.viz-carousel-name&quot;);
+      const options = controls.querySelector(&quot;.viz-carousel-options&quot;);
+      const status = document.createElement(&quot;span&quot;);
+      status.className = &quot;sr-only&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      previous.setAttribute(
+        &quot;aria-label&quot;,
+        root.dataset.previousLabel ?? &quot;Previous variant&quot;,
+      );
+      next.setAttribute(&quot;aria-label&quot;, root.dataset.nextLabel ?? &quot;Next variant&quot;);
+
+      let active = 0;
+      let mousePointerId = null;
+      let summaryPointerHandled = false;
+      summary.addEventListener(&quot;pointerdown&quot;, (event) =&gt; {
+        summaryPointerHandled =
+          event.pointerType === &quot;mouse&quot; &amp;&amp; event.button === 0 &amp;&amp; !event.ctrlKey;
+        if (!summaryPointerHandled) {
+          return;
+        }
+        event.preventDefault();
+        summary.focus({ preventScroll: true });
+        picker.open = !picker.open;
+        mousePointerId = picker.open ? event.pointerId : null;
+      });
+      summary.addEventListener(&quot;click&quot;, (event) =&gt; {
+        if (summaryPointerHandled &amp;&amp; event.detail &gt; 0) {
+          event.preventDefault();
+        }
+      });
+      const choices = panels.map((panel, index) =&gt; {
+        const choice = document.createElement(&quot;button&quot;);
+        choice.type = &quot;button&quot;;
+        choice.className = &quot;cursor-interaction&quot;;
+        choice.textContent = panel.dataset.variant;
+        choice.addEventListener(&quot;click&quot;, () =&gt; {
+          select(index);
+          summary.focus();
+        });
+        choice.addEventListener(&quot;pointerup&quot;, (event) =&gt; {
+          if (
+            picker.open &amp;&amp;
+            event.pointerType === &quot;mouse&quot; &amp;&amp;
+            event.button === 0 &amp;&amp;
+            event.pointerId === mousePointerId
+          ) {
+            choice.click();
+          }
+        });
+        options.appendChild(choice);
+        return choice;
+      });
+      const select = (index) =&gt; {
+        const changed = active !== index;
+        active = index;
+        panels.forEach((panel, position) =&gt; {
+          panel.hidden = position !== active;
+          choices[position].setAttribute(
+            &quot;aria-current&quot;,
+            String(position === active),
+          );
+        });
+        root.dataset.activeVariant = panels[active].dataset.variant;
+        count.textContent = `${active + 1} / ${panels.length}`;
+        name.textContent = panels[active].dataset.variant;
+        picker.open = false;
+        mousePointerId = null;
+        if (changed) {
+          status.textContent = `${count.textContent}: ${name.textContent}`;
+        }
+      };
+      previous.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + panels.length - 1) % panels.length),
+      );
+      next.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + 1) % panels.length),
+      );
+      picker.addEventListener(&quot;keydown&quot;, (event) =&gt; {
+        if (event.key === &quot;Escape&quot; &amp;&amp; picker.open) {
+          event.preventDefault();
+          picker.open = false;
+          mousePointerId = null;
+          summary.focus();
+          return;
+        }
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+          return;
+        }
+        const index = choices.indexOf(document.activeElement);
+        let nextIndex;
+        if (event.key === &quot;ArrowDown&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + 1) % choices.length;
+        } else if (event.key === &quot;ArrowUp&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + choices.length - 1) % choices.length;
+        } else if (picker.open &amp;&amp; event.key === &quot;Home&quot;) {
+          nextIndex = 0;
+        } else if (picker.open &amp;&amp; event.key === &quot;End&quot;) {
+          nextIndex = choices.length - 1;
+        } else {
+          return;
+        }
+        event.preventDefault();
+        picker.open = true;
+        choices[nextIndex].focus();
+      });
+      picker.addEventListener(&quot;focusout&quot;, (event) =&gt; {
+        if (!picker.contains(event.relatedTarget)) {
+          picker.open = false;
+          mousePointerId = null;
+        }
+      });
+      const dismiss = (event) =&gt; {
+        if (!summary.contains(event.target)) {
+          mousePointerId = null;
+        }
+        if (!picker.contains(event.target)) {
+          picker.open = false;
+        }
+      };
+      const endPointerSelection = () =&gt; {
+        mousePointerId = null;
+      };
+      const sizePicker = () =&gt; {
+        root.style.setProperty(
+          &quot;--viz-carousel-picker-height&quot;,
+          `${picker.open ? options.offsetHeight : 0}px`,
+        );
+      };
+      picker.addEventListener(&quot;toggle&quot;, sizePicker);
+      window.addEventListener(&quot;resize&quot;, sizePicker);
+      document.addEventListener(&quot;pointerdown&quot;, dismiss);
+      document.addEventListener(&quot;pointerup&quot;, endPointerSelection);
+      document.addEventListener(&quot;pointercancel&quot;, endPointerSelection);
+      window.addEventListener(&quot;blur&quot;, endPointerSelection);
+      window.addEventListener(
+        &quot;pagehide&quot;,
+        () =&gt; {
+          document.removeEventListener(&quot;pointerdown&quot;, dismiss);
+          document.removeEventListener(&quot;pointerup&quot;, endPointerSelection);
+          document.removeEventListener(&quot;pointercancel&quot;, endPointerSelection);
+          window.removeEventListener(&quot;blur&quot;, endPointerSelection);
+          window.removeEventListener(&quot;resize&quot;, sizePicker);
+        },
+        { once: true },
+      );
+      root.append(controls, status);
+      select(0);
+    }
+  })();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+<script>(() => {
+  const frame = document.getElementById("codex-visualization");
+  if (!(frame instanceof HTMLIFrameElement)) {
+    return;
+  }
+  let viewportHeight = globalThis.innerHeight;
+  const storageKey = `codex:visualization-widget-state-v2:${JSON.stringify([
+    globalThis.location.pathname,
+    globalThis.location.search,
+  ])}`;
+  const parseState = (serializedState) => {
+    if (
+      typeof serializedState !== "string" ||
+      new TextEncoder().encode(serializedState).length > 16 * 1024
+    ) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    /** @type {unknown} */
+    const state = JSON.parse(serializedState);
+    if (
+      state == null ||
+      typeof state !== "object" ||
+      Array.isArray(state) ||
+      ("imageIds" in state &&
+        (!Array.isArray(state.imageIds) || state.imageIds.length > 0))
+    ) {
+      throw new TypeError("Widget state must be a JSON object");
+    }
+    const storedState = { modelContent: null, privateContent: null, ...state };
+    const canonicalState = JSON.stringify(
+      storedState,
+      (_key, /** @type {unknown} */ value) => {
+        if (typeof value === "number" && !Number.isFinite(value)) {
+          throw new TypeError("Widget state must contain finite numbers");
+        }
+        return value;
+      },
+    );
+    if (new TextEncoder().encode(canonicalState).length > 16 * 1024) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    return storedState;
+  };
+  let storage = null;
+  let state = null;
+  try {
+    const localStorage = globalThis.localStorage;
+    const probeKey = `${storageKey}:probe`;
+    localStorage.setItem(probeKey, "1");
+    localStorage.removeItem(probeKey);
+    storage = localStorage;
+    const savedState = storage.getItem(storageKey);
+    if (savedState != null) {
+      try {
+        state = parseState(savedState);
+      } catch {
+        // Invalid saved state does not disable future writes.
+      }
+    }
+  } catch {
+    storage = null;
+  }
+  const initialGlobals = {
+    widgetState: state,
+    statePersistence: storage == null ? "none" : "local",
+  };
+
+  const channel = new MessageChannel();
+  channel.port1.addEventListener("message", (event) => {
+    const data = event.data;
+    if (typeof data !== "object" || data == null) {
+      return;
+    }
+    if (data.type === "widget-state-write") {
+      if (!Number.isSafeInteger(data.id) || data.id <= 0) {
+        return;
+      }
+      let ok = false;
+      try {
+        if (storage != null) {
+          const state = parseState(data.state);
+          storage.setItem(storageKey, JSON.stringify(state));
+          ok = true;
+        }
+      } catch {
+        // Storage denial, quota limits, and invalid state return a failed receipt.
+      }
+      channel.port1.postMessage({
+        type: "widget-state-result",
+        id: data.id,
+        ok,
+      });
+      return;
+    }
+    if (data.type === "height") {
+      const height = data.height;
+      if (
+        typeof height === "number" &&
+        Number.isFinite(height) &&
+        height >= 0 &&
+        height <= 10_000
+      ) {
+        frame.style.height = Math.ceil(height) + "px";
+      }
+      return;
+    }
+    if (data.type === "scroll-to") {
+      const top = data.top;
+      if (
+        typeof top === "number" &&
+        Number.isFinite(top) &&
+        top >= 0 &&
+        globalThis.navigator.userActivation?.isActive === true
+      ) {
+        globalThis.scrollTo({
+          top: Math.ceil(
+            globalThis.scrollY + frame.getBoundingClientRect().top + top,
+          ),
+        });
+      }
+      return;
+    }
+    if (data.type === "open-external") {
+      const rawHref = data.href;
+      if (typeof rawHref !== "string") {
+        return;
+      }
+      let href;
+      try {
+        const url = new URL(rawHref, document.baseURI);
+        if (url.protocol !== "https:") {
+          return;
+        }
+        href = url.href;
+      } catch {
+        return;
+      }
+      if (globalThis.navigator.userActivation?.isActive === true) {
+        const anchor = document.createElement("a");
+        anchor.href = href;
+        anchor.rel = "noopener noreferrer";
+        anchor.target = "_blank";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      }
+      return;
+    }
+    if (data.type === "follow-up") {
+      const prompt = data.prompt;
+      if (
+        typeof prompt !== "string" ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      const title = data.title;
+      globalThis.prompt(typeof title === "string" ? title : prompt, prompt);
+    }
+  });
+  channel.port1.start();
+  const srcdoc = frame.dataset.srcdoc;
+  if (srcdoc == null) {
+    return;
+  }
+  globalThis.addEventListener("resize", () => {
+    const height = Number.parseFloat(frame.style.height);
+    if (!Number.isFinite(height) || height <= viewportHeight) {
+      frame.style.removeProperty("height");
+    }
+    viewportHeight = globalThis.innerHeight;
+    channel.port1.postMessage({ type: "measure" });
+  });
+  frame.addEventListener(
+    "load",
+    () => {
+      frame.contentWindow?.postMessage(
+        { type: "codex-visualization-initialize" },
+        "*",
+        [channel.port2],
+      );
+    },
+    { once: true },
+  );
+  // Match the trusted bootstrap element, not the same text in an authored title.
+  frame.srcdoc = srcdoc.replace(
+    '<script type="application/json" id="codex-visualization-widget-state">__CODEX_VISUALIZATION_WIDGET_STATE__<\/script>',
+    () =>
+      '<script type="application/json" id="codex-visualization-widget-state">' +
+      JSON.stringify(initialGlobals).replaceAll("<", "\\u003c") +
+      "<\/script>",
+  );
+  delete frame.dataset.srcdoc;
+})();
+</script>
+</body>
+</html>

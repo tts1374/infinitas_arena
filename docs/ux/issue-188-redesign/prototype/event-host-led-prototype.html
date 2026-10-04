@@ -1,0 +1,525 @@
+<div id="event-host-led-prototype" aria-label="合同プレー・大会の画面試作">
+  <div class="viz-controls" aria-label="試作の確認条件">
+    <label class="form-label">見る立場<select class="form-select" id="ef-role"><option value="host-only">専任Host</option><option value="host-player">兼任Host</option><option value="player">参加者</option></select></label>
+    <label class="form-label">開催タイプ<select class="form-select" id="ef-kind"><option value="casual">合同プレー</option><option value="tournament">大会</option></select></label>
+    <label class="form-label">画面を見る<select class="form-select" id="ef-scene"><option value="normal">Top・通常対戦</option><option value="entry">開催の入口</option><option value="create">開催作成</option><option value="join">開催参加</option><option value="lobby">待機室</option><option value="picking">選曲</option><option value="ready">譜面確定・開始待ち</option><option value="play">プレー中</option><option value="round">曲別結果</option><option value="final">最終結果</option><option value="history">開催履歴</option></select></label>
+    <button class="btn" type="button" id="ef-simulate">Hostの開始・自動提出を再現</button>
+    <button class="btn" type="button" id="ef-return-peer" disabled>切断した参加者の復帰を再現</button>
+  </div>
+  <details class="ef-preview-cases"><summary>20人・切断などの状態を見る（試作の確認用）</summary><div class="viz-controls"><label class="form-label">確認する状態<select class="form-select" id="ef-case"><option value="standard">通常の状態</option><option value="twenty">20人・次曲待ちあり</option><option value="zero">参加者0人</option><option value="no-target">この曲の対象者0人</option><option value="pending-next">選曲確定後の入室・次曲から参加</option><option value="before-start-disconnect">開始前に参加者切断・枠を残して進行</option><option value="rest-notice">通話で休憩を申告・枠を残して進行</option><option value="host-lost">Host切断・残り時間あり</option><option value="host-expired">Host切断・期限切れ</option><option value="self-lost">自分の一時切断</option><option value="returning">明示退出から復帰</option><option value="source-fail">連携ツール障害</option><option value="unsubmitted">未提出者あり</option><option value="tie-absence">同点と欠場</option><option value="invalid">無効曲</option><option value="no-results">確定0曲</option><option value="no-common">共通譜面なし</option><option value="partial">部分履歴</option><option value="empty-history">履歴0件</option><option value="unknown-history">未対応の履歴</option><option value="not-supported">接続先が開催非対応</option><option value="full">参加枠が満員</option><option value="new-closed">大会開始後の新規参加</option><option value="kicked">Kick後の再入室</option><option value="state-lost">開催状態を復元できない</option></select></label></div></details>
+  <p id="ef-case-note" class="text-small" hidden></p>
+  <p id="ef-live" class="sr-only" aria-live="polite"></p>
+  <div class="arena-sim">
+    <div class="arena-chrome"><span>INFINITAS Arena</span><span>画面試作・架空データ</span></div>
+    <div class="arena-frame"><nav class="arena-side" aria-label="アプリの画面"></nav><main id="ef-main"><h1>合同・大会</h1></main></div>
+    <dialog id="ef-dialog" aria-labelledby="ef-dialog-title"><div id="ef-dialog-content"></div></dialog>
+  </div>
+</div>
+<style>
+#event-host-led-prototype .ef-preview-cases{margin:10px 0 16px;font-size:14px}
+#event-host-led-prototype .ef-preview-cases summary{margin-bottom:8px}
+#event-host-led-prototype .arena-sim{--a-bg:#1e1e1e;--a-panel:#252526;--a-raised:#2d2d30;--a-text:#f3f3f5;--a-muted:#b6b7bf;--a-line:#404045;--a-primary:#06b6d4;--a-primary-bg:#14343b;--a-ink:#071b20;--a-warning:#efcc84;--a-warning-bg:#372d1b;--a-danger:#f3a5a5;--a-danger-bg:#3c2424;--a-ok:#a7dcb5;color-scheme:dark;background:var(--a-bg);color:var(--a-text);border:1px solid var(--a-line);border-radius:8px;font:14px/1.6 'Segoe UI','Yu Gothic UI',sans-serif;position:relative;overflow:hidden}
+#event-host-led-prototype .arena-sim *{box-sizing:border-box}
+#event-host-led-prototype .arena-chrome{background:var(--a-panel);padding:9px 16px;border-bottom:1px solid var(--a-line);display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--a-muted)}
+#event-host-led-prototype .arena-frame{display:grid;grid-template-columns:138px minmax(0,1fr);min-height:640px}
+#event-host-led-prototype .arena-side{background:var(--a-panel);border-right:1px solid var(--a-line);padding:14px 9px;display:flex;flex-direction:column;gap:6px}
+#event-host-led-prototype .arena-side button{padding:10px;text-align:left;color:var(--a-muted);border:0;background:transparent;border-radius:6px}
+#event-host-led-prototype .arena-side button[aria-current=page]{background:var(--a-primary-bg);color:var(--a-primary)}
+#event-host-led-prototype .arena-side .arena-settings{margin-top:auto}
+#event-host-led-prototype .arena-side .arena-active-event{margin:2px 0 15px;border:1px solid var(--a-primary);font-size:12px;color:var(--a-text)}
+#event-host-led-prototype #ef-main{padding:24px;min-width:0}
+#event-host-led-prototype .arena-sim h1{font-size:23px;line-height:1.4;font-weight:600;margin:0 0 8px;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-sim h2{font-size:17px;font-weight:600;margin:0 0 9px}
+#event-host-led-prototype .arena-sim h3{font-size:14px;font-weight:600;margin:0 0 8px}
+#event-host-led-prototype .arena-sim p{margin:0 0 13px}
+#event-host-led-prototype .arena-muted{color:var(--a-muted)}
+#event-host-led-prototype .arena-small{font-size:12px;color:var(--a-muted)}
+#event-host-led-prototype .arena-sim button,#event-host-led-prototype .arena-sim input,#event-host-led-prototype .arena-sim select,#event-host-led-prototype .arena-sim textarea{font:inherit;min-width:0}
+#event-host-led-prototype .arena-sim button:focus-visible,#event-host-led-prototype .arena-sim input:focus-visible,#event-host-led-prototype .arena-sim select:focus-visible,#event-host-led-prototype .arena-sim summary:focus-visible{outline:2px solid var(--a-primary);outline-offset:3px}
+#event-host-led-prototype .arena-button{padding:9px 13px;border:1px solid var(--a-line);border-radius:6px;background:var(--a-raised);color:var(--a-text)}
+#event-host-led-prototype .arena-button.primary{background:var(--a-primary);border-color:var(--a-primary);color:var(--a-ink);font-weight:600}
+#event-host-led-prototype .arena-button.danger{background:var(--a-danger-bg);border-color:var(--a-danger);color:var(--a-danger)}
+#event-host-led-prototype .arena-button.subtle{background:transparent;border-color:transparent;color:var(--a-muted)}
+#event-host-led-prototype .arena-sim button:disabled{opacity:.45;cursor:not-allowed}
+#event-host-led-prototype .arena-sim .arena-button.primary:disabled{background:var(--a-raised);border-color:var(--a-line);color:var(--a-muted);opacity:.7}
+#event-host-led-prototype .arena-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+#event-host-led-prototype .arena-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:13px}
+#event-host-led-prototype .arena-heading{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:17px}
+#event-host-led-prototype .arena-panel{background:var(--a-panel);border:1px solid var(--a-line);border-radius:7px;padding:18px;min-width:0}
+#event-host-led-prototype .arena-split{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(240px,1fr);gap:16px;align-items:start}
+#event-host-led-prototype .arena-entry-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:stretch}
+#event-host-led-prototype .arena-sim label{display:block;margin:12px 0 6px}
+#event-host-led-prototype .arena-sim input,#event-host-led-prototype .arena-sim select,#event-host-led-prototype .arena-sim textarea{width:100%;padding:10px;border:1px solid var(--a-line);border-radius:5px;background:var(--a-bg);color:var(--a-text)}
+#event-host-led-prototype .arena-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+#event-host-led-prototype .arena-back{margin-bottom:13px;padding:0;border:0;background:transparent;color:var(--a-primary)}
+#event-host-led-prototype .arena-divider{margin:18px 0;border:0;border-top:1px solid var(--a-line)}
+#event-host-led-prototype .arena-steps{display:flex;gap:7px;flex-wrap:wrap;margin:6px 0 17px;font-size:12px;color:var(--a-muted)}
+#event-host-led-prototype .arena-steps span{border-bottom:2px solid transparent;padding:4px 3px}
+#event-host-led-prototype .arena-steps span.current{border-color:var(--a-primary);color:var(--a-text)}
+#event-host-led-prototype .arena-banner{padding:12px 14px;margin-bottom:14px;border:1px solid var(--a-line);border-radius:6px;background:var(--a-panel)}
+#event-host-led-prototype .arena-banner.warning{border-color:#796234;color:var(--a-warning);background:var(--a-warning-bg)}
+#event-host-led-prototype .arena-banner.danger{border-color:#805151;color:var(--a-danger);background:var(--a-danger-bg)}
+#event-host-led-prototype .arena-banner.return{border-color:var(--a-primary);background:var(--a-primary-bg)}
+#event-host-led-prototype .arena-self{margin-bottom:14px;border-left:3px solid var(--a-primary)}
+#event-host-led-prototype .arena-host-controls{margin-bottom:16px}
+#event-host-led-prototype .arena-song{margin-bottom:14px}
+#event-host-led-prototype .arena-song-title{font-size:21px;font-weight:600;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-roster{max-height:365px;overflow-y:auto;scrollbar-color:var(--a-primary-bg) transparent}
+#event-host-led-prototype .arena-person{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--a-line)}
+#event-host-led-prototype .arena-person:last-child{border-bottom:0}
+#event-host-led-prototype .arena-person span{overflow-wrap:anywhere}
+#event-host-led-prototype .arena-person.self{color:var(--a-primary)}
+#event-host-led-prototype .arena-person button{padding:4px 7px;font-size:12px}
+#event-host-led-prototype .arena-charts{display:grid;gap:9px;margin-top:14px}
+#event-host-led-prototype .arena-chart{padding:12px;background:var(--a-bg);border:1px solid var(--a-line);border-radius:5px;text-align:left;color:var(--a-text)}
+#event-host-led-prototype .arena-chart[aria-pressed=true]{border-color:var(--a-primary);background:var(--a-primary-bg)}
+#event-host-led-prototype .arena-result-wrap{max-height:410px;overflow:auto;scrollbar-color:var(--a-primary-bg) transparent}
+#event-host-led-prototype .arena-sim table{width:100%;border-collapse:collapse;text-align:left;table-layout:fixed;font-size:13px}
+#event-host-led-prototype .arena-sim th{color:var(--a-muted);font-weight:400;background:var(--a-panel);position:sticky;top:0}
+#event-host-led-prototype .arena-sim td,#event-host-led-prototype .arena-sim th{padding:10px 8px;border-bottom:1px solid var(--a-line);overflow-wrap:anywhere}
+#event-host-led-prototype .arena-sim th:first-child{width:58px}
+#event-host-led-prototype .arena-sim th:nth-child(3){width:108px}
+#event-host-led-prototype .arena-sim th:nth-child(4){width:65px}
+#event-host-led-prototype .arena-sim tr.self{background:var(--a-primary-bg)}
+#event-host-led-prototype .arena-sim .arena-history-item{display:block;width:100%;padding:16px;text-align:left;border:1px solid var(--a-line);border-radius:6px;background:var(--a-panel);color:var(--a-text);margin-bottom:10px}
+#event-host-led-prototype .arena-history-item strong{display:block;font-weight:600}
+#event-host-led-prototype .arena-self-rank{padding:12px 15px;margin:12px 0;background:var(--a-primary-bg);border-radius:5px}
+#event-host-led-prototype .arena-sim dialog{width:min(480px,calc(100% - 32px));max-height:85vh;overflow:auto;padding:22px;border:1px solid var(--a-line);border-radius:8px;background:var(--a-panel);color:var(--a-text)}
+#event-host-led-prototype .arena-sim dialog::backdrop{background:rgba(0,0,0,.75)}
+#event-host-led-prototype .arena-reference{padding:24px;background:var(--a-panel);border:1px solid var(--a-line);border-radius:6px}
+@media(max-width:700px){#event-host-led-prototype .arena-frame{grid-template-columns:1fr;grid-template-rows:auto 1fr}#event-host-led-prototype .arena-side{flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--a-line);padding:8px;gap:4px}#event-host-led-prototype .arena-side button{font-size:12px;padding:8px}#event-host-led-prototype .arena-side .arena-settings{margin:0}#event-host-led-prototype .arena-side .arena-active-event{margin:0}#event-host-led-prototype #ef-main{padding:16px}#event-host-led-prototype .arena-split,#event-host-led-prototype .arena-entry-grid,#event-host-led-prototype .arena-form-grid{grid-template-columns:1fr}#event-host-led-prototype .arena-sim table{font-size:12px}#event-host-led-prototype .arena-sim td,#event-host-led-prototype .arena-sim th{padding:8px 4px}#event-host-led-prototype .arena-sim th:first-child{width:43px}#event-host-led-prototype .arena-sim th:nth-child(3){width:66px}#event-host-led-prototype .arena-sim th:nth-child(4){width:42px}#event-host-led-prototype .arena-roster{max-height:280px}}
+@media(pointer:coarse){#event-host-led-prototype .arena-sim button{min-height:44px}#event-host-led-prototype .arena-sim input,#event-host-led-prototype .arena-sim select{font-size:16px}}
+#event-host-led-prototype .arena-sim{--a-bg:#1a1a1b;--a-panel:#252526;--a-raised:#303033;--a-line:#38383c;--a-muted:#9da3af;--a-primary:#06b6d4;--a-danger:#f87171;--a-ok:#22c55e;border-radius:12px;font-family:'Segoe UI','Yu Gothic UI',sans-serif}
+#event-host-led-prototype .arena-chrome{padding:8px 14px;font-size:11px;letter-spacing:.06em}
+#event-host-led-prototype .arena-frame{grid-template-columns:76px minmax(0,1fr);min-height:680px}
+#event-host-led-prototype .arena-side{padding:15px 5px;gap:16px;align-items:center}
+#event-host-led-prototype .arena-side button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 4px;width:64px;text-align:center;border-radius:11px;font-size:11px;line-height:1.4}
+#event-host-led-prototype .arena-side button[aria-current=page]{border:1px solid #06b6d44d;background:#06b6d426;color:#22d3ee;box-shadow:0 0 14px #06b6d41a}
+#event-host-led-prototype .arena-side svg{width:22px;height:22px}
+#event-host-led-prototype .arena-side .arena-active-event{border:1px solid #06b6d44d;margin:0 0 10px;font-size:11px}
+#event-host-led-prototype #ef-main{padding:22px;min-width:0}
+#event-host-led-prototype .arena-sim h1{font-size:28px;letter-spacing:-.05em;font-weight:900;font-style:italic}
+#event-host-led-prototype .arena-sim h2{font-size:17px;font-weight:800;letter-spacing:-.025em}
+#event-host-led-prototype .arena-sim h3{font-size:13px;font-weight:700}
+#event-host-led-prototype .arena-panel{border-radius:14px;border-color:var(--a-line)}
+#event-host-led-prototype .arena-button{font-weight:700;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;gap:8px;line-height:1.45;white-space:normal}
+#event-host-led-prototype .arena-button.primary{font-weight:900;font-style:italic;box-shadow:0 0 24px #06b6d420}
+#event-host-led-prototype .arena-banner{border-radius:11px;font-size:13px}
+#event-host-led-prototype .arena-room-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+#event-host-led-prototype .arena-room-heading h1{font-size:19px;margin:0;color:var(--a-primary)}
+#event-host-led-prototype .arena-room-heading .arena-small{font-size:11px;letter-spacing:.035em}
+#event-host-led-prototype .arena-room-layout{display:grid;grid-template-columns:minmax(0,1fr) 182px;gap:18px;align-items:stretch}
+#event-host-led-prototype .arena-playfield{min-width:0;display:flex;flex-direction:column;gap:14px}
+#event-host-led-prototype .arena-stage-head{display:grid;grid-template-columns:100px minmax(0,1fr) 75px;gap:12px;align-items:center;padding:20px 18px;background:var(--a-panel);border:1px solid var(--a-line);border-radius:16px;min-height:125px}
+#event-host-led-prototype .arena-phase-label{color:var(--a-primary);font-weight:900;font-style:italic;font-size:16px;letter-spacing:-.04em}
+#event-host-led-prototype .arena-phase-label small{display:block;font-size:11px;font-style:normal;letter-spacing:0;font-weight:400;color:var(--a-muted);margin-top:5px}
+#event-host-led-prototype .arena-stage-head.play .arena-phase-label{color:var(--a-danger)}
+#event-host-led-prototype .arena-track{text-align:center;min-width:0}
+#event-host-led-prototype .arena-track-label{font-size:11px;color:var(--a-primary);font-weight:700;letter-spacing:.12em;margin-bottom:5px}
+#event-host-led-prototype .arena-track-name{font-weight:900;font-style:italic;font-size:36px;line-height:1.1;letter-spacing:-.055em;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-track-meta{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:9px;font-size:11px;font-weight:700;letter-spacing:.055em}
+#event-host-led-prototype .arena-difficulty{padding:3px 9px;background:#e92f3b;border-radius:20px;color:#fff;letter-spacing:.1em}
+#event-host-led-prototype .arena-difficulty.hyper{background:#cfa500;color:#151515}
+#event-host-led-prototype .arena-level{color:var(--a-primary);font-style:italic}
+#event-host-led-prototype .arena-round-count{text-align:right;color:var(--a-primary)}
+#event-host-led-prototype .arena-round-count small{font-size:11px;letter-spacing:.12em;display:block;color:var(--a-muted)}
+#event-host-led-prototype .arena-round-count strong{font-size:24px;line-height:1.3;font-style:italic;font-weight:900;color:var(--a-text)}
+#event-host-led-prototype .arena-progress-line{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px}
+#event-host-led-prototype .arena-progress-line strong{font-size:15px;font-style:italic;color:var(--a-primary)}
+#event-host-led-prototype .arena-players{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-height:410px;overflow-y:auto;padding:2px 5px 2px 1px;scrollbar-color:#16434a transparent;scrollbar-width:thin}
+#event-host-led-prototype .arena-player-card{position:relative;display:flex;flex-direction:column;gap:10px;justify-content:space-between;min-height:99px;padding:12px 10px;background:var(--a-panel);border:1px solid var(--a-line);border-radius:13px;min-width:0}
+#event-host-led-prototype .arena-player-card.ready{border-color:#06b6d47a;background:#06b6d40a}
+#event-host-led-prototype .arena-player-card.submitted{border-color:#22c55e80;background:#22c55e0a}
+#event-host-led-prototype .arena-player-card.self{border-width:2px;border-color:var(--a-primary);background:#06b6d40d}
+#event-host-led-prototype .arena-player-card.away{opacity:.72}
+#event-host-led-prototype .arena-player-name{display:flex;gap:7px;align-items:center;min-width:0}
+#event-host-led-prototype .arena-avatar{width:26px;height:28px;border-radius:8px;background:#24323d;color:#a1a9b7;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#event-host-led-prototype .arena-avatar svg{width:17px;height:17px}
+#event-host-led-prototype .ready .arena-avatar,#event-host-led-prototype .self .arena-avatar{background:var(--a-primary);color:var(--a-ink)}
+#event-host-led-prototype .arena-player-name strong{display:block;font-weight:900;font-style:italic;letter-spacing:-.03em;font-size:12px;overflow-wrap:anywhere;line-height:1.3}
+#event-host-led-prototype .arena-player-name small{font-size:11px;line-height:1.3;color:var(--a-primary)}
+#event-host-led-prototype .arena-player-card .arena-player-menu{position:absolute;right:3px;top:0;padding:2px 5px;font-size:12px;min-height:24px;opacity:.75}
+#event-host-led-prototype .arena-status{display:flex;gap:5px;align-items:center;font-size:11px;font-weight:700;line-height:1.4;color:var(--a-muted);min-height:25px;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-status svg{width:14px;height:14px;flex-shrink:0}
+#event-host-led-prototype .ready .arena-status{color:var(--a-primary)}
+#event-host-led-prototype .submitted .arena-status{color:var(--a-ok)}
+#event-host-led-prototype .arena-player-card .arena-button{font-size:12px;min-height:32px;padding:5px 7px;width:100%}
+#event-host-led-prototype .arena-bottom-bar{display:grid;grid-template-columns:minmax(0,1fr) minmax(175px,.8fr);gap:12px;margin-top:auto;padding-top:3px}
+#event-host-led-prototype .arena-bottom-message{background:var(--a-panel);border:1px solid var(--a-line);border-radius:12px;padding:13px 15px;font-size:12px;line-height:1.6;min-width:0}
+#event-host-led-prototype .arena-bottom-message strong{display:block;color:var(--a-primary);font-weight:600;margin-bottom:4px}
+#event-host-led-prototype .arena-bottom-message .arena-small{font-size:11px}
+#event-host-led-prototype .arena-bottom-bar>.arena-button{font-size:16px;min-height:76px;font-style:italic;font-weight:900}
+#event-host-led-prototype .arena-auto-wait{background:var(--a-panel);border:1px solid var(--a-line);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-style:italic;font-size:15px;min-height:76px;color:var(--a-muted);padding:12px}
+#event-host-led-prototype .arena-hud{background:var(--a-panel);border-left:1px solid var(--a-line);padding:18px 14px;display:flex;flex-direction:column;gap:20px;min-width:0;border-radius:0 12px 12px 0}
+#event-host-led-prototype .arena-hud h2{font-size:11px;letter-spacing:.08em;color:var(--a-muted);font-style:normal;font-weight:600;margin-bottom:12px}
+#event-host-led-prototype .arena-past-round{display:flex;align-items:center;gap:9px;width:100%;padding:11px 9px;text-align:left;border:1px solid var(--a-line);background:var(--a-bg);color:var(--a-text);border-radius:11px;margin-bottom:9px}
+#event-host-led-prototype .arena-past-round strong{font-weight:800;font-style:italic;display:block;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-past-round small{font-size:11px;color:var(--a-primary);display:block}
+#event-host-led-prototype .arena-past-round svg{color:var(--a-muted);width:21px;flex-shrink:0}
+#event-host-led-prototype .arena-history-placeholder{padding:20px 10px;border:1px dashed var(--a-line);border-radius:12px;color:var(--a-muted);font-size:11px;text-align:center}
+#event-host-led-prototype .arena-hud-facts{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+#event-host-led-prototype .arena-hud-facts div{background:var(--a-bg);padding:9px 7px;border-radius:9px;min-width:0}
+#event-host-led-prototype .arena-hud-facts small{display:block;font-size:11px;color:var(--a-muted)}
+#event-host-led-prototype .arena-hud-facts strong{display:block;font-size:12px;font-weight:600;color:var(--a-primary);overflow-wrap:anywhere}
+#event-host-led-prototype .arena-hud details{font-size:12px;line-height:1.7}
+#event-host-led-prototype .arena-hud .arena-actions{gap:6px;margin-top:9px}
+#event-host-led-prototype .arena-hud .arena-button{font-size:12px;padding:8px;width:100%}
+#event-host-led-prototype .arena-hud .arena-admin{margin-top:auto;border-top:1px solid var(--a-line);padding-top:14px}
+#event-host-led-prototype .arena-source-alert{color:var(--a-warning);font-size:12px;line-height:1.6}
+#event-host-led-prototype .arena-self-brief{font-size:12px;line-height:1.7;color:var(--a-muted)}
+#event-host-led-prototype .arena-self-brief strong{color:var(--a-primary)}
+#event-host-led-prototype .arena-pick-launch{display:flex;align-items:center;justify-content:center;gap:12px;padding:24px;border:1px dashed #06b6d450;background:#06b6d408;border-radius:14px;color:var(--a-primary);font-size:18px;font-weight:900;font-style:italic;min-height:100px}
+#event-host-led-prototype .arena-search-panel{background:#161617;border:1px solid var(--a-line);border-radius:18px;overflow:hidden;padding:0}
+#event-host-led-prototype .arena-search-panel header{padding:18px;background:linear-gradient(100deg,#163a40,var(--a-panel));display:flex;align-items:center;justify-content:space-between;gap:8px}
+#event-host-led-prototype .arena-search-panel header strong{font-size:20px;font-style:italic;font-weight:900;letter-spacing:-.04em}
+#event-host-led-prototype .arena-search-panel .arena-search-body{padding:15px}
+#event-host-led-prototype .arena-search-panel .arena-chart{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;background:var(--a-panel)}
+#event-host-led-prototype .arena-chart-thumb{width:40px;height:43px;border-radius:9px;border:1px solid var(--a-line);border-bottom:3px solid #e92f3b;display:flex;align-items:center;justify-content:center;color:var(--a-muted);flex-shrink:0}
+#event-host-led-prototype .arena-chart-thumb svg{width:21px;height:21px}
+#event-host-led-prototype .arena-chart strong{font-size:17px;font-weight:900;font-style:italic;display:block;letter-spacing:-.04em}
+#event-host-led-prototype .arena-chart .arena-level{margin-left:auto;font-size:21px;font-weight:900}
+#event-host-led-prototype .arena-search-body .arena-actions{justify-content:flex-end}
+#event-host-led-prototype .arena-scorecards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:9px 0 4px}
+#event-host-led-prototype .arena-scorecards.with-self{grid-template-columns:repeat(4,minmax(0,1fr))}
+#event-host-led-prototype .arena-scorecard{border:2px solid var(--a-line);border-radius:22px;background:var(--a-panel);padding:20px 10px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;gap:9px}
+#event-host-led-prototype .arena-scorecard.winner{border-color:var(--a-primary);background:#062c32;box-shadow:0 0 22px #06b6d415}
+#event-host-led-prototype .arena-scorecard.self{border-color:#06b6d470}
+#event-host-led-prototype .arena-scorecard .arena-avatar{width:48px;height:48px;border-radius:50%;border:2px solid #475569;background:#182027;color:#b7beca}
+#event-host-led-prototype .arena-scorecard.winner .arena-avatar{border-color:var(--a-primary);color:var(--a-primary);background:#062c32}
+#event-host-led-prototype .arena-scorecard .arena-avatar svg{width:26px;height:26px}
+#event-host-led-prototype .arena-scorecard .arena-big-rank{font-size:31px;font-weight:900;font-style:italic;line-height:1.2;letter-spacing:-.06em}
+#event-host-led-prototype .arena-scorecard .arena-dj-name{font-size:12px;font-weight:900;font-style:italic;overflow-wrap:anywhere}
+#event-host-led-prototype .arena-scorecard small{font-size:11px;color:var(--a-muted)}
+#event-host-led-prototype .arena-scorecard .arena-big-score{font-size:26px;font-weight:900;font-style:italic;letter-spacing:-.05em;color:var(--a-text);line-height:1.2}
+#event-host-led-prototype .arena-scorecard.winner .arena-big-score{color:var(--a-primary)}
+#event-host-led-prototype .arena-scorecard .arena-points{font-size:13px;color:var(--a-primary);font-weight:700}
+#event-host-led-prototype .arena-result-wrap{max-height:275px}
+#event-host-led-prototype .arena-result-caption{font-size:11px;color:var(--a-muted);margin:0 0 8px}
+#event-host-led-prototype .arena-result-tabs{display:flex;gap:18px;margin:0 0 10px;border-bottom:1px solid var(--a-line)}
+#event-host-led-prototype .arena-result-tabs button{background:transparent;color:var(--a-muted);border:0;border-radius:0;padding:7px 0;font-size:12px;box-shadow:none;font-style:normal}
+#event-host-led-prototype .arena-result-tabs button.primary{color:var(--a-primary);border-bottom:2px solid var(--a-primary)}
+#event-host-led-prototype .arena-result-tabs .arena-button.primary{background:transparent;box-shadow:none;border-color:transparent;border-bottom:2px solid var(--a-primary)}
+#event-host-led-prototype .arena-entry-title{display:flex;align-items:center;gap:14px;margin:12px 0 24px}
+#event-host-led-prototype .arena-entry-title>div:first-child{background:#06b6d415;color:var(--a-primary);padding:14px;border-radius:16px;border:1px solid #06b6d440}
+#event-host-led-prototype .arena-entry-title svg{width:30px;height:30px}
+#event-host-led-prototype .arena-entry-title h1{font-size:34px;margin:0}
+#event-host-led-prototype .arena-entry-grid{grid-template-columns:1fr 1fr}
+#event-host-led-prototype .arena-entry-grid .arena-panel{padding:24px;display:flex;flex-direction:column}
+#event-host-led-prototype .arena-entry-grid .arena-panel>svg{width:30px;height:30px;color:var(--a-primary);margin-bottom:20px}
+#event-host-led-prototype .arena-entry-grid h2{font-size:23px;font-weight:900;font-style:italic;letter-spacing:-.05em}
+#event-host-led-prototype .arena-entry-grid .arena-button{margin-top:auto;min-height:52px;font-size:16px}
+@media(max-width:950px){#event-host-led-prototype .arena-room-layout{grid-template-columns:minmax(0,1fr) 164px;gap:13px}#event-host-led-prototype #ef-main{padding:17px}#event-host-led-prototype .arena-players{grid-template-columns:repeat(3,minmax(0,1fr))}#event-host-led-prototype .arena-stage-head{grid-template-columns:85px minmax(0,1fr) 60px;padding:15px 12px;gap:8px}#event-host-led-prototype .arena-track-name{font-size:31px}#event-host-led-prototype .arena-scorecard{padding:18px 8px}#event-host-led-prototype .arena-scorecard .arena-big-score{font-size:23px}}
+@media(max-width:700px){#event-host-led-prototype .arena-frame{grid-template-columns:54px minmax(0,1fr);grid-template-rows:auto;min-height:620px}#event-host-led-prototype .arena-side{flex-direction:column;gap:12px;padding:13px 3px;border-right:1px solid var(--a-line);border-bottom:0}#event-host-led-prototype .arena-side button{width:47px;font-size:11px;padding:8px 2px;gap:4px}#event-host-led-prototype .arena-side .arena-settings{margin-top:auto}#event-host-led-prototype .arena-side svg{width:19px;height:19px}#event-host-led-prototype #ef-main{padding:13px 10px}#event-host-led-prototype .arena-room-layout{grid-template-columns:1fr}#event-host-led-prototype .arena-hud{border:1px solid var(--a-line);border-radius:12px;padding:14px;display:grid;grid-template-columns:1fr;gap:14px}#event-host-led-prototype .arena-hud-facts{grid-template-columns:repeat(2,1fr)}#event-host-led-prototype .arena-stage-head{grid-template-columns:1fr 1fr;padding:14px;gap:12px;min-height:0}#event-host-led-prototype .arena-track{grid-column:1/-1;grid-row:1;text-align:left}#event-host-led-prototype .arena-track-meta{justify-content:flex-start}#event-host-led-prototype .arena-track-name{font-size:31px}#event-host-led-prototype .arena-phase-label{font-size:15px}#event-host-led-prototype .arena-round-count strong{font-size:21px}#event-host-led-prototype .arena-players{grid-template-columns:repeat(2,minmax(0,1fr));max-height:350px;gap:8px}#event-host-led-prototype .arena-player-card{padding:12px 8px;min-height:100px}#event-host-led-prototype .arena-player-name{gap:5px;flex-wrap:wrap}#event-host-led-prototype .arena-player-name strong{font-size:12px}#event-host-led-prototype .arena-bottom-bar{grid-template-columns:1fr}#event-host-led-prototype .arena-bottom-bar>.arena-button,#event-host-led-prototype .arena-auto-wait{min-height:56px}#event-host-led-prototype .arena-scorecards,#event-host-led-prototype .arena-scorecards.with-self{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#event-host-led-prototype .arena-scorecard{border-radius:15px;padding:14px 7px}#event-host-led-prototype .arena-scorecard .arena-big-rank{font-size:26px}#event-host-led-prototype .arena-scorecard .arena-big-score{font-size:23px}#event-host-led-prototype .arena-entry-grid{grid-template-columns:1fr}#event-host-led-prototype .arena-entry-grid .arena-panel{padding:18px}#event-host-led-prototype .arena-entry-title h1{font-size:25px}#event-host-led-prototype .arena-entry-title{gap:10px}#event-host-led-prototype .arena-entry-title>div:first-child{padding:9px}#event-host-led-prototype .arena-entry-title svg{width:24px}#event-host-led-prototype .arena-panel{padding:13px}#event-host-led-prototype .arena-room-heading h1{font-size:17px}}
+@media(pointer:coarse){#event-host-led-prototype .arena-player-card .arena-button{min-height:44px}#event-host-led-prototype .arena-player-card .arena-player-menu{min-width:44px;min-height:44px;position:static;align-self:flex-end}#event-host-led-prototype .arena-sim input,#event-host-led-prototype .arena-sim select{font-size:16px}}
+
+</style>
+<script>
+(() => {
+  const root=document.getElementById('event-host-led-prototype');
+  const main=root.querySelector('#ef-main');
+  const dialog=root.querySelector('#ef-dialog');
+  const roleControl=root.querySelector('#ef-role');
+  const kindControl=root.querySelector('#ef-kind');
+  const sceneControl=root.querySelector('#ef-scene');
+  const caseControl=root.querySelector('#ef-case');
+  const charts=[{id:'a',title:'AA',style:'SP',difficulty:'ANOTHER',level:12},{id:'b',title:'V',style:'SP',difficulty:'ANOTHER',level:12},{id:'c',title:'Tomorrow Perfume',style:'SP',difficulty:'HYPER',level:9}];
+  const defaults=()=>({view:'entry',role:'host-only',kind:'casual',phase:'lobby',condition:'standard',name:'週末の合同プレー',style:'SP',metric:'EX SCORE',people:15,pending:0,ready:12,submitted:8,submittedIds:null,disconnectedIds:[],reviewRestIds:[],selfReady:false,selfStatus:'pending',selfReason:null,round:1,chart:null,candidate:null,rounds:[],joined:false,started:false,fixedN:null,hostLost:false,selfLost:false,nextWait:false,casualWait:false,left:false,kicked:[],showAll:false,resultTab:'round',detail:false,endReason:null,notice:'',error:'',joinId:'',joinCode:'',search:'',sourceFail:false,noCommon:false,historyMode:'complete',pendingConfirmation:null});
+  let s={...defaults(),role:'host-player',view:'room',phase:'ready',chart:charts[0],joined:true,started:true,people:20,ready:12,pending:2};
+  const restored=window.openai?.widgetState?.privateContent;
+  if(restored&&restored.version===4)s={...s,...restored.state,pendingConfirmation:null,notice:'',error:''};
+  const host=()=>s.role!=='player';
+  const plays=()=>s.role!=='host-only';
+  const tournament=()=>s.kind==='tournament';
+  const pendingOthers=()=>Math.max(0,s.pending-(s.nextWait?1:0));
+  const eligible=()=>Array.from({length:s.people},(_,i)=>i).filter(i=>!s.kicked.includes(i)&&!(plays()&&s.nextWait&&i===selfIndex())&&(tournament()||i<s.people-pendingOthers()));
+  const total=()=>eligible().length;
+  const playing=()=>s.playingIds||eligible().filter(i=>!(plays()&&i===selfIndex()&&(s.nextWait||s.casualWait)));
+  const isSubmitted=id=>plays()&&id===selfIndex()?s.selfStatus==='submitted':s.submittedIds?s.submittedIds.includes(id):otherIndex(id)<s.submitted;
+  const isDone=id=>isSubmitted(id)||(plays()&&id===selfIndex()&&s.selfStatus==='absent')||s.kicked.includes(id)||(s.absences||[]).some(a=>a.id===id);
+  const pendingIds=()=>playing().filter(id=>!isDone(id));
+  const activeSelf=()=>plays()&&playing().includes(selfIndex());
+  const otherIndex=i=>i-(plays()&&i>selfIndex()?1:0);
+  const selfIndex=()=>Math.min(7,Math.max(0,s.people-1));
+  const displayName=i=>i===selfIndex()&&plays()?'DJ SAMPLE（あなた）':`PLAYER ${String(i+1).padStart(2,'0')}`;
+  const typeLabel=()=>tournament()?'大会':'合同プレー';
+  const roleLabel=()=>s.role==='host-only'?'進行専任Host':s.role==='host-player'?'プレー兼任Host':'参加者';
+  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const button=(label,act,style='',disabled=false,extra='')=>`<button type="button" class="arena-button cursor-interaction ${style}" data-act="${act}" ${disabled?'disabled':''} ${extra}>${label}</button>`;
+  const banner=(text,kind='')=>`<div class="arena-banner ${kind}">${text}</div>`;
+  const actions=items=>`<div class="arena-actions">${items}</div>`;
+  const stageLabel=()=>({lobby:'開催前・待機室',picking:'選曲中',ready:'譜面確定・開始待ち',play:'プレー・提出待ち',round:'曲別結果',final:'開催終了'})[s.phase];
+  const selected=()=>s.chart||charts[0];
+  const song=()=>`<section class="arena-panel arena-song"><div class="arena-small">第${s.round}曲${s.phase==='picking'?'・候補':''}</div><div class="arena-song-title">${esc(selected().title)}</div><div class="arena-muted">${s.style} · ${selected().difficulty} · Lv${selected().level} · ${s.metric}</div></section>`;
+
+  function stats(){
+    if(s.phase==='lobby')return `プレー参加者 ${total()}人 <span class="arena-small">最大20人・専任Hostは別枠</span>`;
+    if(['picking','ready'].includes(s.phase))return `この曲の対象 ${total()}人 <span class="arena-small">最大20人</span>${s.pending||s.nextWait?`<div class="arena-small">次曲から参加：${s.pending||1}人（今曲の対象外）</div>`:''}`;
+    if(s.phase==='play')return `提出・欠場確定 ${playing().filter(isDone).length}/${playing().length}人 <span class="arena-small">スコアは曲確定後に公開</span>`;
+    return `${s.rounds.filter(r=>!r.invalid).length}曲の結果が確定しています`;
+  }
+  function rosterStatus(i){
+    if(s.kicked.includes(i))return (s.kickedSubmitted||[]).includes(i)?'Kick済み・提出保持':'Kick済み';
+    if((s.selfLost&&plays()&&i===selfIndex())||(s.disconnectedIds||[]).includes(i))return s.phase==='play'&&isSubmitted(i)?'提出済み・切断中':'切断中・枠保持';
+    if((!tournament()&&pendingOthers()&&i>=s.people-pendingOthers())||(s.nextWait&&i===selfIndex()&&plays()))return '次曲から参加';
+    if(s.phase==='lobby')return '接続中';
+    if(s.phase==='picking')return '選曲待ち';
+    if(s.phase==='ready')return 'この曲に参加';
+    if(s.phase==='play'){if(!playing().includes(i))return '次曲から参加';return i===selfIndex()&&plays()?(s.selfStatus==='submitted'?'提出済み':s.selfStatus==='absent'?'欠場確定':'未提出'):isSubmitted(i)?'提出済み':'未提出';}
+    return '結果公開済み';
+  }
+  function makeResults(){
+    const ids=tournament()?(s.fixedRoster||Array.from({length:s.fixedN||s.people},(_,i)=>i)):playing();
+    const entries=ids.map(i=>({id:i,name:displayName(i),score:s.metric==='EX SCORE'?2800-i*31:6+i*2,absence:s.kicked.includes(i)&&!(s.kickedSubmitted||[]).includes(i)?'Kick':(s.absences||[]).find(a=>a.id===i)?.reason||(tournament()&&s.nextWait&&i===selfIndex()?'復帰待ち':null)}));
+    if(s.condition==='tie-absence'&&entries.length>2){entries[1].score=entries[0].score;entries.at(-1).absence='未提出のまま締切';}
+    const own=entries.find(e=>e.id===selfIndex());if(plays()&&s.selfStatus==='absent'&&own)own.absence=s.selfReason||'スキップ';
+    const valid=entries.filter(e=>!e.absence).sort((a,b)=>s.metric==='EX SCORE'?b.score-a.score:a.score-b.score);
+    for(let i=0;i<valid.length;i++){valid[i].rank=i>0&&valid[i].score===valid[i-1].score?valid[i-1].rank:i+1;valid[i].points=tournament()?(s.fixedN||ids.length)-valid[i].rank+1:null;}
+    for(const e of entries.filter(e=>e.absence)){e.rank=null;e.points=tournament()?0:null;e.score=s.metric==='EX SCORE'?0:9999;}
+    return [...valid,...entries.filter(e=>e.absence)];
+  }
+  function publish(invalid=false){s.phase='round';s.joined=true;if(!s.rounds.some(r=>r.number===s.round))s.rounds.push({number:s.round,chart:selected(),entries:makeResults(),invalid});else if(invalid)s.rounds.find(r=>r.number===s.round).invalid=true;s.showAll=false;}
+  function overall(){const values=new Map();for(const round of s.rounds.filter(r=>!r.invalid))for(const e of round.entries){const old=values.get(e.id)||{id:e.id,name:e.name,points:0};old.points+=e.points||0;values.set(e.id,old);}const rows=[...values.values()].sort((a,b)=>b.points-a.points);for(let i=0;i<rows.length;i++)rows[i].rank=i>0&&rows[i].points===rows[i-1].points?rows[i-1].rank:i+1;return rows;}
+  function table(entries,isOverall=false){let visible=entries;if(!host()&&!s.showAll){const own=entries.findIndex(e=>e.id===selfIndex());const indexes=new Set([0,1,2,...Array.from({length:5},(_,i)=>own-2+i)].filter(i=>i>=0&&i<entries.length));visible=entries.filter((e,i)=>indexes.has(i));}return `<div class="arena-result-wrap"><table aria-label="${isOverall?'総合順位':'曲別順位'}"><thead><tr><th>順位</th><th>参加者</th><th>${isOverall?'総合pt':s.metric}</th>${tournament()&&!isOverall?'<th>獲得pt</th>':''}</tr></thead><tbody>${visible.map(e=>`<tr class="${e.id===selfIndex()&&plays()?'self':''}"><td>${e.rank===null?'欠場':e.rank+'位'}</td><td>${esc(e.name)}${e.absence?`<div class="arena-small">${esc(e.absence)}</div>`:''}</td><td>${isOverall?e.points+'pt':e.score}${e.absence?'<div class="arena-small">欠場扱い</div>':''}</td>${tournament()&&!isOverall?`<td>${e.points}pt</td>`:''}</tr>`).join('')}</tbody></table></div>${!host()&&entries.length>8?actions(button(s.showAll?'自分の周辺に戻す':'全順位を見る','all-ranks')):''}`;}
+  function resultContent(history=false){
+    const last=s.detail?s.rounds.find(r=>r.number===Number(s.detail))||s.rounds.at(-1):s.rounds.at(-1);
+    const valid=s.rounds.filter(r=>!r.invalid);
+    if(s.phase==='final'&&!valid.length&&!s.detail)return `<section class="arena-panel"><h2>確定した曲はありません</h2><p class="arena-muted">${s.rounds.length?'プレーした曲は無効として履歴に残ります。':'曲別結果はまだ確定していません。'}優勝者や順位は表示しません。</p>${s.rounds.map(r=>`<p>第${r.number}曲 ${esc(r.chart.title)}・無効</p>`).join('')}</section>`;
+    if((s.phase==='final'||s.resultTab==='overall')&&tournament()&&!s.detail)return `<section class="arena-panel"><h2>総合結果</h2><p class="arena-small">大会開始時の${s.fixedN||s.people}人で配点。退出・欠場で配点人数は変わりません。同点は同順位です。</p>${table(overall(),true)}</section>${roundList(history)}`;
+    if(!last)return `<section class="arena-panel"><p>確定した曲はありません。</p></section>`;
+    if(s.phase==='final'&&!tournament()&&!s.detail)return `<section class="arena-panel"><h2>開催の振り返り</h2><p>${valid.length}曲をプレーしました。合同プレーでは総合順位・ポイントを集計しません。</p>${roundList(history)}</section>`;
+    return `<section class="arena-panel"><div class="arena-row"><h2>第${last.number}曲 ${esc(last.chart.title)}</h2>${last.invalid?'<span class="arena-small">無効・総合から除外</span>':'<span class="arena-small">公開・確定済み</span>'}</div>${last.invalid?banner('この曲は無効です。以下は無効化前に公開された結果で、総合には加算しません。','warning'):''}${plays()?`<div class="arena-self-rank">自分：${last.entries.find(e=>e.id===selfIndex())?.rank?last.entries.find(e=>e.id===selfIndex()).rank+'位':'欠場または参加対象外'}${tournament()?'・'+(last.entries.find(e=>e.id===selfIndex())?.points||0)+'pt':''}</div>`:''}${table(last.entries)}${host()&&!history&&s.phase!=='final'&&!last.invalid?`<details><summary>この曲の管理</summary>${actions(button('この曲を無効にする','invalidate','danger',s.hostLost,`data-round="${last.number}"`))}</details>`:''}</section>`;
+  }
+  function roundList(history=false){return `<div style="margin-top:14px">${s.rounds.map(r=>`<button type="button" class="arena-history-item cursor-interaction" data-act="round-detail" data-round="${r.number}"><strong>第${r.number}曲 ${esc(r.chart.title)} ${r.invalid?'・無効':''}</strong><span class="arena-small">曲別順位・${s.metric}${tournament()?'・大会pt':''}を見る</span></button>`).join('')}</div>`;}
+  function startBlock(){
+    if(s.hostLost)return 'Hostの再接続を待っています';
+    if(!s.chart)return '譜面を確定してください';
+    if(total()===0)return 'この曲の対象者が0人です';
+    return null;
+  }
+  const icon=name=>`<i data-lucide="${name}" aria-hidden="true"></i>`;
+  function stageHead(){
+    const labels={lobby:['WAITING','参加者を待っています'],picking:['PICK MUSIC','Hostが選曲'],ready:['HOST START','開始待ち'],play:['IN PLAY','プレー・提出待ち'],round:['ROUND RESULT','曲別結果'],final:['EVENT FINISHED','開催終了']};
+    const [label,jp]=s.detail?['ROUND RESULT','公開済みの結果']:labels[s.phase];
+    const showTrack=!['lobby','picking'].includes(s.phase);
+    const track=showTrack?(s.detail?s.rounds.find(r=>r.number===Number(s.detail))?.chart:selected()):null;
+    const title=track?.title||(s.phase==='lobby'?s.name:'次の曲を選ぼう');
+    return `<header class="arena-stage-head ${s.phase}"><div class="arena-phase-label">${label}<small>${jp}</small></div><div class="arena-track"><div class="arena-track-label">${showTrack?'HOST SELECTED':typeLabel()+' · INVITE ONLY'}</div><div class="arena-track-name">${esc(title||typeLabel())}</div>${track?`<div class="arena-track-meta"><span>${s.style}</span><span class="arena-difficulty ${track.difficulty==='HYPER'?'hyper':''}">${track.difficulty}</span><span class="arena-level">Lv${track.level}</span></div>`:`<div class="arena-track-meta"><span>${s.style}</span><span>${s.metric}</span></div>`}</div><div class="arena-round-count"><small>${s.phase==='lobby'?'PLAYERS':'ROUND'}</small><strong>${s.phase==='lobby'?total():s.detail||s.round}</strong><small>${s.phase==='lobby'?'最大20人':s.metric}</small></div></header>`;
+  }
+  function gamePlayers(){
+    const ids=Array.from({length:s.people},(_,i)=>i);
+    if(plays()&&ids.includes(selfIndex()))ids.splice(0,0,...ids.splice(ids.indexOf(selfIndex()),1));
+    return `<div class="arena-players" aria-label="参加対象・接続・提出状況">${s.people?ids.map(i=>{
+      const own=plays()&&i===selfIndex(),status=rosterStatus(i),included=status==='この曲に参加',submitted=status==='提出済み',away=/切断|待ち|欠場|Kick/.test(status);
+      return `<article class="arena-player-card ${own?'self':''} ${included?'ready':''} ${submitted?'submitted':''} ${away?'away':''}"><div class="arena-player-name"><span class="arena-avatar">${icon('user')}</span><div><strong>${own?'DJ SAMPLE':esc(displayName(i))}</strong>${own?`<small>あなた${host()?'・Host':''}</small>`:''}</div></div><div class="arena-status">${icon(submitted?'circle-check':away?'circle-minus':'circle')}${status}</div>${host()&&!own&&!s.kicked.includes(i)?button('…','kick','subtle arena-player-menu',s.hostLost||s.selfLost,`data-person="${i}" aria-label="${esc(displayName(i))}の管理"`):''}</article>`;
+    }).join(''):`<div class="arena-history-placeholder" style="grid-column:1/-1;min-height:200px">${icon('users')}<p>この曲の対象者はいません。参加を待つか、開催を終了できます。</p></div>`}</div>`;
+  }
+  function gameSelfNote(){
+    if(!plays())return '';
+    if(s.selfLost)return banner('接続が切れています。参加枠・同じ曲を保持しています。'+actions(button('再接続して開催へ戻る','reconnect','primary')),'warning');
+    if(s.nextWait)return banner(tournament()?'明示退出から復帰しました。次の曲から参加します。この曲は欠場・0ptです。':'次の曲から参加します。この曲はプレー・提出の対象外です。','warning');
+    if(s.phase!=='play')return '';
+    const text=s.selfStatus==='submitted'?'提出済み。サーバーで受理されました。結果公開を待っています。':s.selfStatus==='absent'?`欠場確定（${s.selfReason||'スキップ'}）。`:'この譜面をプレーすると、連携ツールから結果を自動送信します。';
+    return `<div class="arena-self-brief"><strong>あなた：</strong>${text}${s.sourceFail&&s.selfStatus==='pending'?`<div class="arena-source-alert">連携ツールの結果を読み取れません。接続やファイルを確認してください。復旧を待つか、Host接続中ならスキップできます。</div>`:''}</div>`;
+  }
+  function gameActionBar(){
+    let primary='',message='',note='';
+    if(s.phase==='lobby'){
+      message=host()?'集まったら、開催を開始して選曲へ。':'Hostの開催開始を待っています。';
+      note=tournament()?'開始すると名簿と配点人数を固定します。':'合同プレーは途中参加できます。';
+      primary=host()?button(icon('play')+'開催を開始して選曲へ','start-event','primary',total()===0||s.hostLost||s.selfLost):'<div class="arena-auto-wait">Hostの開始待ち</div>';
+      if(total()===0)message='参加者が0人のため開始できません。招待して待つか、開催を終了できます。';
+    }else if(s.phase==='picking'){
+      message=host()?'みんなが遊べる曲から選んで、譜面を確定します。':'Hostが曲を選んでいます。';
+      primary=host()?button(icon('music-2')+'曲を選ぶ','open-picker','primary',s.hostLost||s.noCommon||s.selfLost):'<div class="arena-auto-wait">選曲を待っています</div>';
+      note=s.noCommon?'共通する譜面がありません。所持・解禁条件の確認が必要です。':'曲間で待機室へ戻る必要はありません。';
+    }else if(s.phase==='ready'){
+      const block=startBlock();
+      message=host()?(block||'通話・配信で曲と開始を共有したら、プレー開始。'):s.nextWait?'この曲は対象外です。次の曲から参加します。':'Hostの開始の合図を待っています。';
+      note=host()?'通話等でゲーム内の準備を確認します。休憩・切断者を待つか進めるかもHostが判断します。':'曲・難易度・開始の合図は通話・配信で共有します。アプリの操作は不要です。';
+      primary=host()?button(icon('play')+'この曲のプレーを開始','start-round','primary',!!block||s.selfLost):'<div class="arena-auto-wait">'+(s.nextWait?'次の曲から参加':'Hostの開始待ち')+'</div>';
+    }else if(s.phase==='play'){
+      message=s.hostLost?'Hostの再接続待ち。結果確定は停止中です。':'全員の提出・欠場が確定すると、曲別結果を公開します。';
+      note='プレー中のスコアと順位は、Hostにも表示しません。';
+      primary='<div class="arena-auto-wait">'+(s.casualWait||s.nextWait?'次曲を待っています':plays()&&s.selfStatus==='submitted'?'提出済み · 結果公開待ち':'自動提出・結果待ち')+'</div>';
+    }else if(s.phase==='round'){
+      message=host()?'結果を見たら、次の曲へ。':'結果が公開されました。次の曲はHostが進めます。';
+      note=tournament()?`開催開始時の${s.fixedN||s.people}人で配点。`:'合同プレーは曲別結果だけを記録します。';
+      primary=host()?button(icon('skip-forward')+'次の曲を選ぶ','next','primary',s.hostLost||s.selfLost):'<div class="arena-auto-wait">Hostの次曲待ち</div>';
+    }else{
+      message=s.endReason||'開催が終了しました。';note=s.historyMode==='partial'?'部分履歴：最後に受信した結果まで。':'終了結果と公開済み曲を受信し、この端末に保存した状態です。';
+      primary=button(icon('history')+'開催履歴を見る','history','primary');
+    }
+    return `<footer class="arena-bottom-bar"><div class="arena-bottom-message"><strong>${message}</strong><span class="arena-small">${note}</span></div>${primary}</footer>`;
+  }
+  function gameHud(){
+    const prior=['picking','ready'].includes(s.phase),playingNow=s.phase==='play',ended=s.phase==='final';
+    const historyItems=s.rounds.map(r=>`<button type="button" class="arena-past-round cursor-interaction" data-act="view-round" data-round="${r.number}">${icon('music')}<span><small>ROUND ${r.number}${r.invalid?' · 無効':''}</small><strong>${esc(r.chart.title)}</strong></span></button>`).join('');
+    const management=host()&&!ended?`${s.phase==='ready'?button('譜面を選び直す','reselect','',s.hostLost||s.selfLost):''}${playingNow?button(`進行中の第${s.round}曲を締め切る`,'deadline','',s.hostLost||s.selfLost)+button(`進行中の第${s.round}曲を無効にする`,'invalidate','danger',s.hostLost||s.selfLost):''}${prior&&s.rounds.length?button('直前の曲を無効にする','invalidate','danger',s.hostLost||s.selfLost,`data-round="${s.rounds.at(-1).number}"`):''}${button('開催を終了する','end','',s.hostLost||s.selfLost)}`:'';
+    const skip=plays()&&playingNow&&activeSelf()&&s.selfStatus==='pending'&&!s.nextWait&&!s.casualWait?button('この曲をスキップする','skip','',s.hostLost||s.selfLost):'';
+    return `<aside class="arena-hud"><section><h2>ここまでの曲</h2>${historyItems||'<div class="arena-history-placeholder">曲別結果は<br>ここに残ります</div>'}</section><section><h2>開催情報</h2><div class="arena-hud-facts"><div><small>モード</small><strong>${typeLabel()}</strong></div><div><small>指標</small><strong>${s.metric}</strong></div><div><small>参加者</small><strong>${s.people-s.kicked.length} / 20</strong></div><div><small>Host</small><strong>${s.role==='host-player'?'プレー兼任':'進行専任'}</strong></div></div>${tournament()&&s.started?`<p class="arena-small" style="margin-top:10px">配点人数 N=${s.fixedN||s.people}（固定）</p>`:''}</section>${s.phase==='lobby'?`<details><summary>招待情報</summary><p style="margin-top:10px">開催ID EV8DEMO2<br>参加コード K8PLAY22</p>${button('招待情報を表示','invite')}<span class="arena-small">専任Hostにはプレー連携は不要です。</span></details>`:''}${management?`<details class="arena-admin"><summary>開催の管理</summary><div class="arena-actions">${management}</div></details>`:''}${skip?`<div class="arena-actions">${skip}</div>`:''}${!host()&&!ended?button('開催から退出','leave','subtle',s.hostLost||s.selfLost):ended?button('開催の入口へ','entry','subtle'):''}</aside>`;
+  }
+  function gamePodium(){
+    if(s.detail)return '';
+    const overallView=tournament()&&(s.phase==='final'||s.resultTab==='overall');
+    if(!s.rounds.some(r=>!r.invalid)&&s.phase==='final')return '';
+    const round=s.rounds.at(-1);
+    if(!round||round.invalid&&!overallView)return '';
+    const entries=overallView?overall():round.entries;
+    const selectedEntries=entries.slice(0,3),own=entries.find(e=>e.id===selfIndex());
+    if(plays()&&own&&!selectedEntries.some(e=>e.id===own.id))selectedEntries.push(own);
+    return `<div class="arena-scorecards ${selectedEntries.length===4?'with-self':''}" aria-label="${overallView?'総合':'曲別'}順位カード">${selectedEntries.map(e=>`<article class="arena-scorecard ${e.rank===1?'winner':''} ${plays()&&e.id===selfIndex()?'self':''}"><span class="arena-avatar">${icon('user')}</span><div class="arena-big-rank">${e.rank?e.rank+'位':'欠場'}</div><strong class="arena-dj-name">${esc(e.name.replace('（あなた）',''))}</strong>${plays()&&e.id===selfIndex()?'<small>あなた</small>':''}<small>${overallView?'総合ポイント':s.metric}</small><div class="arena-big-score">${overallView?e.points+'pt':e.score}</div>${tournament()&&!overallView?`<span class="arena-points">+${e.points}pt</span>`:''}${e.absence?`<small>${esc(e.absence)}・欠場値</small>`:''}</article>`).join('')}</div>`;
+  }
+  function gameResults(){
+    const tabs=tournament()&&s.phase==='round'&&!s.detail?`<div class="arena-result-tabs">${button('曲別結果','round-tab',s.resultTab==='round'?'primary':'')}${button('ここまでの総合','overall-tab',s.resultTab==='overall'?'primary':'')}</div>`:'';
+    return `${s.detail?button('前の画面に戻る','close-detail','subtle'):''}${tabs}${gamePodium()}${resultContent()}`;
+  }
+  function room(){
+    const ended=s.phase==='final';
+    const heading=`<div class="arena-room-heading"><div><h1>${esc(s.name||typeLabel()+' '+s.style)}</h1><span class="arena-small">${typeLabel()} · ${roleLabel()}${s.role==='host-only'?'（プレーしません）':''}</span></div>${ended?'<span class="arena-small">開催終了</span>':`<span class="arena-small">招待制 · 最大20人</span>`}</div>`;
+    const lost=s.hostLost?banner('Host再接続待ち · 残り 04:32。自動提出は継続できます。結果確定・開始・スキップ・退出は再接続後。','warning'):'';
+    const disconnectNotice=host()&&s.disconnectedIds.length&&!ended&&!s.detail?banner(`切断中：${s.disconnectedIds.length}人。${s.phase==='round'?'席を保持しています。確定済みの結果は変わらず、次の曲にも参加対象として残ります。':'席と参加対象を保持しています。通話で確認し、待つか進めるか判断してください。'}`,'warning'):'';
+    const progress=['round','final'].includes(s.phase)||s.detail?'':`<div class="arena-progress-line"><strong>${stats()}</strong><span class="arena-small">${s.phase==='ready'?'ゲーム内で準備 · Hostが開始':s.phase==='play'?'自動提出 · スコアは確定後に公開':''}</span></div>`;
+    const picker=s.phase==='picking'&&host()&&s.pickerOpen?pickPanel():'';
+    const viewResult=['round','final'].includes(s.phase)||s.detail;
+    const content=viewResult?gameResults():`${picker}${gameSelfNote()}${gamePlayers()}`;
+    return `${heading}${lost}${disconnectNotice}${s.notice?banner(esc(s.notice)):''}<div class="arena-room-layout"><div class="arena-playfield">${stageHead()}${progress}${content}${s.detail?'':gameActionBar()}</div>${gameHud()}</div>`;
+  }
+  function pickPanel(){
+    return `<section class="arena-search-panel"><header><strong>${icon('music-2')} PICK MUSIC</strong>${button('閉じる','close-picker','subtle')}</header><div class="arena-search-body"><input id="ef-search" aria-label="曲を検索" placeholder="曲名で検索" value="${esc(s.search)}"><p class="arena-small" style="margin-top:8px">参加者全員の所持・解禁条件に合う譜面</p>${s.noCommon?banner('共通する譜面がありません。切断中の参加者を含めて所持・解禁条件を確認してください。','warning'):`<div class="arena-charts">${charts.filter(c=>c.title.toLowerCase().includes(s.search.toLowerCase())).map(c=>`<button type="button" class="arena-chart cursor-interaction" data-act="pick" data-chart="${c.id}" aria-pressed="${s.candidate===c.id}"><span class="arena-chart-thumb">${icon('music')}</span><span><strong>${esc(c.title)}</strong><span class="arena-small">${s.style} · ${c.difficulty}</span></span><span class="arena-level">Lv${c.level}</span></button>`).join('')}</div>${s.candidate?`<div class="arena-actions">${button('この譜面を確定する','confirm-pick','primary')}</div>`:''}`}</div></section>`;
+  }
+  function entry(){
+    return `<div class="arena-entry-title"><div>${icon('users')}</div><div><div class="arena-small">INFINITAS ARENA · EVENT</div><h1>合同プレー・大会</h1></div></div><p class="arena-muted">招待された仲間と、Hostの選曲で遊ぼう。</p>${s.joined&&s.phase!=='final'?banner(`<div class="arena-row"><span>参加中：${esc(s.name)}<br><small>第${s.round}曲 · ${stageLabel()}</small></span>${button('開催へ戻る','room','primary')}</div>`,'return'):''}${s.left?banner('以前の開催から退出しています。復帰は次に選曲確定する曲から。'+actions(button('以前の開催へ復帰する','return','primary')),'warning'):''}${s.condition==='not-supported'?banner('接続先は開催に対応していません。通常対戦は利用できます。','warning'):''}${s.notice?banner(esc(s.notice)):''}<div class="arena-entry-grid"><section class="arena-panel">${icon('ticket')}<h2>招待から参加</h2><p class="arena-muted">Hostから受け取った情報で入室します。</p>${button('招待情報を入力して参加','join','primary',s.condition==='not-supported')}</section><section class="arena-panel">${icon('flag')}<h2>みんなで遊ぶ場を作る</h2><p class="arena-muted">合同プレー、またはポイントを競う大会。Hostはプレー兼任・進行専任を選べます。</p>${button('開催を作る','create','primary',s.condition==='not-supported')}</section></div><hr class="arena-divider"><div class="arena-row"><span class="arena-small">この端末に残した曲と結果</span>${button('開催履歴を見る','history','subtle')}</div>`;
+  }
+
+  function lobbyInfo(){return `<section class="arena-panel"><h2>参加者が集まるまで待機</h2><p>${tournament()?'開催開始で名簿と配点人数が固定されます。開始後は新規参加できません。':'途中参加できます。選曲確定後に来た人は次の曲から参加します。'}</p><div class="arena-small">Host：DJ HOST · ${s.role==='host-player'?'プレー兼任':'進行専任'}</div><hr class="arena-divider"><h3>招待情報</h3><p>開催ID：EV8DEMO2<br>参加コード：K8PLAY22</p>${button('招待情報を表示','invite')}<p class="arena-small" style="margin-top:12px">${plays()?'連携ツール：接続中。所持・解禁条件を使って共通譜面を選びます。':'専任Hostには連携ツールの設定は不要です。'}</p></section>`;}
+  function playHelp(){if(s.phase==='ready')return '';return `<section class="arena-panel"><h2>プレー・提出</h2><p class="arena-muted">${s.casualWait||s.nextWait?'自分はこの曲の提出対象ではありません。':'曲名・難易度を確認してプレーしてください。厳密な同時スタートは必要ありません。'}</p><p class="arena-small">進行中のスコアや順位は、Hostにも表示されません。</p></section>`;}
+  function resultSection(){return `${s.detail?button('結果の概要に戻る','close-detail','subtle'):''}${tournament()&&s.phase==='round'?actions(button('曲別結果','round-tab',s.resultTab==='round'?'primary':'')+button('ここまでの総合','overall-tab',s.resultTab==='overall'?'primary':'')):''}${resultContent()}`;}
+  function create(){return `<button type="button" class="arena-back cursor-interaction" data-act="entry">← 合同・大会へ</button><h1>開催の待機室を作る</h1><p class="arena-muted">設定して招待します。開催の開始は、参加者が集まってから操作します。</p><form id="ef-create-form" class="arena-panel"><label>開催名<input name="name" value="${esc(s.name)}" maxlength="80" placeholder="空欄でも作成できます"></label><div class="arena-form-grid"><label>開催タイプ<select name="kind"><option value="casual" ${!tournament()?'selected':''}>合同プレー</option><option value="tournament" ${tournament()?'selected':''}>大会</option></select></label><label>Hostの役割<select name="role"><option value="host-only" ${s.role==='host-only'?'selected':''}>進行専任（プレーしない）</option><option value="host-player" ${s.role==='host-player'?'selected':''}>プレー兼任</option></select></label><label>プレースタイル<select name="style"><option>SP</option><option ${s.style==='DP'?'selected':''}>DP</option></select></label><label>結果の指標<select name="metric"><option>EX SCORE</option><option ${s.metric==='MISS COUNT'?'selected':''}>MISS COUNT</option></select></label></div><div id="ef-create-note" class="arena-banner" style="margin-top:15px">${typeNote()}</div><p class="arena-small">招待制・参加コードは自動生成。専任Hostは連携ツール不要、兼任Hostはプレー用の設定が必要です。</p><div class="arena-actions"><button type="button" data-act="submit-local" class="arena-button primary cursor-interaction">待機室を作る</button>${button('キャンセル','entry')}</div></form>`;}
+  function typeNote(){return tournament()?'大会：開催開始時に参加者と配点人数を固定します。途中の新規参加は不可。曲別順位と総合ポイントを表示します。':'合同プレー：途中参加できます。曲別順位を表示し、総合順位・ポイントは集計しません。';}
+  function join(){const err=s.error;return `<button type="button" class="arena-back cursor-interaction" data-act="entry">← 合同・大会へ</button><h1>開催に参加する</h1><p class="arena-muted">Hostから受け取った開催IDと参加コードを入力してください。</p><form id="ef-join-form" class="arena-panel"><label>開催ID<input name="roomId" value="${esc(s.joinId)}" placeholder="EV8DEMO2" required></label><label>参加コード<input name="joinCode" value="${esc(s.joinCode)}" placeholder="K8PLAY22" maxlength="8" required></label>${err?`<div role="alert" class="arena-banner warning">${esc(err)}</div>`:''}<p class="arena-small">プレー参加にはDJ NAME・連携ツールの設定が必要です。招待された開催にだけ入室できます。</p><div class="arena-actions"><button type="button" data-act="submit-local" class="arena-button primary cursor-interaction">開催に参加する</button>${button('サンプルの招待情報を入れる','sample-invite')}</div></form>`;}
+  function history(){const mode=s.historyMode;return `<h1>開催履歴</h1><p class="arena-muted">この端末に受信・保存した開催です。通常対戦の成績には含まれません。</p>${s.detail?button('開催履歴の一覧へ','history-list','subtle'):''}${mode==='empty'?`<section class="arena-panel"><h2>開催履歴はありません</h2><p class="arena-muted">合同プレー・大会に参加すると、公開された結果がここに残ります。</p>${button('合同・大会へ','entry','primary')}</section>`:mode==='unknown'?banner('未対応バージョンの開催履歴です。読み取れませんが、元のデータは保持しています。','warning'):s.detail?`${mode==='partial'?banner('部分履歴：最後に受信した第1曲まで。開催終了後の結果は未受信です。最終受信：2026/10/04 20:15。','warning'):banner('完全な履歴：終了結果と全公開曲を受信済み')}<div class="arena-heading"><div><h2>${esc(s.name)}</h2><span class="arena-small">${typeLabel()} · ${s.style} · ${s.metric}</span></div></div>${tournament()?table(overall(),true):''}${s.rounds.map(r=>`<section class="arena-panel" style="margin-top:14px"><h2>第${r.number}曲 ${esc(r.chart.title)}${r.invalid?'・無効':''}</h2>${r.invalid?'<p class="arena-small">総合から除外。記録は残しています。</p>':''}${table(r.entries)}</section>`).join('')}`:`${mode==='partial'?banner('一部のみ受信した開催があります。未受信の結果を後日取得する保証はありません。','warning'):''}<button type="button" class="arena-history-item cursor-interaction" data-act="history-detail"><strong>${esc(s.name)}</strong><span class="arena-small">2026/10/04 · ${typeLabel()} · ${s.rounds.length}曲受信 · ${mode==='partial'?'部分':'完全'}</span></button>`}`;}
+  function normal(){return `<h1>対戦ロビーを探す</h1><p class="arena-muted">公開中の通常対戦に参加できます。</p>${s.joined&&s.phase!=='final'?banner(`<div class="arena-row"><div>開催に参加中です<div class="arena-small">画面移動は退出になりません。通常対戦への同時参加はできません。</div></div>${button('開催へ戻る','room','primary')}</div>`,'return'):''}<div class="arena-actions">${button('自動対戦','normal-reference','primary',s.joined&&s.phase!=='final')}${button('ルームを作る','normal-reference','',s.joined&&s.phase!=='final')}${button('IDで参加','normal-reference','',s.joined&&s.phase!=='final')}</div><hr class="arena-divider"><section class="arena-panel"><div class="arena-row"><div><h2>Lv12を遊びましょう</h2><span class="arena-small">ARENA · SP · EX SCORE · 1 / 2人</span></div>${button('参加','normal-reference','',s.joined&&s.phase!=='final')}</div></section>`;}
+  function render(){
+    if(!['entry','normal','create','join','room','history','reference','settings'].includes(s.view))s.view='entry';
+    root.querySelector('.arena-side').innerHTML=[['normal','通常対戦','home'],['entry','合同・大会','users'],['stats','成績','chart-no-axes-column'],['match-history','対戦履歴','history'],['history','開催履歴','calendar-clock']].map(([act,label,glyph])=>`<button type="button" class="cursor-interaction" data-act="${act}" ${s.view===act||(act==='entry'&&['room','create','join'].includes(s.view))?'aria-current="page"':''}>${icon(glyph)}<span>${label}</span></button>${act==='entry'&&s.joined&&s.phase!=='final'?`<button type="button" class="arena-active-event cursor-interaction" data-act="room">${icon('gamepad-2')}<span>開催へ戻る</span></button>`:''}`).join('')+`<button type="button" class="arena-settings cursor-interaction" data-act="settings">${icon('settings')}<span>設定</span></button>`;
+    main.innerHTML=({normal,entry,create,join,room,history,reference:()=>`<h1>${esc(s.referenceTitle||'通常対戦')}</h1><section class="arena-reference"><p class="arena-muted">通常対戦は従来の専用画面へ進みます。この試作では、開催への導線を確認できます。</p>${button('通常対戦のTopへ','normal')}</section>`,settings:()=>`<h1>設定</h1><section class="arena-panel"><h2>DJ SAMPLE</h2><p>プレー用連携ツール：接続中<br>所持パック・BIT/DJP解禁：設定済み</p><p class="arena-muted">開催専任HostはDJ NAMEで利用できます。プレーする人は連携設定が必要です。</p>${button(s.joined?'進行中の開催へ戻る':'合同・大会へ',s.joined?'room':'entry')}</section>`})[s.view]();
+    roleControl.value=s.role;kindControl.value=s.kind;sceneControl.value=s.view==='room'?s.phase:s.view==='reference'||s.view==='settings'?'normal':s.view;caseControl.value=s.condition;
+    root.querySelector('#ef-simulate').disabled=s.view!=='room'||!['ready','play'].includes(s.phase)||s.selfLost||(s.phase==='ready'&&(host()||!!startBlock()));
+    const caseNote=root.querySelector('#ef-case-note');caseNote.hidden=s.reviewRestIds.length===0;caseNote.textContent=s.reviewRestIds.length?'レビュー用：PLAYER 03が通話で休憩を申告した想定。アプリは休憩状態を自動判定せず、提出前は未提出として表示します。':'';
+    root.querySelector('#ef-return-peer').disabled=!s.disconnectedIds.length;
+    root.querySelector('#ef-simulate').textContent=s.hostLost&&s.submissionsComplete?'Hostの期限前の復帰を再現':s.sourceFail?'連携ツールの復旧・提出を再現':s.disconnectedIds.length||s.reviewRestIds.length?'接続中・プレーした人の提出を再現':'Hostの開始・自動提出を再現';
+    if(window.lucide)lucide.createIcons({attrs:{width:18,height:18}});
+    root.querySelectorAll('.arena-sim button').forEach(e=>e.classList.add('cursor-interaction'));
+    root.querySelector('#ef-live').textContent=`${roleLabel()}。${s.view==='room'?stageLabel():main.querySelector('h1')?.textContent||''}。${s.notice}`;
+  }
+  function save(){const state={...s,pendingConfirmation:null,error:''};const privateContent=new TextEncoder().encode(JSON.stringify(state)).length<14000?{version:4,state}:{version:4,state:{role:s.role,kind:s.kind,name:s.name,view:'entry'}};window.openai?.setWidgetState?.({modelContent:{入口:'専用ページ',立場:roleLabel(),タイプ:typeLabel(),場面:stageLabel(),状態:s.condition},privateContent})?.catch(()=>{});}
+  function confirm(title,text,act,data={}){s.pendingConfirmation={act,data};root.querySelector('#ef-dialog-content').innerHTML=`<h2 id="ef-dialog-title">${esc(title)}</h2><p>${esc(text)}</p>${actions(button('キャンセル','cancel-confirm')+button('確認して実行','accept-confirm','danger'))}`;dialog.showModal();}
+
+  function request(act,el){
+    if(['open-picker','pick','confirm-pick','start-event','start-round','reselect','skip','deadline','invalidate','next','end','leave','kick','obsolete-action'].includes(act)&&(s.hostLost||s.selfLost))return;
+    if(act==='start-event'&&tournament())return confirm('この人数で大会を開始しますか？',`${total()}人の名簿と配点人数を固定します。このあと新しい参加者は追加できません。`,'start-event');
+    if(act==='reselect')return confirm('譜面を選び直しますか？','確定した譜面を取り消し、選曲へ戻ります。新しい譜面は通話・配信で共有してください。','reselect');
+    if(act==='skip')return confirm('この曲をスキップしますか？',`この曲は欠場（スキップ）になります。${tournament()?'大会ポイントは0ptです。':''}あとから結果を提出できません。`,'skip');
+    if(act==='deadline')return confirm('未提出の人を締め切りますか？',`未提出の${pendingIds().length}人を欠場として確定します。締切後の提出は受け付けません。`,'deadline');
+    if(act==='invalidate'){const number=Number(el?.dataset.round)||s.round;const round=s.rounds.find(r=>r.number===number);return confirm(`第${number}曲「${round?.chart.title||selected().title}」を無効にしますか？`,'全員の総合集計から除外します。曲と無効の記録は開催履歴に残ります。','invalidate',{number});}
+    if(act==='end')return confirm('開催を終了しますか？',s.phase==='play'?'進行中の未確定曲は無効になります。確定済みの曲だけを最終結果に残します。':'次の曲には進めなくなります。確定した結果は開催履歴に残ります。','end');
+    if(act==='leave')return confirm('開催から退出しますか？',`提出済みの結果は残ります。復帰は次に選曲確定する曲からです。${tournament()?'不在の曲は欠場・0ptになります。':''}`,'leave');
+    if(act==='kick'){const person=Number(el.dataset.person);return confirm(`${displayName(person)}をKickしますか？`,'この開催には再参加できません。確定済み・提出済みの結果は残し、未提出なら欠場になります。','kick',{person});}
+    apply(act,el?.dataset||{});
+  }
+  function apply(act,data={}){
+    s.notice='';s.error='';
+    if(['normal','entry','create','join','room','history','settings'].includes(act)){s.view=act;if(act==='history'){s.detail=false;if(!s.rounds.length&&s.historyMode==='complete')s.historyMode='empty';}if(act==='create'&&s.role==='player')s.role='host-only';}
+    else if(['normal-reference','stats','match-history'].includes(act)){s.view='reference';s.referenceTitle=act==='stats'?'通常対戦の成績':act==='match-history'?'通常対戦の履歴':'通常対戦';}
+    else if(act==='sample-invite'){s.joinId='EV8DEMO2';s.joinCode='K8PLAY22';}
+    else if(act==='start-event'){if(total()===0)return;s.started=true;s.fixedRoster=tournament()?eligible():null;s.fixedN=tournament()?s.fixedRoster.length:null;s.phase='picking';}
+    else if(act==='pick')s.candidate=data.chart;
+    else if(act==='open-picker'){s.pickerOpen=true;}
+    else if(act==='close-picker'){s.pickerOpen=false;}
+    else if(act==='view-round'){s.returnPhase=s.phase;s.detail=Number(data.round);}
+    else if(act==='confirm-pick'){s.pickerOpen=false;if(!s.candidate)return;s.chart=charts.find(c=>c.id===s.candidate);s.phase='ready';s.selfReady=false;}
+    else if(act==='start-round'){if(startBlock())return;s.playingIds=eligible();s.phase='play';s.casualWait=false;s.selfStatus='pending';s.submitted=0;s.submittedIds=[];s.detail=false;s.submissionsComplete=false;s.absences=[];}
+    else if(act==='reselect'){s.phase='picking';s.pickerOpen=false;s.chart=null;s.candidate=null;s.ready=0;s.selfReady=false;}
+    else if(act==='simulate'){
+      if(s.phase==='ready'){
+        if(host()||startBlock()||s.selfLost)return;
+        s.playingIds=eligible();s.phase='play';s.selfStatus='pending';s.submitted=0;s.submittedIds=[];s.absences=[];
+        s.notice='Hostが通話等で確認し、この曲を開始した状態です。';
+      }else if(s.phase==='play'){
+        if(s.hostLost&&s.submissionsComplete){s.hostLost=false;s.condition='standard';s.notice='Hostが期限前に復帰しました。全員完了の曲を確定しました。';publish();}
+        else{
+          s.sourceFail=false;
+          const unavailable=new Set([...s.disconnectedIds,...s.reviewRestIds]);
+          s.submittedIds=playing().filter(id=>!unavailable.has(id)&&!(plays()&&id===selfIndex())&&!s.kicked.includes(id));
+          s.submitted=s.submittedIds.length;
+          if(activeSelf()&&s.selfStatus!=='absent'&&!unavailable.has(selfIndex()))s.selfStatus='submitted';
+          s.submissionsComplete=pendingIds().length===0;
+          if(s.submissionsComplete&&!s.hostLost)publish();
+          else s.notice=s.hostLost?'提出を受け付けました。結果確定はHostの復帰を待っています。':`未提出 ${pendingIds().length}人。Hostが待つか締め切るか判断します。まだ欠場は確定していません。`;
+        }
+      }
+    }
+    else if(act==='review-reconnect'){s.disconnectedIds=[];s.condition='standard';s.notice='参加者が同じ席・同じ曲へ復帰した状態です。曲が締切済みなら、その曲へは提出できません。';}
+    else if(act==='skip'){s.selfStatus='absent';s.selfReason='スキップ';}
+    else if(act==='deadline'){s.absences=pendingIds().map(id=>({id,reason:'未提出のまま締切'}));if(s.absences.some(a=>plays()&&a.id===selfIndex())){s.selfStatus='absent';s.selfReason='未提出のまま締切';}publish();}
+    else if(act==='invalidate'){const number=data.number||s.round;const round=s.rounds.find(r=>r.number===number);if(round){round.invalid=true;s.notice=`第${number}曲を無効にしました。総合集計から除外しました。`;}else publish(true);}
+    else if(act==='next'){s.phase='picking';s.pickerOpen=false;s.round++;s.chart=null;s.candidate=null;s.selfReady=false;s.selfStatus='pending';s.ready=0;s.submitted=0;s.nextWait=false;s.casualWait=false;s.pending=0;s.detail=false;s.resultTab='round';s.playingIds=null;s.submittedIds=null;s.reviewRestIds=[];s.absences=[];s.submissionsComplete=false;}
+    else if(act==='end'){if(s.phase==='play')publish(true);s.phase='final';s.detail=false;s.endReason='Hostが終了';s.historyMode='complete';}
+    else if(act==='leave'){s.left=true;s.joined=false;s.view='entry';s.historyMode='partial';}
+    else if(act==='return'){s.left=false;s.joined=true;s.started=true;s.fixedN=tournament()?(s.fixedN||s.people):null;s.view='room';s.phase='ready';s.chart=charts[0];s.nextWait=true;s.pending=tournament()?0:1;}
+    else if(act==='kick'){if(s.phase==='play'&&isSubmitted(data.person))s.kickedSubmitted=[...(s.kickedSubmitted||[]),data.person];s.kicked.push(data.person);s.notice=`${displayName(data.person)}をKickしました。${tournament()?'大会の配点人数は変わりません。':'次の選曲対象から外れます。'}`;}
+    else if(act==='reconnect'){s.selfLost=false;s.condition='standard';s.notice='再接続しました。同じ参加枠・同じ曲に戻っています。';}
+    else if(act==='invite'){s.notice=`招待情報：${s.name} / 開催ID EV8DEMO2 / 参加コード K8PLAY22`;}
+    else if(act==='all-ranks')s.showAll=!s.showAll;
+    else if(act==='round-tab')s.resultTab='round';
+    else if(act==='overall-tab')s.resultTab='overall';
+    else if(act==='round-detail')s.detail=Number(data.round);
+    else if(act==='close-detail'){s.detail=false;s.returnPhase=null;}
+    else if(act==='history-detail'){s.detail=true;s.showAll=host();}
+    else if(act==='history-list')s.detail=false;
+    render();save();
+  }
+  function setScene(scene){const role=s.role,kind=s.kind,name=s.name;s={...defaults(),role,kind,name};if(['normal','entry','create','join','history'].includes(scene)){s.view=scene;if(scene==='history'){s.started=true;s.fixedN=tournament()?15:null;s.chart=charts[0];publish();s.phase='final';s.view='history';}return;}s.joined=true;s.view='room';s.phase=scene;s.started=scene!=='lobby';s.fixedN=tournament()&&s.started?15:null;if(['ready','play','round','final'].includes(scene))s.chart=charts[0];if(['round','final'].includes(scene)){publish();if(scene==='final'){s.phase='final';s.endReason='Hostが終了';}}}
+  function setCase(value){s.condition=value;s.error='';s.notice='';if(value==='standard'){setScene(sceneControl.value||'entry');return;}const role=s.role,kind=s.kind;let scene='play';if(['twenty','no-target','pending-next','before-start-disconnect','rest-notice'].includes(value))scene='ready';if(value==='zero')scene='lobby';if(value==='no-common')scene='picking';if(['tie-absence','invalid'].includes(value))scene='round';if(['host-expired','no-results','state-lost'].includes(value))scene='final';if(['partial','empty-history','unknown-history'].includes(value))scene='history';if(['full','new-closed','kicked'].includes(value))scene='join';if(['not-supported','returning'].includes(value))scene='entry';setScene(scene);s.condition=value;s.role=role;s.kind=kind;
+    if(value==='twenty'){s.people=20;s.pending=tournament()?0:2;s.ready=12;s.fixedN=tournament()?20:null;s.fixedRoster=tournament()?Array.from({length:20},(_,i)=>i):null;}
+    if(value==='zero'){s.people=0;s.role='host-only';s.started=false;s.fixedN=null;}
+    if(value==='no-target'){s.people=0;s.role='host-only';s.fixedN=tournament()?15:null;s.fixedRoster=tournament()?Array.from({length:15},(_,i)=>i):null;s.pending=0;}
+    if(value==='pending-next'){s.role='player';s.nextWait=true;s.pending=tournament()?0:1;}
+    if(value==='before-start-disconnect'){s.disconnectedIds=[2];}
+    if(value==='rest-notice'){s.reviewRestIds=[2];}
+    if(value==='host-lost'){s.hostLost=true;s.submitted=8;}
+    if(value==='host-expired'){s.rounds=[];s.chart=charts[0];publish(true);s.phase='final';s.endReason='Hostが戻らなかったため';}
+    if(value==='self-lost'){s.role='player';s.selfLost=true;}
+    if(value==='returning'){s.role='player';s.left=true;s.joined=false;s.historyMode='partial';}
+    if(value==='source-fail'){s.role=role==='host-only'?'player':role;s.sourceFail=true;}
+    if(value==='tie-absence'){s.kind='tournament';s.fixedN=15;s.rounds=[];publish();}
+    if(value==='invalid')s.rounds[0].invalid=true;
+    if(value==='no-results'){s.rounds=[];s.phase='final';s.endReason='Hostが終了';}
+    if(value==='no-common'){s.noCommon=true;s.pickerOpen=true;}
+    if(value==='partial'){s.historyMode='partial';s.detail=true;}
+    if(value==='empty-history'){s.historyMode='empty';s.rounds=[];}
+    if(value==='unknown-history')s.historyMode='unknown';
+    if(value==='full')s.error='参加者が20人で満員です。Hostに確認してください。';
+    if(value==='new-closed'){s.kind='tournament';s.error='この大会は開始済みです。新規参加はできません。以前の参加者としての復帰は可能です。';}
+    if(value==='kicked')s.error='この開催からKickされたため、再参加できません。';
+    if(value==='state-lost'){s.rounds=[];s.endReason='開催状態を復元できないため';s.historyMode='partial';}
+  }
+  root.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el||el.disabled)return;const act=el.dataset.act;if(act==='submit-local'){submitLocal(el.closest('form'));return;}if(act==='cancel-confirm'){dialog.close();s.pendingConfirmation=null;return;}if(act==='accept-confirm'){const pending=s.pendingConfirmation;dialog.close();s.pendingConfirmation=null;if(pending)apply(pending.act,pending.data);return;}request(act,el);});
+  function submitLocal(form){
+    if(!form.reportValidity())return;
+    const data=new FormData(form);
+    if(form.id==='ef-create-form'){s.name=String(data.get('name'));s.kind=String(data.get('kind'));s.role=String(data.get('role'));s.style=String(data.get('style'));s.metric=String(data.get('metric'));s.view='room';s.phase='lobby';s.joined=true;s.started=false;s.fixedN=null;s.fixedRoster=null;s.playingIds=null;s.chart=null;s.rounds=[];s.notice='待機室を作りました。招待情報を参加者に共有してください。';}
+    if(form.id==='ef-join-form'){s.joinId=String(data.get('roomId')).trim();s.joinCode=String(data.get('joinCode')).trim().toUpperCase();const rejection={full:'参加者が20人で満員です。Hostに確認してください。','new-closed':'この大会は開始済みです。新規参加はできません。以前の参加者としての復帰は可能です。',kicked:'この開催からKickされたため、再参加できません。'}[s.condition];if(rejection){s.error=rejection;render();return;}if(s.joinId!=='EV8DEMO2'||s.joinCode!=='K8PLAY22'){s.error='開催IDまたは参加コードを確認してください。入力内容は保持しています。';render();return;}s.role='player';s.view='room';s.phase='lobby';s.joined=true;s.started=false;s.chart=null;s.rounds=[];s.notice='開催に参加しました。Hostの開催開始を待っています。';}
+    render();save();
+  }
+  root.addEventListener('submit',e=>{e.preventDefault();submitLocal(e.target);});
+  root.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.closest('form')){e.preventDefault();submitLocal(e.target.closest('form'));}});
+  root.addEventListener('input',e=>{if(e.target.id==='ef-search'){s.search=e.target.value;const caret=e.target.selectionStart;render();const input=root.querySelector('#ef-search');input.focus();input.setSelectionRange(caret,caret);}});
+  root.addEventListener('change',e=>{if(e.target===roleControl){s.role=e.target.value;s.selfReady=false;render();save();}else if(e.target===kindControl){s.kind=e.target.value;s.name=tournament()?'週末の大会':'週末の合同プレー';s.fixedN=tournament()&&s.started?s.people:null;s.rounds=[];if(['round','final'].includes(s.phase)){const phase=s.phase;publish();s.phase=phase;}render();save();}else if(e.target===sceneControl){setScene(e.target.value);render();save();}else if(e.target===caseControl){setCase(e.target.value);render();save();}else if(e.target.name==='kind'&&e.target.closest('#ef-create-form')){s.kind=e.target.value;root.querySelector('#ef-create-note').textContent=typeNote();kindControl.value=s.kind;}});
+  root.querySelector('#ef-simulate').addEventListener('click',()=>apply('simulate'));
+  root.querySelector('#ef-return-peer').addEventListener('click',()=>apply('review-reconnect'));
+  dialog.addEventListener('cancel',()=>{s.pendingConfirmation=null;});
+  window.addEventListener('openai:set_globals',e=>{const restored=e.detail?.globals?.widgetState?.privateContent;if(restored?.version===4&&restored.state){s={...defaults(),...restored.state,pendingConfirmation:null};if(dialog.open)dialog.close();render();}});
+  render();
+})();
+</script>
