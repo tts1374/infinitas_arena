@@ -60,10 +60,18 @@
 - C Kickoff status: READY。
 - Implementation authorization: YES。
 - Replan triggers: 上記escalation条件。
-- delegation execution record: role=親（実装・検証・PR担当）、spawned=no、objective=本taskのscoped実行、no-delegate reason=単一governance bounded task。
+- delegation execution record:
+  - role: 親（実装・検証・PR担当）
+  - spawned: no
+  - objective: 本taskのscoped実行
+  - agent id: N/A
+  - ownership scope: N/A
+  - status: N/A
+  - no-delegate reason: 単一governance bounded task
 
 ## 完了証跡
-- 実装修正・ローカル検証: COMPLETE。PR公開とauthor/head/base read-backはこのcommit後に実行し、PR本文・チャット最終報告へ結果を残す。
+- 実装修正・ローカル検証・PR公開: COMPLETE。
+- PR公開read-back: https://github.com/tts1374/infinitas_arena/pull/190 。author.login=`tts1374`、author.is_bot=`false`（REST user.type=`User`）。lane=`task-owned / user-authored PR`。head=`codex/gpt61-sol-governance`、base=`v1`、公開時head SHA=`5ce13dee4d443b519d1c3e93069bcd8ea601fc65`。
 - PASS: check:agents、check:design-contracts、node syntax check、lint、root typecheck、client build。
 - PASS: client stats 17ケース、worker 98テスト（fail/skipなし）。
 - PASS: 一時fixtureで6.1 Sol親/子を受理し、未知の親モデル・子モデルをそれぞれ拒否。
@@ -81,3 +89,14 @@
 | 状態語彙・Phase表記の不一致 | fixed | root語彙との照合、旧表記残存なし | prompt振る舞いは未比較 |
 - 未処理Blocker/Must fix: なし。
 - source reconciliation: 変更を専用worktreeで作成したため、sourceへ本task差分のcopy/residueを残していない。既存の未追跡WIPを保全。
+
+## PR #190 レビュー対応
+- Source of truth: 本taskとPR #190。Phase C継続、Standard、Plan Mode不要、contract-sensitive=NO。
+- current request ceiling: 指摘修正・検証・commit/push・返信・resolve・再レビュー依頼まで。merge/close/cleanupは含めない。
+- No-delegate reason: task記録とPR本文のみの局所資料修正。親が担当する。
+- 検証: check:agents / check:design-contracts、taskのspawned=no記録3項目、lane evidenceとPR read-backの一致、UTF-8 no BOM/LF、scoped diff。前回製品検証とCI成功は既存証跡として保持し、製品変更のない今回で再実施扱いにしない。
+
+| finding | disposition | evidence | remaining risk |
+| --- | --- | --- | --- |
+| Must fix: 本taskの非委譲記録3項目が欠落し、自己適用のPASS証跡と矛盾 | fixed | C Kickoff記録にagent id / ownership scope / statusを各N/Aで追加し、本task自体を検証対象に含める | なし |
+| Should fix: PR公開lane evidence未記載 | fixed | 上記完了証跡へREST read-backのauthor.login / author.is_bot、lane、head/baseを記録。PR本文にも同じ証跡を反映する | merge authorityは別requestで再判定 |
