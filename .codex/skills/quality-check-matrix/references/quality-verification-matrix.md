@@ -20,19 +20,22 @@ Source: `QUALITY.md` sections 1 and 2.
 
 | Touched area | Required additional checks | Source |
 | --- | --- | --- |
-| Room FSM, timers, aggregation, host authority, authoritative acceptance, idempotency, WS protocol payload/schema | Run all FSM/Protocol checks | `QUALITY.md` section 3 |
-| Monitoring watcher/parser, source formats (`inf-notebook`, legacy/deprecated `inf_daken_counter` where still relevant), source failure handling | Run all monitoring source checks | `QUALITY.md` section 4 |
-| Multi-player room flow behavior (ARENA/BPL), timeout/force advance/skip, recovery/failure behavior, DO state loss flow | Run all E2E checks | `QUALITY.md` section 5 |
-| Release prep tasks (Ph1) | Run release readiness checks | `QUALITY.md` section 6 |
+| Room FSM, timers, aggregation, host authority, authoritative acceptance, idempotency, WS protocol payload/schema | Run all FSM/Protocol checks | `QUALITY.md` section 3.1 |
+| Lobby summary, freshness tokens, stale cleanup, helper-state persistence | Run lobby freshness/cleanup checks | `QUALITY.md` section 3.2 |
+| Monitoring watcher/parser, source formats (`inf-notebook`, `daken_counter_v3`, `reflux`, legacy `inf_daken_counter` when enabled), source failure handling | Run all monitoring source checks | `QUALITY.md` section 3.3 |
+| Multi-player room flow behavior (ARENA/BPL), timeout/force advance/skip, recovery/failure behavior, DO state loss flow | Run all required E2E/scenario checks | `QUALITY.md` section 3.4 |
+| Release prep tasks | Run release precondition and evidence checks | `.codex/skills/phase-d-release-flow/SKILL.md`, `WORKFLOW.md` Phase D rules |
 | Persistence/settings/snapshot compatibility changes | Run compatibility-focused validation required by root/local governance | root/local governance, `QUALITY.md` |
-| Agent/governance definition changes | Run markdown/toml consistency and responsibility-boundary checks | root `AGENTS.md`, `WORKFLOW.md` |
+| Agent/governance definition changes | Run agent/design-contract checks and responsibility-boundary validation | `QUALITY.md` section 3.5, root `AGENTS.md`, `WORKFLOW.md` |
+| Workflow artifacts and closure tasks | Check phase ceiling, delegation evidence, validation parity, write-back confirmation, and applicable closure/cleanup gates | `QUALITY.md` section 3.6 |
+| UI implementation with a design source/wireframe reference | Check source evidence and implementation parity | `QUALITY.md` section 3.7 |
 
 ## FSM/Protocol Checklist Scope
 
-When section 3 is required, include:
+When section 3.1 is required, include:
 
 - RoomState transitions.
-- Timer/deadline behavior.
+- Timer/deadline/TTL behavior.
 - expected-key / authoritative acceptance enforcement under the current contract.
 - idempotency by `client_msg_id`.
 - host permissions.
@@ -40,24 +43,37 @@ When section 3 is required, include:
 
 ## Monitoring Source Checklist Scope
 
-When section 4 is required, include:
+When section 3.3 is required, include:
 
 - `inf-notebook` extraction (`SCORE`, `MISSCOUNT`).
-- legacy/deprecated `inf_daken_counter` behavior only if that path is actually touched.
+- `daken_counter_v3` extraction.
+- `reflux` extraction.
+- `inf_daken_counter` extraction when legacy support is enabled.
 - `observed_key == expected_key` enforcement where relevant.
 - `SOURCE_UNAVAILABLE` behavior with TECH skip guidance.
 
 ## E2E Checklist Scope
 
-When section 5 is required, include:
+When section 3.4 is required, include:
 
-- 2-player ARENA flow.
-- 2-player BPL (3 round) flow.
+- create -> ready -> pick -> play -> result, including ARENA/BPL scenarios where applicable.
 - Duplicate pick replacement.
-- Timeout and FORCE_ADVANCE behavior where relevant.
-- Host proxy skip (after unlock) where relevant.
+- TIMEOUT and FORCE_ADVANCE behavior.
+- `SKIP_HOST_ASSIGN` rejection behavior.
 - DO state loss to `ROOM_STATE_LOST` and room close.
 - Recovery/reconnect behavior where the changed area makes it relevant.
+
+## Agent/Governance Checklist Scope
+
+When section 3.5 is required, include:
+
+- `npm run check:agents` and `npm run check:design-contracts`.
+- Approved repository/default subagent model settings and canonical role references.
+- Portable skill paths, unified status/severity vocabulary, and Japanese user-facing output.
+- Consistent objective/success/stop boundaries across root docs, agents, and skills.
+- Agent-owned judgment and implementer/auditor continue vs. BLOCKED/ESCALATION boundaries.
+
+For sections 3.2, 3.6, and 3.7, use the corresponding root `QUALITY.md` checklist directly.
 
 ## Practical Rule
 

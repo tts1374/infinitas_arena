@@ -36,11 +36,14 @@ Always apply:
 - Diff checks: only intended files, no unrelated formatting, no generated noise, UTF-8 no BOM and LF consistency.
 
 Add checks only when changed area matches:
-- FSM/Protocol touched: apply `QUALITY.md` section 3 checks.
-- Monitoring source touched: apply `QUALITY.md` section 4 checks.
-- End-to-end room flow touched: apply `QUALITY.md` section 5 checks.
+- FSM/Protocol touched: apply `QUALITY.md` section 3.1 checks.
+- Lobby summary/freshness/cleanup touched: apply `QUALITY.md` section 3.2 checks.
+- Monitoring source touched: apply `QUALITY.md` section 3.3 checks.
+- End-to-end room flow touched: apply `QUALITY.md` section 3.4 checks.
 - Persistence/settings/snapshot compatibility touched: apply compatibility-focused checks required by root/local governance.
-- Agent/governance definitions touched: apply markdown/toml consistency checks and responsibility-boundary checks.
+- Agent/governance definitions touched: apply `QUALITY.md` section 3.5 checks, including `npm run check:agents` and `npm run check:design-contracts`.
+- Workflow artifacts/closure tasks touched: apply `QUALITY.md` section 3.6 checks.
+- UI design source/wireframe requirements present: apply `QUALITY.md` section 3.7 checks.
 
 ## Tie-Breaker Rule
 

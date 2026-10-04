@@ -1,8 +1,8 @@
-model = "gpt-5.6"
+model = "gpt-6.1-sol"
 
 [agents]
 max_concurrent_threads_per_session = 6
-default_subagent_model = "gpt-5.6"
+default_subagent_model = "gpt-6.1-sol"
 
 ################################################################################
 # MCP servers (minimal set for infinitas_arena)
