@@ -253,9 +253,10 @@ Phase C 開始前に次を必ず出力する:
   - `role`
   - `spawned: yes/no`
   - `objective`
-  - `agent id`（`yes` の場合）
-  - `ownership scope`（`yes` の場合）
-  - `no-delegate reason`（`no` の場合）
+  - `agent id`（`yes` の場合は実際の agent id、`no` の場合は `N/A`）
+  - `ownership scope`（`yes` の場合は担当ファイル/レイヤ、`no` の場合は `N/A`）
+  - `status`（`yes` の場合は現在の agent 状態、`no` の場合は `N/A`）
+  - `no-delegate reason`（`no` の場合は理由、`yes` の場合は `N/A`）
 
 ルール:
 - C Kickoff 出力完了まで Phase C 実装を開始してはならない

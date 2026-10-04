@@ -35,7 +35,8 @@
 - `scripts/check-agent-definitions.mjs`: `gpt-6.1-sol` を許可モデルへ追加。既存の承認済みモデルはこのtaskで廃止しない。
 - `.codex/skills/quality-check-matrix/references/quality-verification-matrix.md`: rootの§3.1〜3.7との対応、現行source、E2E・governance検証、release参照を同期。
 - `.codex/skills/plan-mode-gate/references/plan-mode-decision-matrix.md`: 検証参照を現行章へ同期。
-- `.codex/skills/phase-c-kickoff-flow/SKILL.md`、`references/kickoff-checklist.md`、`docs/c_kickoff_comment_template.md`: spawned=yesの実記録にagent id / ownership / statusを追加。
+- `.codex/skills/phase-c-kickoff-flow/SKILL.md`、`references/kickoff-checklist.md`、`docs/c_kickoff_comment_template.md`: agent id / ownership / statusをspawned=yesでは実記録、spawned=noではN/Aとして同期。
+- `WORKFLOW.md` §6.3（レビュー追補）: 既存§6.0・AGENTS.md §3のstatus要求を必須一覧へ反映し、上記3項目の非委譲時N/A表記を同期。root/派生資料整合という目的内の最小追加範囲。
 - `.codex/skills/commit-pr-flow/SKILL.md`、`references/phase-c-gate-checklist.md`、`.codex/skills/phase-d-release-flow/SKILL.md`: 状態識別子をroot語彙に統一。
 - `.codex/skills/issue-readiness-check/SKILL.md`: Phase 1をPhase Aへ同期。
 - `tasks/codex-gpt61-sol-governance.md`: 本計画と完了証跡。
@@ -100,3 +101,22 @@
 | --- | --- | --- | --- |
 | Must fix: 本taskの非委譲記録3項目が欠落し、自己適用のPASS証跡と矛盾 | fixed | C Kickoff記録にagent id / ownership scope / statusを各N/Aで追加し、本task自体を検証対象に含める | なし |
 | Should fix: PR公開lane evidence未記載 | fixed | 上記完了証跡へREST read-backのauthor.login / author.is_bot、lane、head/baseを記録。PR本文にも同じ証跡を反映する | merge authorityは別requestで再判定 |
+
+## PR #190 追加レビュー対応
+- Source of truth: 本taskと[追加レビュー](https://github.com/tts1374/infinitas_arena/pull/190#pullrequestreview-5405836381)。Phase C継続、Standard、Plan Mode不要、contract-sensitive=NO。
+- current request ceiling: §6.3の記録shape整合・検証・commit/push・返信・再レビュー依頼まで。
+- 許可範囲の補足: root §6.0とAGENTS.md §3に既存のstatus要求を、漏れていた§6.3へ明示する。spawnの判定・役割・承認境界は変更しない。
+- No-delegate reason: WORKFLOWの当該一覧と本taskのみの単一governance局所修正。親が担当し、ローカル検証で完結。
+- PASS: check:agents / check:design-contracts、AGENTS §3・WORKFLOW §6.0/6.3・skill/checklist/template・本task間のyes/no記録shape整合、UTF-8 no BOM/LF、2ファイル限定diff。WORKFLOW §6.3外の不変性も照合済み。
+- delegation execution record:
+  - role: 親
+  - spawned: no
+  - objective: 追加レビュー指摘の記録shape整合
+  - agent id: N/A
+  - ownership scope: N/A
+  - status: N/A
+  - no-delegate reason: 単一governance局所修正
+
+| finding | disposition | evidence | remaining risk |
+| --- | --- | --- | --- |
+| Must fix: WORKFLOW §6.3にstatusと非委譲時N/Aが欠落 | fixed | §6.3のagent id / ownership scope / statusをyes=実記録、no=N/Aで明示し、root/skill/template/taskを再照合 | 実spawnでの振る舞い比較は既存の未実施項目として保持 |
