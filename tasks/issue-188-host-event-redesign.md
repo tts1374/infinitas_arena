@@ -30,6 +30,22 @@
 
 調査基点: 2026-10-04 JST、local HEAD / PR #189 headとも`90856a42d9e199b49d97966e1dd620e6b626b5dd`、branch `codex/issue-188-host-event-mode`。GitHub read-only確認でPR #189はOPEN/未merge、base `v1` / `0a44dfc399591003e0bd6481f6d67cc3c2930806`、87 files、+8425/-112。基点固定は最新v1への同期や本番配置確認を意味しない。
 
+### E0 — C実行基点の形成・read-back（R0の前提、今回未実施）
+
+本資料PR #191は`v1`の`e557ff2847d0548c3a92fc671139de33b7ced5a1`上のdocs-onlyであり、開催実装を含まない。この`v1`にはR1〜R6の開催コード・追加CIが存在しない。**調査基点とCの実行基点を分け、C許可・C Kickoff後にE0を完了するまでR0〜R7のwriteを開始しない。**
+
+- task label / objective: `E0-execution-baseline`。最新`v1`と#189の既存実装・検証面を保持した実装branchを形成し、後続packetが存在するファイルとCIを前提に着手できる状態を確認する。
+- owner / in-scope: coordinator単独。新規のtask-owned `codex/*`実装branch/worktreeにおける既存履歴の取り込みと、本taskへの基点・差分・検証記録。E0完了後に各write scopeをR0〜R6のownerへ引き渡す。
+- 実装branchの基点: C開始時に取得・read-backした**最新`origin/v1`のSHA**から新しい実装branchを作る。#191で公開・レビュー合意したPhase A/B資料と試作を保持し、その内容を確認する。資料がまだ`v1`に含まれなければ、#191の合意済み資料だけを当該新worktreeへ引き継ぐ。資料引き継ぎだけで開催コードが存在するとは扱わない。
+- 取り込み方法: **新branchへ#189の固定head `90856a42d9e199b49d97966e1dd620e6b626b5dd`を履歴mergeして、87ファイルの既存差分全体を旧仕様baselineとして取り込む。** 個別ファイルの抜き出し・部分cherry-pick・ゼロからの再導入は既定にしない。元#189 branchのrebase/force-push、#189の更新・merge・close、`v1`自体への取り込みは行わない。固定headの再利用は新仕様適合の認定ではなく、Ready撤去等の修正はR0〜R6で行う。
+- 最新`v1`との差分確認: remoteの#189 headを固定SHAと照合し、共通祖先・`latest v1...固定head`の変更pathと差分をB調査の87ファイルと比較する。統合後は`latest v1...実装head`のpathと差分を照合し、最新`v1`のgovernance/config・通常対戦・CI更新、および#191資料を失っていないことを確認する。競合解消は両側の意図を保持し、丸ごとのours/theirs置換をしない。#189 headが更新済み、差分が説明不能、競合に仕様判断・新CI変更が必要ならE0を停止してReplanする。
+- CIの保持条件: #189の`.github/workflows/validate-reusable.yml`にある**design-contract check、client unit、Host Event integration（quick/full）、cargo test（full）**を最終実装branchにも保持する。既存のagent/lint/root typecheck/stats/Worker/build/cargo check/Wrangler、Windows/Node22、quick/full条件を狭めず、最新`v1`側の追加・修正も保持する。client/workerのtest script登録とintegration fileも対応させる。E0は既存CI差分の取り込みであり、R6で新しいCI仕様を設計する許可ではない。
+- success criteria / validation: 基点SHA、固定head、統合後head、両履歴の到達性、統合差分と競合処置をread-backし、`event-room-state.ts` / `event-room-controller.ts`、shared開催契約、clientの`event-room-store.ts` / `event-ws-client.ts` / `EventRoomPage.tsx`、integration/harness、上記CI step・test登録の存在を確認する。継承したCI quick相当（agents/design-contract/lint/root typecheck/stats/client unit/Worker/integration）をbaselineとして実行し、結果を記録する。旧Ready試験のPASSを新仕様PASSにしない。履歴merge/commit等はその時の依頼で許可されたlocal操作の範囲で行い、未許可操作をC許可から自動拡張しない。
+- expected output / stop condition: `COMPLETE/BLOCKED/ESCALATION`、実装branch/worktree、上記SHA・差分・存在確認・CI baseline結果をC記録へ返す。read-backが揃った`COMPLETE`後だけR0へ進む。不足したままR1〜R6へファイル再作成を委ねない。
+- allowed side effects / forbidden scope: **本B・文書PRレビューでは計画記載のみ。E0は未実行。** 将来C許可後の隔離worktree内で、許可済みのlocal履歴統合・必要な競合処置・検証と記録のみ。正本仕様の変更、元branch/既存PRの変更、deploy、他WIPの破棄は不可。
+- non-goals: 新仕様への実装改修、旧Readyの採用判断、追加CIの設計、依存更新、旧PRの整理。各改修はE0後の担当packetへ渡す。
+- continue-without-escalation boundary / escalation: 内容が明確な同scopeの統合・既存検証面の保持は自走可。新旧仕様・互換・依存・CI面を追加で変える必要があれば理由と選択肢を提示して停止する。
+
 旧`tasks/issue-188-host-event-mode.md`のB READY、旧C記録、PRの試験PASSは旧仕様の実施記録として保持し、今回のB READYや新製品PASSの根拠へ転用しない。
 
 Bの実際の委譲記録、GitHub read-back、採用試作の実閲覧・クリック・狭幅配置確認、baseline検証は`docs/ux/issue-188-redesign/phase-b-evidence.md`。独立契約調査は同ディレクトリ`phase-b-contract-review.md`。計画担当は親から分割済みの計画作業を担当し再委譲していない（No-delegate reason: ownershipが確定した1文書の作成であり再分割不要）。C必須委譲の完了記録とは区別する。
@@ -54,7 +70,7 @@ Bの実際の委譲記録、GitHub read-back、採用試作の実閲覧・クリ
 | `EventRoomPage.tsx` / event-presentation / FinalReview / EventHistory | view-modelと一部内容を再利用、配置は改修 | ready帯/未準備除外/旧左右配置/確認なし無効化を変更。順位抽出ロジック等は生かす。通常RoomArena/BPLを多人数化しない |
 | `event-visual-scenarios.*` / integration / E2E runner / capture script | harnessを再利用、旧oracleを置換 | SET_READY送信・ready人数assertを新参加対象へ修正。通常のroom Readyまで消さない。旧PASSは新ACの証明ではない |
 
-現在HEADで親が再実行したbaseline: client unit **121/121 PASS**、worker **156/156 PASS**、Host Event integration **4/4 PASS**、root `npm run typecheck` **PASS**、`npm run lint` **PASS（warning 0）**、`npm run build:client` **PASS**。これは旧動作の再現可能性の証拠。integration helperにも旧Ready操作がある。buildのBrowserslistデータ更新noticeを依存更新理由にはしない。Wrangler bundle、Rust、製品の新仕様E2Eは本Bでは未実行。既存試験が通ることだけで再利用部の新契約適合を宣言しない。
+B調査基点の#189 headで親が再実行したbaseline: client unit **121/121 PASS**、worker **156/156 PASS**、Host Event integration **4/4 PASS**、root `npm run typecheck` **PASS**、`npm run lint` **PASS（warning 0）**、`npm run build:client` **PASS**。これは旧動作の再現可能性の証拠。integration helperにも旧Ready操作がある。buildのBrowserslistデータ更新noticeを依存更新理由にはしない。Wrangler bundle、Rust、製品の新仕様E2Eは本Bでは未実行。既存試験が通ることだけで再利用部の新契約適合を宣言しない。
 
 ## Bで固定する技術方針
 
@@ -89,11 +105,12 @@ Bの実際の委譲記録、GitHub read-back、採用試作の実閲覧・クリ
 
 ## Task breakdown / delegation execution plan
 
-依存順: **R0 → 契約checkpoint → R1 → { R2→R3, R4→R5 } → R6 → R7**。
+依存順: **C許可・C Kickoff → E0（実行基点・CI read-back）→ R0 → 契約checkpoint → R1 → { R2→R3, R4→R5 } → R6 → R7**。
 
 | packet | owner / write scope | dependency / checkpoint |
 | --- | --- | --- |
-| R0 規範・変更契約の確定 | coordinator。指定design docsと本taskのC記録のみ | C許可後。contract-auditorが合意との差/互換方針を確認してからR1 |
+| E0 実行基点の形成 | coordinator。新実装branch/worktreeの既存履歴統合と基点記録のみ | C許可・C Kickoff後。最新v1＋固定#189実装/CI保持のread-back完了後R0 |
+| R0 規範・変更契約の確定 | coordinator。指定design docsと本taskのC記録のみ | E0 COMPLETE後。contract-auditorが合意との差/互換方針を確認してからR1 |
 | R1 shared開催契約 | server-implementer。`packages/shared`のみ | R0。R2/R4共通入力として凍結 |
 | R2 開催FSM | server-implementer。event-room-stateと関連tests | R1。集合/配点/期限checkpoint |
 | R3 Worker接続/保存/版 | server-implementer。controller/routes/services/Worker tests | R2。client統合前に権限/秘匿/永続化checkpoint |
@@ -170,7 +187,7 @@ Bの実際の委譲記録、GitHub read-back、採用試作の実閲覧・クリ
 - in-scope files/layer: `scripts/host-event-e2e.test.mjs`、`scripts/run-host-event-e2e.ps1`、`scripts/capture-host-event-visuals.mjs`、`apps/client/src/services/e2e-scenario-runner.ts`、必要なobservability、`testdata/e2e/host-event/`。通常E2E harnessは最小の共有修正のみ。
 - success criteria: SET_READYに頼らない合同/大会各2曲、専任/兼任、20接続/overflow、14/15の未提出待機と締切前復帰/締切後拒否、Host切断・履歴再読込を記録。通常ARENA2試合/BPL/BPL4を維持。V1〜V9のowner証拠が揃う。
 - validation: CI full相当commands、2実Tauri+20接続DOを併用。20 Tauri同時起動は要求しない。実時計5分はfake-clock境界試験と区別し、実端末の短い切断再JOINも記録。source3種の各指標とparser/replay回帰、visual browser確認。
-- 個別stop: `.github/workflows`変更は計画しない（現CIにintegration/client unitがある）。新test未登録ならworkspaceの担当ownerへ戻す。CI面の拡張必須ならReplanしてから。
+- 個別stop: R6で新たな`.github/workflows`変更は計画しない。integration/client unit等のCI前提は**E0で取り込んだ#189 workflow**にあり、素のv1にはない。最終branchでそのstepとquick/full条件の保持を再確認する。E0取り込み漏れならE0 ownerへ戻し、新test未登録ならworkspaceの担当ownerへ戻す。新しいCI面の拡張が必須ならReplanしてから。
 
 ### R7 — 独立契約・実装監査
 
@@ -194,7 +211,7 @@ Bの実際の委譲記録、GitHub read-back、採用試作の実閲覧・クリ
 | V8 | Top専用入口/戻る/役割/操作配置 | R5試作対応/画像/実入力、20人scroll・主操作固定、participant Host操作なし/Readyなし |
 | V9 | 確認量/結果閲覧/規範整合/独立監査 | R0/R5確認表、次曲開始前前曲無効化、全順位/同強調、R7disposition |
 
-現CI正本: `.github/workflows/ci.yml`→`validate-reusable.yml`、Windows / Node22。PRはquick、tag/manual fullは追加build/Rust/Wrangler。C最終は**full相当以上**を要求し、quickだけで完了しない。
+CのCI正本: **E0で最新v1へ#189差分を統合しread-backした実装branch**の`.github/workflows/ci.yml`→`validate-reusable.yml`、Windows / Node22。#191のv1基点ではdesign-contract/client unit/Host Event integration/cargo testのCI stepは未追加。#189ではdesign-contract/client unit/integrationがquick/full、cargo testがfullにあり、E0とR6で保持を確認する。PRはquick、tag/manual fullは追加build/Rust/Wrangler。C最終は**full相当以上**を要求し、quickだけで完了しない。
 
 必須コマンド面（本Bで新実装を検証したという意味ではない）:
 
@@ -215,7 +232,7 @@ root `npm ci`はCI準備にあるが依存更新の許可ではない。環境�
 
 ## Commit分割・公開/rollback計画（今回未実施）
 
-将来のlogical commits: (1)R0規範、(2)R1 shared、(3)R2 FSM＋tests、(4)R3 controller/API＋tests、(5)R4接続/履歴/source、(6)R5入口/view＋tests、(7)R6統合fixture/harness、(8)監査修正を責務別。breakingな中間commitを独立公開しない。
+将来の履歴形成: まずE0で最新v1上の新branchへ固定#189の既存履歴をmergeし、実装/CIを保持した基点を記録する（この操作も当時のlocal操作許可に従う）。その後のlogical commits: (1)R0規範、(2)R1 shared、(3)R2 FSM＋tests、(4)R3 controller/API＋tests、(5)R4接続/履歴/source、(6)R5入口/view＋tests、(7)R6統合fixture/harness、(8)監査修正を責務別。breakingな中間commitを独立公開しない。
 
 PRの処理方針は既存#189を参照した差分修正が基本。ただしこの計画は#189更新/closeや新PR作成を許可しない。後続でPR処理を明示された時点にhead/base/既存review/checkを再確認し、合意新仕様中心へ本文を更新する。untracked Phase A資料/taskを必要なく隔離コピーしてsource residueを残さない。
 

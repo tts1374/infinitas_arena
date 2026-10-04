@@ -47,3 +47,15 @@ CI quick相当のagent checker、lint、root typecheck、client stats、Worker t
 公開前結果: 資料24ファイル、text 15ファイルのstrict UTF-8/no BOM、JSON 2件、inline script 2件の構文、相対リンク18件、元資料12件・視覚参照11件のバイト一致はPASS。`npm run check:agents`、`npm run check:design-contracts`、`npm run lint`、`npm run typecheck`、`npm run test:client-stats`（17項目）、`npm run test:worker`（98/98）、`npm run build:client`はPASS。build時の既存Browserslistデータの古さのnoticeは依存更新を行わず残した。
 
 元作業場所は`v1`のまま保持する。公開済み資料と同一の対象12ファイルだけを確認後、名前付きの対象限定stashで元の未commit資料を保全する。その他のWIP・未追跡ファイル・未mergeの旧ブランチは変更しない。独立試作の原本も保持する。
+
+## PR #191レビュー対応 — 実行基点の不足
+
+- Review response kickoff: `READY`。正本は合意済み原稿と本B計画。本レビューはB資料公開の継続であり、製品のPhase C開始ではない。
+- current request ceiling / allowed side effects: 「レビュー対応お願いします」により、本PRの対象資料の修正・検証・commit/push、指摘への返信・resolve・再レビュー依頼まで。C Kickoff、E0の実行、製品実装、#189更新、merge・deployは未許可。
+- execution profile: `Standard`、実行時contract-sensitive変更なし。新仕様・依存・CI変更を実行しないためReplan不要。ownerは親agentの文書scopeのみ。delegation execution record: `spawned: no`。No-delegate reason: 1件の計画前提を文書で補う単一scopeで、実装やC監査を開始しない。
+- actionable thread: [P1 / C実行基点を#189の実装を保持する形で固定](https://github.com/tts1374/infinitas_arena/pull/191#discussion_r4177863766)（`Must fix`）。
+- finding → disposition: B計画へE0 entry gateを追加。最新`origin/v1`から新実装branchを作り、固定#189 headを履歴mergeする方法、最新v1との差分・競合処置、開催コードと追加CIの保持・baseline検証のread-backを定義した。依存表のR0をE0完了待ちにし、R6とCI parityの前提を「素のv1」から「E0で統合済みの実装branch」へ訂正。`fixed`（計画の不足のみ）。
+- evidence: #189 head `90856a42d9e199b49d97966e1dd620e6b626b5dd`の87ファイル差分とworkflowをread-only確認。design-contract/client unit/integrationはquick/full、cargo testはfullに存在し、#191のv1基点にはない。実際の取り込みは実行していない。
+- validation plan: 文書の境界・依存順・参照・strict UTF-8/no BOM/LF、変更scopeとdiffを確認し、本PRのCI quick相当とclient build/design checkerを再実行する。更新後のCIと返信・resolve・再レビュー依頼はGitHub read-backで確認する。
+- validation result: `check:agents`、`check:design-contracts`、lint、root typecheck、client stats（17項目）、Worker test（98/98）、client buildは再実行PASS。資料の文字コード・リンク・依存・差分scopeを確認する。C実装branch・継承CIの実行ではなく、docs-only PRのv1回帰確認。
+- remaining risk / stop condition: 将来の最新v1と#189の競合・baseline結果は未検証。E0のread-backで解消する条件を明記した。今回の文書修正を実装基点の形成済み・新仕様PASSと扱わず、本PRのレビュー対応完了で停止する。初回公開前の元資料12件一致の証拠・stashは当時の内容を保持し、本レビューではtaskだけを改定する。
