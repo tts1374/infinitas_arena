@@ -4,12 +4,19 @@ param(
   [switch]$SkipWorker,
   [switch]$SkipFrontend,
   [string]$RuntimeRoot = "testdata/runtime",
+  [string]$CargoTargetRoot = "",
   [switch]$E2E,
   [string]$Scenario = "manual",
   [ValidateRange(1, 5)]
   [int]$E2EMatchCount = 1,
   [string]$RoomId = "",
   [string]$JoinCode = "",
+  [string]$ApiBaseUrl = "http://127.0.0.1:8787",
+  [ValidateSet("NORMAL", "HOST_EVENT")]
+  [string]$RoomKind = "NORMAL",
+  [ValidateRange(1, 10)]
+  [int]$EventRoundCount = 2,
+  [switch]$EventDisconnectHost,
   [ValidateSet("inf-notebook", "reflux", "daken_counter_v3", "inf_daken_counter")]
   [string]$ClientASource = "inf-notebook",
   [ValidateSet("inf-notebook", "reflux", "daken_counter_v3", "inf_daken_counter")]
@@ -111,7 +118,7 @@ function Start-LoggedPowerShell(
   Write-Utf8NoBomFile $launcherPath (($scriptLines -join "`n") + "`n")
   $pwshCommand = Get-Command pwsh -ErrorAction SilentlyContinue
   $shellExe = if ($pwshCommand) { $pwshCommand.Source } else { "powershell" }
-  Start-Process -FilePath $shellExe -ArgumentList "-NoExit", "-ExecutionPolicy", "Bypass", "-File", $launcherPath | Out-Null
+  return Start-Process -FilePath $shellExe -ArgumentList "-NoExit", "-ExecutionPolicy", "Bypass", "-File", $launcherPath -PassThru
 }
 
 function Get-ClientId([int]$Index, [bool]$E2EMode) {
@@ -155,7 +162,7 @@ function Get-ClientSource([int]$Index, [bool]$E2EMode) {
   return "inf-notebook"
 }
 
-function New-ClientSpec([int]$Index, [string]$RuntimeRootPath, [string]$ConfigRootPath) {
+function New-ClientSpec([int]$Index, [string]$RuntimeRootPath, [string]$ConfigRootPath, [string]$CargoTargetRootPath) {
   $id = Get-ClientId -Index $Index -E2EMode ([bool]$E2E)
   $role = Get-ClientRole -Index $Index -E2EMode ([bool]$E2E)
   $source = Get-ClientSource -Index $Index -E2EMode ([bool]$E2E)
@@ -195,7 +202,11 @@ function New-ClientSpec([int]$Index, [string]$RuntimeRootPath, [string]$ConfigRo
     RefluxLatestFile = Join-Path $refluxDir "latest.json"
     RefluxTrackerFile = Join-Path $refluxDir "tracker.tsv"
     DakenCounterV3Port = $dakenPort
-    CargoTargetDir = Join-Path $RuntimeRootPath "cargo-target\$id"
+    CargoTargetDir = if ([string]::IsNullOrWhiteSpace($CargoTargetRootPath)) {
+      Join-Path $RuntimeRootPath "cargo-target\$id"
+    } else {
+      Join-Path $CargoTargetRootPath $id
+    }
     ConfigPath = Join-Path $ConfigRootPath "$id.tauri.dev.json"
     LogPath = Join-Path $logDir "$id-tauri.log"
   }
@@ -225,7 +236,7 @@ function Build-QueryString([pscustomobject]$Spec) {
     label = $Spec.Label
     name = $Spec.DisplayName
     playerId = $Spec.PlayerId
-    api = "http://127.0.0.1:8787"
+    api = $ApiBaseUrl
     source = $Spec.Source
     dakenPath = $Spec.DakenFile
     notebookPath = $Spec.NotebookExportFile
@@ -248,6 +259,11 @@ function Build-QueryString([pscustomobject]$Spec) {
     $queryParams["INF_ARENA_RUNTIME_DIR"] = $Spec.RuntimeDir
     $queryParams["INF_ARENA_LOG_DIR"] = $Spec.LogDir
     $queryParams["INF_ARENA_E2E_SCENARIO"] = $Scenario
+    $queryParams["INF_ARENA_E2E_ROOM_KIND"] = $RoomKind
+    $queryParams["e2eEventRoundCount"] = [string]$EventRoundCount
+    if ($EventDisconnectHost) {
+      $queryParams["e2eEventDisconnectHost"] = "1"
+    }
     if (-not [string]::IsNullOrWhiteSpace($RoomId)) {
       $queryParams["INF_ARENA_ROOM_ID"] = $RoomId.Trim()
     }
@@ -305,6 +321,13 @@ $runtimeRootPath = if ([System.IO.Path]::IsPathRooted($RuntimeRoot)) {
 }
 Ensure-Directory $runtimeRootPath
 $runtimeRootPath = (Resolve-Path -LiteralPath $runtimeRootPath).Path
+$cargoTargetRootPath = if ([string]::IsNullOrWhiteSpace($CargoTargetRoot)) {
+  ""
+} elseif ([System.IO.Path]::IsPathRooted($CargoTargetRoot)) {
+  $CargoTargetRoot
+} else {
+  Join-Path $repoRoot $CargoTargetRoot
+}
 $logRoot = Join-Path $runtimeRootPath "logs"
 $configRoot = Join-Path $runtimeRootPath "tauri-config"
 
@@ -313,7 +336,7 @@ Ensure-Directory $configRoot
 
 $workerLog = Join-Path $logRoot "worker.log"
 $frontendLog = Join-Path $logRoot "client-dev.log"
-$clients = @(1..$ClientCount | ForEach-Object { New-ClientSpec -Index $_ -RuntimeRootPath $runtimeRootPath -ConfigRootPath $configRoot })
+$clients = @(1..$ClientCount | ForEach-Object { New-ClientSpec -Index $_ -RuntimeRootPath $runtimeRootPath -ConfigRootPath $configRoot -CargoTargetRootPath $cargoTargetRootPath })
 
 foreach ($client in $clients) {
   Ensure-Directory $client.CargoTargetDir
@@ -323,7 +346,7 @@ foreach ($client in $clients) {
 }
 
 if (-not $SkipWorker -and -not (Test-PortOpen 8787)) {
-  Start-LoggedPowerShell `
+  $null = Start-LoggedPowerShell `
     -Title "INFINITAS Worker Dev" `
     -WorkingDirectory $repoRoot `
     -Command "npm --workspace @infinitas/worker run dev" `
@@ -332,7 +355,7 @@ if (-not $SkipWorker -and -not (Test-PortOpen 8787)) {
 }
 
 if (-not $SkipFrontend -and -not (Test-PortOpen 1420)) {
-  Start-LoggedPowerShell `
+  $null = Start-LoggedPowerShell `
     -Title "INFINITAS Client Dev Server" `
     -WorkingDirectory $repoRoot `
     -Command "npm --workspace @infinitas/client run dev" `
@@ -340,6 +363,7 @@ if (-not $SkipFrontend -and -not (Test-PortOpen 1420)) {
   Wait-PortOpen -Port 1420 -Label "Client Dev Server"
 }
 
+$clientLauncherIds = @()
 foreach ($client in $clients) {
   $envVars = @{
     INFINITAS_INSTANCE_ID = $client.Id
@@ -350,13 +374,18 @@ foreach ($client in $clients) {
     $envVars["INF_ARENA_E2E"] = "1"
   }
 
-  Start-LoggedPowerShell `
+  $launcher = Start-LoggedPowerShell `
     -Title $client.WindowTitle `
     -WorkingDirectory $clientRoot `
     -Command "npm exec -- tauri dev --config `"$($client.ConfigPath)`" --no-dev-server-wait" `
     -LogPath $client.LogPath `
     -EnvVars $envVars
+  $clientLauncherIds += $launcher.Id
 }
+
+Write-Utf8NoBomFile `
+  -Path (Join-Path $runtimeRootPath "client-launchers.json") `
+  -Content ((@{ process_ids = $clientLauncherIds } | ConvertTo-Json -Depth 3) + "`n")
 
 Write-Host "Started $ClientCount local client instance(s)." -ForegroundColor Green
 Write-Host "Runtime root: $runtimeRootPath"

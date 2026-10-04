@@ -86,3 +86,22 @@
 - spectator 向け `RoomStateSnapshot` は redacted 形で返す（最低限 `settings.join_code=null`）。
 - spectator からの操作系メッセージは `INVALID_STATE` で拒否する。
 
+## 7. Host開催の分離契約（Issue #188）
+
+| 境界 | 通常ARENA/BPL/BPL4 | `HOST_EVENT` |
+| --- | --- | --- |
+| 人数 | 既存2〜4人 | participant最大20人。専任Hostは別枠 |
+| protocol | `ROOM_* / RESULT_*` | `EVENT_*`。通常snapshot/resultを送らない |
+| 進行 | 既存TTL、自動次round/再戦 | Host主導。通常TTL/自動進行なし |
+| score公開 | 既存契約 | 曲確定後のみ一斉公開。進行中はHostにも非送信 |
+| 保存 | 通常room record/archive/stats | 別keyのevent record、別event history schema |
+| lobby | 既存条件で公開 | PRIVATE固定、LobbyDirectory/auto-match/share非掲載 |
+
+- `PLAYING`中の開催message、snapshot、再接続、ACK、ERROR、debug、RESULTS取得には未確定metric/source/rankを含めない。内部提出型と公開結果型を分離する。
+- 旧clientの通常対戦は新serverで維持する。旧clientの開催入室はsnapshot前に拒否する。新clientは旧server/未知capabilitiesで開催だけを無効にする。
+- `room_kind`欠落recordは通常として従来hydrateする。event recordを通常roomへhydrateせず、不正event recordは`ROOM_STATE_LOST`とする。ローカルpartial履歴は受信済み表示用であり、server確定結果や再開の代用にしない。
+- 開催は既存`ROOM_DO` bindingを使い、新binding/migrationを追加しない。通常recordと開催recordのstorage keyを分ける。
+- Hostの300秒期限は絶対時刻で保持し、再接続試行、alarm、再起動で延長しない。保存成功前にACK/公開しない。
+- event historyは通常archive/statistics/personal bestへ流さず、未知schemaの原本を保持する。
+- active eventを残した旧serverへの無条件rollbackは禁止する。新規受付を先に停止し、既存開催の終了/保存を待つ。
+- Host開催contractを変更する場合は`01/02/03/05/06/07/10`、shared型、worker/client consumer、契約testを同一変更で同期する。

@@ -16,6 +16,8 @@ export const CLIENT_MESSAGE_TYPES = [
   "STATE_GET",
   // Keepalive heartbeat from client to DO.
   "PING",
+  "EVENT_JOIN",
+  "EVENT_ACTION",
 ] as const;
 
 export type ClientMessageType = (typeof CLIENT_MESSAGE_TYPES)[number];
@@ -41,6 +43,11 @@ export const SERVER_MESSAGE_TYPES = [
   "ERROR",
   // Keepalive heartbeat response from DO to client.
   "PONG",
+  "EVENT_JOIN_ACCEPTED",
+  "EVENT_STATE",
+  "EVENT_ACTION_ACK",
+  "EVENT_RESULTS",
+  "EVENT_ERROR",
 ] as const;
 
 export type ServerMessageType = (typeof SERVER_MESSAGE_TYPES)[number];

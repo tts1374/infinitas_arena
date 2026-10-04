@@ -85,6 +85,11 @@ export interface SaveLocalResultJsonResponse {
   filePath: string;
 }
 
+export interface SaveEventResultJsonRequest {
+  eventId: string;
+  jsonText: string;
+}
+
 export interface ShowMatchHistoryWindowResponse {
   focusedExisting: boolean;
 }
@@ -176,6 +181,16 @@ export async function saveLocalResultJson(
 
   const { invoke } = await import("@tauri-apps/api/core");
   return invoke<SaveLocalResultJsonResponse>("save_local_result_json", { request });
+}
+
+export async function saveEventResultJson(
+  request: SaveEventResultJsonRequest,
+): Promise<SaveLocalResultJsonResponse> {
+  if (!isTauriRuntime()) {
+    throw new Error("Event result save is available only inside the Tauri desktop app.");
+  }
+  const { invoke } = await import("@tauri-apps/api/core");
+  return invoke<SaveLocalResultJsonResponse>("save_event_result_json", { request });
 }
 
 export async function showMatchHistoryWindow(): Promise<ShowMatchHistoryWindowResponse> {

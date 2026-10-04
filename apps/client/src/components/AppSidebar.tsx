@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
-import { BarChart2, Gamepad2, History, Home, Loader2, Settings } from "lucide-react";
+import { BarChart2, CalendarClock, Gamepad2, History, Home, Loader2, Settings } from "lucide-react";
 
-export type AppView = "lobby" | "settings" | "room" | "stats" | "automatch" | "spectate";
+export type AppView = "lobby" | "settings" | "room" | "stats" | "automatch" | "spectate" | "event-room" | "event-history";
 
 interface AppSidebarProps {
   activeView: AppView;
   hasRoom: boolean;
+  hasEventRoom: boolean;
   isOpeningMatchHistory: boolean;
   onNavigate: (view: AppView) => void;
   onOpenMatchHistory: () => void;
@@ -14,6 +15,7 @@ interface AppSidebarProps {
 export function AppSidebar({
   activeView,
   hasRoom,
+  hasEventRoom,
   isOpeningMatchHistory,
   onNavigate,
   onOpenMatchHistory,
@@ -36,6 +38,13 @@ export function AppSidebar({
           <BarChart2 size={24} />
         </SidebarButton>
         <SidebarButton
+          active={activeView === "event-history"}
+          label="Event History"
+          onClick={() => onNavigate("event-history")}
+        >
+          <CalendarClock size={24} />
+        </SidebarButton>
+        <SidebarButton
           active={false}
           disabled={isOpeningMatchHistory}
           label="Match History"
@@ -48,6 +57,15 @@ export function AppSidebar({
             active={activeView === "room"}
             label="Room"
             onClick={() => onNavigate("room")}
+          >
+            <Gamepad2 size={24} />
+          </SidebarButton>
+        ) : null}
+        {hasEventRoom ? (
+          <SidebarButton
+            active={activeView === "event-room"}
+            label="Event Room"
+            onClick={() => onNavigate("event-room")}
           >
             <Gamepad2 size={24} />
           </SidebarButton>
