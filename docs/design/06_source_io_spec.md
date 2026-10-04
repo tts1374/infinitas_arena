@@ -464,7 +464,8 @@ Ph2以降で以下を追加可能。
 ## 8. Host開催へのsource接続
 
 - 既存parser、title normalize、difficulty mapping、`observed_key == expected_key`、source別の新着/重複判定を再実装しない。通常room/開催roomの提出先contextだけを切り替えるadapterを置く。
-- 開催ではserver-authoritativeな`PLAYING`、自分が当該`round_id`の対象、準備済み、未提出である場合だけ新着結果を`EVENT_ACTION(SUBMIT)`へ送る。event/round/expected_keyを必ず照合し、通常のnotebook timestamp dedupeを維持する。
+- 開催ではserver-authoritativeな`PLAYING/ACTIVE`、自分が当該`round_id`の`current_playing_player_ids`対象、未提出である場合だけ新着結果を`EVENT_ACTION(SUBMIT)`へ送る。Readyや連続参加設定を提出条件にしない。event/round/expected_keyを必ず照合し、通常のnotebook timestamp dedupeを維持する。読取/送信中を提出済みとせず、serverの受理ACKで確定する。
 - 新曲開始や再接続で、監視済み結果を新しいプレーとして再送しない。端末側判定だけを安全境界とせず、serverのround/資格/最初の有効提出/idempotency検証と組み合わせる。
-- 準備/開始条件はsource parser成功と分離する。source読取り不能でも既存`SOURCE_UNAVAILABLE`表示と本人`SKIP`導線を提供する。
+- 開始条件はsource parser成功と分離する。正常な参加者/兼任Hostは毎曲のアプリ操作なしに連続プレーでき、ページ移動中も監視/提出を維持する。同曲を再選曲しても古い観測を新roundへ再提出せず、新しい初回有効観測だけを採用する。
+- source読取り不能でも既存`SOURCE_UNAVAILABLE`表示と本人`SKIP`導線を提供する。休憩/切断中の未提出はHost締切まで自動欠場にしない。一時復帰は結果未確定・未提出なら同曲へ提出可、締切後は不可。Host切断中は有効SUBMITだけを続け、SKIPと進行は停止、全提出でもHost復帰まで公開確定しない。
 - 専任Hostにはsource設定・監視・架空提出を要求しない。通常roomの監視、expected key、異常通知、legacy source方針は変更しない。

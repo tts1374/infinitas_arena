@@ -270,3 +270,97 @@ Replan条件:
 - **Task status: COMPLETE（Phase B計画作成）**。CR-01〜06はC必須修正へ明示帰属済みで、今回の製品適合をCOMPLETEとする判定ではない。
 - **C Kickoff: 未実施 / Implementation authorization: NO**。Cへの必須委譲は本書の予定であり起動済み記録ではない。
 - 本B完了後は停止。後続ではこのconcrete taskとPhase A正本を読み、モデル指定・ceiling・未追跡保全を持ち越す。
+
+## Phase C 実行記録（2026-10-05 JST）
+
+### C Kickoff・現在の実行境界
+
+- 親 `/root` がユーザーの明示指示によるBの `planning-only / Implementation authorization: NO` の解除を受領し、製品実装とlocal commitまでのCを開始した。上記A/Bの禁止・停止記録は当時の履歴として保持する。
+- Stage: Phase C。execution profile: `High-Risk`。contract-sensitive: yes。Plan Mode requirement: required、具体的な本B計画がゲートを満たす。仕様正本は `docs/ux/issue-188-redesign/issue-188-draft.md`、視覚正本は保存済み最終試作と `prototype-review.md`。root/localの適用規約と非目標は本書から持ち越す。
+- current request ceiling: `implementation-ready / Phase C実装・検証・独立監査・local commitまで`。Implementation authorization: `YES`。allowed outputs now: E0、R0〜R7の計画内差分、検証ログ、C checkpoint / finding記録、範囲限定local commit。
+- forbidden outputs now: push、GitHub write、PR/Issueの作成・更新・close・merge、deploy、旧branch/worktree・原本・stashの削除/適用、新依存・lockfile・新CI仕様変更、通常対戦の仕様変更。他ownerのwrite scopeを変更しない。
+- stop condition: E0→R0→契約checkpoint→R1→R2/R3およびR4/R5→R6→R7を計画どおり満たし、指定scopeのlocal commitを記録して停止。公開・drainの実運用はこのC許可に含まれない。
+- next unlock condition: downstream実装のユーザー許可は取得済み。追加のsyntheticな実装解除を要求しない。packet間は依存checkpointと親のownership引渡しを満たして進む。公開/外部操作は別の明示指示が必要。
+- C Kickoff status: `READY`（親が実装開始前に出力）。親からcoordinatorへの最初のGOはE0だけで、R0はE0完了後の引渡し待ち。
+- sticky constraint: 全委譲 `gpt-6.1-sol`、repository設定は変更しない。既存WIP/worktree/stash、原本を保持する。
+
+### delegation execution record
+
+| role / agent id | spawned | ownership / 確定status |
+| --- | --- | --- |
+| execution-coordinator `/root/coordinator` | yes | E0履歴統合、R0指定規範、本taskのC追記のみ。E0 `COMPLETE`、R0 GO待ち |
+| server-implementer `/root/server` | yes | R2/R3 Worker専用scope、準備中 |
+| front-implementer `/root/front` | yes | R4/R5 client専用scope、R6 scripts/testdata/client harness、準備中 |
+| contract-auditor `/root/contract` | yes | R0/R1 checkpointとR7契約監査、read-only準備中 |
+| implementation-auditor `/root/implementation` | yes | R7実装監査、read-only準備中 |
+| 親 `/root` | no（親自身） | R1 shared契約、commit進行管理/最終検証。R1はworker限定のserver roleからwrite前に解除し親へ再割当 |
+
+この表は親が通知した実際のspawn/再割当を記録する。将来のwrite開始を実施済みとは扱わない。各ownerは成功条件・許可副作用・continue/escalation境界を本書の個別packetから継承する。coordinatorは既に分割された単独scopeを担当するため再委譲なし。
+
+### E0 — 実行基点と旧baseline read-back
+
+- status: `COMPLETE`。branch: `codex/issue-188-phase-c-host-led`。worktree: `C:/Users/tts13/.codex/worktrees/issue-188-phase-c-host-led/infinitas_arena`。
+- 最新 `origin/v1` の取得・GitHub read-backは親が担当し、基点 `64c640fab3a4e03a0a7fe8f71b9bf259be675167`、#191 `MERGED`、#189 `OPEN` / 固定head `90856a42d9e199b49d97966e1dd620e6b626b5dd` の一致を通知した。
+- 新branch/worktreeを上記最新v1から作成し、固定#189を `git merge --no-ff` で履歴統合。merge commit: `f87f05a7bc07e1b70dd1cc97e846625ecbce0572`。parentは最新v1と固定#189の両SHAで、両履歴への到達性を保持。共通祖先: `0a44dfc399591003e0bd6481f6d67cc3c2930806`。競合なし、手動競合処置なし。
+- `latest v1...固定head` と `latest v1...統合head` は87ファイル、+8425/-112で一致。latest v1の `AGENTS.md / WORKFLOW.md / QUALITY.md / .codex/config.toml / .codex/agents`、#191の全A/B資料と本taskは統合で差分なし。通常コードの継承差分は固定#189と同じ範囲で、新たな仕様変更はない。
+- FSM/controller、shared開催model/ws、client store/ws/page、integration/harness/capture、fixtureの存在を確認。client/worker列挙式標準testの開催登録を確認。
+- CI read-back: `.github/workflows/ci.yml` のPR quick/tag・manual fullへの接続を保持。`validate-reusable.yml` は固定#189と内容一致し、Windows / Node22、既存agent/lint/root型/stats/Worker/build/cargo check/Wrangler、追加design-contract/client unit/integration（quick/full）およびcargo test（full）を保持。新CI設計なし。
+- 準備: Node `v22.20.0` / npm `10.9.3`、新worktreeだけで `npm ci` 成功、lockfile差分なし。既存依存のaudit通知24件は依存変更せず記録し、この作業で脆弱性調査・修正を追加しない。
+
+| E0 quick相当command | 結果 |
+| --- | --- |
+| `npm run check:agents` | PASS、8 agents |
+| `npm run check:design-contracts` | PASS |
+| `npm run lint` | PASS、max-warnings 0 |
+| root `npm run typecheck` | PASS |
+| `npm run test:client-stats` | PASS、17項目 |
+| `npm --workspace @infinitas/client run test` | PASS、121/121 |
+| `npm run test:worker` | PASS、156/156 |
+| `npx tsx --test scripts/host-event-e2e.test.mjs` | PASS、4/4 |
+
+- 隔離ログ: 新worktreeのignored `.tmp/issue-188-phase-c/e0/{agents,design-contracts,lint,typecheck,client-stats,client-unit,worker,integration}.log`。logはUTF-8 no BOM。`git diff --check` PASS、履歴統合直後の新worktree clean。元rootのv1/WIP/worktrees/stashesは操作していない。
+- finding disposition: E0不足のMust fix（#191レビュー）は基点形成・履歴/CI/存在/quick read-backにより `fixed`。evidenceは上記SHA・差分・8面結果。remaining risk: 全結果は旧Ready方式baselineの再現で、新仕様ACのPASSではない。full build/Rust/Wrangler・新E2E/visual・独立監査はR0〜R7で実施する。hosted CIを実行したとは扱わない。
+- 次checkpoint: 親へのE0 COMPLETE返却後にR0 GOを受領し、指定7規範だけを新正本へ同期する。R1前にcontract-auditorのBlocker/Must fixなしを必須とする。
+
+### Cの視覚正本再確認（親による試作操作）
+
+- 親がpublicationの保存preview `http://127.0.0.1:18988/event-host-led-preview.html` をIABで閲覧しtitle一致/空白なしを確認。原本/previewは編集しない。
+- 専任Host入口→作成→待機→大会15人のN固定確認→AA選曲/確定→開始前切断例も15人対象で開始→14/15未提出（まだ欠場でなくscore未公開）→右管理から締切1人/以後受付不可の確認→欠場SCORE0/0pt/N15→次曲選曲→前曲閲覧→AAの全員集計除外/履歴保持の無効化確認を開いてcancel。
+- 1280pxは4列カードと右情報、390pxは参加者20人の2列/自分先頭/一覧外待機、Host/Ready操作なしを目視。305pxはページ横overflowなし（width=scrollWidth=290）、カードtextの重なりは製品寸法調整で解消する入力としてfrontへ引渡す。
+- console error/warn 0、確認後viewport reset。証拠はtool画像/AX観測で新画像ファイル保存ではない。採用試作の再確認であり、製品AC/実通信/保存/20接続を検証したとは扱わない。
+
+### R0 — 新正本と規範の整合 checkpoint入力
+
+- 親のE0 COMPLETE受領とR0 GO後、coordinator単独で7指定規範と本C記録を編集。合意UX資料、製品/CI/依存/通常FSMは変更しない。
+- 変更: `01_fsm` §12へReadyなしの開始集合/0対象拒否/切断休憩/14・15提出待機/締切と復帰、`02_ws_protocol`開催§6へprotocol2厳格gate/SET_READY撤去/snapshot2対象投影、`03_data_model` §10へDO2・schema1全phase拒否/原本保持・history2専用DTOとv1 reader、`05_screen_list` §14と入口責務へ専用ページ/役割/配置/確認量、`06_source_io_spec` §8へReady非依存・ACKと連続監視、`07_constants` §11へ版とstorage、`10_regression_guard_addendum` §7へdrain/retention/rollbackを同期。
+
+| 原稿の7製品AC | R0規範対応 |
+| --- | --- |
+| 1 Top分離・専用入口・画面移動と退出の区別 | 05 §1/3.1/13/14、接続維持/戻り/排他と入力保持 |
+| 2 Ready/連続設定なし・対象/次曲待ち/Host待ち・連続無操作 | 01 §12.1、02開催§6、03 §10.1、05 §14、06 §8 |
+| 3 確定譜面/対象1人/Host接続、休憩切断保持/0拒否 | 01 §12.1、02開催§6.1、03 §10.1、05 §14 |
+| 4 14/15未提出を保持→締切だけ欠場0pt/固定N | 01 §12.1/12.2、03 §10.1、05 §14、06 §8 |
+| 5 一時復帰同曲・締切後不可・次曲枠・LEFT復帰待ち | 01 §12.1、03 §10.1、05 §14、06 §8 |
+| 6 専任source/自己カード不要・兼任カード/全体操作・participant権限 | 01 §12、02開催§6、03 §10.1、05 §14、06 §8 |
+| 7 未公開score/順位、同点/N/欠場/Host300秒/無効期間/完全部分 | 01 §12.2/12.3、02開催§6.2/6.3、03 §10、05 §14、07 §11、10 §7 |
+
+- validation: `npm run check:design-contracts` PASS、`git diff --check` PASS。既存checkerの変更不要。通常規範のReadyを維持し、開催追加節以外は05の画面一覧/Top目的/遷移だけの意図差分。標準checkerは文字列checkのためsemantic適合判定は独立contract checkpointへ渡す。E0 quick8面結果とR0規範検証を混同しない。
+- status: 規範差分 `READY`、R0個別完了はcontract-auditorのBlocker/Must fixなしを待つ。R1のwriteはそのcheckpoint後。各local commitはindex衝突を防ぐため親が意図scopeのみstage/commit、coordinatorは編集/検証ownerを保持する。
+
+### R0 独立契約監査・gate disposition
+
+- auditor: contract-auditor `/root/contract`、`gpt-6.1-sol`、read-only。判定 `COMPLETE / pass-with-followups（R0規範限定）`。新規Blocker/Must fixなし、R1 gate通過可。
+- 独立確認: 7製品AC、維持規則、protocol2/snapshot2/DO2/history2のbreaking分類、DO1全phase拒否/原本保持、history1専用reader/原本保持、旧runtime drain/terminal1800秒retention/cleanup、rollback、役割/確認量を合意原稿と照合。auditorによる `check:design-contracts` と `git diff --check` もPASS。
+- line evidence（R0時点）: `docs/design/01_fsm.md:281/282/285`（対象・0人・14/15未提出）、`02_ws_protocol.md:275/277/292`（strict protocol2/Ready action撤去/秘匿）、`03_data_model.md:455/482`（DO2とhistory1/2原本保持）、`05_screen_list.md:486/501`（入口/配置/確認操作）、`06_source_io_spec.md:467`（source採用/ACK/連続無操作）、`07_constants.md:239/246`（版とstorage）、`10_regression_guard_addendum.md:108/109/110`（drain/retention/rollback）。実装証拠と区別し、監査対象は規範差分だけ。
+
+| finding | disposition / evidence | remaining risk / 次owner |
+| --- | --- | --- |
+| CR-01 Ready gate/合同対象除外 | 規範部分fixed、01 §12.1・02開催§6・05 §14・06 §8 | shared/Worker/client製品実装とV2/V3はR1/R2/R4/R5/R6で未検証 |
+| CR-02 protocol1 breaking隠蔽 | 規範部分fixed、02開催§6・07 §11・10 §7 | consumer literal/gateと両方向拒否はR1/R3/R4/R6で未検証 |
+| CR-03 DO1/2復元 | 規範部分fixed、03 §10・10 §7、全phase拒否とdrain/terminal条件 | 製品拒否/原本保持はR2/R3/R6、実稼働drain不存在証拠は別の公開gate |
+| CR-04 history/live結合 | 規範部分fixed、03 §10.3・07 §11・10 §7 | history DTO/reader/保存と原本保持はR1/R4/R6で未検証 |
+| CR-05 UI authority不一致 | 規範部分fixed、02開催§6.3・05 §14、前曲無効化/提出済Kick/Host切断read | policy/store/UI製品整合はR4/R5/R6で未検証 |
+| CR-06 旧test oracle | 新ACと旧baselineの区別を本C記録に固定 | 新oracleと標準entrypoint/CI full実証はR2〜R6/R7で継続、製品部分は未処理 |
+| CR-07 source既存非Ready依存 | 06 §8の規範同期fixed、parser再実装を要求しない | adapter/replay/連続同曲/4source維持回帰はR4/R6で継続 |
+
+- R0 status: `COMPLETE`。規範限定gateを通過したためR1へ引渡す。CR-01〜06全体や新製品ACをCOMPLETEとは扱わない。親へのcommit委任で7規範＋本task以外をstageしない。合意UX資料は不変。

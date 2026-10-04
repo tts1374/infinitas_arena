@@ -236,13 +236,16 @@ Ph1で固定するタイマー値、制約値、表示/運用上の定数を整�
 
 ## 11. Host開催定数（Issue #188）
 
-- `HOST_EVENT_PROTOCOL = 1`
+- `HOST_EVENT_PROTOCOL = 2`（開催専用breaking契約、厳格一致。通常protocol/最低client版は維持）
+- 公開`EventRoomSnapshot.schema_version = 2`、開催DO record `schema_version = 2`（schema1自動移行なし）
 - `HOST_EVENT_ACCEPT_NEW = false`（環境変数未指定/falseは新規開催作成と新participant ID入室を停止。既存Host/participantの再接続、大会固定名簿の復帰、既存開催の進行・結果回収は許可）
 - `EVENT_MAX_PLAYERS = 20`（プレー参加者。専任Hostは別枠、兼任Hostは含む）
 - `HOST_EVENT_DISCONNECT_GRACE_SECONDS = 300`
 - `HOST_EVENT_CLOSED_RETENTION_SECONDS = 1800`
 - `HOST_EVENT_RESULTS_PAGE_SIZE = 50`
-- `HOST_EVENT_HISTORY_SCHEMA_VERSION = 1`
+- `HOST_EVENT_HISTORY_SCHEMA_VERSION = 2`（新保存。直前history1の専用readerと原本保持）
+- history2 storage key: `infinitas.client.event-results.v2`、Tauri: `event-results/<sanitized_event_id>.v2.json`
+- history1 storage key: `infinitas.client.event-results.v1`、旧Tauri: `event-results/<sanitized_event_id>.json`（読取だけで上書き/削除しない）
 - `HOST_EVENT_NAME_MAX_LENGTH = ROOM_COMMENT_MAX_LENGTH`
 - `HOST_EVENT_NAME_ALLOW_EMPTY = ROOM_COMMENT_ALLOW_EMPTY`
 - `HOST_EVENT_NAME_ALLOW_NEWLINE = ROOM_COMMENT_ALLOW_NEWLINE`
@@ -257,3 +260,4 @@ Ph1で固定するタイマー値、制約値、表示/運用上の定数を整�
 - `HOST_EVENT_IDEMPOTENCY_CONFLICT = "IDEMPOTENCY_CONFLICT"`
 
 通常の`MAX_PLAYERS_OPTIONS`、ready/picking/round/match TTL、ARENA/BPL/BPL4配点・曲数・自動再戦定数は変更しない。Host開催には通常の時間制限と自動進行を適用しない。
+開催Ready/SET_READYと準備人数gateを設けず、開始不可は確定譜面なし・当該曲対象0人・Host切断・不正phase/context等で判定する。休憩state/自動欠場定数は追加しない。protocol1/未知版は開催だけ拒否し、未知snapshot/history原本保持は規範02/03/10に従う。

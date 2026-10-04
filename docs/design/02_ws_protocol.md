@@ -272,29 +272,30 @@
 
 ---
 
-## 6. Host開催 protocol v1（Issue #188）
+## 6. Host開催 protocol v2（Issue #188）
 
-通常room protocolは変更しない。`HOST_EVENT_PROTOCOL = 1`を加法追加し、`GET /api/capabilities`は `{ host_event_protocol: 1, host_event_accept_new: boolean }` を返す。404、未知版、版不一致では新clientは開催UIを無効にするが通常対戦を維持する。`POST /api/event-rooms`はprotocol/client version、Host、`EventRoomSettings`を検証し、`room_id / generation / join_code / settings`を返す。`HOST_EVENT_ACCEPT_NEW=false`では新規開催作成と既存開催への新participant ID入室を拒否し、既存eventのHost/既存participant再接続、大会固定名簿の復帰、進行・結果回収は許可する。
+通常room protocolと最低client版は変更しない。毎曲Ready撤去とSTART_ROUNDの意味変更はbreakingとし、`HOST_EVENT_PROTOCOL = 2`へ更新する。`GET /api/capabilities`は `{ host_event_protocol: 2, host_event_accept_new: boolean }` を返す。capabilities/client支持判定、HTTP create、WS EVENT_JOINのprotocolは厳格一致とする。新server/旧開催clientと旧server/新開催clientの両方向で開催だけfail-closedとし、protocol1/未知版を新方式で受理しない。404、未知版、版不一致では「更新必要・開催受付不可」を示し、通常対戦の可否は別表示する。`POST /api/event-rooms`はprotocol/client version、Host、`EventRoomSettings`を検証し、`room_id / generation / join_code / settings`を返す。`HOST_EVENT_ACCEPT_NEW=false`では新規開催作成と既存開催への新participant ID入室を拒否し、既存eventのHost/既存participant再接続、大会固定名簿の復帰、進行・結果回収は許可する。
 
 開催recordへの最初のWS messageは`EVENT_JOIN`とする。通常recordへの`EVENT_JOIN`、開催recordへの`ROOM_JOIN`/SPECTATORはsnapshot送信前に拒否する。開催には通常の`ROOM_JOIN_ACCEPTED / ROOM_UPDATED / PLAYER_ROUND_CONFIRMED / RESULT_READY`を送らない。
 
 ### 6.1 client -> server
 
 - `EVENT_JOIN`: protocol、client_version、join_code、player_id、display_name、source/所持解禁情報を送る。roleはserverが決定し、専任Hostにsourceを要求しない。
-- `EVENT_ACTION`: actionで判別するunion。全操作に`request_id / generation`、開始後は`event_id`、曲操作は`round_id`、選曲/準備/開始は`selection_revision`を含める。
-- action: `START_EVENT | CONFIRM_PICK | CANCEL_PICK | SET_READY | START_ROUND | SUBMIT | SKIP | CLOSE_ROUND | NEXT_PICK | INVALIDATE_ROUND | KICK | LEAVE | END_EVENT | STATE_GET | RESULTS_GET`。
+- `EVENT_ACTION`: actionで判別するunion。全操作に`request_id / generation`、開始後は`event_id`、曲操作は`round_id`、選曲/開始は`selection_revision`を含める。
+- action: `START_EVENT | CONFIRM_PICK | CANCEL_PICK | START_ROUND | SUBMIT | SKIP | CLOSE_ROUND | NEXT_PICK | INVALIDATE_ROUND | KICK | LEAVE | END_EVENT | STATE_GET | RESULTS_GET`。開催v2に`SET_READY`を定義せず、通常roomの`READY_SET`は維持する。
+- `START_ROUND`の条件は規範01 §12.1の確定譜面/当該曲対象1人以上/Host接続とcontext一致。参加者切断・通話休憩でも対象を保持し、Readyを条件にしない。
 - `SUBMIT`は`observed_key / metric_value / source_meta?`を含むが、全体revision一致を条件にせず、現行generation/event/round/expected_key/socket/資格/未提出をserverで検証する。
 
 ### 6.2 server -> client
 
 - `EVENT_JOIN_ACCEPTED | EVENT_STATE | EVENT_ACTION_ACK | EVENT_RESULTS | EVENT_ERROR`を開催専用message mapとして加法追加する。
-- 公開stateはphase、選曲、名簿/接続/準備/提出状態、Host期限、公開済み曲結果/大会総合だけを含む。
+- 公開`EventRoomSnapshot.schema_version=2`はphase、選曲、名簿/接続/参加対象/次曲待ち/提出状態、Host期限、公開済み曲結果/大会総合だけを含み、participantsの`ready`を持たない。`current_eligible_player_ids:string[]`は確定後の開始可能対象、確定前/現在曲なしは`[]`。開始後の受付資格は`current_playing_player_ids`とround statusを正とする。未知snapshotは新方式でrenderしない。
 - `PLAYING`中の未確定`metric_value / score / misscount / source_meta / rank`はHostを含む全接続に送らない。再接続state、ACK、ERROR、debug、RESULTS_GETにも含めない。SUBMIT ACKは採否だけを返す。
 - 曲別結果は確定保存後にrevision付きで一斉公開する。無効化は対象曲の新revisionと再集計した大会総合を配信する。合同プレーには総合points/rankを生成しない。
 - live stateは現行曲と直前公開結果を中心とし、過去公開曲は`RESULTS_GET`で最大50曲ずつ返す。cursorは公開revisionを含み、途中無効化で不整合なら再同期を要求する。未公開曲は返さない。
 
 ### 6.3 authority / idempotency / durability
 
-- 自己操作は`SET_READY/SUBMIT/SKIP/LEAVE`、進行/KickはHostだけ。兼任Hostの自己Kickは禁止する。Host切断中の新規mutationは開始済み曲の有効な`SUBMIT`だけを許可し、`SKIP`と進行操作を拒否する。`EVENT_JOIN`/再接続、`STATE_GET`、`RESULTS_GET`、`PING/PONG`は許可し、未確定score非送信を維持する。
+- 自己操作は`SUBMIT/SKIP/LEAVE`、進行/KickはHostだけ。兼任Hostの自己Kickは禁止する。提出済participantのKickでも既に受理した提出を保持する。Host切断中の新規mutationは開始済み曲の有効な`SUBMIT`だけを許可し、`SKIP`と進行操作を拒否する。`EVENT_JOIN`/再接続、`STATE_GET`、`RESULTS_GET`、`PING/PONG`は許可し、未確定score非送信を維持する。
 - 同一`request_id`/`client_msg_id`の再送は保存済み処理結果を返し、二重適用しない。同じkeyを異なるpayloadで再利用した場合は`EVENT_ERROR(code="IDEMPOTENCY_CONFLICT")`とし、以前の処理結果を別payloadへ流用しない。
 - 状態、結果、冪等記録は同じ確定境界で永続化し、保存成功後にのみACK/公開通知する。保存失敗時は成功を通知しない。

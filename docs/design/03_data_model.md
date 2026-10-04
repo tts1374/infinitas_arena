@@ -450,34 +450,35 @@ type LobbyRoomSummary = {
 
 ---
 
-## 10. Host開催データ（schema v1）
+## 10. Host開催データ（schema v2）
 
-通常`room-record`と開催recordは別storage keyとし、`room_kind`で判別する。`room_kind`欠落recordは従来の通常roomとして扱い、`room_kind=HOST_EVENT`を通常roomへhydrateしない。開催recordのschema/種別/必須状態が不正な場合は空開催を生成せず`ROOM_STATE_LOST`で終了する。
+通常`room-record`と開催recordは別storage keyとし、`room_kind`で判別する。`room_kind`欠落recordは従来の通常roomとして扱い、`room_kind=HOST_EVENT`を通常roomへhydrateしない。開催recordはschema2だけを復元する。schema1をLOBBYを含む全phaseで自動移行せず、未対応/不正schema・種別・必須状態では原recordを保持し、空開催生成/silent resetをせず既存`ROOM_STATE_LOST`境界でfail-closedとする。新たな隔離/cleanup仕様を追加しない。切替前のdrainは規範10 §7に従う。
 
 ### 10.1 EventRoomRecord
 
-- identity: `schema_version=1 / room_kind=HOST_EVENT / room_id / generation / event_id:string|null`
+- identity: `schema_version=2 / room_kind=HOST_EVENT / room_id / generation / event_id:string|null`
 - settings: `event_name / event_type=CASUAL|TOURNAMENT / host_plays:boolean / play_style=SP|DP / win_metric=SCORE|MISSCOUNT / join_code`。`event_name`は通常`room_comment`と同じく空文字を許可し、最大80文字、CR/LF禁止、保存時の暗黙trimなしとする。
 - progress: `phase / round_phase:ACTIVE|RESULT|null / revision / selection_revision / selected_chart / current_round_id / created_at / started_at / ended_at / end_reason`。LOBBYでは`event_id/started_at=null`、`START_EVENT`成功と同じ保存境界で両方を発行する。
 - host: `host_player_id / connected / initial_connect_deadline / disconnect_deadline`
-- participants: stable player id、表示名、connection/left/kicked、source、所持解禁、ready、pending_next。兼任Hostはparticipant、専任Hostは非participant。
+- participants: stable player id、表示名、connection/left/kicked、source、所持解禁、pending_next。`ready`を持たず、休憩stateを追加しない。兼任Hostはparticipant、専任Hostは非participant。
 - tournament: `fixed_roster_player_ids / scoring_size_n`を`START_EVENT`で固定し、その後の退出/Kick/欠場で変更しない。
 - 公開`EventRoomSnapshot`にも`fixed_roster_player_ids:string[] / scoring_size_n:number|null`を含め、開催メタデータの権威情報とする。合同プレーと未開始LOBBYは`[] / null`。曲ページング`EVENT_RESULTS`へは重複格納しない。
-- round: `round_id / chart / selection_revision / eligible_player_ids / playing_player_ids / started_at / confirmed_at / invalidated_at / public_revision`。現在の準備状態は`participants[].ready`を正とし、roundの準備人数は`eligible_player_ids`との積から導出する。round内へ重複した`ready_player_ids`を保存しない。
+- round: `round_id / chart / selection_revision / eligible_player_ids / playing_player_ids / started_at / confirmed_at / invalidated_at / public_revision`。確定時のeligibleを凍結し、開始時の在室対象はLEFT/KICKED/次曲待ちを除きDISCONNECTEDも含む。公開snapshotはschema2で`current_eligible_player_ids:string[]`を投影し、確定前/現在曲なしは`[]`、開始後の受付は`current_playing_player_ids`とround statusを正とする。Ready集合を保存・導出しない。
 - private submissionsは公開stateと型を分離し、`SUBMITTED|ABSENT`、metric/source、欠場理由、受理時刻を保持する。欠場理由は`SKIP|DEADLINE|LEFT|KICKED|NOT_PRESENT`。
-- public result entryは`playing_player_ids`に限定する。ただし大会では固定名簿のうち当該曲で欠場扱いとなる対象も含める。合同プレーの未準備者/pending_nextはparticipant stateには残すが、round resultや偽`ABSENT`を生成しない。同値は同順位/順位飛ばし、有効提出者へ`N-rank+1`、欠場はrankなし/0pt。合同プレーはpoints/overallを持たない。
+- public result entryは`playing_player_ids`に限定する。ただし大会では固定名簿のうち当該曲で欠場扱いとなる対象も含める。合同のpending_nextはparticipant stateに残すが、round resultや偽`ABSENT`を生成しない。休憩/一時切断を理由に対象や未提出を除かず、締切で未提出だけDEADLINE欠場とする。同値は同順位/順位飛ばし、有効提出者へ`N-rank+1`、欠場はrankなし/0pt。合同プレーはpoints/overallを持たない。
 - invalidated roundは履歴へ残すが総合から除外する。総合は有効な公開roundから毎回再計算する。
 - idempotencyはplayer/request key、payload fingerprint、処理結果を終了後回収まで保持する。
 
 ### 10.2 永続化と復元
 
 - state、公開結果、idempotencyを同じ確定境界で保存し、ACK/配信は保存後に行う。
-- 復元時はschema/room_kindを検証し、接続をstable player idへ再関連付け、絶対Host期限を現在時刻で評価する。alarm/再起動/接続試行で期限を書き換えない。
+- 復元時はschema2/room_kindを検証し、接続をstable player idへ再関連付け、絶対Host期限を現在時刻で評価する。alarm/再起動/接続試行で期限を書き換えない。schema1の対象集合/固定N/round/revision/期限/private submission/idempotencyをschema2として再計算しない。
 - 開催中に通常30分TTLを適用しない。終了から1800秒後にsocket、開催record、round、idempotencyを回収する。
 
 ### 10.3 EventHistoryRecord
 
-- 保存単位は開催。`schema_version=1`、開催ID/名称/種別、開始終了時刻/理由、Host/兼任区分、SP/DP・指標、大会名簿/N、曲ID/譜面/対象者、確定時刻、各人の結果/欠場理由/順位/pt、無効状態、総合、最終受信時刻、受信revision、最終同期済み曲数、`complete|partial`を保持する。
-- Tauriはapp data配下`event-results/<event_id>.json`、browserは開催専用storage keyへ保存する。曲ID/revision単位でupsertし、重複通知で曲やptを重複追加しない。
+- 保存単位は開催。新保存は`schema_version=2`、history専用participant DTOを使いlive snapshot型へ直接依存しない。DTOからreadyを除き、開催ID/名称/種別、開始終了時刻/理由、Host/兼任区分、SP/DP・指標、大会名簿/N、曲ID/譜面/対象者、確定時刻、各人の結果/欠場理由/順位/pt、無効状態、総合、最終受信時刻、受信revision、最終同期済み曲数、`complete|partial`を保持する。
+- browser/WebView localStorageの新保存keyは`infinitas.client.event-results.v2`、Tauri JSONは既存app data配下`event-results/<sanitized_event_id>.v2.json`とする。曲ID/revision単位でupsertし、重複通知で曲やptを重複追加しない。履歴一覧はTauriでもlocalStorageのv1/v2両keyを読み、RustはJSON保存だけを担う。JSONディレクトリの自動走査は追加しない。
+- 直前history1は専用validator/読取adapterで支持し、保存済みplaying集合、順位/pt、無効状態、完全/部分を維持する。v1のreadyは表示・開始判定・計算に使わない。読取正規化はメモリ内のみで、v1 key `infinitas.client.event-results.v1` と旧`event-results/<sanitized_event_id>.json`原本を読込だけで上書き/削除しない。同event_idに読めるv2があれば一覧はv2を優先し、v1原本は保持する。
 - 最終結果と全公開曲が揃うまでpartial。途中退出/Kick/切断は受信済み範囲を残し、専任Hostも保存する。
 - 未知開催schemaは原本を保持して読めない旨を表示する。通常room archive、`matches/match_games/play_results/personal_bests`へ変換・流入させない。
