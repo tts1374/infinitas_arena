@@ -8,6 +8,7 @@ const projectConfigPath = path.join(repoRoot, ".codex", "config.toml");
 const kebabNamePattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const approvedModels = new Set([
+  "gpt-6.1-sol",
   "gpt-5.6",
   "gpt-5.6-terra",
   "gpt-5.6-luna",

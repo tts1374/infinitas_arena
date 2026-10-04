@@ -10,7 +10,7 @@ description: Automate Phase D closure and release operations for this repository
 Run a repeatable Phase D release sequence with one script:
 `scripts/release/phase-d-release.mjs`.
 
-Use this skill only after Phase D is confirmed `complete`.
+Use this skill only after Phase D is confirmed `COMPLETE`.
 Return a release execution/evidence summary, not a release-policy substitute.
 
 ## Inputs
@@ -127,7 +127,7 @@ Always report:
 - version bump commit and push result
 - dispatched/skipped workflows
 - release-note update result
-- final status (`complete` or `blocked`)
+- final status (`COMPLETE`, `BLOCKED`, or `ESCALATION`)
 
 ## Escalation Conditions
 

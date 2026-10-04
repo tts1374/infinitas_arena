@@ -9,4 +9,5 @@
 - State the next unlock condition.
 - Apply the correct Spawn Gate from `WORKFLOW.md`.
 - Emit `delegation execution record`.
+- For `spawned: yes`, include actual agent id, ownership scope, and current status. For `spawned: no`, use `N/A` for these fields and include the no-delegate reason.
 - Stop with `BLOCKED` if mandatory spawn is still missing.

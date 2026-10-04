@@ -7,7 +7,7 @@ description: "Phase A exit-gate skill for deciding whether an issue is ready to 
 
 ## Overview
 
-Use this skill to decide whether Phase 1 is closed and whether an issue can be handed to execution planning.
+Use this skill to decide whether Phase A is closed and whether an issue can be handed to execution planning.
 Use this as a readiness gate only, not as execution planning or post-implementation audit.
 Return the smallest evidence-backed readiness decision that lets the caller continue or stop safely.
 
@@ -26,7 +26,7 @@ Use when:
 - Check implementation readiness after wall-sparring.
 - Confirm whether handoff to issue triage or execution planning is safe.
 - Separate fatal unresolved items from deferrable improvements.
-- Produce a Phase 1 completion decision.
+- Produce a Phase A completion decision.
 
 Do not use when:
 - Stay in early idea exploration with low requirement maturity.
@@ -115,6 +115,6 @@ Apply these format rules:
 
 ## Success Criteria
 
-- Make Phase 1 closure decision explicit.
+- Make Phase A closure decision explicit.
 - Make execution planning handoff viability explicit.
 - If not ready, state exactly what to fill next.

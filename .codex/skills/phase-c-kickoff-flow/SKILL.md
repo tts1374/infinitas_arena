@@ -91,6 +91,9 @@ delegation execution record:
 - role: <role-name>
 - spawned: <yes|no>
 - objective: <objective>
+- agent id: <actual agent id when yes; N/A when no>
+- ownership scope: <assigned files/layer when yes; N/A when no>
+- status: <actual agent status when yes; N/A when no>
 - no-delegate reason: <reason or N/A>
 
 Replan triggers:
@@ -106,6 +109,7 @@ Replan triggers:
 - Do not omit the source of truth.
 - Do not mark kickoff `READY` if a mandatory High-Risk spawn path is still missing.
 - Use `delegation execution record` consistently in kickoff output; do not replace it with `delegation execution plan`.
+- For `spawned: yes`, record the actual agent id, assigned ownership scope, and current status; future spawn plans are not execution evidence. For `spawned: no`, mark these fields `N/A` and explain the no-delegate reason.
 - If governing context requires `tasks/*.md`, do not fall back to an A-lite agreement when the artifact is missing; return `BLOCKED`.
 - A-lite fallback is allowed only when the workflow explicitly permits no concrete task artifact.
 - If current request ceiling is kickoff-only / task-authoring-only / planning-only, stop after kickoff even when kickoff is `READY`.

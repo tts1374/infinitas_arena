@@ -67,7 +67,7 @@ test(client): cover source validation boundary
 - [ ] PR body lists impact area and validation evidence.
 - [ ] PR body lists regression checks.
 - [ ] High-risk work includes rollback and compatibility notes.
-- [ ] Source worktree final status is confirmed before returning `complete`.
+- [ ] Source worktree final status is confirmed before returning `COMPLETE`.
 
 Use:
 - `pr-template-phase-c.md`

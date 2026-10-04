@@ -34,7 +34,7 @@ Return publish-ready evidence and status, not broad workflow re-planning.
 - If unrelated local changes exist, isolate the scoped work in a clean worktree or equivalent before staging.
 - Isolate or defer unrelated changes.
 - Keep `1 plan item = 1 logical commit` when practical.
-- If clean worktree isolation is used, record the source worktree path and plan how it will be reconciled before returning `complete`.
+- If clean worktree isolation is used, record the source worktree path and plan how it will be reconciled before returning `COMPLETE`.
 
 3. Run commit gate:
 - Check staged diff matches the selected plan item.
@@ -45,7 +45,7 @@ Return publish-ready evidence and status, not broad workflow re-planning.
 - Select minimum required checks from `references/phase-c-gate-checklist.md`.
 - Compare local candidate checks with repo CI validation surface.
 - If local workspace checks are narrower than CI for touched files, promote the command set to CI-equivalent or broader.
-- When new or changed test files are outside the standard test/typecheck surface, add an explicit compensating command or stop as `blocked`.
+- When new or changed test files are outside the standard test/typecheck surface, add an explicit compensating command or stop as `BLOCKED`.
 - Execute required checks before commit.
 - Record pass/fail/skip with concrete reason.
 
@@ -64,7 +64,7 @@ Return publish-ready evidence and status, not broad workflow re-planning.
 - Read back `author.login` and `author.is_bot` after PR publication.
 - Record lane evidence as `bot-created PR` or `task-owned / user-authored PR`.
 - Do not assume the intended publish path or task ownership determines the lane.
-- If author identity cannot be read back, stop as `blocked` before handing off to merge / close flows.
+- If author identity cannot be read back, stop as `BLOCKED` before handing off to merge / close flows.
 
 8. Run source worktree reconciliation gate:
 - If a clean worktree or equivalent isolation was used, inspect the original source worktree before returning.
@@ -77,7 +77,7 @@ Return publish-ready evidence and status, not broad workflow re-planning.
 - Ensure required validation evidence is present.
 - If audit/review findings exist, include a disposition ledger for each `Blocker`, `Must fix`, and relevant `Should fix`.
 - Do not continue to PR handoff while unresolved `Blocker` or `Must fix` findings remain without explicit rescope/defer evidence.
-- Ensure completion status is explicit (`complete` or `blocked`).
+- Ensure completion status is explicit (`COMPLETE`, `BLOCKED`, or `ESCALATION`).
 
 Do not:
 - replace agent/user judgment about scope changes, merge authority, or unresolved product decisions
@@ -95,7 +95,7 @@ Always return:
 - PR title and body (or PR URL if created)
 - PR author/lane evidence when a PR was created
 - Open risks, if any
-- Final status: `complete` or `blocked`
+- Final status: `COMPLETE`, `BLOCKED`, or `ESCALATION`
 
 User-facing summaries should be written in Japanese unless the user explicitly requests another language. Keep fixed protocol labels, command names, and code identifiers unchanged.
 
