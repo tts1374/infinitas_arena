@@ -1,14 +1,23 @@
-import type { RoomSettings } from "@infinitas/shared";
+import type { EventRoomSettings, RoomSettings } from "@infinitas/shared";
 import type { WorkerEnv } from "../types/env";
 
 const INTERNAL_ROOM_INIT_URL = "https://room.internal/internal/init";
 const INTERNAL_ROOM_RECREATE_URL = "https://room.internal/internal/recreate";
+const INTERNAL_EVENT_ROOM_INIT_URL = "https://room.internal/internal/event-init";
 const JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 
 interface InitializeRoomRequest {
   room_id: string;
   settings: RoomSettings;
   created_at: string;
+}
+
+export interface InitializeEventRoomRequest {
+  room_id: string;
+  created_at: string;
+  host_player_id: string;
+  host_display_name: string;
+  settings: EventRoomSettings;
 }
 
 interface RecreateRoomRequest {
@@ -52,6 +61,19 @@ export async function initializeRoomDurableObject(
   if (!response.ok) {
     throw new Error("Failed to initialize room state.");
   }
+}
+
+export async function initializeEventRoomDurableObject(
+  env: WorkerEnv,
+  payload: InitializeEventRoomRequest,
+): Promise<void> {
+  const doId = env.ROOM_DO.idFromName(payload.room_id);
+  const response = await env.ROOM_DO.get(doId).fetch(new Request(INTERNAL_EVENT_ROOM_INIT_URL, {
+    method: "POST",
+    headers: { "content-type": JSON_CONTENT_TYPE },
+    body: JSON.stringify(payload),
+  }));
+  if (!response.ok) throw new Error("Failed to initialize event room state.");
 }
 
 export async function recreateRoomDurableObject(

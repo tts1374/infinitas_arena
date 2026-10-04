@@ -1,4 +1,4 @@
-import type { ChartDifficulty, RoomStateSnapshot, SourceType } from "@infinitas/shared";
+import type { ChartDifficulty, EventRoomSnapshot, RoomStateSnapshot, SourceType } from "@infinitas/shared";
 import {
   getSourceWatcherState,
   isTauriRuntime,
@@ -23,6 +23,7 @@ import {
 import { resolveChartAlias } from "../services/worker-api-client";
 import { runtimeConfig } from "../runtime/runtime-config";
 import { roomStore } from "./room-store";
+import { eventRoomStore } from "./event-room-store";
 import { createExternalStore, useExternalStore } from "./create-store";
 import { isValidPortNumber, type ClientSettings, type SourcePaths } from "./settings-store";
 
@@ -113,7 +114,8 @@ let dakenCounterV3Socket: WebSocket | null = null;
 let dakenCounterV3SocketPort: number | null = null;
 let dakenCounterV3ReconnectTimer: number | null = null;
 let dakenCounterV3MonitoringEnabled = false;
-let dakenCounterV3LastRoomState: RoomStateSnapshot["room_state"] | null = null;
+let dakenCounterV3LastRoomState: string | null = null;
+let latestEventRoomSnapshot: EventRoomSnapshot | null = null;
 let dakenCounterV3HasSnapshotBaseline = false;
 let dakenCounterV3SnapshotFingerprintCounts = new Map<string, number>();
 let dakenCounterV3SocketMessageQueue: Promise<void> = Promise.resolve();
@@ -715,11 +717,16 @@ function isRetryableDakenCounterV3SubmitFailure(message: string): boolean {
   );
 }
 
+function effectiveSourcePhase(snapshot: RoomStateSnapshot | null): string | null {
+  return snapshot?.room_state ?? latestEventRoomSnapshot?.phase ?? null;
+}
+
 function shouldKeepDakenCounterV3Connection(snapshot: RoomStateSnapshot | null): boolean {
+  const phase = effectiveSourcePhase(snapshot);
   return (
     latestSettings?.source === DAKEN_COUNTER_V3_SOURCE &&
-    snapshot !== null &&
-    snapshot.room_state !== "CLOSED"
+    phase !== null &&
+    phase !== "CLOSED"
   );
 }
 
@@ -928,11 +935,11 @@ function connectDakenCounterV3Socket(snapshot: RoomStateSnapshot | null): void {
       updateDakenCounterV3WatcherState("RUNNING", `${DAKEN_COUNTER_V3_ORIGIN_LABEL}: connected.`, [endpoint]);
       console.info(`${DAKEN_COUNTER_V3_ORIGIN_LABEL}: connected to ${endpoint}.`);
       const latestSnapshot = roomStore.getState().snapshot;
-      if (latestSnapshot?.room_state === "PLAYING") {
+      if (effectiveSourcePhase(latestSnapshot) === "PLAYING") {
         dakenCounterV3MonitoringEnabled = true;
         void logE2EEvent("reconnect_succeeded", {
           source: DAKEN_COUNTER_V3_SOURCE,
-          roomState: latestSnapshot.room_state,
+          roomState: effectiveSourcePhase(latestSnapshot),
         });
       }
       void logE2EEvent("watcher_started", {
@@ -1004,7 +1011,7 @@ function connectDakenCounterV3Socket(snapshot: RoomStateSnapshot | null): void {
 
 function syncDakenCounterV3RoomLifecycle(snapshot: RoomStateSnapshot | null): void {
   const previousState = dakenCounterV3LastRoomState;
-  const currentState = snapshot?.room_state ?? null;
+  const currentState = effectiveSourcePhase(snapshot);
   dakenCounterV3LastRoomState = currentState;
 
   if (latestSettings?.source !== DAKEN_COUNTER_V3_SOURCE) {
@@ -1044,6 +1051,8 @@ function syncDakenCounterV3RoomLifecycle(snapshot: RoomStateSnapshot | null): vo
     dakenCounterV3MonitoringEnabled = false;
     roomStore.reportSourceUnavailable(DAKEN_COUNTER_V3_WARNING_MESSAGE);
     roomStore.setSourceAvailability(false);
+    eventRoomStore.reportSourceUnavailable(DAKEN_COUNTER_V3_WARNING_MESSAGE);
+    eventRoomStore.setSourceAvailability(false);
     console.warn(
       `${DAKEN_COUNTER_V3_ORIGIN_LABEL}: monitoring is disabled because the connection was unavailable at PLAYING start.`,
     );
@@ -1052,6 +1061,7 @@ function syncDakenCounterV3RoomLifecycle(snapshot: RoomStateSnapshot | null): vo
 
   dakenCounterV3MonitoringEnabled = true;
   roomStore.setSourceAvailability(true);
+  eventRoomStore.setSourceAvailability(true);
 }
 
 function nextUnresolvedDialogId(): string {
@@ -1228,6 +1238,8 @@ function handleWatcherError(payload: SourceWatcherEventPayload): void {
 
   roomStore.reportSourceUnavailable(payload.detail);
   roomStore.setSourceAvailability(false);
+  eventRoomStore.reportSourceUnavailable(payload.detail);
+  eventRoomStore.setSourceAvailability(false);
 }
 
 function handleWatcherEvent(payload: SourceWatcherEventPayload): void {
@@ -1250,6 +1262,7 @@ function handleWatcherEvent(payload: SourceWatcherEventPayload): void {
     return;
   }
   roomStore.setSourceAvailability(true);
+  eventRoomStore.setSourceAvailability(true);
   void logE2EEvent("file_detected", {
     source: payload.parserOutput.source,
     filePath: payload.filePath,
@@ -1428,6 +1441,7 @@ export const sourceStore = {
     attachedListener = null;
     attachPromise = null;
     latestSettings = null;
+    latestEventRoomSnapshot = null;
     disconnectDakenCounterV3Socket({ resetTracking: true });
     internalStore.setState((state) => ({
       ...state,
@@ -1511,6 +1525,8 @@ export const sourceStore = {
       }));
       roomStore.reportSourceUnavailable(missingPathMessage);
       roomStore.setSourceAvailability(false);
+      eventRoomStore.reportSourceUnavailable(missingPathMessage);
+      eventRoomStore.setSourceAvailability(false);
       return;
     }
 
@@ -1533,6 +1549,7 @@ export const sourceStore = {
         watcherState: mapWatcherState(payload),
       }));
       roomStore.setSourceAvailability(true);
+      eventRoomStore.setSourceAvailability(true);
       void logE2EEvent("watcher_started", {
         source: settings.source,
         watchedPaths: payload.watchedPaths,
@@ -1553,6 +1570,8 @@ export const sourceStore = {
       }));
       roomStore.reportSourceUnavailable(errorMessage);
       roomStore.setSourceAvailability(false);
+      eventRoomStore.reportSourceUnavailable(errorMessage);
+      eventRoomStore.setSourceAvailability(false);
     }
   },
   async stop(): Promise<void> {
@@ -1585,6 +1604,10 @@ export const sourceStore = {
   },
   syncRoomSnapshot(snapshot: RoomStateSnapshot | null): void {
     syncDakenCounterV3RoomLifecycle(snapshot);
+  },
+  syncEventRoomSnapshot(snapshot: EventRoomSnapshot | null): void {
+    latestEventRoomSnapshot = snapshot;
+    syncDakenCounterV3RoomLifecycle(roomStore.getState().snapshot);
   },
 };
 
