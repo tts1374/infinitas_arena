@@ -24,7 +24,7 @@ export const eventNotebookReplayGuard = {
     const current = normalizedTimestamp(rawTimestamp);
     if (current === null) return null;
     const previous = acceptedByEventPlayer.get(key(eventId, playerId));
-    if (previous !== undefined && (current <= previous.timestamp || fingerprint === previous.fingerprint)) {
+    if (previous !== undefined && current <= previous.timestamp) {
       return { current, previous: previous.timestamp };
     }
     const pending = [...pendingByRequestId.values()].find((entry) =>

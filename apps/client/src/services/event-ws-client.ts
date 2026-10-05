@@ -5,6 +5,7 @@ import {
   type ClientMessage,
   type EventJoinPayload,
   type EventRoomAction,
+  type EventRoomSnapshot,
   type ServerMessage,
 } from "@infinitas/shared";
 import clientPackageJson from "../../package.json";
@@ -24,6 +25,83 @@ const EVENT_SERVER_TYPES = new Set([
   "EVENT_ERROR",
   "PONG",
 ]);
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((entry) => typeof entry === "string");
+}
+
+function isNonNegativeInteger(value: unknown): boolean {
+  return Number.isInteger(value) && Number(value) >= 0;
+}
+
+function isTimestamp(value: unknown): boolean {
+  return typeof value === "string" && value.length > 0 && !Number.isNaN(Date.parse(value));
+}
+
+function isNullableTimestamp(value: unknown): boolean {
+  return value === null || isTimestamp(value);
+}
+
+function isEventChart(value: unknown): boolean {
+  if (!isRecord(value) || typeof value.chart_key !== "string" || !isRecord(value.expected_key) || !isRecord(value.display)) return false;
+  return (typeof value.expected_key.play_style === "string" && ["SP", "DP"].includes(String(value.expected_key.play_style))) &&
+    typeof value.expected_key.difficulty === "string" && typeof value.expected_key.title_search_key === "string" &&
+    (value.expected_key.chart_id === undefined || value.expected_key.chart_id === null ||
+      (Number.isInteger(value.expected_key.chart_id) && Number(value.expected_key.chart_id) > 0)) &&
+    typeof value.display.title === "string" && (value.display.level === null || isNonNegativeInteger(value.display.level));
+}
+
+function isEventRound(value: unknown): boolean {
+  return isRecord(value) && typeof value.round_id === "string" && isEventChart(value.chart) &&
+    isStringArray(value.playing_player_ids) && isTimestamp(value.started_at) && isTimestamp(value.confirmed_at) &&
+    isNullableTimestamp(value.invalidated_at) && isNonNegativeInteger(value.public_revision) &&
+    Array.isArray(value.results) && value.results.every((entry) => isRecord(entry) &&
+      typeof entry.player_id === "string" && typeof entry.display_name === "string" &&
+      (typeof entry.status === "string" && ["SUBMITTED", "ABSENT"].includes(String(entry.status))) &&
+      typeof entry.metric_value === "number" && Number.isFinite(entry.metric_value) &&
+      (entry.absence_reason === null || (typeof entry.absence_reason === "string" && ["SKIP", "DEADLINE", "LEFT", "KICKED", "NOT_PRESENT"].includes(String(entry.absence_reason)))) &&
+      (entry.rank === null || (Number.isInteger(entry.rank) && Number(entry.rank) > 0)) &&
+      (entry.tournament_points === undefined || isNonNegativeInteger(entry.tournament_points)) && isTimestamp(entry.confirmed_at));
+}
+
+/** Validate the live boundary before accepting a connection or replaying actions. */
+export function isSupportedEventSnapshot(value: unknown): value is EventRoomSnapshot {
+  if (!isRecord(value) || value.schema_version !== 2 || value.room_kind !== "HOST_EVENT") return false;
+  const settings = value.settings;
+  const host = value.host;
+  return typeof value.room_id === "string" && isNonNegativeInteger(value.generation) &&
+    (value.event_id === null || typeof value.event_id === "string") &&
+    isNonNegativeInteger(value.revision) && isNonNegativeInteger(value.selection_revision) &&
+    (typeof value.phase === "string" && ["LOBBY", "PICKING", "PLAYING", "RESULT", "CLOSED"].includes(String(value.phase))) &&
+    (value.round_phase === null || (typeof value.round_phase === "string" && ["ACTIVE", "RESULT"].includes(String(value.round_phase)))) &&
+    isRecord(settings) && typeof settings.event_name === "string" &&
+    (typeof settings.event_type === "string" && ["CASUAL", "TOURNAMENT"].includes(String(settings.event_type))) && typeof settings.host_plays === "boolean" &&
+    (typeof settings.play_style === "string" && (typeof settings.win_metric === "string" && ["SP", "DP"].includes(String(settings.play_style))) && ["SCORE", "MISSCOUNT"].includes(String(settings.win_metric))) &&
+    settings.visibility === "PRIVATE" && typeof settings.join_code === "string" &&
+    isRecord(host) && typeof host.player_id === "string" && typeof host.display_name === "string" &&
+    typeof host.connected === "boolean" && typeof host.plays === "boolean" &&
+    Array.isArray(value.participants) && value.participants.every((entry) => isRecord(entry) &&
+      typeof entry.player_id === "string" && typeof entry.display_name === "string" &&
+      (typeof entry.connection_state === "string" && ["CONNECTED", "DISCONNECTED", "LEFT", "KICKED"].includes(String(entry.connection_state))) &&
+      typeof entry.pending_next === "boolean" &&
+      (entry.round_status === null || (typeof entry.round_status === "string" && ["PENDING", "SUBMITTED", "SKIPPED", "ABSENT"].includes(String(entry.round_status))))) &&
+    isStringArray(value.current_eligible_player_ids) && isStringArray(value.current_playing_player_ids) &&
+    isStringArray(value.fixed_roster_player_ids) &&
+    (value.scoring_size_n === null || (Number.isInteger(value.scoring_size_n) && Number(value.scoring_size_n) > 0)) &&
+    (value.current_round_id === null || typeof value.current_round_id === "string") &&
+    (value.selected_chart === null || isEventChart(value.selected_chart)) &&
+    (value.latest_result === null || isEventRound(value.latest_result)) &&
+    (value.overall_results === undefined || (Array.isArray(value.overall_results) && value.overall_results.every((entry) =>
+      isRecord(entry) && typeof entry.player_id === "string" && typeof entry.display_name === "string" &&
+      isNonNegativeInteger(entry.total_points) && Number.isInteger(entry.rank) && Number(entry.rank) > 0))) &&
+    isNullableTimestamp(value.host_disconnect_deadline) && isNullableTimestamp(value.started_at) &&
+    isNullableTimestamp(value.ended_at) &&
+    (value.end_reason === null || (typeof value.end_reason === "string" && ["HOST_ENDED", "HOST_DISCONNECTED", "ROOM_STATE_LOST"].includes(String(value.end_reason))));
+}
 
 export interface EventSocketClientOptions {
   apiBaseUrl: string;
@@ -70,7 +148,7 @@ export class EventSocketClient {
         room_id: this.options.roomId,
         player_id: this.options.playerId,
         payload: {
-          host_event_protocol: 1,
+          host_event_protocol: 2,
           client_version: APP_VERSION,
           ...this.options.join,
         },
@@ -164,6 +242,15 @@ export class EventSocketClient {
       return;
     }
     if (type === "PONG") return;
+    if (type === "EVENT_JOIN_ACCEPTED" || type === "EVENT_STATE") {
+      const payload = isRecord(parsed) ? parsed.payload : null;
+      if (!isRecord(payload) || !isSupportedEventSnapshot(payload.event_room_snapshot) ||
+        (type === "EVENT_JOIN_ACCEPTED" && payload.session_role !== "HOST" && payload.session_role !== "PLAYER")) {
+        this.disconnect();
+        this.options.onError?.(new Error("開催の対応バージョンが一致しません。更新が必要です。開催受付は利用できません。通常対戦の対応状況は別に確認できます。"));
+        return;
+      }
+    }
     if (type === "EVENT_JOIN_ACCEPTED") {
       this.options.onStateChange?.("CONNECTED", "EVENT_JOIN_ACCEPTED received.");
       for (const action of this.pendingMutationActions.values()) {

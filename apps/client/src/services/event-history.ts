@@ -6,6 +6,8 @@ import {
   PLAY_STYLES,
   WIN_METRICS,
   type EventOverallResultEntry,
+  type EventHistoryParticipant,
+  type EventHostState,
   type EventRoomSettings,
   type EventRoomSnapshot,
   type EventRoundResult,
@@ -13,15 +15,16 @@ import {
 } from "@infinitas/shared";
 import { isTauriRuntime, saveEventResultJson } from "./tauri-bridge";
 
-const STORAGE_KEY = "infinitas.client.event-results.v1";
+const LEGACY_STORAGE_KEY = "infinitas.client.event-results.v1";
+const STORAGE_KEY = "infinitas.client.event-results.v2";
 
 export interface EventHistoryDocument {
-  schema_version: 1;
+  schema_version: 1 | 2;
   event_id: string;
   room_id: string;
   settings: EventRoomSettings;
-  host: EventRoomSnapshot["host"];
-  participants: EventRoomSnapshot["participants"];
+  host: EventHostState;
+  participants: EventHistoryParticipant[];
   fixed_roster_player_ids: string[];
   scoring_size_n: number | null;
   started_at: string | null;
@@ -48,7 +51,9 @@ export type EventHistoryListEntry = EventHistoryDocument | UnreadableEventHistor
 
 const documents = new Map<string, EventHistoryDocument>();
 const unreadableDocuments = new Map<string, UnreadableEventHistory>();
+const legacyDocumentsInV2 = new Map<string, unknown>();
 let loaded = false;
+let unwritableV2 = false;
 
 export function isReadableEventHistory(entry: EventHistoryListEntry): entry is EventHistoryDocument {
   return !("readable" in entry) || entry.readable !== false;
@@ -101,7 +106,7 @@ function isHost(value: unknown): boolean {
 function isParticipant(value: unknown): boolean {
   return isRecord(value) && typeof value.player_id === "string" && typeof value.display_name === "string" &&
     ["CONNECTED", "DISCONNECTED", "LEFT", "KICKED"].includes(String(value.connection_state)) &&
-    typeof value.ready === "boolean" && typeof value.pending_next === "boolean" &&
+    typeof value.pending_next === "boolean" &&
     (value.round_status === null || ["PENDING", "SUBMITTED", "SKIPPED", "ABSENT"].includes(String(value.round_status)));
 }
 
@@ -136,9 +141,10 @@ function isOverallResult(value: unknown): boolean {
 }
 
 function isKnownDocument(value: unknown): value is EventHistoryDocument {
-  if (!isRecord(value) || value.schema_version !== HOST_EVENT_HISTORY_SCHEMA_VERSION ||
+  if (!isRecord(value) || (value.schema_version !== 1 && value.schema_version !== HOST_EVENT_HISTORY_SCHEMA_VERSION) ||
     typeof value.event_id !== "string" || typeof value.room_id !== "string" || !isSettings(value.settings) ||
-    !isHost(value.host) || !Array.isArray(value.participants) || !value.participants.every(isParticipant) ||
+    !isHost(value.host) || !Array.isArray(value.participants) || !value.participants.every((entry) =>
+      isParticipant(entry) && (value.schema_version !== 1 || (isRecord(entry) && typeof entry.ready === "boolean"))) ||
     !isStringArray(value.fixed_roster_player_ids) ||
     !(value.scoring_size_n === null || isPositiveInteger(value.scoring_size_n)) ||
     !isNullableTimestamp(value.started_at) || !isNullableTimestamp(value.ended_at) ||
@@ -157,6 +163,8 @@ function isKnownDocument(value: unknown): value is EventHistoryDocument {
 function normalizeKnownDocument(value: EventHistoryDocument): EventHistoryDocument {
   return {
     ...value,
+    participants: value.participants.map(({ player_id, display_name, connection_state, pending_next, round_status }) =>
+      ({ player_id, display_name, connection_state, pending_next, round_status })),
     fixed_roster_player_ids: [...value.fixed_roster_player_ids],
     completeness: value.completeness === "COMPLETE" && value.results_sync_complete ? "COMPLETE" : "PARTIAL",
   };
@@ -165,34 +173,47 @@ function normalizeKnownDocument(value: EventHistoryDocument): EventHistoryDocume
 function load(): void {
   if (loaded || typeof localStorage === "undefined") return;
   loaded = true;
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return;
-  try {
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return;
-    parsed.forEach((value, index) => {
-      const eventId = typeof value === "object" && value !== null && typeof (value as { event_id?: unknown }).event_id === "string"
-        ? (value as { event_id: string }).event_id
-        : null;
-      const schemaVersion = typeof value === "object" && value !== null ? (value as { schema_version?: unknown }).schema_version : undefined;
-      if (schemaVersion === HOST_EVENT_HISTORY_SCHEMA_VERSION && eventId !== null && isKnownDocument(value)) {
-        documents.set(eventId, normalizeKnownDocument(value));
-      } else {
-        const storageKey = `unreadable:${index}:${eventId ?? "unknown"}`;
-        unreadableDocuments.set(storageKey, { readable: false, storage_key: storageKey, event_id: eventId, schema_version: schemaVersion, raw: value });
-      }
-    });
-  } catch {
-    // Invalid root JSON has no record boundary, so it cannot be recovered as an unreadable record.
+  for (const sourceKey of [LEGACY_STORAGE_KEY, STORAGE_KEY]) {
+    const raw = localStorage.getItem(sourceKey);
+    if (!raw) continue;
+    try {
+      const parsed = JSON.parse(raw) as unknown;
+      if (!Array.isArray(parsed)) throw new Error("Invalid event history root.");
+      parsed.forEach((value, index) => {
+        const eventId = typeof value === "object" && value !== null && typeof (value as { event_id?: unknown }).event_id === "string"
+          ? (value as { event_id: string }).event_id
+          : null;
+        const schemaVersion = typeof value === "object" && value !== null ? (value as { schema_version?: unknown }).schema_version : undefined;
+        if (eventId !== null && isKnownDocument(value)) {
+          if (sourceKey === STORAGE_KEY && value.schema_version === 1) legacyDocumentsInV2.set(eventId, value);
+          const previous = documents.get(eventId);
+          if (!previous || value.schema_version === 2 || previous.schema_version !== 2) {
+            documents.set(eventId, normalizeKnownDocument(value));
+          }
+        } else {
+          const storageKey = `${sourceKey}:unreadable:${index}:${eventId ?? "unknown"}`;
+          unreadableDocuments.set(storageKey, { readable: false, storage_key: storageKey, event_id: eventId, schema_version: schemaVersion, raw: value });
+        }
+      });
+    } catch {
+      const storageKey = `${sourceKey}:unreadable:root`;
+      unreadableDocuments.set(storageKey, { readable: false, storage_key: storageKey, event_id: null, schema_version: undefined, raw });
+      if (sourceKey === STORAGE_KEY) unwritableV2 = true;
+    }
   }
 }
 
 function storageValues(): unknown[] {
-  return [...documents.values(), ...[...unreadableDocuments.values()].map((entry) => entry.raw)];
+  return [
+    ...[...documents.values()].filter((entry) => entry.schema_version === 2),
+    ...legacyDocumentsInV2.values(),
+    ...[...unreadableDocuments.values()].filter((entry) => entry.storage_key.startsWith(`${STORAGE_KEY}:`)).map((entry) => entry.raw),
+  ];
 }
 
 async function persist(document: EventHistoryDocument): Promise<void> {
   load();
+  if (unwritableV2) throw new Error("開催履歴v2を読み取れないため原本を保持しました。新しい履歴を保存できません。");
   documents.set(document.event_id, document);
   const jsonText = JSON.stringify(document, null, 2);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(storageValues()));
@@ -225,12 +246,13 @@ export const eventHistoryService = {
     const rounds = snapshot.latest_result ? upsertRounds(previousRounds, [snapshot.latest_result]) : previousRounds;
     const resultsSyncComplete = sync?.complete ?? previous?.results_sync_complete ?? false;
     await persist({
-      schema_version: 1,
+      schema_version: 2,
       event_id: snapshot.event_id,
       room_id: snapshot.room_id,
       settings: snapshot.settings,
       host: snapshot.host,
-      participants: snapshot.participants,
+      participants: snapshot.participants.map(({ player_id, display_name, connection_state, pending_next, round_status }) =>
+        ({ player_id, display_name, connection_state, pending_next, round_status })),
       fixed_roster_player_ids: snapshot.fixed_roster_player_ids,
       scoring_size_n: snapshot.scoring_size_n,
       started_at: snapshot.started_at,
@@ -255,12 +277,13 @@ export const eventHistoryService = {
     const previous = documents.get(snapshot.event_id);
     const mergedRounds = upsertRounds(previous?.rounds ?? [], rounds);
     await persist({
-      schema_version: 1,
+      schema_version: 2,
       event_id: snapshot.event_id,
       room_id: snapshot.room_id,
       settings: snapshot.settings,
       host: snapshot.host,
-      participants: snapshot.participants,
+      participants: snapshot.participants.map(({ player_id, display_name, connection_state, pending_next, round_status }) =>
+        ({ player_id, display_name, connection_state, pending_next, round_status })),
       fixed_roster_player_ids: snapshot.fixed_roster_player_ids,
       scoring_size_n: snapshot.scoring_size_n,
       started_at: snapshot.started_at,
@@ -285,6 +308,8 @@ export const eventHistoryService = {
   clearMemoryForTests(): void {
     documents.clear();
     unreadableDocuments.clear();
+    legacyDocumentsInV2.clear();
     loaded = false;
+    unwritableV2 = false;
   },
 };

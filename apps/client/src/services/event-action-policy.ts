@@ -10,27 +10,24 @@ export function canUseEventUiAction(input: {
   mutationPending: boolean;
 }): boolean {
   const { action, snapshot, sessionRole, playerId, mutationPending } = input;
+  if (action === "STATE_GET" || action === "RESULTS_GET") return true;
   if (mutationPending) return false;
   if (!snapshot.host.connected && action !== "SUBMIT") return false;
   const isHost = sessionRole === "HOST";
   const self = snapshot.participants.find((participant) => participant.player_id === playerId);
   switch (action) {
-    case "START_EVENT": return isHost && snapshot.phase === "LOBBY" && snapshot.participants.length > 0;
+    case "START_EVENT": return isHost && snapshot.phase === "LOBBY" && snapshot.participants.some((participant) => participant.connection_state === "CONNECTED" || participant.connection_state === "DISCONNECTED");
     case "CONFIRM_PICK": return isHost && snapshot.phase === "PICKING" && snapshot.selected_chart === null;
     case "CANCEL_PICK": return isHost && snapshot.phase === "PICKING" && snapshot.selected_chart !== null;
-    case "START_ROUND": return isHost && snapshot.phase === "PICKING" && snapshot.selected_chart !== null;
+    case "START_ROUND": return isHost && snapshot.phase === "PICKING" && snapshot.selected_chart !== null && snapshot.current_eligible_player_ids.length > 0;
     case "CLOSE_ROUND": return isHost && snapshot.phase === "PLAYING" && snapshot.round_phase === "ACTIVE";
     case "NEXT_PICK": return isHost && snapshot.phase === "PLAYING" && snapshot.round_phase === "RESULT";
-    case "INVALIDATE_ROUND": return isHost && (snapshot.phase === "PLAYING" || snapshot.phase === "RESULT");
-    case "KICK": return isHost && (snapshot.phase === "LOBBY" || snapshot.phase === "PICKING");
+    case "INVALIDATE_ROUND": return isHost && (snapshot.phase === "PICKING" || snapshot.phase === "PLAYING" || snapshot.phase === "RESULT");
+    case "KICK": return isHost && (snapshot.phase === "LOBBY" || snapshot.phase === "PICKING" || snapshot.phase === "PLAYING");
     case "END_EVENT": return isHost && snapshot.phase !== "CLOSED";
-    case "SET_READY": return snapshot.phase === "PICKING" && self !== undefined && !self.pending_next;
-    case "SKIP": return snapshot.phase === "PLAYING" && snapshot.round_phase === "ACTIVE" && self?.round_status === "PENDING";
-    case "SUBMIT": return snapshot.phase === "PLAYING" && snapshot.round_phase === "ACTIVE" && self?.round_status === "PENDING";
+    case "SKIP": return snapshot.phase === "PLAYING" && snapshot.round_phase === "ACTIVE" && self?.round_status === "PENDING" && playerId !== null && snapshot.current_playing_player_ids.includes(playerId);
+    case "SUBMIT": return snapshot.phase === "PLAYING" && snapshot.round_phase === "ACTIVE" && self?.round_status === "PENDING" && playerId !== null && snapshot.current_playing_player_ids.includes(playerId);
     case "LEAVE": return !isHost && snapshot.phase !== "CLOSED";
-    case "STATE_GET":
-    case "RESULTS_GET":
-      return true;
     default:
       return false;
   }

@@ -360,6 +360,7 @@ export function submitParsedSourceChange(
   if (
     eventState.connectionStatus === "CONNECTED" &&
     eventSnapshot?.phase === "PLAYING" &&
+    eventSnapshot.round_phase === "ACTIVE" &&
     eventSnapshot.event_id !== null &&
     eventSnapshot.selected_chart !== null &&
     eventSnapshot.current_round_id !== null &&

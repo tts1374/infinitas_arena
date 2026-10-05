@@ -52,12 +52,12 @@ test("KICK omits event_id in LOBBY and carries the authoritative event_id after 
 
 function uiSnapshot(overrides: Partial<EventRoomSnapshot> = {}): EventRoomSnapshot {
   return {
-    schema_version: 1, room_kind: "HOST_EVENT", room_id: "room", generation: 1, event_id: null,
+    schema_version: 2, room_kind: "HOST_EVENT", room_id: "room", generation: 1, event_id: null,
     settings: { event_name: "", event_type: "CASUAL", host_plays: false, play_style: "SP", win_metric: "SCORE", visibility: "PRIVATE", join_code: "CODE1234" },
     phase: "LOBBY", round_phase: null, revision: 1, selection_revision: 0,
     host: { player_id: "host", display_name: "Host", connected: true, plays: false },
     participants: [], fixed_roster_player_ids: [], scoring_size_n: null, selected_chart: null,
-    current_round_id: null, current_playing_player_ids: [], host_disconnect_deadline: null,
+    current_round_id: null, current_eligible_player_ids: [], current_playing_player_ids: [], host_disconnect_deadline: null,
     latest_result: null, started_at: null, ended_at: null, end_reason: null,
     ...overrides,
   };
@@ -66,7 +66,7 @@ function uiSnapshot(overrides: Partial<EventRoomSnapshot> = {}): EventRoomSnapsh
 test("UI action gate requires a participant and a clear mutation slot before START_EVENT", () => {
   const empty = uiSnapshot();
   assert.equal(canUseEventUiAction({ action: "START_EVENT", snapshot: empty, sessionRole: "HOST", playerId: "host", mutationPending: false }), false);
-  const joined = uiSnapshot({ participants: [{ player_id: "p", display_name: "P", connection_state: "CONNECTED", ready: false, pending_next: false, round_status: null }] });
+  const joined = uiSnapshot({ participants: [{ player_id: "p", display_name: "P", connection_state: "CONNECTED", pending_next: false, round_status: null }] });
   assert.equal(canUseEventUiAction({ action: "START_EVENT", snapshot: joined, sessionRole: "HOST", playerId: "host", mutationPending: false }), true);
   assert.equal(canUseEventUiAction({ action: "START_EVENT", snapshot: joined, sessionRole: "HOST", playerId: "host", mutationPending: true }), false);
   assert.equal(canUseEventUiAction({ action: "START_EVENT", snapshot: joined, sessionRole: "PLAYER", playerId: "p", mutationPending: false }), false);
@@ -76,7 +76,7 @@ test("Host disconnect disables every visible action except an eligible SUBMIT", 
   const disconnected = uiSnapshot({
     event_id: "event", phase: "PLAYING", round_phase: "ACTIVE", current_round_id: "round",
     host: { player_id: "host", display_name: "Host", connected: false, plays: false },
-    participants: [{ player_id: "p", display_name: "P", connection_state: "CONNECTED", ready: true, pending_next: false, round_status: "PENDING" }],
+    participants: [{ player_id: "p", display_name: "P", connection_state: "CONNECTED", pending_next: false, round_status: "PENDING" }],
     current_playing_player_ids: ["p"],
   });
   assert.equal(canUseEventUiAction({ action: "SUBMIT", snapshot: disconnected, sessionRole: "PLAYER", playerId: "p", mutationPending: false }), true);
@@ -86,12 +86,29 @@ test("Host disconnect disables every visible action except an eligible SUBMIT", 
 });
 
 test("PICKING/ACTIVE/RESULT actions are phase- and role-scoped", () => {
-  const participant = { player_id: "p", display_name: "P", connection_state: "CONNECTED" as const, ready: false, pending_next: false, round_status: null };
-  const picking = uiSnapshot({ event_id: "event", phase: "PICKING", selected_chart: { chart_key: "chart", expected_key: { play_style: "SP", difficulty: "ANOTHER", title_search_key: "song" }, display: { title: "Song", level: 12 } }, current_round_id: "round", participants: [participant] });
-  assert.equal(canUseEventUiAction({ action: "SET_READY", snapshot: picking, sessionRole: "PLAYER", playerId: "p", mutationPending: false }), true);
+  const participant = { player_id: "p", display_name: "P", connection_state: "CONNECTED" as const, pending_next: false, round_status: null };
+  const picking = uiSnapshot({ event_id: "event", phase: "PICKING", selected_chart: { chart_key: "chart", expected_key: { play_style: "SP", difficulty: "ANOTHER", title_search_key: "song" }, display: { title: "Song", level: 12 } }, current_round_id: "round", current_eligible_player_ids: ["p"], participants: [participant] });
   assert.equal(canUseEventUiAction({ action: "START_ROUND", snapshot: picking, sessionRole: "HOST", playerId: "host", mutationPending: false }), true);
   assert.equal(canUseEventUiAction({ action: "START_ROUND", snapshot: picking, sessionRole: "PLAYER", playerId: "p", mutationPending: false }), false);
   const result = { ...picking, phase: "PLAYING", round_phase: "RESULT" } satisfies EventRoomSnapshot;
   assert.equal(canUseEventUiAction({ action: "NEXT_PICK", snapshot: result, sessionRole: "HOST", playerId: "host", mutationPending: false }), true);
-  assert.equal(canUseEventUiAction({ action: "KICK", snapshot: result, sessionRole: "HOST", playerId: "host", mutationPending: false }), false);
+  assert.equal(canUseEventUiAction({ action: "KICK", snapshot: result, sessionRole: "HOST", playerId: "host", mutationPending: false }), true);
+});
+
+test("startability uses server eligible ids and keeps disconnected seats; left-only lobby cannot start", () => {
+  const player = { player_id: "p", display_name: "P", connection_state: "DISCONNECTED", pending_next: false, round_status: null } satisfies EventRoomSnapshot["participants"][number];
+  const picking = uiSnapshot({ phase: "PICKING", participants: [player], selected_chart: { chart_key: "song", expected_key: { play_style: "SP", difficulty: "ANOTHER", title_search_key: "Song" }, display: { title: "Song", level: 12 } } });
+  const input = { action: "START_ROUND", snapshot: picking, sessionRole: "HOST", playerId: "host", mutationPending: false } satisfies Parameters<typeof canUseEventUiAction>[0];
+  assert.equal(canUseEventUiAction(input), false);
+  assert.equal(canUseEventUiAction({ ...input, snapshot: { ...picking, current_eligible_player_ids: ["p"] } }), true);
+  assert.equal(canUseEventUiAction({ ...input, action: "START_EVENT", snapshot: uiSnapshot({ participants: [{ ...player, connection_state: "LEFT" }] }) }), false);
+});
+
+test("previous-round invalidation in PICKING and public-result reads during Host disconnect remain available", () => {
+  const picking = uiSnapshot({ phase: "PICKING", event_id: "event" });
+  const input = { action: "INVALIDATE_ROUND", snapshot: picking, sessionRole: "HOST", playerId: "host", mutationPending: false } satisfies Parameters<typeof canUseEventUiAction>[0];
+  assert.equal(canUseEventUiAction(input), true);
+  for (const action of ["STATE_GET", "RESULTS_GET"] as const) {
+    assert.equal(canUseEventUiAction({ ...input, action, mutationPending: true, snapshot: { ...picking, host: { ...picking.host, connected: false } } }), true);
+  }
 });

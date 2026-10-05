@@ -49,3 +49,15 @@ test("explicit disconnect may discard pending observation state", () => {
   assert.deepEqual(eventNotebookReplayGuard.releasePending(), ["pending"]);
   assert.equal(eventNotebookReplayGuard.rejection("event", "player", token().timestamp, fingerprint), null);
 });
+
+test("same-chart same-score newly timestamped play is accepted while its old observation stays rejected", () => {
+  eventNotebookReplayGuard.clearForTests();
+  eventNotebookReplayGuard.track("first", token());
+  eventNotebookReplayGuard.acknowledge("first");
+  assert.notEqual(eventNotebookReplayGuard.rejection("event", "player", token().timestamp, fingerprint), null);
+  assert.equal(eventNotebookReplayGuard.rejection("event", "player", "20260907-120001", fingerprint), null);
+  eventNotebookReplayGuard.track("second", token("20260907-120001"));
+  assert.notEqual(eventNotebookReplayGuard.rejection("event", "player", "20260907-120001", fingerprint), null);
+  eventNotebookReplayGuard.acknowledge("second");
+  assert.notEqual(eventNotebookReplayGuard.rejection("event", "player", token().timestamp, fingerprint), null);
+});

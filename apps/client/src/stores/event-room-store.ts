@@ -337,11 +337,6 @@ export const eventRoomStore = {
     if (!snapshot?.event_id || !snapshot.current_round_id) return false;
     return sendAction({ action: "CANCEL_PICK", request_id: requestId(), generation: snapshot.generation, event_id: snapshot.event_id, round_id: snapshot.current_round_id, selection_revision: snapshot.selection_revision });
   },
-  setReady(ready: boolean): boolean {
-    const snapshot = internalStore.getState().snapshot;
-    if (!snapshot?.event_id || !snapshot.current_round_id) return false;
-    return sendAction({ action: "SET_READY", request_id: requestId(), generation: snapshot.generation, event_id: snapshot.event_id, round_id: snapshot.current_round_id, selection_revision: snapshot.selection_revision, ready });
-  },
   startRound(): boolean {
     const snapshot = internalStore.getState().snapshot;
     if (!snapshot?.event_id || !snapshot.current_round_id) return false;

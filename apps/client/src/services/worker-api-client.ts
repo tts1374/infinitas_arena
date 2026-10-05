@@ -53,7 +53,7 @@ export class HostEventCapabilitiesTracker {
 }
 
 export interface CreateEventRoomRequest {
-  host_event_protocol: 1;
+  host_event_protocol: 2;
   client_version: string;
   host_player_id: string;
   host_display_name: string;
@@ -232,7 +232,7 @@ export async function getCapabilities(baseUrl: string, signal?: AbortSignal): Pr
 }
 
 export function supportsHostEvents(capabilities: CapabilitiesResponse): boolean {
-  return capabilities.host_event_protocol === 1;
+  return capabilities.host_event_protocol === 2;
 }
 
 export async function createEventRoom(
@@ -242,7 +242,7 @@ export async function createEventRoom(
   const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
   return requestJson<CreateEventRoomResponse>(`${normalizedBaseUrl}/api/event-rooms`, {
     method: "POST",
-    body: JSON.stringify({ host_event_protocol: 1, client_version: APP_VERSION, ...request } satisfies CreateEventRoomRequest),
+    body: JSON.stringify({ host_event_protocol: 2, client_version: APP_VERSION, ...request } satisfies CreateEventRoomRequest),
   });
 }
 

@@ -35,7 +35,7 @@ fn build_event_result_file_name(event_id: &str) -> String {
         _ => '-',
     }).collect();
     let trimmed = sanitized.trim_matches('-');
-    format!("{}.json", if trimmed.is_empty() { "event" } else { trimmed })
+    format!("{}.v2.json", if trimmed.is_empty() { "event" } else { trimmed })
 }
 
 fn write_json_atomic(file_path: &Path, json_text: &str) -> Result<(), String> {
@@ -52,12 +52,30 @@ fn write_json_atomic(file_path: &Path, json_text: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use super::build_event_result_file_name;
+    use super::{build_event_result_file_name, write_json_atomic};
+    use std::{fs, time::{SystemTime, UNIX_EPOCH}};
 
     #[test]
     fn event_result_file_name_is_scoped_to_one_safe_json_file() {
-        assert_eq!(build_event_result_file_name("event-123"), "event-123.json");
-        assert_eq!(build_event_result_file_name("../event/123"), "event-123.json");
-        assert_eq!(build_event_result_file_name(""), "event.json");
+        assert_eq!(build_event_result_file_name("event-123"), "event-123.v2.json");
+        assert_eq!(build_event_result_file_name("../event/123"), "event-123.v2.json");
+        assert_eq!(build_event_result_file_name(""), "event.v2.json");
+    }
+
+    #[test]
+    fn v2_save_retains_the_legacy_json_original() {
+        let unique = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let directory = std::env::temp_dir().join(format!("infinitas-event-result-{}-{unique}", std::process::id()));
+        fs::create_dir_all(&directory).unwrap();
+        let legacy = directory.join("event-123.json");
+        let original = b"{\"schema_version\":1,\"ready\":true}";
+        fs::write(&legacy, original).unwrap();
+        let current = directory.join(build_event_result_file_name("event-123"));
+        write_json_atomic(&current, "{\"schema_version\":2}\r\n").unwrap();
+        assert_eq!(fs::read(&legacy).unwrap(), original);
+        assert_eq!(fs::read_to_string(&current).unwrap(), "{\"schema_version\":2}\n");
+        write_json_atomic(&current, "{\"schema_version\":2,\"revision\":3}").unwrap();
+        assert_eq!(fs::read(&legacy).unwrap(), original);
+        fs::remove_dir_all(directory).unwrap();
     }
 }
