@@ -24,7 +24,7 @@ export interface CreateEventRoomResponse {
 }
 
 export interface CapabilitiesResponse {
-  host_event_protocol: 1;
+  host_event_protocol: 2;
   host_event_accept_new: boolean;
 }
 

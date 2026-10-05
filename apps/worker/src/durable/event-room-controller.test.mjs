@@ -34,7 +34,7 @@ function init(controller, createdAt = new Date().toISOString()) {
     settings: { event_name: "  name  ", event_type: "CASUAL", host_plays: false, play_style: "SP", win_metric: "SCORE", visibility: "PRIVATE", join_code: "ABC123" } });
 }
 function envelope(type, player, payload, id = type === "EVENT_ACTION" ? payload.request_id : crypto.randomUUID()) { return JSON.stringify({ type, client_msg_id: id, room_id: "event-1", player_id: player, payload }); }
-function joinPayload(displayName, source) { return { host_event_protocol: 1, client_version: "1.4.0", join_code: "ABC123", display_name: displayName,
+function joinPayload(displayName, source) { return { host_event_protocol: 2, client_version: "1.4.0", join_code: "ABC123", display_name: displayName,
   ...(source ? { source, song_unlocks: { bit_unlocked: true, djp_unlocked: true, allow_leggendaria: true, owned_pack_ids: [] } } : {}) }; }
 
 test("event controller uses a separate key, keeps name whitespace, and sets the absolute initial deadline", async () => {
@@ -138,7 +138,6 @@ test("actions publish scores only after finalization and results cursors resync 
     await act(host, "host", { action: "CONFIRM_PICK", request_id: `pick-${index}`, generation: 1, event_id: snapshot.event_id, chart_key: chart.chart_key, selection_revision: snapshot.selection_revision });
     snapshot = host.sent.filter((entry) => entry.type === "EVENT_STATE").at(-1).payload.event_room_snapshot;
     if (index === 0) assert.equal(JSON.stringify(snapshot).includes("metric_value"), false);
-    await act(guest, "guest", { action: "SET_READY", request_id: `ready-${index}`, generation: 1, event_id: snapshot.event_id, round_id: snapshot.current_round_id, selection_revision: snapshot.selection_revision, ready: true });
     snapshot = host.sent.filter((entry) => entry.type === "EVENT_STATE").at(-1).payload.event_room_snapshot;
     await act(host, "host", { action: "START_ROUND", request_id: `round-${index}`, generation: 1, event_id: snapshot.event_id, round_id: snapshot.current_round_id, selection_revision: snapshot.selection_revision });
     snapshot = guest.sent.filter((entry) => entry.type === "EVENT_STATE").at(-1).payload.event_room_snapshot;
@@ -284,7 +283,6 @@ test("pre-start KICK is allowed only to Host and started actions require matchin
     { action: "START_EVENT" },
     { action: "CONFIRM_PICK", chart_key: "chart", selection_revision: 1 },
     { action: "CANCEL_PICK", round_id: "round", selection_revision: 1 },
-    { action: "SET_READY", round_id: "round", selection_revision: 1, ready: true },
     { action: "START_ROUND", round_id: "round", selection_revision: 1 },
     { action: "SUBMIT", round_id: "round", observed_key: {}, metric_value: 1 },
     { action: "SKIP", round_id: "round" }, { action: "CLOSE_ROUND", round_id: "round" },
@@ -300,4 +298,132 @@ test("pre-start KICK is allowed only to Host and started actions require matchin
   }
   await controller.message(host, envelope("EVENT_ACTION", "host", { action: "STATE_GET", request_id: "correct", generation: 1, event_id: eventId }));
   assert.equal(host.sent.at(-1).type, "EVENT_STATE");
+});
+
+async function playingHarness() {
+  const harness = setup();
+  await init(harness.controller);
+  const host = new Socket();
+  const guests = [new Socket(), new Socket()];
+  harness.state.sockets = [host, ...guests];
+  for (const [socket, id] of [[host, "host"], [guests[0], "p1"], [guests[1], "p2"]]) {
+    harness.controller.registerSocket(socket);
+    await harness.controller.message(socket, envelope("EVENT_JOIN", id, joinPayload(id, id === "host" ? undefined : "inf-notebook")));
+  }
+  const act = async (socket, id, payload) => harness.controller.message(socket, envelope("EVENT_ACTION", id, payload));
+  await act(host, "host", { action: "START_EVENT", request_id: "start", generation: 1 });
+  let snapshot = host.sent.filter((e) => e.type === "EVENT_STATE").at(-1).payload.event_room_snapshot;
+  const chart = (await (await harness.controller.chartSearch(new URL("https://room/charts?level_filter=ANY&limit=1"))).json()).charts[0];
+  await act(host, "host", { action: "CONFIRM_PICK", request_id: "pick", generation: 1, event_id: snapshot.event_id, chart_key: chart.chart_key, selection_revision: snapshot.selection_revision });
+  snapshot = host.sent.filter((e) => e.type === "EVENT_STATE").at(-1).payload.event_room_snapshot;
+  await act(host, "host", { action: "START_ROUND", request_id: "round", generation: 1, event_id: snapshot.event_id, round_id: snapshot.current_round_id, selection_revision: snapshot.selection_revision });
+  snapshot = host.sent.filter((e) => e.type === "EVENT_STATE").at(-1).payload.event_room_snapshot;
+  return { ...harness, host, guests, snapshot, act };
+}
+
+test("EVENT_JOIN rejects protocol1 and unknown protocols before any accepted state", async () => {
+  const { controller, storage } = setup(); await init(controller);
+  const before = structuredClone(storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY));
+  for (const protocol of [1, 0, 3, "2", null, undefined]) {
+    const socket = new Socket(); controller.registerSocket(socket);
+    await controller.message(socket, envelope("EVENT_JOIN", "host", { ...joinPayload("Host"), host_event_protocol: protocol }));
+    assert.equal(socket.sent.at(-1).payload.code, "EVENT_JOIN_REJECTED");
+    assert.equal(socket.sent.some((e) => e.type === "EVENT_JOIN_ACCEPTED" || e.type === "EVENT_STATE"), false);
+    assert.deepEqual(storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY), before);
+  }
+});
+
+test("removed SET_READY is rejected without a mutation or ACK", async () => {
+  const { controller, storage } = setup(); await init(controller);
+  const host = new Socket(); controller.registerSocket(host);
+  await controller.message(host, envelope("EVENT_JOIN", "host", joinPayload("Host")));
+  const before = structuredClone(storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY));
+  await controller.message(host, envelope("EVENT_ACTION", "host", { action: "SET_READY", request_id: "old-ready", generation: 1, event_id: "event", round_id: "round", selection_revision: 1, ready: true }));
+  assert.equal(host.sent.at(-1).payload.code, "INVALID_ACTION");
+  assert.equal(host.sent.some((e) => e.type === "EVENT_ACTION_ACK"), false);
+  assert.deepEqual(storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY), before);
+});
+
+test("all unpublished channels remain private through ACK/error/read/reJOIN/hibernation and Host disconnect", async () => {
+  const h = await playingHarness();
+  const context = { generation: 1, event_id: h.snapshot.event_id, round_id: h.snapshot.current_round_id };
+  const submit = { ...context, action: "SUBMIT", request_id: "private-submit", observed_key: h.snapshot.selected_chart.expected_key, metric_value: 314159, source_meta: { private_secret: "UNPUBLISHED_SECRET" } };
+  await h.act(h.guests[0], "p1", submit);
+  await h.act(h.guests[0], "p1", submit);
+  assert.equal(h.guests[0].sent.at(-1).payload.duplicate, true);
+  await h.act(h.guests[0], "p1", { ...submit, metric_value: 271828 });
+  assert.equal(h.guests[0].sent.at(-1).payload.code, "IDEMPOTENCY_CONFLICT");
+  await h.act(h.guests[1], "p2", { ...context, action: "CLOSE_ROUND", request_id: "not-host" });
+  assert.equal(h.guests[1].sent.at(-1).payload.code, "NOT_HOST");
+  await h.act(h.host, "host", { ...context, action: "SUBMIT", request_id: "dedicated-host-submit", observed_key: submit.observed_key, metric_value: 1 });
+  assert.equal(h.host.sent.at(-1).type, "EVENT_ERROR");
+  for (const [socket, id] of [[h.host, "host"], [h.guests[0], "p1"], [h.guests[1], "p2"]]) {
+    await h.act(socket, id, { ...context, action: "STATE_GET", request_id: `state-${id}` });
+    await h.act(socket, id, { ...context, action: "RESULTS_GET", request_id: `results-${id}` });
+    assert.deepEqual(socket.sent.at(-1).payload.rounds, []);
+  }
+  const reconnect = new Socket(); h.controller.registerSocket(reconnect);
+  await h.controller.message(reconnect, envelope("EVENT_JOIN", "p1", joinPayload("p1", "inf-notebook")));
+  h.state.sockets = [h.host, reconnect, h.guests[1]];
+  const restarted = new EventRoomController(h.state, { HOST_EVENT_ACCEPT_NEW: "false", MIN_SUPPORTED_CLIENT_VERSION: "1.4.0" });
+  await restarted.restore(h.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY));
+  await restarted.message(reconnect, envelope("EVENT_ACTION", "p1", { ...context, action: "STATE_GET", request_id: "restore-state" }));
+  assert.equal(reconnect.sent.at(-1).payload.event_room_snapshot.participants.find((p) => p.player_id === "p1").round_status, "SUBMITTED");
+  await restarted.close(h.host);
+  await restarted.message(h.guests[1], envelope("EVENT_ACTION", "p2", { ...submit, request_id: "second-submit", metric_value: 271828 }));
+  await restarted.message(reconnect, envelope("EVENT_ACTION", "p1", { ...context, action: "RESULTS_GET", request_id: "disconnected-results" }));
+  assert.deepEqual(reconnect.sent.at(-1).payload.rounds, []);
+  assert.equal(h.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY).rounds[0].public_result, null);
+  for (const socket of [h.host, ...h.guests, reconnect]) {
+    const text = JSON.stringify(socket.sent);
+    for (const privateValue of ["314159", "271828", "UNPUBLISHED_SECRET", "source_meta", "metric_value"]) assert.equal(text.includes(privateValue), false, privateValue);
+  }
+});
+
+for (const elapsed of [299999, 300000, 300001]) {
+  test(`controller restore and Host reJOIN at ${elapsed}ms preserves deadline and publication boundary`, async (t) => {
+    const base = Date.parse("2026-10-05T00:00:00.000Z");
+    t.mock.timers.enable({ apis: ["Date"], now: base });
+    const h = await playingHarness();
+    await h.controller.close(h.host);
+    const deadline = h.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY).host_disconnect_deadline;
+    await h.act(h.guests[0], "p1", { action: "SUBMIT", request_id: "p1", generation: 1, event_id: h.snapshot.event_id, round_id: h.snapshot.current_round_id, observed_key: h.snapshot.selected_chart.expected_key, metric_value: 314159 });
+    await h.act(h.guests[1], "p2", { action: "SUBMIT", request_id: "p2", generation: 1, event_id: h.snapshot.event_id, round_id: h.snapshot.current_round_id, observed_key: h.snapshot.selected_chart.expected_key, metric_value: 271828 });
+    t.mock.timers.setTime(base + elapsed);
+    const restarted = new EventRoomController(h.state, { HOST_EVENT_ACCEPT_NEW: "false", MIN_SUPPORTED_CLIENT_VERSION: "1.4.0" });
+    await restarted.restore(h.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY));
+    const host = new Socket(); restarted.registerSocket(host);
+    await restarted.message(host, envelope("EVENT_JOIN", "host", joinPayload("Host")));
+    const snapshot = host.sent.find((e) => e.type === "EVENT_JOIN_ACCEPTED").payload.event_room_snapshot;
+    if (elapsed < 300000) {
+      assert.equal(snapshot.round_phase, "RESULT");
+      assert.equal(snapshot.latest_result.results[0].metric_value, 314159);
+      assert.equal(snapshot.end_reason, null);
+    } else {
+      assert.equal(snapshot.end_reason, "HOST_DISCONNECTED");
+      assert.equal(snapshot.ended_at, new Date(base + elapsed).toISOString());
+      assert.deepEqual(snapshot.latest_result.results, []);
+      assert.equal(JSON.stringify(host.sent).includes("314159"), false);
+    }
+    assert.equal(Date.parse(deadline), base + 300000);
+  });
+}
+
+test("schema1 every phase restore keeps durable originals, blocks action, initialization and cleanup", async () => {
+  const original = setup(); await init(original.controller);
+  for (const phase of ["LOBBY", "PICKING", "PLAYING", "RESULT", "CLOSED"]) {
+    const h = setup();
+    const record = { ...structuredClone(original.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY)), schema_version: 1, phase };
+    h.storage.values.set(EVENT_ROOM_RECORD_STORAGE_KEY, record);
+    const before = structuredClone(record);
+    await h.controller.restore(record);
+    const socket = new Socket(); h.controller.registerSocket(socket);
+    await h.controller.message(socket, envelope("EVENT_JOIN", "host", joinPayload("Host")));
+    assert.equal(socket.sent.at(-1).payload.code, "ROOM_STATE_LOST");
+    await h.controller.alarm(new Date(Date.now() + 999999999));
+    await assert.rejects(init(h.controller), /already initialized/);
+    assert.deepEqual(h.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY), before);
+    assert.equal(h.controller.isInitialized(), false);
+    assert.equal(h.controller.ownsRoom(), true);
+  }
 });

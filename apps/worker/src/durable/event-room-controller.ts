@@ -83,14 +83,13 @@ function isJsonObject(value: unknown): value is Record<string, unknown> {
 }
 function validActionShape(action: Record<string, unknown>): boolean {
   const name = action.action;
-  const known = ["START_EVENT", "CONFIRM_PICK", "CANCEL_PICK", "SET_READY", "START_ROUND", "SUBMIT", "SKIP", "CLOSE_ROUND", "NEXT_PICK", "INVALIDATE_ROUND", "KICK", "LEAVE", "END_EVENT", "STATE_GET", "RESULTS_GET"];
+  const known = ["START_EVENT", "CONFIRM_PICK", "CANCEL_PICK", "START_ROUND", "SUBMIT", "SKIP", "CLOSE_ROUND", "NEXT_PICK", "INVALIDATE_ROUND", "KICK", "LEAVE", "END_EVENT", "STATE_GET", "RESULTS_GET"];
   if (typeof name !== "string" || !known.includes(name)) return false;
   if (action.event_id !== undefined && !nonEmpty(action.event_id)) return false;
   if (!["START_EVENT", "KICK", "LEAVE", "END_EVENT", "STATE_GET", "RESULTS_GET"].includes(name) && !nonEmpty(action.event_id)) return false;
-  if (["CANCEL_PICK", "SET_READY", "START_ROUND", "SUBMIT", "SKIP", "CLOSE_ROUND", "NEXT_PICK"].includes(name) && !nonEmpty(action.round_id)) return false;
-  if (["CONFIRM_PICK", "CANCEL_PICK", "SET_READY", "START_ROUND"].includes(name) && !Number.isInteger(action.selection_revision)) return false;
+  if (["CANCEL_PICK", "START_ROUND", "SUBMIT", "SKIP", "CLOSE_ROUND", "NEXT_PICK"].includes(name) && !nonEmpty(action.round_id)) return false;
+  if (["CONFIRM_PICK", "CANCEL_PICK", "START_ROUND"].includes(name) && !Number.isInteger(action.selection_revision)) return false;
   if (name === "CONFIRM_PICK" && !nonEmpty(action.chart_key)) return false;
-  if (name === "SET_READY" && typeof action.ready !== "boolean") return false;
   if (name === "SUBMIT" && (!isRecord(action.observed_key) || typeof action.metric_value !== "number" || !Number.isFinite(action.metric_value) ||
       (action.source_meta !== undefined && !isJsonObject(action.source_meta)))) return false;
   if (name === "INVALIDATE_ROUND" && !nonEmpty(action.target_round_id)) return false;
@@ -317,7 +316,6 @@ export class EventRoomController {
       case "START_EVENT": result = this.stateMachine.startEvent(playerId, crypto.randomUUID(), now); break;
       case "CONFIRM_PICK": result = this.stateMachine.confirmPick(playerId, action.chart_key, action.selection_revision, crypto.randomUUID(), now); break;
       case "CANCEL_PICK": result = this.stateMachine.cancelPick(playerId, action.round_id, action.selection_revision, now); break;
-      case "SET_READY": result = this.stateMachine.setReady(playerId, action.round_id, action.selection_revision, action.ready, now); break;
       case "START_ROUND": result = this.stateMachine.startRound(playerId, action.round_id, action.selection_revision, now); break;
       case "SUBMIT": result = this.stateMachine.submit(playerId, action.round_id, action.observed_key, action.metric_value, action.source_meta ?? null, now); break;
       case "SKIP": result = this.stateMachine.skip(playerId, action.round_id, now); break;
