@@ -3,7 +3,7 @@ import test from "node:test";
 import { EVENT_VISUAL_SCENARIO_IDS, getEventVisualScenario } from "./event-visual-scenarios";
 
 test("event visual evidence fixtures cover V8 edge states", () => {
-  assert.deepEqual(EVENT_VISUAL_SCENARIO_IDS, ["event-zero-host", "event-twenty-source", "event-disconnected-round-result", "event-tie-absence-final", "event-casual-final-mobile"]);
+  assert.deepEqual(EVENT_VISUAL_SCENARIO_IDS.slice(8), ["event-zero-host", "event-twenty-source", "event-disconnected-round-result", "event-tie-absence-final", "event-casual-final-mobile"]);
   assert.equal(getEventVisualScenario("event-zero-host")?.state.snapshot?.participants.length, 0);
   assert.equal(getEventVisualScenario("event-twenty-source")?.state.snapshot?.participants.length, 20);
   const disconnected = getEventVisualScenario("event-disconnected-round-result")?.state.snapshot;
@@ -13,6 +13,12 @@ test("event visual evidence fixtures cover V8 edge states", () => {
   assert.notEqual(disconnected?.host_disconnect_deadline, null);
   assert.equal(disconnected?.ended_at, null);
   assert.equal(disconnected?.end_reason, null);
+  for (const id of ["event-full-ranks-host", "event-full-ranks-host-disconnected"]) {
+    const hostResult = getEventVisualScenario(id)!;
+    assert.equal(hostResult.state.sessionRole, "HOST");
+    assert.equal(hostResult.state.snapshot?.latest_result?.results.length, 20);
+    assert.equal(hostResult.state.snapshot?.host.connected, id === "event-full-ranks-host");
+  }
   const terminal = getEventVisualScenario("event-tie-absence-final")?.state.snapshot;
   assert.equal(terminal?.phase, "RESULT");
   assert.equal(terminal?.host.connected, true);

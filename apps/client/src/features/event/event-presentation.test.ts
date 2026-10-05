@@ -1,44 +1,35 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { EventRoomSnapshot, EventRoundResult, EventRoundResultEntry } from "@infinitas/shared";
-import { buildEventInviteText, clientRankingRows, eventChartSearchMessage, eventRoundHeading, hostDisconnectSeconds, readySummary, shouldShowCasualUnreadyExclusionWarning, startRoundBlockReason } from "./event-presentation";
+import { buildEventInviteText, clientRankingRows, eventAbsenceReasonLabel, eventChartSearchMessage, eventEndReasonLabel, eventRoundHeading, hostDisconnectSeconds, participationSummary, participantStatusLabel, startRoundBlockReason } from "./event-presentation";
 
 const baseSnapshot = {
-  schema_version: 1, room_kind: "HOST_EVENT", room_id: "room", generation: 1, event_id: "event",
+  schema_version: 2, room_kind: "HOST_EVENT", room_id: "room", generation: 1, event_id: "event",
   settings: { event_name: "Name", event_type: "CASUAL", host_plays: false, play_style: "SP", win_metric: "SCORE", visibility: "PRIVATE", join_code: "code" },
   phase: "PICKING", round_phase: null, revision: 1, selection_revision: 1,
   host: { player_id: "host", display_name: "HOST", connected: true, plays: false },
-  participants: [], selected_chart: null, current_round_id: null, current_playing_player_ids: [],
+  participants: [], selected_chart: null, current_round_id: null, current_eligible_player_ids: [], current_playing_player_ids: [],
   fixed_roster_player_ids: [], scoring_size_n: null,
   host_disconnect_deadline: null, latest_result: null, started_at: null, ended_at: null, end_reason: null,
 } satisfies EventRoomSnapshot;
 
-test("ready summary excludes next-round, left and kicked participants", () => {
-  const snapshot = { ...baseSnapshot, participants: [
-    { player_id: "a", display_name: "A", connection_state: "CONNECTED", ready: true, pending_next: false, round_status: null },
-    { player_id: "b", display_name: "B", connection_state: "CONNECTED", ready: true, pending_next: true, round_status: null },
-    { player_id: "c", display_name: "C", connection_state: "LEFT", ready: false, pending_next: false, round_status: null },
+test("connection and authoritative eligibility stay independent of submission and next-round waiting", () => {
+  const snapshot = { ...baseSnapshot, current_eligible_player_ids: ["a", "b"], participants: [
+    { player_id: "a", display_name: "A", connection_state: "CONNECTED", pending_next: false, round_status: "PENDING" },
+    { player_id: "b", display_name: "B", connection_state: "DISCONNECTED", pending_next: false, round_status: "SUBMITTED" },
+    { player_id: "c", display_name: "C", connection_state: "CONNECTED", pending_next: true, round_status: null },
   ] } satisfies EventRoomSnapshot;
-  assert.deepEqual(readySummary(snapshot), { ready: 1, target: 1, pendingNext: 1 });
+  assert.deepEqual(participationSummary(snapshot), { connected: 2, target: 2, pendingNext: 1 });
+  assert.equal(participantStatusLabel(snapshot.participants[1]!), "提出済み");
+  assert.equal(participantStatusLabel(snapshot.participants[2]!), "次曲から参加");
 });
-
-test("tournament start requires every current target", () => {
-  const snapshot = { ...baseSnapshot, settings: { ...baseSnapshot.settings, event_type: "TOURNAMENT" }, selected_chart: { chart_key: "c", expected_key: { play_style: "SP", difficulty: "ANOTHER", title_search_key: "Song" }, display: { title: "Song", level: 12 } }, participants: [
-    { player_id: "a", display_name: "A", connection_state: "CONNECTED", ready: true, pending_next: false, round_status: null },
-    { player_id: "b", display_name: "B", connection_state: "CONNECTED", ready: false, pending_next: false, round_status: null },
-  ] } satisfies EventRoomSnapshot;
-  assert.equal(startRoundBlockReason(snapshot), "大会は対象者全員の準備完了が必要です。");
-});
-
-test("CASUAL warns only the selected, eligible, unready participant about exclusion", () => {
-  const selected = { ...baseSnapshot, selected_chart: { chart_key: "c", expected_key: { play_style: "SP", difficulty: "ANOTHER", title_search_key: "Song" }, display: { title: "Song", level: 12 } }, participants: [
-    { player_id: "self", display_name: "SELF", connection_state: "CONNECTED", ready: false, pending_next: false, round_status: null },
-  ] } satisfies EventRoomSnapshot;
-  assert.equal(shouldShowCasualUnreadyExclusionWarning(selected, "self"), true);
-  assert.equal(shouldShowCasualUnreadyExclusionWarning({ ...selected, participants: [{ ...selected.participants[0]!, ready: true }] }, "self"), false);
-  assert.equal(shouldShowCasualUnreadyExclusionWarning({ ...selected, participants: [{ ...selected.participants[0]!, pending_next: true }] }, "self"), false);
-  assert.equal(shouldShowCasualUnreadyExclusionWarning({ ...selected, settings: { ...selected.settings, event_type: "TOURNAMENT" } }, "self"), false);
-  assert.equal(shouldShowCasualUnreadyExclusionWarning({ ...selected, selected_chart: null }, "self"), false);
+test("both event types start with the authoritative targets even when disconnected; zero targets block", () => {
+  for (const event_type of ["CASUAL", "TOURNAMENT"] as const) {
+    const snapshot = { ...baseSnapshot, settings: { ...baseSnapshot.settings, event_type }, current_eligible_player_ids: ["a"], selected_chart: { chart_key: "c", expected_key: { play_style: "SP", difficulty: "ANOTHER", title_search_key: "Song" }, display: { title: "Song", level: 12 } }, participants: [{ player_id: "a", display_name: "A", connection_state: "DISCONNECTED", pending_next: false, round_status: null }] } satisfies EventRoomSnapshot;
+    assert.equal(startRoundBlockReason(snapshot), null);
+    assert.equal(startRoundBlockReason({ ...snapshot, current_eligible_player_ids: [] }), "この曲の参加対象者がいません。");
+    assert.equal(startRoundBlockReason({ ...snapshot, host: { ...snapshot.host, connected: false } }), "Hostの再接続を待っています。");
+  }
 });
 
 test("client ranking combines top three and self neighborhood without duplicates", () => {
@@ -76,4 +67,20 @@ test("round heading stays correct across PICKING, ACTIVE, round RESULT, and fina
   const second = { ...result, round_id: "round-2", public_revision: 2 } satisfies EventRoundResult;
   assert.equal(eventRoundHeading({ ...baseSnapshot, phase: "PLAYING", round_phase: "RESULT", latest_result: second }, [result]), "第2曲");
   assert.equal(eventRoundHeading({ ...baseSnapshot, phase: "RESULT" }, [result, second]), "全2曲");
+});
+
+test("event end reasons are readable without exposing or rewriting stored values", () => {
+  assert.equal(eventEndReasonLabel("HOST_ENDED"), "Hostが開催を終了しました");
+  assert.equal(eventEndReasonLabel("HOST_DISCONNECTED"), "Hostが再接続しなかったため終了しました");
+  assert.equal(eventEndReasonLabel("ROOM_STATE_LOST"), "開催の状態を復元できなかったため終了しました");
+  assert.equal(eventEndReasonLabel(null), "終了理由は未記録です");
+  assert.equal(eventEndReasonLabel("FUTURE_REASON"), "終了理由を読み取れません（原本を保持しています）");
+});
+
+test("absence reasons are readable in round and saved result views", () => {
+  assert.equal(eventAbsenceReasonLabel("DEADLINE"), "締切まで未提出");
+  assert.equal(eventAbsenceReasonLabel("NOT_PRESENT"), "開始時に不在");
+  assert.equal(eventAbsenceReasonLabel("SKIP"), "スキップ");
+  assert.equal(eventAbsenceReasonLabel("LEFT"), "退出");
+  assert.equal(eventAbsenceReasonLabel("KICKED"), "Kick済み");
 });

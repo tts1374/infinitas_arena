@@ -32,24 +32,21 @@ export function eventTypeLabel(snapshot: EventRoomSnapshot): string {
   return snapshot.settings.event_type === "TOURNAMENT" ? "大会" : "合同プレー";
 }
 
-export function readySummary(snapshot: EventRoomSnapshot): { ready: number; target: number; pendingNext: number } {
-  const targets = snapshot.participants.filter((participant) => !participant.pending_next && participant.connection_state !== "LEFT" && participant.connection_state !== "KICKED");
+export function participationSummary(snapshot: EventRoomSnapshot): { connected: number; target: number; pendingNext: number } {
   return {
-    ready: targets.filter((participant) => participant.ready).length,
-    target: targets.length,
+    connected: snapshot.participants.filter((participant) => participant.connection_state === "CONNECTED").length,
+    target: (snapshot.phase === "PLAYING" ? snapshot.current_playing_player_ids : snapshot.current_eligible_player_ids).length,
     pendingNext: snapshot.participants.filter((participant) => participant.pending_next).length,
   };
 }
 
 export function participantStatusLabel(participant: EventParticipantState): string {
-  if (participant.pending_next) return "次曲から参加";
-  if (participant.connection_state === "DISCONNECTED") return "切断中";
-  if (participant.connection_state === "LEFT") return "退出";
-  if (participant.connection_state === "KICKED") return "Kick済み";
   if (participant.round_status === "SUBMITTED") return "提出済み";
   if (participant.round_status === "SKIPPED") return "スキップ";
   if (participant.round_status === "ABSENT") return "欠場";
-  return participant.ready ? "準備完了" : "未準備";
+  if (participant.pending_next) return "次曲から参加";
+  if (participant.connection_state === "LEFT" || participant.connection_state === "KICKED") return "対象外";
+  return participant.round_status === "PENDING" ? "未提出" : "参加中";
 }
 
 export function clientRankingRows(entries: EventRoundResultEntry[], selfPlayerId: string): EventRankingRow[] {
@@ -70,24 +67,32 @@ export function clientRankingRows(entries: EventRoundResultEntry[], selfPlayerId
 
 export function startRoundBlockReason(snapshot: EventRoomSnapshot): string | null {
   if (snapshot.selected_chart === null) return "選曲を確定してください。";
-  const summary = readySummary(snapshot);
-  if (summary.ready === 0) return "準備完了した参加者がいません。";
-  if (snapshot.settings.event_type === "TOURNAMENT" && summary.ready !== summary.target) return "大会は対象者全員の準備完了が必要です。";
+  if (!snapshot.host.connected) return "Hostの再接続を待っています。";
+  if (snapshot.current_eligible_player_ids.length === 0) return "この曲の参加対象者がいません。";
   return null;
-}
-
-export function shouldShowCasualUnreadyExclusionWarning(
-  snapshot: EventRoomSnapshot,
-  playerId: string | null,
-): boolean {
-  if (snapshot.settings.event_type !== "CASUAL" || snapshot.phase !== "PICKING" || snapshot.selected_chart === null || playerId === null) {
-    return false;
-  }
-  const self = snapshot.participants.find((participant) => participant.player_id === playerId);
-  return self !== undefined && !self.pending_next && !self.ready && self.connection_state !== "LEFT" && self.connection_state !== "KICKED";
 }
 
 export function hostDisconnectSeconds(snapshot: EventRoomSnapshot, nowMs: number): number | null {
   if (snapshot.host_disconnect_deadline === null) return null;
   return Math.min(HOST_EVENT_DISCONNECT_GRACE_SECONDS, Math.max(0, Math.ceil((Date.parse(snapshot.host_disconnect_deadline) - nowMs) / 1000)));
+}
+
+export function eventEndReasonLabel(reason: string | null): string {
+  switch (reason) {
+    case "HOST_ENDED": return "Hostが開催を終了しました";
+    case "HOST_DISCONNECTED": return "Hostが再接続しなかったため終了しました";
+    case "ROOM_STATE_LOST": return "開催の状態を復元できなかったため終了しました";
+    default: return reason === null ? "終了理由は未記録です" : "終了理由を読み取れません（原本を保持しています）";
+  }
+}
+
+export function eventAbsenceReasonLabel(reason: string): string {
+  switch (reason) {
+    case "DEADLINE": return "締切まで未提出";
+    case "NOT_PRESENT": return "開始時に不在";
+    case "SKIP": return "スキップ";
+    case "LEFT": return "退出";
+    case "KICKED": return "Kick済み";
+    default: return "欠場理由を読み取れません";
+  }
 }

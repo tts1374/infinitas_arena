@@ -1,26 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
-import type { ChartSearchEntry, EventRoundResultEntry } from "@infinitas/shared";
+import { useEffect, useState } from "react";
+import type { ChartSearchEntry } from "@infinitas/shared";
 import { listRoomCharts } from "../services/worker-api-client";
 import { eventRoomStore, useEventRoomStore } from "../stores/event-room-store";
 import { useSettingsStore } from "../stores/settings-store";
 import { displayEventName } from "../features/event/event-name";
-import { EventOverallResults, EventRoundsReview } from "../features/event/EventFinalReview";
+import { EventOverallResults, EventRoundsReview, EventRoundResults } from "../features/event/EventFinalReview";
 import { EventHostInvite, shouldShowEventHostInvite } from "../features/event/EventHostInvite";
 import { canUseEventUiAction, type EventUiAction } from "../services/event-action-policy";
-import {
-  clientRankingRows,
-  eventChartSearchMessage,
-  eventRoundHeading,
-  type EventChartSearchStatus,
-  eventTypeLabel,
-  hostDisconnectSeconds,
-  participantStatusLabel,
-  readySummary,
-  shouldShowCasualUnreadyExclusionWarning,
-  startRoundBlockReason,
-} from "../features/event/event-presentation";
-
-const EMPTY_ROUND_RESULTS: EventRoundResultEntry[] = [];
+import { eventChartSearchMessage, eventEndReasonLabel, eventRoundHeading, eventTypeLabel, hostDisconnectSeconds, participantStatusLabel, participationSummary, startRoundBlockReason, type EventChartSearchStatus } from "../features/event/event-presentation";
 
 export function EventRoomPage({ onReturnToLobby }: { onReturnToLobby: () => void }) {
   const state = useEventRoomStore((value) => value);
@@ -28,148 +15,78 @@ export function EventRoomPage({ onReturnToLobby }: { onReturnToLobby: () => void
   const [nowMs, setNowMs] = useState(Date.now());
   const [search, setSearch] = useState("");
   const [charts, setCharts] = useState<ChartSearchEntry[]>([]);
+  const [selectedChartKey, setSelectedChartKey] = useState<string | null>(null);
   const [chartSearchStatus, setChartSearchStatus] = useState<EventChartSearchStatus>("IDLE");
-  const [showAllRanks, setShowAllRanks] = useState(false);
+  const [viewedRoundId, setViewedRoundId] = useState<string | null>(null);
   const [resultTab, setResultTab] = useState<"ROUND" | "OVERALL">("ROUND");
   const snapshot = state.snapshot;
-
+  const isHost = state.sessionRole === "HOST";
+  useEffect(() => { const timer = window.setInterval(() => setNowMs(Date.now()), 1000); return () => window.clearInterval(timer); }, []);
   useEffect(() => {
-    const timer = window.setInterval(() => setNowMs(Date.now()), 1000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    if ((snapshot?.phase === "RESULT" || snapshot?.phase === "CLOSED") && snapshot.settings.event_type === "TOURNAMENT") {
-      setResultTab("OVERALL");
-    }
-  }, [snapshot?.phase, snapshot?.settings.event_type]);
-
-  useEffect(() => {
-    if (!snapshot || state.sessionRole !== "HOST" || snapshot.phase !== "PICKING") return;
+    if (!snapshot || !isHost || snapshot.phase !== "PICKING" || snapshot.selected_chart !== null) return;
     let cancelled = false;
     setChartSearchStatus("LOADING");
-    void listRoomCharts(apiBaseUrl, snapshot.room_id, {
-      play_style: snapshot.settings.play_style,
-      level_filter: "ANY",
-      keyword: search,
-      limit: 20,
-    }).then((response) => {
-      if (!cancelled) {
-        setCharts(response.charts);
-        setChartSearchStatus("READY");
-      }
-    }).catch(() => {
-      if (!cancelled) {
-        setCharts([]);
-        setChartSearchStatus("ERROR");
-      }
-    });
+    void listRoomCharts(apiBaseUrl, snapshot.room_id, { play_style: snapshot.settings.play_style, level_filter: "ANY", keyword: search, limit: 20 }).then((response) => {
+      if (!cancelled) { setCharts(response.charts); setChartSearchStatus("READY"); }
+    }).catch(() => { if (!cancelled) { setCharts([]); setChartSearchStatus("ERROR"); } });
     return () => { cancelled = true; };
-  }, [apiBaseUrl, search, snapshot?.phase, snapshot?.revision, snapshot?.room_id, snapshot?.settings.play_style, state.sessionRole]);
-
-  const self = snapshot?.participants.find((participant) => participant.player_id === state.playerId) ?? null;
-  const isHost = state.sessionRole === "HOST";
-  const summary = snapshot ? readySummary(snapshot) : null;
-  const disconnectSeconds = snapshot ? hostDisconnectSeconds(snapshot, nowMs) : null;
-  const resultEntries = snapshot?.latest_result?.results ?? EMPTY_ROUND_RESULTS;
-  const visibleResults = useMemo(() => {
-    if (isHost || showAllRanks || !state.playerId) return resultEntries;
-    return clientRankingRows(resultEntries, state.playerId);
-  }, [isHost, resultEntries, showAllRanks, state.playerId]);
-
-  if (!snapshot) {
-    return <div className="flex h-full flex-col items-center justify-center gap-4 text-gray-400"><p>{state.errorMessage ?? "開催へ接続しています…"}</p>{state.errorMessage || state.connectionStatus === "DISCONNECTED" ? <button type="button" onClick={() => { eventRoomStore.disconnect(); onReturnToLobby(); }} className="rounded-xl border border-white/20 px-5 py-3 font-bold text-white">ロビーへ戻る</button> : null}</div>;
-  }
-
+  }, [apiBaseUrl, search, snapshot?.phase, snapshot?.selected_chart, snapshot?.room_id, snapshot?.settings.play_style, isHost]);
+  if (!snapshot) return <div className="event-empty"><p>{state.errorMessage ?? "開催へ接続しています…"}</p><button type="button" onClick={() => { eventRoomStore.disconnect(); onReturnToLobby(); }}>通常対戦へ戻る</button></div>;
+  const self = snapshot.participants.find((p) => p.player_id === state.playerId);
+  const participants = [...snapshot.participants].sort((a, b) => Number(b.player_id === state.playerId) - Number(a.player_id === state.playerId));
+  const summary = participationSummary(snapshot);
+  const disconnectSeconds = hostDisconnectSeconds(snapshot, nowMs);
   const roundHeading = eventRoundHeading(snapshot, state.resultRounds);
   const startBlock = startRoundBlockReason(snapshot);
-  const submissionDone = snapshot.participants.filter((participant) => participant.round_status === "SUBMITTED" || participant.round_status === "SKIPPED" || participant.round_status === "ABSENT").length;
+  const active = snapshot.phase === "PLAYING" && snapshot.round_phase === "ACTIVE";
+  const roundResult = snapshot.phase === "PLAYING" && snapshot.round_phase === "RESULT";
+  const final = snapshot.phase === "RESULT" || snapshot.phase === "CLOSED";
+  const done = snapshot.participants.filter((p) => snapshot.current_playing_player_ids.includes(p.player_id) && ["SUBMITTED", "SKIPPED", "ABSENT"].includes(p.round_status ?? "")).length;
+  const tournament = snapshot.settings.event_type === "TOURNAMENT";
   const metricLabel = snapshot.settings.win_metric === "SCORE" ? "SCORE" : "MISS COUNT";
-  const showingRoundResult = snapshot.phase === "PLAYING" && snapshot.round_phase === "RESULT";
-  const showingFinalResult = snapshot.phase === "RESULT" || snapshot.phase === "CLOSED";
-  const mutationPending = state.pendingMutationRequestIds.length > 0;
-  const chartSearchMessage = eventChartSearchMessage(chartSearchStatus, search, charts.length);
-  const eventName = displayEventName(snapshot.settings);
-  const showCasualUnreadyWarning = shouldShowCasualUnreadyExclusionWarning(snapshot, state.playerId);
-  const canUse = (action: EventUiAction) => canUseEventUiAction({
-    action,
-    snapshot,
-    sessionRole: state.sessionRole,
-    playerId: state.playerId,
-    mutationPending,
-  });
-
-  function leave(): void {
-    if (showingFinalResult) {
-      eventRoomStore.disconnect();
-      onReturnToLobby();
-      return;
-    }
-    if (!window.confirm(isHost ? "開催を終了しますか？" : "この開催から退出しますか？")) return;
-    if (isHost) eventRoomStore.endEvent(); else eventRoomStore.leave();
-  }
-
-  return (
-    <div id="visual-capture-root" className="relative flex h-screen min-w-0 flex-col overflow-hidden bg-[#1e1e1e] text-white">
-      {disconnectSeconds !== null ? (
-        <div className="shrink-0 bg-amber-500 px-5 py-2 text-center text-sm font-black text-black">
-          Host再接続待ち・残り {disconnectSeconds}秒（提出は継続できます）
-        </div>
-      ) : null}
-      <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-4 sm:px-6">
-        <div>
-          <p className="text-xs font-black tracking-[0.22em] text-cyan-400">{eventTypeLabel(snapshot)}</p>
-          <h1 className="text-2xl font-black">{eventName}</h1>
-        </div>
-        <div className="flex items-center gap-4"><span className="font-bold text-gray-300">{roundHeading}</span><button type="button" disabled={state.leavePending || (!showingFinalResult && !canUse(isHost ? "END_EVENT" : "LEAVE"))} onClick={leave} className="rounded-xl border border-red-500/40 px-4 py-2 text-sm font-bold text-red-300 disabled:cursor-not-allowed disabled:opacity-50">{state.leavePending ? "退出処理中…" : showingFinalResult ? "ロビーへ戻る" : isHost ? "開催を終了" : "退出"}</button></div>
-      </header>
-
-      {shouldShowEventHostInvite(isHost, snapshot.phase) ? <EventHostInvite eventName={eventName} roomId={snapshot.room_id} joinCode={snapshot.settings.join_code} /> : null}
-
-      <div className="shrink-0 border-b border-white/5 px-4 py-3 sm:px-6">
-        <span className="font-black">準備完了 {summary?.ready ?? 0}/{summary?.target ?? 0}人</span>
-        <span className="ml-3 text-xs text-gray-600">最大20人</span>
-        {summary && summary.pendingNext > 0 ? <span className="ml-5 text-sm text-amber-300">次曲から参加：{summary.pendingNext}人</span> : null}
-      </div>
-
-      <div className="flex min-h-0 flex-1 flex-col gap-4 p-3 lg:flex-row lg:gap-5 lg:p-5">
-        <section className="custom-scrollbar min-h-[260px] min-w-0 flex-1 overflow-y-auto rounded-2xl border border-white/10 bg-white/[0.03] p-4 lg:p-5">
-          {snapshot.phase === "LOBBY" ? (
-            <div className="flex h-full flex-col items-center justify-center gap-4"><p className="text-gray-400">1人以上の参加者を確認して開催を開始します。</p>{isHost ? <button type="button" disabled={!canUse("START_EVENT")} onClick={() => eventRoomStore.startEvent()} className="rounded-xl bg-cyan-500 px-6 py-3 font-black text-black disabled:cursor-not-allowed disabled:bg-gray-700 disabled:text-gray-500">開催開始</button> : null}</div>
-          ) : null}
-          {snapshot.phase === "PICKING" ? (
-            <div>
-              <h2 className="mb-4 text-lg font-black">選曲</h2>
-              {snapshot.selected_chart ? (
-                <div className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-4"><p className="text-xl font-black">{snapshot.selected_chart.display.title}</p><p className="text-sm text-gray-400">{snapshot.settings.play_style}・{snapshot.selected_chart.expected_key.difficulty}・Lv{snapshot.selected_chart.display.level ?? "-"}</p>{isHost ? <button type="button" disabled={!canUse("CANCEL_PICK")} onClick={() => eventRoomStore.cancelPick()} className="mt-3 rounded-lg border border-white/20 px-3 py-2 text-sm disabled:opacity-50">選び直す</button> : null}</div>
-              ) : isHost ? (
-                <><input aria-label="曲検索" disabled={!snapshot.host.connected || mutationPending} value={search} onChange={(event) => setSearch(event.currentTarget.value)} placeholder="曲検索・全員が遊べる候補" className="mb-3 w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 disabled:opacity-50"/>{chartSearchMessage ? <p role={chartSearchStatus === "ERROR" ? "alert" : "status"} className={`rounded-xl border px-4 py-3 text-sm ${chartSearchStatus === "ERROR" ? "border-red-500/30 bg-red-500/10 text-red-200" : "border-white/10 bg-black/20 text-gray-400"}`}>{chartSearchMessage}</p> : null}<div className="space-y-2">{charts.map((chart) => <button type="button" disabled={!canUse("CONFIRM_PICK")} key={chart.chart_key} onClick={() => eventRoomStore.confirmPick(chart.chart_key)} className="flex w-full items-center justify-between rounded-xl border border-white/10 p-3 text-left hover:border-cyan-500/50 disabled:opacity-50"><span><b>{chart.title}</b><small className="ml-2 text-gray-500">{chart.artist}</small></span><span className="text-sm text-gray-400">{chart.play_style} {chart.difficulty} Lv{chart.level}</span></button>)}</div></>
-              ) : <p className="text-gray-400">Hostが選曲しています。</p>}
-              {self && !self.pending_next && snapshot.selected_chart ? <button type="button" disabled={!canUse("SET_READY")} onClick={() => eventRoomStore.setReady(!self.ready)} className="mt-5 rounded-xl bg-cyan-500 px-5 py-3 font-black text-black disabled:opacity-50">{self.ready ? "準備解除" : "準備完了"}</button> : null}
-              {showCasualUnreadyWarning ? <p role="alert" className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm font-bold text-amber-200">未準備のままHostが開始すると、この曲のプレー対象外になります。</p> : null}
-              {isHost ? <div className="mt-5 flex items-center gap-4"><button type="button" disabled={startBlock !== null || !canUse("START_ROUND")} onClick={() => { if (snapshot.settings.event_type === "CASUAL" && summary && summary.ready < summary.target && !window.confirm(`未準備の${summary.target-summary.ready}人はこの曲に参加しません。続けますか？`)) return; eventRoomStore.startRound(); }} className="rounded-xl bg-cyan-500 px-6 py-3 font-black text-black disabled:cursor-not-allowed disabled:bg-gray-700 disabled:text-gray-500">プレー開始</button>{startBlock ? <span className="text-sm text-amber-300">開始不可：{startBlock}</span> : null}</div> : null}
-            </div>
-          ) : null}
-          {snapshot.phase === "PLAYING" && snapshot.round_phase === "ACTIVE" ? (
-            <div className="space-y-5"><h2 className="text-xl font-black">{snapshot.selected_chart?.display.title}</h2><p className="text-gray-300">自分：{self ? participantStatusLabel(self) : "進行専任Host"}</p><p className="font-black">提出完了 {submissionDone}/{snapshot.current_playing_player_ids.length}人</p>{state.sourceUnavailableMessage && self?.round_status === "PENDING" ? <p role="alert" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">結果取得元を利用できません：{state.sourceUnavailableMessage}。復旧を待つか、必要ならスキップしてください。</p> : null}{self?.round_status === "PENDING" ? <button type="button" disabled={!canUse("SKIP")} onClick={() => eventRoomStore.skip()} className="rounded-xl border border-amber-500/50 px-5 py-3 font-bold text-amber-300 disabled:opacity-50">スキップ</button> : null}{isHost ? <div className="flex gap-3"><button type="button" disabled={!canUse("CLOSE_ROUND")} onClick={() => { const absent = snapshot.current_playing_player_ids.length-submissionDone; if (window.confirm(`未提出${Math.max(0, absent)}人を欠場として締め切りますか？`)) eventRoomStore.closeRound(); }} className="rounded-xl bg-cyan-500 px-5 py-3 font-black text-black disabled:opacity-50">締め切って結果へ</button><button type="button" disabled={!canUse("INVALIDATE_ROUND")} onClick={() => snapshot.current_round_id && window.confirm("この曲を無効にしますか？") && eventRoomStore.invalidateRound(snapshot.current_round_id)} className="rounded-xl border border-red-500/40 px-5 py-3 font-bold text-red-300 disabled:opacity-50">この曲を無効にする</button></div> : null}</div>
-          ) : null}
-          {(showingRoundResult || showingFinalResult) ? <div><div className="mb-4 flex items-center justify-between"><h2 className="text-xl font-black">{showingFinalResult ? "最終結果" : `${roundHeading} 結果`}</h2>{snapshot.settings.event_type === "TOURNAMENT" ? <div className="flex rounded-lg bg-black/30 p-1"><button type="button" onClick={() => setResultTab("ROUND")} className={`rounded-md px-3 py-1 text-sm ${resultTab === "ROUND" ? "bg-cyan-500 font-black text-black" : "text-gray-400"}`}>曲別</button><button type="button" onClick={() => setResultTab("OVERALL")} className={`rounded-md px-3 py-1 text-sm ${resultTab === "OVERALL" ? "bg-cyan-500 font-black text-black" : "text-gray-400"}`}>総合</button></div> : null}</div>{showingFinalResult ? (resultTab === "OVERALL" && snapshot.settings.event_type === "TOURNAMENT" ? <EventOverallResults entries={snapshot.overall_results ?? []} selfPlayerId={state.playerId} /> : <EventRoundsReview rounds={state.resultRounds} metricLabel={metricLabel} isTournament={snapshot.settings.event_type === "TOURNAMENT"} selfPlayerId={state.playerId} />) : <ResultView entries={visibleResults} metricLabel={metricLabel} isTournament={snapshot.settings.event_type === "TOURNAMENT"} selfPlayerId={state.playerId} />}</div> : null}
-          {showingRoundResult && isHost ? <div className="mt-5 flex gap-3"><button type="button" disabled={!canUse("NEXT_PICK")} onClick={() => eventRoomStore.nextPick()} className="rounded-xl bg-cyan-500 px-5 py-3 font-black text-black disabled:opacity-50">次の曲を選ぶ</button><button type="button" disabled={!canUse("END_EVENT")} onClick={leave} className="rounded-xl border border-white/20 px-5 py-3 disabled:opacity-50">開催を終了</button>{snapshot.latest_result ? <button type="button" disabled={!canUse("INVALIDATE_ROUND")} onClick={() => eventRoomStore.invalidateRound(snapshot.latest_result!.round_id)} className="ml-auto text-sm text-red-300 disabled:opacity-50">… 曲を無効化</button> : null}</div> : null}
-          {showingFinalResult ? <p className="mt-5 text-sm text-gray-400">終了理由：{snapshot.end_reason ?? "-"}{state.resultRounds.length === 0 ? "／確定した曲はありません" : ""}</p> : null}
-          {!isHost && resultEntries.length > visibleResults.length ? <button type="button" onClick={() => setShowAllRanks((value) => !value)} className="mt-4 text-sm font-bold text-cyan-300">{showAllRanks ? "自分の周辺に戻す" : "全順位を見る"}</button> : null}
-        </section>
-
-        <aside className="custom-scrollbar h-[42%] w-full shrink-0 overflow-y-auto rounded-2xl border border-white/10 bg-white/[0.03] p-4 lg:h-auto lg:w-[min(34vw,380px)]">
-          <h2 className="mb-3 font-black">参加者</h2>
-          {snapshot.participants.length === 0 ? <p className="text-sm text-gray-500">参加者はいません。Hostは待機または終了できます。</p> : snapshot.participants.map((participant) => <div key={participant.player_id} className="flex items-center justify-between border-b border-white/5 py-3"><span className="font-bold">{participant.display_name}</span><span className="flex items-center gap-2 text-xs text-gray-400">{participantStatusLabel(participant)}{isHost && participant.player_id !== snapshot.host.player_id && participant.connection_state !== "KICKED" ? <button type="button" disabled={!canUse("KICK")} aria-label={`${participant.display_name}をKick`} onClick={() => window.confirm(`${participant.display_name}をKickします。この開催には再参加できません。`) && eventRoomStore.kick(participant.player_id)} className="ml-2 rounded px-2 py-1 text-red-300 disabled:opacity-50">…</button> : null}</span></div>)}
-        </aside>
-      </div>
-      {state.errorMessage ? <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-xl bg-red-950 px-4 py-3 text-sm text-red-200">{state.errorMessage}<button type="button" onClick={() => eventRoomStore.clearError()} className="ml-3">×</button></div> : null}
-    </div>
-  );
-}
-
-function ResultView({ entries, metricLabel, isTournament, selfPlayerId }: { entries: EventRoundResultEntry[]; metricLabel: string; isTournament: boolean; selfPlayerId: string | null }) {
-  if (entries.length === 0) return <p className="text-gray-400">確定した曲はありません。</p>;
-  return <div className="space-y-2">{entries.map((entry) => <div key={entry.player_id} className={`grid min-w-0 grid-cols-[52px_minmax(0,1fr)] gap-x-2 gap-y-1 rounded-xl px-4 py-3 sm:grid-cols-[60px_minmax(0,1fr)_150px_80px] sm:gap-y-0 ${entry.player_id === selfPlayerId ? "bg-cyan-500/15" : "bg-white/[0.04]"}`}><span>{entry.rank === null ? "欠場" : `${entry.rank}位`}</span><span className="min-w-0 break-words font-bold">{entry.display_name}{entry.absence_reason ? <small className="ml-2 text-amber-300">{entry.absence_reason}</small> : null}</span><span className="col-start-2 text-sm sm:col-start-auto sm:text-base">{metricLabel} {entry.metric_value}</span><span className="col-start-2 text-sm sm:col-start-auto sm:text-base">{isTournament ? `${entry.tournament_points ?? 0}pt` : ""}</span></div>)}</div>;
+  const validRounds = state.resultRounds.filter((round) => round.invalidated_at === null);
+  const noValidRounds = state.resultsSyncComplete && validRounds.length === 0;
+  const viewedRound = state.resultRounds.find((round) => round.round_id === viewedRoundId);
+  const canUse = (action: EventUiAction) => canUseEventUiAction({ action, snapshot, sessionRole: state.sessionRole, playerId: state.playerId, mutationPending: state.pendingMutationRequestIds.length > 0 });
+  const end = () => { if (window.confirm("開催を終了します。全員の開催が終了し、進行中の曲は無効になります。続けますか？")) eventRoomStore.endEvent(); };
+  const invalidate = () => {
+    const id = active ? snapshot.current_round_id : snapshot.latest_result?.round_id;
+    const title = active ? snapshot.selected_chart?.display.title : snapshot.latest_result?.chart.display.title;
+    if (id && window.confirm(`「${title ?? "この曲"}」を無効にします。全員の集計から除外し、履歴は保持します。続けますか？`)) eventRoomStore.invalidateRound(id);
+  };
+  return <div id="visual-capture-root" className="event-room">
+    {disconnectSeconds !== null ? <div className="event-disconnected">Host再接続待ち・残り {disconnectSeconds}秒（提出は継続できます）</div> : null}
+    <header className="event-room-header"><div><p>{eventTypeLabel(snapshot)} · {isHost ? snapshot.host.plays ? "プレー兼任Host" : "専任Host" : "参加者"}</p><h1>{displayEventName(snapshot.settings)}</h1></div><button type="button" onClick={onReturnToLobby}>← 通常対戦へ</button></header>
+    <div className="event-layout"><section className="event-arena">
+      <div className="event-song"><span className="event-phase">{final ? "最終結果" : snapshot.phase === "LOBBY" ? "待機室" : active ? "プレー・提出待ち" : roundResult ? "曲別結果" : snapshot.selected_chart ? "Host開始待ち" : "選曲"}</span><h2>{snapshot.selected_chart?.display.title ?? (snapshot.phase === "LOBBY" ? "参加者を待っています" : "曲を選ぶ")}</h2><p>{snapshot.selected_chart ? `${snapshot.settings.play_style} ${snapshot.selected_chart.expected_key.difficulty} Lv${snapshot.selected_chart.display.level ?? "-"} · ` : ""}{roundHeading} · {metricLabel}</p></div>
+      {viewedRound ? <div className="event-content"><button type="button" onClick={() => setViewedRoundId(null)}>← 現在の開催へ戻る</button><h2>{viewedRound.chart.display.title}{viewedRound.invalidated_at ? "（無効）" : ""}</h2><EventRoundResults entries={viewedRound.results} metricLabel={metricLabel} isTournament={tournament} selfPlayerId={state.playerId} showAllInitially={isHost} /></div> : final || roundResult ? <div className="event-content">
+        <h2>{final ? "最終結果" : `${roundHeading} 結果`}</h2>
+        {tournament ? <div className="event-tabs"><button type="button" aria-pressed={resultTab === "ROUND"} onClick={() => setResultTab("ROUND")}>曲別</button><button type="button" aria-pressed={resultTab === "OVERALL"} onClick={() => setResultTab("OVERALL")}>総合</button></div> : null}
+        {resultTab === "OVERALL" && tournament ? !noValidRounds ? <EventOverallResults entries={snapshot.overall_results ?? []} selfPlayerId={state.playerId} /> : <p>有効な確定曲はありません。優勝者はありません。</p> : final ? <EventRoundsReview rounds={state.resultRounds} metricLabel={metricLabel} isTournament={tournament} selfPlayerId={state.playerId} /> : <EventRoundResults key={snapshot.latest_result?.round_id} entries={snapshot.latest_result?.results ?? []} metricLabel={metricLabel} isTournament={tournament} selfPlayerId={state.playerId} showAllInitially={isHost} />}
+        {final ? <p>終了理由：{eventEndReasonLabel(snapshot.end_reason)}{noValidRounds ? "／有効な確定曲はありません。優勝者はありません。" : !state.resultsSyncComplete ? "／公開結果を受信しています。" : ""}</p> : null}
+      </div> : <>
+        {snapshot.phase === "PICKING" && snapshot.selected_chart === null ? <div className="event-picking">{isHost ? <><input aria-label="曲検索" disabled={!snapshot.host.connected} value={search} onChange={(event) => { setSearch(event.currentTarget.value); setSelectedChartKey(null); }} placeholder="曲検索・全員が遊べる候補" />{eventChartSearchMessage(chartSearchStatus, search, charts.length) ? <p role="status">{eventChartSearchMessage(chartSearchStatus, search, charts.length)}</p> : null}<div className="event-chart-list">{charts.map((chart) => <button type="button" key={chart.chart_key} aria-pressed={selectedChartKey === chart.chart_key} onClick={() => setSelectedChartKey(chart.chart_key)}><b>{chart.title}</b><span>{chart.play_style} {chart.difficulty} Lv{chart.level}</span></button>)}</div></> : <p>Hostが選曲しています。</p>}</div> : null}
+        <div className="event-counts">{active ? `提出・欠場確定 ${done}/${snapshot.current_playing_player_ids.length}人` : snapshot.phase === "LOBBY" ? `参加者 ${participants.filter((p) => p.connection_state === "CONNECTED" || p.connection_state === "DISCONNECTED").length}/20人` : `この曲の対象 ${summary.target}人`}<span>接続 {summary.connected}人{summary.pendingNext ? ` · 次曲から参加：${summary.pendingNext}人` : ""}</span></div>
+        {active && self ? <p className="event-self">あなた：{participantStatusLabel(self)}{self.round_status === "PENDING" ? " · プレーすると連携ツールから結果を自動送信します。" : ""}</p> : null}
+        {state.sourceUnavailableMessage && self?.round_status === "PENDING" ? <p role="alert" className="event-source-warning">結果取得元を利用できません：{state.sourceUnavailableMessage}。復旧を待つか、必要ならスキップしてください。</p> : null}
+        <div className="event-player-grid" tabIndex={0} aria-label="参加対象・接続・提出状況">{participants.length === 0 ? <p className="event-no-players">参加者はいません。Hostは待機または終了できます。</p> : participants.map((p) => <article key={p.player_id} className={`event-player ${p.player_id === state.playerId ? "event-player-self" : ""}`}><b>{p.display_name}</b>{p.player_id === state.playerId ? <small>あなた{p.player_id === snapshot.host.player_id ? "・Host" : ""}</small> : null}<span>{p.connection_state === "DISCONNECTED" ? "切断中" : p.connection_state === "CONNECTED" ? "接続中" : p.connection_state === "LEFT" ? "退出" : "Kick済み"}</span><strong>{p.pending_next || p.round_status !== null ? participantStatusLabel(p) : snapshot.current_eligible_player_ids.includes(p.player_id) ? "この曲に参加" : "参加中"}</strong>{isHost && p.player_id !== snapshot.host.player_id && p.connection_state !== "KICKED" ? <button type="button" className="event-player-manage" disabled={!canUse("KICK")} aria-label={`${p.display_name}の管理`} onClick={() => window.confirm(`${p.display_name}をKickします。この開催には再参加できません。続けますか？`) && eventRoomStore.kick(p.player_id)}>…</button> : null}</article>)}</div>
+      </>}
+      <footer className="event-main-action">
+        {snapshot.phase === "LOBBY" ? <><p>{isHost ? "参加者を確認して開催を開始します。" : "Hostの開催開始を待っています。"}</p>{isHost ? <button type="button" className="event-primary" disabled={!canUse("START_EVENT")} onClick={() => { const n = participants.filter((p) => p.connection_state === "CONNECTED" || p.connection_state === "DISCONNECTED").length; if (!tournament || window.confirm(`大会を${n}人で開始します。人数Nを固定し、新規参加を締め切ります。続けますか？`)) eventRoomStore.startEvent(); }}>開催開始</button> : null}</> : snapshot.phase === "PICKING" && !snapshot.selected_chart ? <>{isHost ? <button type="button" className="event-primary" disabled={!canUse("CONFIRM_PICK") || !charts.some((chart) => chart.chart_key === selectedChartKey)} onClick={() => { if (selectedChartKey) eventRoomStore.confirmPick(selectedChartKey); }}>この譜面を確定</button> : <p>Hostが選曲しています。</p>}</> : snapshot.phase === "PICKING" && snapshot.selected_chart ? <><p>{isHost ? "通話・配信で曲と開始を共有したら、プレー開始。" : self?.pending_next ? "次の曲から参加します。" : "ゲーム内で準備して、Hostの開始を待っています。"}{isHost && startBlock ? <small>{startBlock}</small> : null}</p>{isHost ? <button type="button" className="event-primary" disabled={startBlock !== null || !canUse("START_ROUND")} onClick={() => eventRoomStore.startRound()}>この曲のプレーを開始</button> : null}</> : active ? <p>自動提出・結果待ち。スコアと順位は曲確定後に公開します。</p> : roundResult ? <>{isHost ? <button type="button" className="event-primary" disabled={!canUse("NEXT_PICK")} onClick={() => { setViewedRoundId(null); setSelectedChartKey(null); eventRoomStore.nextPick(); }}>次の曲を選ぶ</button> : <p>Hostの次曲開始を待っています。</p>}</> : final ? <><p>受信範囲：{state.resultRounds.length}曲 · {state.resultsSyncComplete && snapshot.phase === "RESULT" ? "完全" : "部分"}記録</p><button type="button" onClick={() => { eventRoomStore.disconnect(); onReturnToLobby(); }}>通常対戦へ戻る</button></> : null}
+      </footer>
+    </section><aside className="event-side">
+      <section><h2>ここまでの曲</h2>{state.resultRounds.length ? state.resultRounds.map((round, index) => <button className="event-history-round" type="button" key={round.round_id} onClick={() => setViewedRoundId(round.round_id)}>第{index + 1}曲 {round.chart.display.title}{round.invalidated_at ? "（無効）" : ""}</button>) : <p>曲別結果はここに残ります。</p>}</section>
+      <section><h2>開催情報</h2><dl><dt>モード</dt><dd>{eventTypeLabel(snapshot)}</dd><dt>指標</dt><dd>{metricLabel}</dd><dt>参加者</dt><dd>{participants.filter((p) => p.connection_state === "CONNECTED" || p.connection_state === "DISCONNECTED").length}/20</dd><dt>Host</dt><dd>{snapshot.host.plays ? "プレー兼任" : "専任"}</dd>{tournament ? <><dt>固定N</dt><dd>{snapshot.scoring_size_n ?? "開始前"}</dd></> : null}</dl></section>
+      {shouldShowEventHostInvite(isHost, snapshot.phase) ? <EventHostInvite eventName={displayEventName(snapshot.settings)} roomId={snapshot.room_id} joinCode={snapshot.settings.join_code} /> : null}
+      <details className="event-management"><summary>開催の管理</summary>{isHost && !final ? <>
+        {snapshot.phase === "PICKING" && snapshot.selected_chart ? <button type="button" disabled={!canUse("CANCEL_PICK")} onClick={() => window.confirm("確定した譜面を取り消します。新しい譜面を参加者へ再共有してください。続けますか？") && eventRoomStore.cancelPick()}>選び直す</button> : null}
+        {active ? <button type="button" disabled={!canUse("CLOSE_ROUND")} onClick={() => window.confirm(`未提出${Math.max(0, snapshot.current_playing_player_ids.length - done)}人を欠場として締め切ります。以降、この曲への提出はできません。${tournament ? "欠場は0ptです。" : ""}`) && eventRoomStore.closeRound()}>未提出を締め切る</button> : null}
+        {(active || snapshot.latest_result) ? <button type="button" disabled={!canUse("INVALIDATE_ROUND") || (!active && snapshot.latest_result?.invalidated_at !== null)} onClick={invalidate}>{snapshot.phase === "PICKING" ? "前の曲を無効にする" : "この曲を無効にする"}</button> : null}
+        <button type="button" disabled={!canUse("END_EVENT")} onClick={end}>開催を終了</button>
+      </> : !isHost && !final ? <button type="button" disabled={state.leavePending || !canUse("LEAVE")} onClick={() => window.confirm("この開催から退出します。一時切断とは異なり、復帰しても確定済みの曲へ戻れず次曲から参加します。続けますか？") && eventRoomStore.leave()}>{state.leavePending ? "退出処理中…" : "開催から退出"}</button> : <p>開催は終了しました。</p>}</details>
+      {self?.round_status === "PENDING" && active ? <button type="button" disabled={!canUse("SKIP")} onClick={() => window.confirm(`この曲をスキップし、自分を欠場として確定します。${tournament ? "大会では0ptです。" : ""}続けますか？`) && eventRoomStore.skip()}>この曲をスキップする</button> : null}
+      <p className="event-save-status">公開結果の受信範囲：{state.resultsSyncComplete && snapshot.phase === "RESULT" ? "完全" : "部分"} · {state.resultRounds.length}曲</p>
+    </aside></div>
+    {state.errorMessage ? <div role="alert" className="event-error">{state.errorMessage}<button type="button" aria-label="エラーを閉じる" onClick={() => eventRoomStore.clearError()}>×</button></div> : null}
+  </div>;
 }

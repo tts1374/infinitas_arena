@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { eventEndReasonLabel } from "../features/event/event-presentation";
 import { displayEventName } from "../features/event/event-name";
-import { EventOverallResults } from "../features/event/EventFinalReview";
+import { EventOverallResults, EventRoundsReview } from "../features/event/EventFinalReview";
 import { eventHistoryService, isReadableEventHistory, type EventHistoryDocument } from "../services/event-history";
 
 function eventSummary(history: EventHistoryDocument): string {
@@ -20,31 +21,16 @@ export function EventHistoryPage() {
       <div className="mx-auto max-w-5xl text-white">
         <button type="button" onClick={() => setSelected(null)} className="mb-4 text-cyan-300">← 一覧へ</button>
         <h1 className="text-2xl font-black">{displayEventName(selected.settings)}</h1>
-        <p className="mt-1 text-sm text-gray-400">{eventSummary(selected)}</p>
+        <p className="mt-1 text-sm text-gray-400">{eventSummary(selected)} · 最後の受信：{new Date(selected.last_received_at).toLocaleString()} · 保存版{selected.schema_version}</p>
+        <p className="mt-2 text-sm text-gray-400">終了理由：{eventEndReasonLabel(selected.end_reason)}</p>
         <div className="mt-5 space-y-4">
           {selected.settings.event_type === "TOURNAMENT" ? (
             <section className="rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.05] p-4">
               <h2 className="mb-3 font-black">総合結果</h2>
-              <EventOverallResults entries={selected.overall_results ?? []} selfPlayerId={null} />
+              {selected.results_sync_complete && selected.rounds.every((round) => round.invalidated_at !== null) ? <p>有効な確定曲はありません。優勝者はありません。</p> : <EventOverallResults entries={selected.overall_results ?? []} selfPlayerId={null} />}
             </section>
           ) : null}
-          {selected.rounds.map((round, index) => (
-            <section key={round.round_id} className="rounded-2xl border border-white/10 p-4">
-              <h2 className="font-black">
-                第{index + 1}曲 {round.chart.display.title}{round.invalidated_at ? "（無効）" : ""}
-              </h2>
-              <div className="mt-3 space-y-2">
-                {round.results.map((result) => (
-                  <div key={result.player_id} className="grid grid-cols-[70px_1fr_140px_70px] rounded-lg bg-white/[0.04] px-3 py-2 text-sm">
-                    <span>{result.rank === null ? "欠場" : `${result.rank}位`}</span>
-                    <span>{result.display_name}{result.absence_reason ? `・${result.absence_reason}` : ""}</span>
-                    <span>{selected.settings.win_metric} {result.metric_value}</span>
-                    <span>{selected.settings.event_type === "TOURNAMENT" ? `${result.tournament_points ?? 0}pt` : ""}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ))}
+          <EventRoundsReview rounds={selected.rounds} metricLabel={selected.settings.win_metric} isTournament={selected.settings.event_type === "TOURNAMENT"} selfPlayerId={null} />
         </div>
       </div>
     );
@@ -60,9 +46,9 @@ export function EventHistoryPage() {
               type="button"
               key={history.event_id}
               onClick={() => setSelected(history)}
-              className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left"
+              className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left"
             >
-              <span>
+              <span className="min-w-0 break-words">
                 <b>{displayEventName(history.settings)}</b>
                 <small className="ml-3 text-gray-500">
                   {history.started_at ? new Date(history.started_at).toLocaleString() : "開始前"}

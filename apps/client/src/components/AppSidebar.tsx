@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { BarChart2, CalendarClock, Gamepad2, History, Home, Loader2, Settings } from "lucide-react";
 
-export type AppView = "lobby" | "settings" | "room" | "stats" | "automatch" | "spectate" | "event-room" | "event-history";
+export type AppView = "lobby" | "settings" | "room" | "stats" | "automatch" | "spectate" | "event-entry" | "event-create" | "event-join" | "event-room" | "event-history";
 
 interface AppSidebarProps {
   activeView: AppView;
@@ -21,25 +21,26 @@ export function AppSidebar({
   onOpenMatchHistory,
 }: AppSidebarProps) {
   return (
-    <nav className="flex w-[70px] shrink-0 flex-col items-center border-r border-white/5 bg-[#252526] py-6">
-      <div className="flex flex-1 flex-col gap-8">
+    <nav className="app-event-sidebar flex w-[70px] shrink-0 flex-col items-center border-r border-white/5 bg-[#252526] py-6">
+      <div className="flex flex-1 flex-col gap-2">
         <SidebarButton
           active={activeView === "lobby"}
-          label="Lobby"
+          label="通常対戦"
           onClick={() => onNavigate("lobby")}
         >
           <Home size={24} />
         </SidebarButton>
+        <SidebarButton active={["event-entry", "event-create", "event-join"].includes(activeView)} label="合同・大会" onClick={() => onNavigate(hasEventRoom ? "event-room" : "event-entry")}><CalendarClock size={24} /></SidebarButton>
         <SidebarButton
           active={activeView === "stats"}
-          label="Stats"
+          label="成績"
           onClick={() => onNavigate("stats")}
         >
           <BarChart2 size={24} />
         </SidebarButton>
         <SidebarButton
           active={activeView === "event-history"}
-          label="Event History"
+          label="開催履歴"
           onClick={() => onNavigate("event-history")}
         >
           <CalendarClock size={24} />
@@ -47,7 +48,7 @@ export function AppSidebar({
         <SidebarButton
           active={false}
           disabled={isOpeningMatchHistory}
-          label="Match History"
+          label="対戦履歴"
           onClick={onOpenMatchHistory}
         >
           {isOpeningMatchHistory ? <Loader2 size={24} className="animate-spin" /> : <History size={24} />}
@@ -55,7 +56,7 @@ export function AppSidebar({
         {hasRoom ? (
           <SidebarButton
             active={activeView === "room"}
-            label="Room"
+            label="対戦へ戻る"
             onClick={() => onNavigate("room")}
           >
             <Gamepad2 size={24} />
@@ -64,7 +65,7 @@ export function AppSidebar({
         {hasEventRoom ? (
           <SidebarButton
             active={activeView === "event-room"}
-            label="Event Room"
+            label="開催へ戻る"
             onClick={() => onNavigate("event-room")}
           >
             <Gamepad2 size={24} />
@@ -74,7 +75,7 @@ export function AppSidebar({
 
       <SidebarButton
         active={activeView === "settings"}
-        label="Settings"
+        label="設定"
         onClick={() => onNavigate("settings")}
       >
         <Settings size={24} />
@@ -105,7 +106,7 @@ function SidebarButton({ active, disabled = false, label, onClick, children }: S
           : "text-gray-500 hover:bg-white/5"
       } disabled:cursor-not-allowed disabled:text-gray-700 disabled:hover:bg-transparent`}
     >
-      {children}
+      {children}<span>{label}</span>
     </button>
   );
 }

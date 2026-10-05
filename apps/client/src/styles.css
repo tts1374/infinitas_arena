@@ -40,3 +40,55 @@ body {
   color: #ffffff;
   background-color: #1e1e1e;
 }
+
+/* Host events: adopted song / player cards / primary action / side information layout. */
+.event-room { height:100%; min-width:0; display:flex; flex-direction:column; color:#fff; background:#1e1e1e; }
+.event-room button, .event-entry button, .event-form button { border:1px solid #ffffff25; border-radius:10px; padding:10px 14px; color:#ddd; background:#ffffff08; font-weight:700; }
+.event-room button:disabled, .event-entry button:disabled, .event-form button:disabled { opacity:.4; cursor:not-allowed; }
+.event-room button.event-primary, .event-form button.event-primary { background:#06b6d4; color:#071014; border-color:#06b6d4; font-weight:900; }
+.event-room-header { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:16px 22px; border-bottom:1px solid #ffffff16; flex-shrink:0; }
+.event-room-header h1 { font-size:22px; font-weight:900; overflow-wrap:anywhere; }
+.event-room-header p { font-size:11px; color:#22d3ee; font-weight:800; }
+.event-room-header button { font-size:12px; flex-shrink:0; }
+.event-layout { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:18px; padding:18px; flex:1; min-height:0; overflow:auto; }
+.event-arena { min-width:0; min-height:0; display:flex; flex-direction:column; border:1px solid #ffffff18; border-radius:16px; overflow:hidden; background:#ffffff04; }
+.event-song { padding:20px; background:linear-gradient(110deg,#15323c,#22252b); border-bottom:1px solid #ffffff15; flex-shrink:0; }
+.event-song h2 { font-weight:900; font-style:italic; font-size:28px; overflow-wrap:anywhere; }
+.event-song p { font-size:12px; color:#a2a6ad; margin-top:8px; }
+.event-phase { font-size:11px; color:#22d3ee; font-weight:900; letter-spacing:.12em; }
+.event-counts { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; padding:14px 18px; font-size:14px; font-weight:900; }
+.event-counts span { color:#999; font-size:11px; font-weight:500; }
+.event-self, .event-source-warning { padding:10px 18px; font-size:12px; flex-shrink:0; }
+.event-source-warning { color:#fcd34d; background:#f59e0b12; }
+.event-player-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; padding:0 16px 16px; overflow-y:auto; min-height:100px; flex:1; align-content:start; }
+.event-player { position:relative; min-width:0; padding:14px 10px; border:1px solid #ffffff12; border-radius:12px; background:#ffffff04; display:flex; flex-direction:column; gap:6px; }
+.event-player b { font-size:14px; font-weight:900; font-style:italic; overflow-wrap:anywhere; padding-right:12px; }
+.event-player span, .event-player small { color:#999; font-size:10px; }
+.event-player strong { color:#c1c5cc; font-size:11px; }
+.event-player-self { border-color:#06b6d480; background:#06b6d412; }
+.event-room button.event-player-manage { position:absolute; right:4px; top:5px; padding:0 5px; border:0; background:transparent; }
+.event-no-players { grid-column:1/-1; font-size:13px; color:#999; padding:20px; }
+.event-main-action { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:16px; border-top:1px solid #ffffff18; flex-shrink:0; background:#25282c; }
+.event-main-action p { font-size:12px; color:#a5a8ae; flex:1; min-width:130px; }
+.event-main-action small { display:block; color:#fcd34d; }
+.event-main-action button { min-height:48px; }
+.event-side { min-width:0; overflow:auto; display:flex; flex-direction:column; gap:16px; }
+.event-side section, .event-management { padding:16px; border:1px solid #ffffff15; border-radius:12px; background:#ffffff03; }
+.event-side h2 { font-size:13px; font-weight:900; margin-bottom:12px; }
+.event-side p { font-size:12px; color:#999; }
+.event-side dl { display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px; }
+.event-side dt { color:#888; }.event-side dd { text-align:right; font-weight:800; }
+.event-side button.event-history-round { width:100%; text-align:left; overflow-wrap:anywhere; font-size:12px; margin-bottom:6px; }
+.event-management summary { font-size:13px; font-weight:800; cursor:pointer; }.event-management button { display:block; width:100%; margin-top:10px; font-size:12px; }
+.event-disconnected { padding:10px 16px; background:#f59e0b; color:#111; font-size:12px; font-weight:900; text-align:center; flex-shrink:0; }
+.event-content, .event-picking { padding:18px; overflow:auto; flex:1; min-height:0; }.event-content h2 { font-size:20px; font-weight:900; margin:12px 0; }
+.event-tabs { display:flex; gap:8px; margin-bottom:12px; }.event-tabs button[aria-pressed=true] { color:#22d3ee; border-color:#22d3ee; }
+.event-picking input, .event-form input, .event-form select { width:100%; padding:12px; border:1px solid #ffffff20; border-radius:10px; background:#15171b; color:white; min-width:0; }
+.event-chart-list { display:flex; flex-direction:column; gap:6px; margin:12px 0; }.event-chart-list button { text-align:left; }.event-chart-list b,.event-chart-list span { display:block; overflow-wrap:anywhere; }.event-chart-list span { font-size:11px; color:#999; }.event-chart-list button[aria-pressed=true] { border-color:#22d3ee; }
+.event-rank-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin:14px 0; }.event-rank-cards article { padding:14px; border:1px solid #ffffff20; border-radius:12px; display:flex; flex-direction:column; gap:5px; min-width:0; overflow-wrap:anywhere; }.event-rank-cards strong { font-size:20px; color:#22d3ee; font-weight:900; }.event-rank-cards span { font-size:12px; }
+.event-rank-winner { background:#06b6d414; border:1px solid #06b6d460; }.event-result-row { display:grid; grid-template-columns:45px minmax(0,1fr) 120px 45px; gap:8px; border-radius:10px; padding:12px; margin-bottom:6px; background:#ffffff06; font-size:12px; }.event-result-row b { overflow-wrap:anywhere; min-width:0; }.event-result-row small { color:#fbbf24; }.event-result-self { background:#06b6d41a; }
+.event-error { position:absolute; bottom:12px; left:12px; right:12px; background:#450a0a; color:#fecaca; border-radius:12px; padding:12px; font-size:12px; overflow-wrap:anywhere; }
+.event-entry, .event-form { max-width:800px; margin:auto; color:#fff; min-width:0; }.event-entry h1,.event-form h1 { font-size:28px; font-weight:900; margin-bottom:12px; }.event-entry p { color:#999; font-size:13px; margin-bottom:24px; }.event-entry-options { display:grid; grid-template-columns:1fr 1fr; gap:18px; }.event-entry-options button { text-align:left; padding:24px; }.event-entry-options b { display:block; font-size:20px; color:#22d3ee; margin-bottom:8px; }.event-entry-options span { font-size:12px; }.event-form { display:flex; flex-direction:column; gap:18px; }.event-form label { font-size:12px; font-weight:700; display:flex; flex-direction:column; gap:8px; }.event-form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }.event-form-actions { display:flex; flex-wrap:wrap; gap:12px; }.event-form-note { font-size:12px; color:#999; }.event-empty { padding:32px; color:#ddd; }
+.app-event-sidebar { width:100px; gap:6px; }.app-event-sidebar button { padding:10px 4px; width:84px; }.app-event-sidebar button span { display:block; margin-top:4px; font-size:10px; }.app-event-sidebar svg { margin:auto; }
+@media(max-width:1023px) { .event-layout { display:flex; flex-direction:column; overflow-y:auto; padding:12px; }.event-arena { flex:0 0 100%; min-height:0; }.event-player-grid { max-height:none; min-height:0; }.event-side { overflow:visible; flex:none; }.event-song h2 { font-size:24px; }.event-player-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.event-content { overflow:auto; }.event-main-action { margin-top:auto; }.event-result-row { grid-template-columns:40px minmax(0,1fr); }.event-result-row span:nth-child(n+3) { grid-column:2; }.event-entry-options,.event-form-row { grid-template-columns:1fr; } }
+@media(max-width:480px) { .event-room-header { padding:12px; align-items:flex-start; }.event-room-header h1 { font-size:17px; }.event-room-header button { padding:6px 8px; font-size:10px; }.event-song { padding:14px; }.event-song h2 { font-size:22px; }.event-main-action .event-primary { width:100%; }.app-event-sidebar { width:60px; }.app-event-sidebar button { width:48px; padding:8px 2px; }.app-event-sidebar button span { font-size:9px; }.event-player-grid { padding:0 10px 10px; gap:8px; }.event-player { padding:12px 8px; }.event-player b { font-size:12px; }.event-rank-cards { grid-template-columns:1fr; } }

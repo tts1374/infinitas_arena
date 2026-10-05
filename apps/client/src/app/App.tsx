@@ -1,4 +1,4 @@
-import { LOBBY_POLL_INTERVAL_MS, PING_INTERVAL_SECONDS } from "@infinitas/shared";
+import { LOBBY_POLL_INTERVAL_MS, PING_INTERVAL_SECONDS, type EventRoomSettings } from "@infinitas/shared";
 import { startTransition, useEffect, useRef, useState } from "react";
 import { AppSidebar, type AppView } from "../components/AppSidebar";
 import { captureElementAsPng } from "../dev/visual-capture";
@@ -13,6 +13,9 @@ import { SpectatorPage } from "../pages/SpectatorPage";
 import { StatsPage } from "../pages/StatsPage";
 import { EventHistoryPage } from "../pages/EventHistoryPage";
 import { EventRoomPage } from "../pages/EventRoomPage";
+import { EventEntryPage } from "../pages/EventEntryPage";
+import { EventCreatePage, INITIAL_EVENT_DRAFT } from "../pages/EventCreatePage";
+import { EventJoinPage, type EventJoinDraft } from "../pages/EventJoinPage";
 import { AutoMatchPage } from "../pages/AutoMatchPage";
 import { localResultArchiveService } from "../services/result-archive";
 import { matchHistoryOverlayService } from "../services/match-history-overlay";
@@ -29,7 +32,7 @@ import { sourceStore, useSourceStore } from "../stores/source-store";
 import { isRoomEntryReady, settingsStore, useSettingsStore } from "../stores/settings-store";
 import { eventRoomStore, useEventRoomStore } from "../stores/event-room-store";
 import { resolveEventJoinParticipantEquipment } from "../services/event-join-policy";
-import { getCapabilities, HostEventCapabilitiesTracker } from "../services/worker-api-client";
+import { createEventRoom, getCapabilities, HostEventCapabilitiesTracker } from "../services/worker-api-client";
 
 function parseJoinRoomRefFromDeepLink(rawUrl: string): string | null {
   try {
@@ -69,6 +72,11 @@ export function App() {
   const sourceUnresolvedDialog = useSourceStore((state) => state.activeUnresolvedDialog);
   const eventSnapshot = useEventRoomStore((state) => state.snapshot);
   const eventConnectionStatus = useEventRoomStore((state) => state.connectionStatus);
+  const [eventCreateDraft, setEventCreateDraft] = useState<EventRoomSettings>(INITIAL_EVENT_DRAFT);
+  const [eventJoinDraft, setEventJoinDraft] = useState<EventJoinDraft>({ roomId: "", joinCode: "" });
+  const [eventEntryError, setEventEntryError] = useState<string | null>(null);
+  const [creatingEvent, setCreatingEvent] = useState(false);
+  const creatingEventRef = useRef(false);
   const [activeView, setActiveView] = useState<AppView>("lobby");
   const activeViewRef = useRef<AppView>(activeView);
   const roomSnapshotRef = useRef(roomSnapshot);
@@ -121,12 +129,6 @@ export function App() {
       });
     }
   }, [activeView, roomSnapshot]);
-
-  useEffect(() => {
-    if (eventSnapshot !== null && activeView !== "event-room") {
-      startTransition(() => setActiveView("event-room"));
-    }
-  }, [activeView, eventSnapshot]);
 
   useEffect(() => {
     if (
@@ -436,6 +438,24 @@ export function App() {
     });
   }
 
+  function joinHostEvent({ roomId, joinCode }: EventJoinDraft): void {
+    setEventEntryError(null);
+    const equipment = resolveEventJoinParticipantEquipment(savedSettings, isRoomEntryReady(savedSettings));
+    if (eventRoomStore.connect({ apiBaseUrl: savedSettings.apiBaseUrl, roomId: roomId.trim(), joinCode, playerId: savedSettings.playerId, displayName: savedSettings.displayName, ...(equipment ?? {}) })) navigate("event-room");
+    else setEventEntryError("通常対戦または別の開催への接続中です。現在の開催へ戻るか、退出してから参加してください。");
+  }
+  async function createHostEvent(): Promise<void> {
+    if (creatingEventRef.current || !hostEventCreationAvailable || roomConnectionStatus !== "DISCONNECTED" || eventSnapshot !== null) return;
+    creatingEventRef.current = true;
+    setCreatingEvent(true);
+    setEventEntryError(null);
+    try {
+      const response = await createEventRoom(savedSettings.apiBaseUrl, { host_player_id: savedSettings.playerId, host_display_name: savedSettings.displayName, settings: eventCreateDraft });
+      joinHostEvent({ roomId: response.room_id, joinCode: response.join_code });
+    } catch (error) { setEventEntryError(error instanceof Error ? error.message : "開催を作成できませんでした。"); }
+    finally { creatingEventRef.current = false; setCreatingEvent(false); }
+  }
+
   function rememberPrivateRecoveryJoinHint(): void {
     if (roomSnapshot === null || roomSnapshot.settings.visibility !== "PRIVATE") {
       return;
@@ -556,7 +576,7 @@ export function App() {
 
   return (
     <main className="flex h-screen w-screen overflow-hidden bg-[#1e1e1e]">
-      {activeView !== "room" && activeView !== "event-room" && activeView !== "automatch" && activeView !== "spectate" ? (
+      {activeView !== "room" && activeView !== "automatch" && activeView !== "spectate" ? (
         <AppSidebar
           activeView={activeView}
           hasRoom={roomSnapshot !== null}
@@ -569,7 +589,7 @@ export function App() {
         />
       ) : null}
 
-      <section className={activeView === "room" || activeView === "event-room" || activeView === "automatch" ? "relative min-w-0 flex-1 overflow-hidden" : "custom-scrollbar relative min-w-0 flex-1 overflow-y-auto p-8"}>
+      <section className={activeView === "room" || activeView === "event-room" || activeView === "automatch" ? "relative min-w-0 flex-1 overflow-hidden" : "custom-scrollbar relative min-w-0 flex-1 overflow-y-auto p-3 sm:p-8"}>
         {activeView === "lobby" ? (
           <LobbyPage
             pendingJoinRoomId={pendingDeepLinkRoomId}
@@ -587,20 +607,7 @@ export function App() {
               setSpectatorRequest(request);
               navigate("spectate");
             }}
-            hostEventsAvailable={hostEventsAvailable}
-            hostEventCreationAvailable={hostEventCreationAvailable}
-            onJoinHostEvent={({ roomId, joinCode }) => {
-              const participantEquipment = resolveEventJoinParticipantEquipment(savedSettings, isRoomEntryReady(savedSettings));
-              const connected = eventRoomStore.connect({
-                apiBaseUrl: savedSettings.apiBaseUrl,
-                roomId,
-                joinCode,
-                playerId: savedSettings.playerId,
-                displayName: savedSettings.displayName,
-                ...(participantEquipment ?? {}),
-              });
-              if (connected) navigate("event-room");
-            }}
+
           />
         ) : null}
         {activeView === "settings" ? (
@@ -622,6 +629,9 @@ export function App() {
           />
         ) : null}
         {activeView === "room" ? <RoomPage /> : null}
+        {activeView === "event-entry" ? <EventEntryPage available={hostEventsAvailable} creationAvailable={hostEventCreationAvailable} hasEvent={eventSnapshot !== null || eventConnectionStatus === "CONNECTING" || eventConnectionStatus === "JOINING"} normalActive={roomConnectionStatus !== "DISCONNECTED"} onJoin={() => navigate("event-join")} onCreate={() => navigate("event-create")} onReturn={() => navigate("event-room")} onHistory={() => navigate("event-history")} /> : null}
+        {activeView === "event-create" ? <EventCreatePage draft={eventCreateDraft} onChange={setEventCreateDraft} busy={creatingEvent} error={eventEntryError} identityReady={savedSettings.playerId.length > 0 && savedSettings.displayName.length > 0} sourceReady={isRoomEntryReady(savedSettings)} onBack={() => navigate("event-entry")} onSubmit={() => { void createHostEvent(); }} /> : null}
+        {activeView === "event-join" ? <EventJoinPage draft={eventJoinDraft} onChange={setEventJoinDraft} available={hostEventsAvailable} identityReady={savedSettings.playerId.length > 0 && savedSettings.displayName.length > 0} error={eventEntryError} onBack={() => navigate("event-entry")} onJoin={() => joinHostEvent(eventJoinDraft)} /> : null}
         {activeView === "event-room" ? <EventRoomPage onReturnToLobby={() => navigate("lobby")} /> : null}
         {activeView === "event-history" ? <EventHistoryPage /> : null}
         {activeView === "automatch" ? (
@@ -663,12 +673,12 @@ export function App() {
         </div>
       ) : null}
 
-      {mockScenarioRequested ? (
-        <div className="fixed right-4 top-4 z-[400] flex items-center gap-3 rounded-2xl border border-white/10 bg-black/80 px-4 py-3 shadow-2xl backdrop-blur-xl">
+      {mockScenarioRequested && !eventMockScenario ? (
+        <div className="fixed bottom-2 right-2 z-[400] flex items-center gap-3 rounded-2xl border border-white/10 bg-black/80 px-4 py-3 shadow-2xl backdrop-blur-xl">
           <div className="flex flex-col">
             <span className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500">Visual Scenario</span>
             <span className="text-sm font-black italic tracking-tight text-white">
-              {eventMockScenario?.label ?? mockScenario?.label ?? `Unknown: ${runtimeConfig.mockScenarioId}`}
+              {mockScenario?.label ?? `Unknown: ${runtimeConfig.mockScenarioId}`}
             </span>
           </div>
           {eventMockScenario || mockScenario ? (
