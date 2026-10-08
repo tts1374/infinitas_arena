@@ -35,7 +35,6 @@ let automationTimerId: number | null = null;
 let eventConnectRequested = false;
 let eventStartRequested = false;
 let eventPickRequestedRevision: number | null = null;
-let eventReadyRequestedRoundId: string | null = null;
 let eventRoundStartRequestedId: string | null = null;
 let eventNextPickRequestedId: string | null = null;
 let eventNextPickAttemptCount = 0;
@@ -45,6 +44,9 @@ let eventDisconnectTriggered = false;
 let eventHostDisconnectLogged = false;
 let eventHostReconnectLogged = false;
 let eventReloadScheduled = false;
+let eventBackgroundRoundId: string | null = null;
+let eventBackgroundStartedLogged = false;
+let eventBackgroundSubmitted = false;
 let eventLobbyObservedAtMs: number | null = null;
 let eventPickingObservedAtMs: number | null = null;
 let eventFirstResultObservedAtMs: number | null = null;
@@ -177,7 +179,7 @@ function buildStateDumpPayload(activeView: string) {
   const matchHistory = readMatchHistory();
   const visualRoot = typeof document === "undefined"
     ? null
-    : (document.getElementById("visual-capture-root") as HTMLElement | null);
+    : ((document.getElementById("visual-capture-root") as HTMLElement | null) ?? document.body);
 
   return {
     activeView,
@@ -203,7 +205,13 @@ function buildStateDumpPayload(activeView: string) {
       clientWidth: visualRoot.clientWidth,
       scrollWidth: visualRoot.scrollWidth,
       viewportWidth: document.documentElement.clientWidth,
+      viewportHeight: window.innerHeight,
       hasHorizontalOverflow: visualRoot.scrollWidth > visualRoot.clientWidth,
+      eventPlayerCards: visualRoot.querySelectorAll(".event-player").length,
+      eventResultRows: visualRoot.querySelectorAll(".event-result-row").length,
+      eventMainActionPresent: visualRoot.querySelector(".event-main-action") !== null,
+      eventMainActionBottom: visualRoot.querySelector(".event-main-action")?.getBoundingClientRect().bottom ?? null,
+      eventText: visualRoot.innerText,
     },
     e2e: runtimeConfig.e2e,
   };
@@ -242,13 +250,25 @@ async function ensureEventConnected(): Promise<void> {
   if (!eventConnectRequested) await logE2EEvent("event_join_request_failed", { roomId: runtimeConfig.e2e.roomId });
 }
 
-async function maybeDriveHostEvent(): Promise<void> {
+async function maybeDriveHostEvent(activeView: string): Promise<void> {
   const state = eventRoomStore.getState();
   const snapshot = state.snapshot;
   if (snapshot === null) return;
   const isHost = state.sessionRole === "HOST";
-  const self = snapshot.participants.find((participant) => participant.player_id === state.playerId);
   const roundNumber = state.resultRounds.length + 1;
+  const self = snapshot.participants.find((participant) => participant.player_id === state.playerId);
+  if (eventBackgroundRoundId !== null && eventBackgroundRoundId === snapshot.current_round_id && activeView === "lobby") {
+    if (!eventBackgroundStartedLogged) {
+      eventBackgroundStartedLogged = true;
+      await logE2EEvent("event_background_submission_started", { activeView, roundId: eventBackgroundRoundId, roundNumber, phase: snapshot.phase, roundPhase: snapshot.round_phase, connectionStatus: state.connectionStatus });
+      captureEventState("event-background-submission");
+    }
+    if (self?.round_status === "SUBMITTED" && !eventBackgroundSubmitted) {
+      eventBackgroundSubmitted = true;
+      await logE2EEvent("event_background_submission_accepted", { activeView, roundId: eventBackgroundRoundId, roundStatus: self.round_status, sourceEvent: sourceStore.getState().lastEvent });
+      window.dispatchEvent(new CustomEvent("inf-arena-e2e-event-view", { detail: "event-room" }));
+    }
+  }
 
   if (isHost && wasEventDisconnectTriggered() && state.connectionStatus === "DISCONNECTED" && !eventHostDisconnectLogged) {
     eventHostDisconnectLogged = true;
@@ -269,7 +289,7 @@ async function maybeDriveHostEvent(): Promise<void> {
   }
   if (snapshot.phase === "LOBBY") {
     captureEventState("event-lobby");
-    if (isHost && snapshot.participants.length > 0 && !eventStartRequested) {
+    if (isHost && snapshot.participants.length === 20 && !eventStartRequested) {
       eventLobbyObservedAtMs ??= Date.now();
       // Native two-client launch can take several seconds before the outer
       // harness regains control. Keep this E2E-only state stable long enough
@@ -302,18 +322,8 @@ async function maybeDriveHostEvent(): Promise<void> {
       }
       return;
     }
-    if (snapshot.selected_chart !== null && self && !self.pending_next && !self.ready && eventReadyRequestedRoundId !== snapshot.current_round_id) {
-      eventReadyRequestedRoundId = snapshot.current_round_id;
-      eventRoomStore.setReady(true);
-      return;
-    }
     if (isHost && snapshot.selected_chart !== null && eventRoundStartRequestedId !== snapshot.current_round_id) {
-      const eligible = snapshot.participants.filter(
-        (participant) =>
-          !participant.pending_next &&
-          (participant.connection_state === "CONNECTED" || participant.connection_state === "DISCONNECTED"),
-      );
-      if (eligible.length > 0 && eligible.every((participant) => participant.ready)) {
+      if (snapshot.current_eligible_player_ids.length > 0) {
         eventPickingObservedAtMs ??= Date.now();
         if (Date.now() - eventPickingObservedAtMs < 5_000) return;
         eventRoundStartRequestedId = snapshot.current_round_id;
@@ -324,6 +334,10 @@ async function maybeDriveHostEvent(): Promise<void> {
   }
   if (snapshot.phase === "PLAYING" && snapshot.round_phase === "ACTIVE") {
     captureEventState(`event-active-round-${roundNumber}`);
+    if (roundNumber === 2 && self && eventBackgroundRoundId === null) {
+      eventBackgroundRoundId = snapshot.current_round_id;
+      window.dispatchEvent(new CustomEvent("inf-arena-e2e-event-view", { detail: "lobby" }));
+    }
     return;
   }
   if (snapshot.phase === "PLAYING" && snapshot.round_phase === "RESULT") {
@@ -646,7 +660,7 @@ async function runAutomationStep(getView: GetView): Promise<void> {
       automationStepQueued = false;
       if (runtimeConfig.e2e.roomKind === "HOST_EVENT") {
         await ensureEventConnected();
-        await maybeDriveHostEvent();
+        await maybeDriveHostEvent(getView());
         await updateStateDump(getView(), "event_automation_step");
         await maybeCaptureFailure(getView());
         continue;
@@ -679,7 +693,6 @@ function clearRunnerState(): void {
   eventConnectRequested = false;
   eventStartRequested = false;
   eventPickRequestedRevision = null;
-  eventReadyRequestedRoundId = null;
   eventRoundStartRequestedId = null;
   eventNextPickRequestedId = null;
   eventNextPickAttemptCount = 0;
@@ -689,6 +702,9 @@ function clearRunnerState(): void {
   eventHostDisconnectLogged = false;
   eventHostReconnectLogged = false;
   eventReloadScheduled = false;
+  eventBackgroundRoundId = null;
+  eventBackgroundStartedLogged = false;
+  eventBackgroundSubmitted = false;
   eventLobbyObservedAtMs = null;
   eventPickingObservedAtMs = null;
   eventFirstResultObservedAtMs = null;

@@ -65,7 +65,7 @@ class ProtocolClient {
 
   async join() {
     const payload = {
-      host_event_protocol: 1,
+      host_event_protocol: 2,
       client_version: "1.4.0",
       join_code: JOIN_CODE,
       display_name: this.playerId,
@@ -120,9 +120,8 @@ async function selectAndStart(host, players, chart) {
   let snapshot = host.snapshot();
   await host.action("CONFIRM_PICK", { chart_key: chart.chart_key, selection_revision: snapshot.selection_revision });
   snapshot = host.snapshot();
-  for (const player of players) {
-    await player.action("SET_READY", { round_id: snapshot.current_round_id, selection_revision: snapshot.selection_revision, ready: true });
-  }
+  assert.ok(snapshot.current_eligible_player_ids.length > 0);
+  assert.ok(snapshot.participants.every((participant) => !("ready" in participant)));
   snapshot = host.snapshot();
   await host.action("START_ROUND", { round_id: snapshot.current_round_id, selection_revision: snapshot.selection_revision });
   return host.snapshot();
@@ -203,12 +202,62 @@ test("capacity integration supports 20 participants with a dedicated Host and 19
     for (let index = 0; index < playerCount; index += 1) await new ProtocolClient(harness, `p-${hostPlays}-${index}`).join();
     assert.equal(host.snapshot().participants.length, EVENT_MAX_PLAYERS);
     const overflow = new ProtocolClient(harness, `overflow-${hostPlays}`);
-    await overflow.send("EVENT_JOIN", { host_event_protocol: 1, client_version: "1.4.0", join_code: JOIN_CODE, display_name: "Overflow", source: "inf-notebook", song_unlocks: UNLOCKS });
+    await overflow.send("EVENT_JOIN", { host_event_protocol: 2, client_version: "1.4.0", join_code: JOIN_CODE, display_name: "Overflow", source: "inf-notebook", song_unlocks: UNLOCKS });
     assert.equal(overflow.last("EVENT_ERROR").payload.code, "ROOM_FULL");
   }
 });
 
 test("capability boundary is disabled by default and enabled only by the explicit flag", async () => {
-  assert.deepEqual(await handleGetCapabilities({}).json(), { host_event_protocol: 1, host_event_accept_new: false });
-  assert.deepEqual(await handleGetCapabilities({ HOST_EVENT_ACCEPT_NEW: "true" }).json(), { host_event_protocol: 1, host_event_accept_new: true });
+  assert.deepEqual(await handleGetCapabilities({}).json(), { host_event_protocol: 2, host_event_accept_new: false });
+  assert.deepEqual(await handleGetCapabilities({ HOST_EVENT_ACCEPT_NEW: "true" }).json(), { host_event_protocol: 2, host_event_accept_new: true });
+});
+
+test("15-player rounds wait at 14/15, allow same-round reconnect, and reject late submission after the deadline", async () => {
+  for (const event_type of ["CASUAL", "TOURNAMENT"]) {
+    const harness = createHarness({ event_type, host_plays: false });
+    await initialize(harness);
+    const host = new ProtocolClient(harness, "host", null);
+    await host.join();
+    const players = Array.from({ length: 15 }, (_, i) => new ProtocolClient(harness, `p${i}`));
+    for (const player of players) await player.join();
+    await host.action("START_EVENT");
+    const chart = await firstChart(harness.controller);
+    let snapshot = await selectAndStart(host, players, chart);
+    await harness.controller.close(players[14].socket);
+    for (const player of players.slice(0, 14)) await player.action("SUBMIT", { round_id: snapshot.current_round_id, observed_key: snapshot.selected_chart.expected_key, metric_value: 2100 });
+    assert.equal(host.snapshot().round_phase, "ACTIVE");
+    assert.equal(host.snapshot().latest_result, null);
+    const restored = new ProtocolClient(harness, players[14].playerId);
+    await restored.join();
+    assert.equal(restored.snapshot().participants.find((p) => p.player_id === restored.playerId).round_status, "PENDING");
+    await restored.action("SUBMIT", { round_id: snapshot.current_round_id, observed_key: snapshot.selected_chart.expected_key, metric_value: 2200 });
+    assert.equal(host.snapshot().round_phase, "RESULT");
+    await host.action("NEXT_PICK", { round_id: snapshot.current_round_id });
+    snapshot = await selectAndStart(host, players, chart);
+    await harness.controller.close(restored.socket);
+    for (const player of players.slice(0, 14)) await player.action("SUBMIT", { round_id: snapshot.current_round_id, observed_key: snapshot.selected_chart.expected_key, metric_value: 2300 });
+    assert.equal(host.snapshot().round_phase, "ACTIVE");
+    await host.action("CLOSE_ROUND", { round_id: snapshot.current_round_id });
+    assert.equal(host.snapshot().latest_result.results.find((entry) => entry.player_id === restored.playerId).absence_reason, "DEADLINE");
+    const late = new ProtocolClient(harness, restored.playerId);
+    await late.join();
+    const request_id = crypto.randomUUID();
+    await late.send("EVENT_ACTION", { action: "SUBMIT", request_id, generation: snapshot.generation, event_id: snapshot.event_id, round_id: snapshot.current_round_id, observed_key: snapshot.selected_chart.expected_key, metric_value: 9999 });
+    assert.ok(late.last("EVENT_ERROR"));
+    assert.equal(host.snapshot().latest_result.results.find((entry) => entry.player_id === restored.playerId).metric_value, 0);
+  }
+});
+
+test("protocol 1 cannot JOIN protocol 2 and deprecated event Ready is rejected", async () => {
+  const harness = createHarness(fixture.casual);
+  await initialize(harness);
+  const old = new ProtocolClient(harness, "old");
+  await old.send("EVENT_JOIN", { host_event_protocol: 1, client_version: "1.4.0", join_code: JOIN_CODE, display_name: "Old", source: "inf-notebook", song_unlocks: UNLOCKS });
+  assert.ok(old.last("EVENT_ERROR"));
+  assert.equal(old.last("EVENT_JOIN_ACCEPTED"), undefined);
+  const host = new ProtocolClient(harness, "host", null);
+  await host.join();
+  await host.send("EVENT_ACTION", { action: "SET_READY", request_id: crypto.randomUUID(), generation: host.snapshot().generation, ready: true });
+  assert.ok(host.last("EVENT_ERROR"));
+  assert.equal(host.snapshot().participants.length, 0);
 });

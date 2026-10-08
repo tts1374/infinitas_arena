@@ -81,3 +81,29 @@ for (const source of ["inf-notebook", "daken_counter_v3", "reflux", "inf_daken_c
     });
   }
 }
+
+for (const source of ["inf-notebook", "daken_counter_v3", "reflux", "inf_daken_counter"] as const) {
+  test(`${source}: unavailable input cannot invent a result; user skip waits for server authority`, async () => {
+    const previousSocket = globalThis.WebSocket;
+    globalThis.WebSocket = FakeSocket as unknown as typeof WebSocket;
+    try {
+      eventRoomStore.connect({ apiBaseUrl: "https://example.com", roomId: "room", playerId: "player", displayName: "PLAYER", joinCode: "secret", source });
+      await Promise.resolve();
+      const socket = FakeSocket.latest;
+      socket.receive("EVENT_JOIN_ACCEPTED", { session_role: "PLAYER", event_room_snapshot: active });
+      eventRoomStore.reportSourceUnavailable("入力を読み取れません");
+      const before = socket.sent.length;
+      assert.equal(submitParsedSourceChange({ source, filePath: "missing", observations: [], unresolvedCases: [], fileSizeBytes: 0 } satisfies ParsedSourceChangePayload, source).ok, false);
+      assert.equal(socket.sent.length, before);
+      assert.equal(eventRoomStore.getState().snapshot?.participants[0]?.round_status, "PENDING");
+      assert.equal(eventRoomStore.skip(), true);
+      const action = JSON.parse(socket.sent.at(-1)!) as { payload: { action: string; request_id: string } };
+      assert.equal(action.payload.action, "SKIP");
+      socket.receive("EVENT_ACTION_ACK", { request_id: action.payload.request_id });
+      assert.equal(eventRoomStore.getState().snapshot?.participants[0]?.round_status, "PENDING");
+      socket.receive("EVENT_STATE", { event_room_snapshot: { ...active, revision: 2, participants: [{ ...active.participants[0]!, round_status: "SKIPPED" }] } satisfies EventRoomSnapshot });
+      assert.equal(eventRoomStore.getState().snapshot?.participants[0]?.round_status, "SKIPPED");
+      assert.equal(submitParsedSourceChange({ source, filePath: "missing", observations: [observation], unresolvedCases: [], fileSizeBytes: 1 } satisfies ParsedSourceChangePayload, source).ok, false);
+    } finally { eventRoomStore.disconnect(); globalThis.WebSocket = previousSocket; }
+  });
+}

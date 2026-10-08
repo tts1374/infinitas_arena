@@ -20,6 +20,7 @@ $frontendLog = Join-Path $runtimeRoot "logs\client-dev.log"
 $apiBaseUrl = "http://127.0.0.1:$WorkerPort"
 $workerProcess = $null
 $frontendProcess = $null
+$participantsProcess = $null
 
 Add-Type -AssemblyName System.Drawing
 Add-Type @"
@@ -31,7 +32,7 @@ public static class HostEventE2EWindow {
   [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr handle);
   [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr handle, int command);
   [DllImport("user32.dll")] public static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool repaint);
-  [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr handle, IntPtr targetDc, uint flags);
+  [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr handle, IntPtr after, int x, int y, int width, int height, uint flags);
 }
 "@
 
@@ -131,13 +132,19 @@ function Write-Reflux([string]$WatchDir, [object]$ExpectedKey, [int]$Score, [int
   Write-Utf8NoBomFile (Join-Path $WatchDir "latest.json") (($payload | ConvertTo-Json -Depth 6) + "`n")
 }
 
-function Capture-ClientWindow([string]$Profile, [string]$Label, [string]$ExpectedRole, [string]$ExpectedPhase, [string]$ExpectedRoundPhase = "", [switch]$Mobile) {
+function Capture-ClientWindow([string]$Profile, [string]$Label, [string]$ExpectedRole, [string]$ExpectedPhase, [string]$ExpectedRoundPhase = "", [switch]$Mobile, [switch]$Background) {
   $statePath = Join-Path $runtimeRoot "runtime\$Profile\$Profile.state.json"
-  $state = Read-State $statePath
+  $expectedView = if ($Background) { "lobby" } else { "event-room" }
+  $state = Wait-State $statePath "rendered event view $Profile/$Label" { param($value) $visible = $value.state.visualLayout; $snapshot = $value.state.eventRoom.snapshot; return $value.state.activeView -eq $expectedView -and ($Background -or $visible.eventMainActionPresent) -and $value.state.eventRoom.sessionRole -eq $ExpectedRole -and $snapshot.phase -eq $ExpectedPhase -and (-not $ExpectedRoundPhase -or $snapshot.round_phase -eq $ExpectedRoundPhase) -and ($Background -or ($ExpectedPhase -notin @("LOBBY", "PICKING") -and $ExpectedRoundPhase -ne "ACTIVE") -or $visible.eventPlayerCards -eq 20) }
   $event = $state.state.eventRoom
   if (-not $event -or $event.sessionRole -ne $ExpectedRole -or $event.snapshot.phase -ne $ExpectedPhase -or ($ExpectedRoundPhase -and $event.snapshot.round_phase -ne $ExpectedRoundPhase)) {
     throw "Visual state mismatch for $Profile/$Label (role=$($event.sessionRole), phase=$($event.snapshot.phase), round=$($event.snapshot.round_phase))."
   }
+  if ($Background) {
+    if ($state.state.visualLayout.eventPlayerCards -ne 0) { throw "Expected the normal lobby while retaining the event connection." }
+  } elseif ($ExpectedPhase -eq "LOBBY" -or $ExpectedPhase -eq "PICKING" -or $ExpectedRoundPhase -eq "ACTIVE") {
+    if ($state.state.visualLayout.eventPlayerCards -ne 20) { throw "Expected 20 rendered cards for $Profile/$Label." }
+  } elseif (-not $state.state.visualLayout.eventText.Contains("結果")) { throw "Expected rendered results for $Profile/$Label." }
   $title = "INFINITAS ARENA Client (E2E $Profile)"
   $deadline = (Get-Date).AddSeconds(10)
   $process = $null
@@ -150,7 +157,8 @@ function Capture-ClientWindow([string]$Profile, [string]$Label, [string]$Expecte
   [HostEventE2EWindow]::ShowWindow($process.MainWindowHandle, 9) | Out-Null
   [HostEventE2EWindow]::SetForegroundWindow($process.MainWindowHandle) | Out-Null
   if ($Mobile) { [HostEventE2EWindow]::MoveWindow($process.MainWindowHandle, 20, 20, 390, 844, $true) | Out-Null }
-  Start-Sleep -Milliseconds 250
+  Start-Sleep -Milliseconds 750
+  $state = Wait-State $statePath "native viewport resize and footer $Profile/$Label" { param($value) $layout = $value.state.visualLayout; return $value.state.activeView -eq $expectedView -and ($Background -or ($layout.eventMainActionPresent -and $layout.eventMainActionBottom -le $layout.viewportHeight)) -and -not $layout.hasHorizontalOverflow -and (-not $Mobile -or ($layout.viewportWidth -le 390 -and $layout.viewportWidth -ge 300)) }
   $rect = [HostEventE2EWindow+Rect]::new()
   if (-not [HostEventE2EWindow]::GetWindowRect($process.MainWindowHandle, [ref]$rect)) { throw "Failed to read Tauri window bounds: $title" }
   $width = $rect.Right - $rect.Left
@@ -159,14 +167,16 @@ function Capture-ClientWindow([string]$Profile, [string]$Label, [string]$Expecte
   $bitmap = [System.Drawing.Bitmap]::new($width, $height)
   $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
   try {
-    $targetDc = $graphics.GetHdc()
-    try { $printed = [HostEventE2EWindow]::PrintWindow($process.MainWindowHandle, $targetDc, 2) } finally { $graphics.ReleaseHdc($targetDc) }
-    if (-not $printed) { $graphics.CopyFromScreen($rect.Left, $rect.Top, 0, 0, $bitmap.Size) }
+    if (-not [HostEventE2EWindow]::SetWindowPos($process.MainWindowHandle, [IntPtr]::new(-1), 0, 0, 0, 0, 3)) { throw "Unable to raise task-owned Tauri window: $title" }
+    Start-Sleep -Milliseconds 750
+    # PrintWindow may report success while WebView2 returns a stale startup surface.
+    $graphics.CopyFromScreen($rect.Left, $rect.Top, 0, 0, $bitmap.Size)
     $path = Join-Path $runtimeRoot "runtime\$Profile\$Profile.$Label.png"
     $bitmap.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
-    $record = [ordered]@{ profile=$Profile; label=$Label; session_role=$event.sessionRole; phase=$event.snapshot.phase; round_phase=$event.snapshot.round_phase; player_id=$event.playerId; viewport=@{ width=$width; height=$height }; image_path=$path }
+    $record = [ordered]@{ profile=$Profile; label=$Label; session_role=$event.sessionRole; phase=$event.snapshot.phase; round_phase=$event.snapshot.round_phase; player_id=$event.playerId; viewport=@{ width=$width; height=$height }; image_path=$path; active_view=$state.state.activeView; rendered_cards=$state.state.visualLayout.eventPlayerCards; rendered_result_rows=$state.state.visualLayout.eventResultRows; rendered_main_action=$state.state.visualLayout.eventMainActionPresent; actual_layout=$state.state.visualLayout }
     [System.IO.File]::AppendAllText((Join-Path $runtimeRoot "visual-evidence.jsonl"), (($record | ConvertTo-Json -Compress -Depth 6) + "`n"), [System.Text.UTF8Encoding]::new($false))
   } finally {
+    [HostEventE2EWindow]::SetWindowPos($process.MainWindowHandle, [IntPtr]::new(-2), 0, 0, 0, 0, 3) | Out-Null
     $graphics.Dispose()
     $bitmap.Dispose()
   }
@@ -183,10 +193,10 @@ try {
     Wait-Port 1420
   }
 
-  $joinCode = if ($EventType -eq "CASUAL") { "CASU288A" } else { "TRNM288A" }
+  $joinCode = "R6TEST88"
   $hostPlays = $EventType -eq "TOURNAMENT"
   $createBody = @{
-    host_event_protocol = 1
+    host_event_protocol = 2
     client_version = "1.4.0"
     host_player_id = "e2e-client-a"
     host_display_name = "E2E1"
@@ -203,6 +213,10 @@ try {
   $created = Invoke-RestMethod -Uri "$apiBaseUrl/api/event-rooms" -Method Post -ContentType "application/json; charset=utf-8" -Body ($createBody | ConvertTo-Json -Depth 10)
   $roomId = [string]$created.room_id
   if ([string]::IsNullOrWhiteSpace($roomId)) { throw "Host Event creation returned no room_id." }
+
+  $peerCount = if ($hostPlays) { 18 } else { 19 }
+  $peersEvidence = Join-Path $runtimeRoot "ws-participants.json"
+  $participantsProcess = Start-HiddenProcess (Get-Command node).Source @((Join-Path $repoRoot "testdata/e2e/host-event/ws-participants.mjs"), $apiBaseUrl, $roomId, "$peerCount", $peersEvidence) $repoRoot (Join-Path $runtimeRoot "logs/ws-participants.log")
 
   & (Join-Path $PSScriptRoot "start-local-two-clients.ps1") -ClientCount 2 -RuntimeRoot $runtimeRoot -CargoTargetRoot $CargoTargetRoot -E2E -Scenario $scenario -E2EMatchCount 1 -RoomId $roomId -JoinCode $joinCode -ApiBaseUrl $apiBaseUrl -RoomKind HOST_EVENT -EventRoundCount $RoundCount -EventDisconnectHost:(-not $SkipHostDisconnect) -ClientASource reflux -ClientBSource reflux -SkipWorker -SkipFrontend
 
@@ -229,6 +243,18 @@ try {
       Wait-State $stateB "Client Host Event ACTIVE round 1" { param($value) $value.state.eventRoom.sessionRole -eq "PLAYER" -and $value.state.eventRoom.snapshot.phase -eq "PLAYING" -and $value.state.eventRoom.snapshot.round_phase -eq "ACTIVE" } | Out-Null
       Capture-ClientWindow "client-b" "event-active-round-1" "PLAYER" "PLAYING" "ACTIVE"
     }
+    if (@($active.state.eventRoom.snapshot.current_playing_player_ids).Count -ne 20) { throw "Expected 20 playing participants in the Tauri room." }
+    if ($round -eq 1) {
+      $backgroundEventPaths = @($eventsB)
+      if ($hostPlays) { $backgroundEventPaths += $eventsA }
+      foreach ($backgroundEventPath in $backgroundEventPaths) {
+        $backgroundStarted = Wait-Event $backgroundEventPath "event_background_submission_started"
+        if ([string]::IsNullOrWhiteSpace($backgroundStarted.roundId) -or $backgroundStarted.roundId -ne $active.state.eventRoom.snapshot.current_round_id -or $backgroundStarted.activeView -ne "lobby" -or $backgroundStarted.roundNumber -ne 2 -or $backgroundStarted.phase -ne "PLAYING" -or $backgroundStarted.roundPhase -ne "ACTIVE") {
+          throw "Expected background submission to start in the normal lobby during the same non-null second ACTIVE round."
+        }
+      }
+      Capture-ClientWindow "client-b" "event-background-submission" "PLAYER" "PLAYING" "ACTIVE" -Background
+    }
     $expected = $active.state.eventRoom.snapshot.selected_chart.expected_key
     if ($hostPlays) { Write-Reflux (Join-Path $runtimeRoot "watch\client-a") $expected (2600 + $round * 20) (8 + $round) }
     Start-Sleep -Milliseconds 400
@@ -252,11 +278,18 @@ try {
     $event = $value.state.eventRoom
     return $event.snapshot -and $event.snapshot.phase -eq "RESULT" -and $event.resultsSyncComplete -and @($event.resultRounds).Count -eq $RoundCount
   }
+  Wait-Event $eventsA "event_history_reloaded" | Out-Null
+  Wait-Event $eventsB "event_history_reloaded" | Out-Null
+  $background = Wait-Event $eventsB "event_background_submission_accepted"
+  if ($background.activeView -ne "lobby" -or $background.roundStatus -ne "SUBMITTED") { throw "Expected server-confirmed submission while the participant viewed the normal lobby." }
   Start-Sleep -Milliseconds 750
   Capture-ClientWindow "client-a" "event-final" "HOST" "RESULT"
   Wait-State $stateB "Client final result visual state" { param($value) $value.state.eventRoom.sessionRole -eq "PLAYER" -and $value.state.eventRoom.snapshot.phase -eq "RESULT" } | Out-Null
   Capture-ClientWindow "client-b" "event-final-mobile" "PLAYER" "RESULT" "" -Mobile
-  Wait-Event $eventsA "event_history_reloaded" | Out-Null
+
+  if (@($final.state.eventRoom.resultRounds | Where-Object { @($_.results).Count -ne 20 }).Count -gt 0) { throw "Expected 20 result rows per Tauri round." }
+  $peers = Wait-State $peersEvidence "WS peers completed two rounds" { param($value) return @($value.peers | Where-Object { -not $_.final -or @($_.submissions).Count -ne $RoundCount -or @($_.rounds).Count -ne $RoundCount -or @($_.errors).Count -gt 0 }).Count -eq 0 }
+  Copy-Item -LiteralPath $peersEvidence -Destination (Join-Path $artifactRoot "ws-participants.json") -Force
 
   $expectedImages = @(
     "client-a.event-lobby.png",
@@ -266,6 +299,7 @@ try {
     "client-a.event-active-round-1.png",
     "client-b.event-active-round-1.png",
     "client-b.event-result-round-1.png",
+    "client-b.event-background-submission.png",
     "client-a.event-final.png",
     "client-b.event-final-mobile.png"
   )
@@ -279,9 +313,12 @@ try {
     "- event_type: $EventType",
     "- host_plays: $hostPlays",
     "- round_count: $RoundCount",
+    "- same_room_participants: 20 (2 real Tauri plus $peerCount WS peers; dedicated Host uses a separate connection)",
+    "- result_rows_per_round: 20",
     "- room_id: $roomId",
     "- host_disconnect_observed: $(if ($SkipHostDisconnect) { 'SKIPPED (separate asserted run)' } else { 'PASS' })",
     "- history_reload: PASS",
+    "- submission_while_viewing_normal_lobby: PASS",
     "- screenshots: PASS",
     "- result: PASS"
   ) -join "`n"
@@ -300,6 +337,7 @@ try {
   if (Test-Path -LiteralPath $registry) {
     foreach ($launcherId in @(((Get-Content $registry -Raw -Encoding UTF8 | ConvertFrom-Json).process_ids))) { Stop-Tree ([int]$launcherId) }
   }
+  if ($participantsProcess) { Stop-Tree $participantsProcess.Id }
   if ($workerProcess) { Stop-Tree $workerProcess.Id }
   if ($frontendProcess) { Stop-Tree $frontendProcess.Id }
 }

@@ -9,15 +9,16 @@ const chromePath = process.env.CHROME_PATH ?? "C:/Program Files/Google/Chrome/Ap
 const appUrl = process.env.INF_ARENA_VISUAL_URL ?? "http://127.0.0.1:1420/";
 
 const cases = [
-  { id: "event-zero-host", role: "HOST", phase: "LOBBY", participants: 0, required: ["準備完了 0/0人", "参加者はいません"] },
-  { id: "event-twenty-source", role: "PLAYER", phase: "PLAYING", participants: 20, required: ["準備完了 20/20人", "PLAYER 20", "結果取得元を利用できません"] },
+  { id: "event-zero-host", role: "HOST", phase: "LOBBY", participants: 0, required: ["参加者 0/20人", "参加者はいません"] },
+  { id: "event-twenty-source", role: "PLAYER", phase: "PLAYING", participants: 20, required: ["提出・欠場確定 0/20人", "PLAYER 20", "結果取得元を利用できません"] },
   { id: "event-disconnected-round-result", role: "HOST", phase: "PLAYING", participants: 3, required: ["Host再接続待ち", "1位", "欠場", "次の曲を選ぶ"] },
-  { id: "event-tie-absence-final", role: "HOST", phase: "RESULT", participants: 3, required: ["最終結果", "1位", "欠場", "終了理由：HOST_ENDED"] },
+  { id: "event-tie-absence-final", role: "HOST", phase: "RESULT", participants: 3, required: ["最終結果", "1位", "欠場", "終了理由：Hostが開催を終了しました"] },
   { id: "event-casual-final-mobile", role: "HOST", phase: "RESULT", participants: 1, required: ["最終結果", "第1曲", "第2曲", "SCORE 2456"] },
 ];
 const viewports = [
   { name: "desktop", width: 1280, height: 800 },
   { name: "mobile", width: 390, height: 844 },
+  { name: "narrow", width: 305, height: 844 },
 ];
 
 await mkdir(outputRoot, { recursive: true });
@@ -88,7 +89,7 @@ try {
       await cdp.send("Page.navigate", { url: url.href });
       await new Promise((resolve) => setTimeout(resolve, 2_500));
       const evaluation = await cdp.send("Runtime.evaluate", {
-        expression: `(() => { const root = document.getElementById("visual-capture-root"); return { scenario: document.body.dataset.visualScenario, role: document.body.dataset.visualRole, phase: document.body.dataset.visualPhase, participants: Number(document.body.dataset.visualParticipantCount), ready: document.body.dataset.visualReady, viewportWidth: document.documentElement.clientWidth, clientWidth: root?.clientWidth ?? null, scrollWidth: root?.scrollWidth ?? null, text: root?.innerText ?? "" }; })()`,
+        expression: `(() => { const root = document.getElementById("visual-capture-root"); return { scenario: document.body.dataset.visualScenario, role: document.body.dataset.visualRole, phase: document.body.dataset.visualPhase, participants: Number(document.body.dataset.visualParticipantCount), ready: document.body.dataset.visualReady, viewportWidth: document.documentElement.clientWidth, clientWidth: root?.clientWidth ?? null, scrollWidth: root?.scrollWidth ?? null, footerBottom: document.querySelector(".event-main-action")?.getBoundingClientRect().bottom ?? null, viewportHeight: innerHeight, text: root?.innerText ?? "" }; })()`,
         returnByValue: true,
       });
       const state = evaluation.result.value;
@@ -99,6 +100,8 @@ try {
       assert.equal(state.ready, "true");
       assert.equal(state.viewportWidth, viewport.width);
       assert.ok(state.clientWidth > 0);
+      assert.ok(state.footerBottom <= state.viewportHeight, `${scenario.id}/${viewport.name} main action outside viewport`);
+      assert.ok(!state.text.includes("準備完了"));
       assert.ok(state.scrollWidth <= state.clientWidth, `${scenario.id}/${viewport.name} overflow: ${state.scrollWidth} > ${state.clientWidth}`);
       for (const expected of scenario.required) assert.ok(state.text.includes(expected), `${scenario.id}/${viewport.name} missing: ${expected}`);
       if (scenario.id === "event-disconnected-round-result") {
@@ -108,7 +111,7 @@ try {
       const screenshot = await cdp.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
       const file = path.join(outputRoot, `${scenario.id}-${viewport.name}.png`);
       await writeFile(file, Buffer.from(screenshot.data, "base64"));
-      manifest.push({ scenario: scenario.id, viewport, roleAndStateAsserted: true, clientWidth: state.clientWidth, scrollWidth: state.scrollWidth, horizontalOverflow: false, file });
+      manifest.push({ scenario: scenario.id, viewport, roleAndStateAsserted: true, clientWidth: state.clientWidth, scrollWidth: state.scrollWidth, horizontalOverflow: false, footerBottom: state.footerBottom, mainActionVisible: true, file });
       cdp.close();
       await fetch(`http://127.0.0.1:${browserPort}/json/close/${page.id}`);
     }

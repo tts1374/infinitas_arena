@@ -118,7 +118,7 @@ function Start-LoggedPowerShell(
   Write-Utf8NoBomFile $launcherPath (($scriptLines -join "`n") + "`n")
   $pwshCommand = Get-Command pwsh -ErrorAction SilentlyContinue
   $shellExe = if ($pwshCommand) { $pwshCommand.Source } else { "powershell" }
-  return Start-Process -FilePath $shellExe -ArgumentList "-NoExit", "-ExecutionPolicy", "Bypass", "-File", $launcherPath -PassThru
+  return Start-Process -FilePath $shellExe -WindowStyle Hidden -ArgumentList "-NoExit", "-ExecutionPolicy", "Bypass", "-File", $launcherPath -PassThru
 }
 
 function Get-ClientId([int]$Index, [bool]$E2EMode) {
@@ -301,7 +301,7 @@ function Write-TauriDevConfig([pscustomobject]$Spec) {
           title = $Spec.WindowTitle
           width = 1280
           height = 900
-          minWidth = 1024
+          minWidth = if ($E2E -and $RoomKind -eq "HOST_EVENT") { 305 } else { 1024 }
           minHeight = 720
           resizable = $true
         }

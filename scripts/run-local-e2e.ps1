@@ -97,7 +97,7 @@ function Start-LoggedPowerShell(
   Write-Utf8NoBomFile -Path $launcherPath -Content (($scriptLines -join "`n") + "`n")
   $pwshCommand = Get-Command pwsh -ErrorAction SilentlyContinue
   $shellExe = if ($pwshCommand) { $pwshCommand.Source } else { "powershell" }
-  Start-Process -FilePath $shellExe -ArgumentList "-NoExit", "-ExecutionPolicy", "Bypass", "-File", $launcherPath | Out-Null
+  Start-Process -FilePath $shellExe -WindowStyle Hidden -ArgumentList "-NoExit", "-ExecutionPolicy", "Bypass", "-File", $launcherPath | Out-Null
 }
 
 function Wait-E2EEvent(
@@ -611,6 +611,7 @@ if ($sourceA -eq "daken_counter_v3") {
   $pwsh = (Get-Command pwsh -ErrorAction SilentlyContinue)
   $shellExe = if ($pwsh) { $pwsh.Source } else { "powershell" }
   $mockProcess = Start-Process `
+    -WindowStyle Hidden `
     -FilePath $shellExe `
     -ArgumentList "-ExecutionPolicy", "Bypass", "-File", $mockScript, "-Port", "18768", "-ControlFile", $dakenControlPath, "-LogPath", $dakenMockLog, "-SubProtocol", "infinitas-arena-daken-v3" `
     -PassThru

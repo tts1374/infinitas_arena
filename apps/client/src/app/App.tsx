@@ -77,6 +77,7 @@ export function App() {
   const [eventEntryError, setEventEntryError] = useState<string | null>(null);
   const [creatingEvent, setCreatingEvent] = useState(false);
   const creatingEventRef = useRef(false);
+  const e2eEventViewOpenedRef = useRef(false);
   const [activeView, setActiveView] = useState<AppView>("lobby");
   const activeViewRef = useRef<AppView>(activeView);
   const roomSnapshotRef = useRef(roomSnapshot);
@@ -129,6 +130,23 @@ export function App() {
       });
     }
   }, [activeView, roomSnapshot]);
+
+  useEffect(() => {
+    if (runtimeConfig.e2e.enabled && runtimeConfig.e2e.roomKind === "HOST_EVENT" && eventSnapshot !== null && !e2eEventViewOpenedRef.current) {
+      e2eEventViewOpenedRef.current = true;
+      setActiveView("event-room");
+    }
+  }, [eventSnapshot]);
+
+  useEffect(() => {
+    if (!runtimeConfig.e2e.enabled || runtimeConfig.e2e.roomKind !== "HOST_EVENT") return;
+    const navigate = (event: Event) => {
+      const view = (event as CustomEvent<unknown>).detail;
+      if (view === "lobby" || view === "event-room") setActiveView(view);
+    };
+    window.addEventListener("inf-arena-e2e-event-view", navigate);
+    return () => window.removeEventListener("inf-arena-e2e-event-view", navigate);
+  }, []);
 
   useEffect(() => {
     if (
