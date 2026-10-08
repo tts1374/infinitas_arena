@@ -286,7 +286,7 @@ Replan条件:
 
 ### delegation execution record
 
-| role / agent id | spawned | ownership / 確定status |
+| role / agent id | spawned | ownership / Kickoff時点の確定status |
 | --- | --- | --- |
 | execution-coordinator `/root/coordinator` | yes | E0履歴統合、R0指定規範、本taskのC追記のみ。E0 `COMPLETE`、R0 GO待ち |
 | server-implementer `/root/server` | yes | R2/R3 Worker専用scope、準備中 |
@@ -364,3 +364,500 @@ Replan条件:
 | CR-07 source既存非Ready依存 | 06 §8の規範同期fixed、parser再実装を要求しない | adapter/replay/連続同曲/4source維持回帰はR4/R6で継続 |
 
 - R0 status: `COMPLETE`。規範限定gateを通過したためR1へ引渡す。CR-01〜06全体や新製品ACをCOMPLETEとは扱わない。親へのcommit委任で7規範＋本task以外をstageしない。合意UX資料は不変。
+
+### R0/R1 local commitとR1 checkpoint
+
+- R0 local commit: `36a6c7df012b08eb03e60a2b1ac4832496ccb133`（7規範＋ここまでのtask C記録）。親がscope限定stage/commitを実施。
+- R1 owner: 親 `/root`、shared4pathsのみ。local commit: `ede3b3c57121a22ae06ad89e5cce789e174487e1`。`constants/host-event.ts`、`models/host-event.ts`、`ws/host-event.ts`、新規 `host-event-contract.fixture.ts` を変更。通常enums/message mapは不変。
+- evidence: `packages/shared/src/constants/host-event.ts:1/3/8` にprotocol2/room2/history2、`models/host-event.ts:47` にhistory専用participant DTO、`:110` にauthoritative `current_eligible_player_ids`、`ws/host-event.ts:12` にjoin protocol2、`:109` のaction unionからSET_READY撤去。typed fixtureは公開typeのshapeと旧ready/action/protocolを受理しない境界をcompileで確認。
+- owner検証: 限定typed fixture tsc、対象eslint、diff PASS。独立監査 `/root/contract` は `COMPLETE / pass-with-followups（shared固定限定）`、新規Blocker/Must fixなし。shared全体tsc、fixture compile、対象eslint、diffを独立実行PASS。
+- root `npm run typecheck` は旧consumer未改修のためexpected FAIL。logはignored `.tmp/issue-188-phase-c/r1-typecheck.log`。R1だけのroot PASSを完了条件にしない計画に従うが、継続gapとして保持しR3/R4合流後とR6最終でPASS必須。breakingな中間commitは独立公開しない。
+
+| R1からのconsumer引渡し | owner / 解消packet |
+| --- | --- |
+| client `dev/event-visual-scenarios`、`features/event` presentation/tests、`pages/EventRoomPage`/visual testの旧ready/snapshot1/不足eligible | front R4/R5 |
+| client `services/event-action-policy`/tests、`event-history.test`、`event-ws-client`、`stores/event-room-store`の旧ready/SET_READY/protocol1/履歴fixture | front R4/R5 |
+| client `services/e2e-scenario-runner`の旧protocol/Ready | front R6（R3/R5合流後） |
+| worker `event-room-state`の旧ready/schema1、`event-room-controller`の旧SET_READY、routes `capabilities`のprotocol1型 | server R2/R3 |
+
+- R1 gate: `COMPLETE`（shared契約固定とconsumer引渡し限定）。親はR2/serverとR4/frontへ実GOを送信した。R3はR2完了後、R5はR4完了後に明示ownership引渡し、R6/frontはR3/R5合流後。CR-01〜06の製品実装・全consumer/exhaustive/parser/serializer実証と新ACは継続中。
+
+### C実装中 finding ledger（継続）
+
+| ID / severity | finding -> disposition / owner | evidence / remaining risk |
+| --- | --- | --- |
+| C-LOCAL-01 / Must fix | `isSupportedEventSnapshot` のrequired `started_at / ended_at / end_reason`、expected `play_style`、display `level`、`latest_result` fullshape検証不足。frontがrequired top/nested malformed snapshotをfail-closedへ補強。disposition: `fixed`（R4限定） | R4 local commit `3c1719365d446f2d414d1ee1488c40f31a8b8442`、guard testsを含むowner `52/52 PASS`、contract auditor独立6paths `45/45 PASS`。最終R6/R7の全consumer統合と製品verdictは残る。仕様/互換/CI/依存変更なし |
+| C-LOCAL-02 / Must fix | `mutationPending` がread actionの `STATE_GET / RESULTS_GET` も拒否。frontが `event-action-policy` でsync許可をpending拒否より先に判定し、回帰testsを追加。disposition: `fixed`（R4限定） | 初回52件中1失敗から修正後owner `52/52 PASS`、対象eslint/diff PASS、stats `17 PASS`、contract auditor独立guard testsを含む `45/45 PASS`、同R4 commit。残riskはR6/R7最終統合検証。仕様・CI・依存変更なし |
+| C-LOCAL-03 / Must fix | user-facing終了/欠場理由のraw enum露出。frontが既知終了理由3値と欠場理由 `DEADLINE / NOT_PRESENT / SKIP / LEFT / KICKED` を日本語表示へ補正しroom/historyのtyped testsで確認。storage/APIの原値と未知原本は保持。disposition: `fixed`（R5表示補正限定） | 最終client tests `145 PASS`、lint/build/diff PASS、R5 local commit `10112c3`。親が補正完了を受領してR6実GOを送信済み。残riskはR6/R7最終統合/監査であり全製品PASSではない |
+| C-LOCAL-04 / Must fix / validation gap | 結果/全順位のmobile main/footerがviewport外へ押し出される。frontが結果一覧を独立scrollにしfooter/buttonを固定。disposition: `fixed`（R5可視性補正限定） | 再39case `footer.bottom <= 844`/横overflow0、3widthのHost button bottom `809/815/815`・footer `825/831/831`、親305×844pxの全順位PLAYER20 scrollとHost全20人長名scrollでfooter831/button815を独立確認。tests `144 PASS`、lint/build/diff PASS。残riskはR6/R7最終統合/監査であり全製品PASSではない。仕様/互換変更なし |
+| C-LOCAL-05 / Must fix / validation gap | 実Tauri成果物が通常Lobbyで実開催renderを検証していなかった。新CASUAL `195940` で開催ACTIVE20cards/Host切断300秒/participant result/final desktop2曲completeを親が独立確認し、explicit navigation補正の方向を確認 | 全fresh final/大会証拠は未受領。native390pngはdesktoplayoutの切抜きで実WebViewviewport未確認、clip画像をnative mobile PASSにしない。actual innerWidth/height・overflow/footer確認と再capture、E2E生成runtime overrideのminSize調整又はnative1280＋browser305/390証拠分離を通知済み。製品config変更/forceback復活は禁止。再freeze/最終full/R7待ち |
+
+### R2 — pure FSM・対象集合の完了とR3引渡し
+
+- owner `/root/server`、packet限定 `COMPLETE`。local commit `6e11dc07371917e20bb12d061aa63953f9508c99`（親によるscope限定commit）。指定3files `apps/worker/src/durable/event-room-state.ts / event-room-state.test.mjs / contract-guards.test.mjs`だけ。
+- 実装: schema2、Ready撤去、確定eligibleを元にDISCONNECTEDも開始対象へ含める、`current_eligible_player_ids`投影、fixed roster/N維持。旧schemaの全phaseは拒否し原recordを変更しない。
+- validation: pure FSM＋contract guards `58/58 PASS`、state対象eslint、diff、UTF-8検査PASS。fake-clock/集合試験で15人×合同/大会×SCORE/MISSCOUNT、確定前後の切断、全員切断でも対象保持、対象0拒否、LEFT復帰pending/KICK、固定N/同点、Host切断期限299999/300000/300001ms、旧schema全5phase拒否と原本不変（phase集合assert）を確認。
+- worker型検査の6diagnosticsはcontrollerの旧Ready/actionとAPIのprotocol1によるR3 consumer gapとして明示引渡し。親はR2限定完了を受領後にR3 GOを送信した。R2試験PASSを全製品/実DO/実端末適合のPASSとは扱わず、R3/R6/R7のprotocol・保存・復元・全CI検証を継続する。
+
+### C再開 — ownership引継ぎと実績記録（2026-10-05 JST）
+
+- 親は旧agentハンドルが現セッションに残っていないことを確認し、旧coordinator停止済みを通知した。以下は実際に再spawnしたownerの記録であり、上記の初回spawn実績は履歴として保持する。既存R3/R4 dirty差分は実装途中の成果物として引き継ぎ、破棄・revert・stash操作を行わない。
+- E0/R0/R1/R2は既記録どおりpacket限定 `COMPLETE`。local commit `f87f05a` / `36a6c7d` / `ede3b3c` / `6e11dc0` をread-backした。製品全体のC完了を示すものではない。
+
+| role / agent id | spawned | 再開時のownership / status |
+| --- | --- | --- |
+| execution-coordinator `/root/coordinator_resume` | yes | 本taskのC追記・証拠統合のみ、記録継続中。製品・design docs・git indexを変更しない |
+| server-implementer `/root/server_resume` | yes | R3のWorker接続/保存/版と関連tests、既存dirty差分を引継ぎ継続中 |
+| front-implementer `/root/front_resume` | yes | R4のclient接続/履歴/sourceと関連tests、既存dirty差分を引継ぎ継続中。R5/R6は依存・親の引渡し後 |
+| contract-auditor `/root/contract_resume` | yes | R7契約監査、read-only準備中。最終監査GOは未送信 |
+| implementation-auditor `/root/implementation_resume` | yes | R7実装監査、read-only準備中。最終監査GOは未送信 |
+
+- 親は全5再開agentの `gpt-6.1-sol / fork none` 実spawnとownershipを通知し、live agent listでも全5idをread-backした。`1 write scope = 1 owner` を維持し、他ownerの編集をrevertしない。範囲限定stage/commitは親だけが行う。current request ceiling / allowed outputs / forbidden outputs / next unlock conditionはC Kickoffの境界を維持する。
+- C-LOCAL-01: frontによるrequired snapshot guard補強と関連 `50 tests PASS` の報告を親から受領した。最終再検証・独立監査の証拠は未受領のため、候補findingの最終 `fixed` 判定を保留する。
+- R4追加checkpoint: 親経由でfrontのC-LOCAL-02修正後 `52/52 PASS`、対象eslint/diff PASS、stats `17 PASS`、root型診断はR4対象0件・R5/R6旧consumerだけと受領した。root全体PASSを主張しない。Rust checkは実行中session `47057` の結果待ちであり未完了。
+- 最終validation gate: V1〜V9のowner証拠、root typecheckを含むCI full相当以上、継承したCI step/test登録の保持、Rust check/test・Wrangler dry-run・実DO/WS、合同/大会各2曲・通常ARENA2試合/BPL/BPL4、採用試作に対するviewport画像と実操作、両独立監査のfinding disposition、scope/文字コード/diff確認を集約する。E0旧baselineやR2限定PASSを最終PASSへ流用しない。未実行・再現不能な面はcommand/skip reason/residual riskを明記する。
+- stop condition: 再開scope内の記録整合まで。新仕様・CI・依存・phase境界の変更が必要になった場合はReplan/親照会へ戻す。最終監査・検証・local commitは実証受領後に追記する。
+
+### R4 — client接続・履歴・sourceの完了とR5引渡し
+
+- owner `/root/front_resume`、親はR4限定 `COMPLETE` を受領。local commit: `3c1719365d446f2d414d1ee1488c40f31a8b8442`。親だけがclient 15pathsをscope限定stage/commitした。R5/R6やtaskはこのcommitの対象外。
+- owner検証: 関連client tests `52/52 PASS`、通常stats `17 PASS`、対象eslint、diff、client build、Cargo check、Cargo test `20 PASS`。Cargoの初回dist欠落はclient build後の再実行で解消し、Rust session `47057` の未完了状態は解消した。
+- C-LOCAL-01/02は上のledgerに修正証拠と残riskを記録。contract-auditor `/root/contract_resume` は独立6pathsの関連testsを実行し `45/45 PASS`（両guard regressionを含む）。これはR4 checkpoint証拠でありR7全差分の最終監査ではない。
+- root型診断はR4対象0件。残るR5/R6旧consumerの失敗を保持し、root全体PASSはR6最終で必須。親はR4完了受領後にfrontへR5の実GOを送信した。R6はR3/R5合流待ち。
+
+### R3 — Worker接続・保存・版の完了 checkpoint
+
+- owner `/root/server_resume`、親はR3限定 `COMPLETE` を受領。local commit: `88a16a81c651505cd0bc5fe21327a1dfc01840c7`。親がWorker 6pathsだけをscope限定stage/commitした。通常FSM、shared、client、CI、依存はこのcommitの変更対象外。
+- owner検証: 実DO/WS smoke `12 checks PASS`、Worker `187 PASS`、Worker型検査、対象lint、diff、Wrangler deploy dry-run PASS。変更6pathsのstrict UTF-8/no BOM/LFもPASS。
+- evidence: ignored `.tmp/issue-188-phase-c/r3-evidence.json` と同phase-cディレクトリのruntime/smoke/Worker/dry-run logs。JSONは実行時HEAD `3c17193` とtimestampを保持し、R3 dirty差分を検証した時点の証拠である。検証後に上のR3 local commitをread-backした。local `18821` serverはR6用に保持する。
+- contract-auditor `/root/contract_resume` の準備中独立実行: client `45 PASS`、Worker `83 PASS`。限定testsの証拠として記録し、R7最終契約監査の完了とは扱わない。
+- remaining risk: 実smokeはlocal DO/WSであり本番drain/deployの証明ではない。schema1拒否とHost絶対期限境界はfake-clock/storage testsの証拠を用い、実時計で5分を待つ試験を行ったとは主張しない。公開gateはCの停止境界外に残す。
+- status: R3 packet限定 `COMPLETE`、R5待ち。R6実GOはまだ送信しておらず、V1〜V9の最終統合・全CI・visual・両監査は継続する。
+
+### V1〜V9 証拠対応と残ゲート（R3/R4完了時点）
+
+全行は新仕様の**部分証拠**であり最終PASSではない。E0の旧Ready baselineを新ACへ割り当てない。以下のR2/R3/R4は上記local commitとowner検証に対応し、未取得の統合・視覚・独立監査は明示して残す。
+
+| ID | 取得済み新仕様証拠 | 未取得 / 残packet |
+| --- | --- | --- |
+| V1 | R2 `58/58` の専任Host別枠/兼任込み20上限・合同/大会、R3 Worker `187` とlocal DO/WS `12 checks` | R6の20接続/overflow・通常ARENA/BPL/BPL4との分離、R7最終監査 |
+| V2 | R2の全eligible開始/切断者保持/0対象拒否/LEFT待ち/KICK、R4 Ready action撤去とpolicy/tests | R5対象人数/Host待ち/Readyなし表示と実操作、R6合同/大会各2曲 |
+| V3 | R2の15人×合同/大会×SCORE/MISSCOUNT・14/15待機/締切/復帰、R3 controller/route/古socket関連tests、R4 source/replay関連tests | R6の実連携14/15・締切前復帰/後拒否・正常連続無操作、各source/legacyの最終対応証拠 |
+| V4 | R2の固定N/同点/欠場/Host期限集合試験、R4履歴readerと同期read許可・C-LOCAL-02回帰 | R5全順位/同強調/勝者なし表示、R6無効upsertと履歴再同期、R7数値/保存経路監査 |
+| V5 | R2 Host期限299999/300000/300001ms・旧schema全5phase拒否/原本不変、R3偽storage/clockとlocal DO/WS。実smokeとfake-clock証拠を区別 | R6 Host切断/復帰/期限とclient統合、R7alarm/hibernation/ROOM_STATE_LOST経路監査。本番drainは公開gateでC対象外 |
+| V6 | R1 strict protocol2/shared fixture、R3 Worker型/route/controller tests、R4 malformed snapshot fail-closed・旧/未知版のguard（C-LOCAL-01） | R6新旧2方向拒否/通常維持、R7全message/ACK/reJOIN/resultsの秘匿・consumer/parser/serializer監査 |
+| V7 | R1 history専用DTO、R4 browser/history/replay/Tauri保存改修、関連 `52/52`・Rust `20` と通常stats `17` | R6 browser/Tauri再読込・完全/部分・最後の受信範囲・無効upsert・未知原本保持の統合対応証拠、R7最終監査 |
+| V8 | 視覚正本の保存試作と親の再操作記録、R4画面移動中接続/監視の基盤改修 | R5製品のTop専用入口/戻る/3役割/20人scroll・1280/390/305px画像と実入力。試作確認は製品証拠ではない |
+| V9 | R0の7規範と独立契約checkpoint、R4 PICKING/Host切断時read権限とsync regression | R5確認表全操作/前曲無効化/結果閲覧、R6最終回帰、R7両最終監査とfinding disposition |
+
+- 親はignored `.tmp/issue-188-phase-c/run-ci-full.ps1` に12面の最終CI相当runnerを準備した。これは準備の実績であり検証PASSではない。R6差分確定後に実行し、各commandのlog・HEAD/time・`results.json` を受領して更新する。
+- local/CI parity read-back: 現workflowはWindows/Node22、quickのagents/design/lint/root typecheck/stats/client unit/Worker/integration、full追加のclient build/Cargo check/Cargo test/Wrangler dry-runを保持し、PR quick/tag push・manual fullへの接続を維持する。hosted CIの実行はこのCの外部操作境界に含まれず、local full相当の証拠と区別する。
+
+### R5途中レビューとR6検証境界の確認
+
+- R5 owner `/root/front_resume` は製品UIを継続実装中。親のread-only reviewは以下の確認事項をfrontへ実際に送信した。途中差分への照合依頼であり、最終finding/severityや製品PASSとしては扱わない。
+  - 未確定PICKINGの `CONFIRM_PICK` がcards前にあり下部footerが空の配置を、採用試作の下部主操作・選曲確認導線に照合する。
+  - LEFT/KICKが優先statusとconnectionで重複し提出状態を隠すcaseについて、接続・提出状態を独立表示する。
+  - user-facingな `Room ID` を合意ラベル `開催ID` へ微調整する。
+- 各確認のdisposition/実装差分/視覚証拠はR5 outputで受領する。新規専用Entry/Create/Join pagesを含むUI差分はfrontの単独write scopeであり、親/coordinatorは変更しない。
+- R6の計画内共有helper最小修正について親の許可を受領: `scripts/start-local-two-clients.ps1:121`、`scripts/run-local-e2e.ps1:100`、同mock起動`:613` のhelper processをhiddenへする。実Tauri clientは可視のまま保持し、終了対象はこの検証が所有するPIDだけとする。UI実端末検証の見える状態や他作業のprocessを変更する許可ではない。実修正・実行の完了は未受領。
+- 親のignored full runnerに、taskを除くtracked/untracked sourceのSHA256を `validation-source.json` へ保存する機能を追加したとの報告を受領。runnerのsyntax/root-path検査はPASS。これはrunner準備の証拠であり、12面の検証実行はR6差分確定後に行う。検証時dirty sourceと後のlocal commitが同一内容か最終read-backで照合できるようにする。
+- current status: R5継続中、R6/R7の最終gate待ち。仕様・ownership・phase ceilingの拡張は行わない。
+
+### R5限定結果・表示補正待ちと検証生成物の保全
+
+- 親はfrontのR5 owner限定 `COMPLETE` 結果を受領。対象17paths（client package登録と新 `EventEntryPage.test` を含む）で、local commitはまだ行っていない。R5補正・最終gateの完了とは区別する。
+- owner結果: client tests `143 PASS`、lint/build/diff PASS。root型診断はR6対象だけ3件を保持し、root全体PASSは未取得。製品視覚QAは13states×1280/390/305pxの `39 cases` と `10 confirm/actions`、unknown schema/save failure等のowner報告を受領した。39caseの横overflow確認を全statesの主操作可視PASSへ読み替えない。後の親確認でC-LOCAL-04のviewport外押出しを発見しており、主操作可視性の最終validationは未完了。
+- owner証拠: `C:/Users/tts13/AppData/Local/Temp/issue188-r5-qa/` の `evidence.json / actions.json / prototype-evidence.json / console.json` とimages。親の独立中間MCP製品確認は新worktree内ignored `.tmp/issue-188-phase-c/root-ui-inprogress-evidence.json`。これらは製品R5証拠であり、Phase A保存試作の操作証拠と区別する。
+- C-LOCAL-03はledgerの候補として追跡する。親は `/root/front_resume` へ表示だけの補正follow-upを実際に送信した。既知3終了理由を日本語で表示し、storage/APIは維持する。affected testsとfinal/history QA更新の返却を待ち、R5の最終checkpoint/local commitへ進む。
+- 親所有のlocal検証process: Vite `18920` / session `80917`、Worker `8787` / session `39922`。Worker persistenceは新worktreeの `.tmp` へ隔離し、production操作はない。終了時はtask-owned processのみを対象にする。
+- 初回helperのrelative persistence pathが1階層ずれ、wrapperの `.tmp` に新規scratchが生成された。親は即stopし、正しい新worktree `.tmp` へ切り替えて再起動した。これは今回新規生成物で旧原本ではない。削除せず保全する。
+- source reconciliation gate: MCP自動生成物が元rootの `.playwright-mcp` に保存された。開始時cleanを確認したtask-owned生成物であるため、最終時に全内容を新worktree `.tmp` へmoveして保持し、元rootをread-backしてcleanへ戻すことが完了条件。移動・read-backは未完了であり、coordinatorはファイル操作を行わない。
+- current status: R5 owner限定結果は受領済み、C-LOCAL-03/04補正・再QA待ち。両finding解消前はR5 commitと次GOを保留する。R6/R7と最終CI相当・source reconciliationは未完了。
+
+### R5 precommit gate — 狭幅の主操作可視性
+
+- 親はownerの39case `evidence.json` をread-onlyで確認し、結果/全順位やHost切断時のmobile main/footerがviewport外になる値を検出。MCPで製品305×844px `event-many-ranks` の押出しを独立実確認した。記録はC-LOCAL-04へ対応する。
+- 親はfrontへ結果一覧/全順位も独立scrollにし、footer/buttonをviewport内に保持する最小CSS修正を実際に通知した。Host `NEXT_PICK` を含む1280/390/305pxの追加画像・寸法・実操作をR5 outputで受領する。
+- success criteria / stop condition: 各対象caseで `footerBottom <= innerHeight` と主操作buttonの可視/操作を確認し、C-LOCAL-03の日本語終了理由表示と合わせて再QAする。横overflow0だけでは完了にしない。仕様/互換の変更やowner追加は不要。未解消の間はR5 gateを保留し、製品全体C完了を主張しない。
+
+### R5補正 checkpoint — C-LOCAL-03/04 の取得証拠と残確認
+
+- frontの補正後結果: client tests `144 PASS`、lint/build/diff PASS。root型診断は既知R6の3件のみを保持し、root全体PASSとは扱わない。
+- C-LOCAL-04 owner再QA: 13states×3widthの39casesで `footer.bottom <= 844` と横overflow0を確認。`corrections.json` は全順位20人のparticipant/Host、Host切断・長い名前・3widthの実操作でscrollY不変を確認。1280/390/305pxのHost button bottomは `809/815/815`、footer bottomは `825/831/831`。
+- 親の独立MCP製品確認（305×844px）: `event-many-ranks` で全順位を実clickしPLAYER20まで一覧scroll、content scrollHeight `1290 → 2090`、footer top `780` 固定/bottom `831`。Host全20人・長名でrow20までscroll、scrollHeight `2989`、footer top `750` 固定/bottom `831`、主操作button bottom `815`、Ready操作なしを確認した。
+- 親の画像証拠は元rootの `.playwright-mcp/root-ui-305-allranks-scroll-corrected.png` と `.playwright-mcp/root-ui-305-host-next-fixed.png`。最終時は上記source reconciliation gateに従いtask-owned画像を新worktree `.tmp` へ移して保全し、移動先/read-backを追記する。現在は移動済みとは扱わない。
+- C-LOCAL-04 dispositionは上記の補正/owner再QA/親独立操作を根拠に `fixed（R5限定）`。残riskはR6の実統合とR7の両最終監査に持ち越し、全製品PASS/R7 COMPLETEへ拡張しない。
+- C-LOCAL-03: 既知終了理由3enumの日本語表示をroom/historyで確認し、未知原本保持も確認した。追加で欠場理由2値 `DEADLINE / NOT_PRESENT` のraw表示を同findingの表示だけのscope内でfrontへ補正依頼し、front継続中。storage/API/互換は変更しない。返却とaffected validation後に最終finding判定/R5 commit/R6 GOへ進む。
+- current status / stop condition: 記録scopeのみ更新完了。C-LOCAL-03追加補正待ちによりR5 commit/R6 GOを保留。R6/R7最終・全CI・source reconciliationは未完了。
+
+### R5最終checkpoint・local commitとR6実GO
+
+- frontは欠場理由 `DEADLINE / NOT_PRESENT / SKIP / LEFT / KICKED` の日本語表示をroom/historyへ補正し、公開型に合わせたtyped testsで確認した。API/storageには原値を保存し、未知原本保持を維持する。client tests `145 PASS`、lint/build/diff PASS。root型診断はR5対象0件、既知R6 consumerだけ3件でroot全体PASSはまだ未取得。
+- 親はC-LOCAL-03/04補正の限定完了を受領し、両findingをR5限定 `fixed` と判定。最終R6/R7の残riskはledgerどおり保持する。
+- 親による追加独立製品証拠: ignored `.tmp/issue-188-phase-c/root-ui-r5-corrections.json`。305/390/1280pxのHost全20row・Readyなし・footer bottom `831/831/825`、主操作button bottom `815/815/809` を確認。
+- R5 local commit: `10112c37d153b929cd5bbf58cf0a7ecb3f74fafb`（17files、+404/-379）。親が対象17pathsのみstageし、strict UTF-8/no BOM/LF、diff check、index scope checkのPASS後にcommitした。read-backでは本taskだけがdirtyで製品sourceはclean。coordinatorはstage/commitを行わない。
+- 親は `/root/front_resume` へR6実GOをfollow-upで送信済み。R6 harness/scripts/testdata/client integrationはfront単独owner。共有helper hiddenの既許可境界、実Tauri可視、task-owned PID/生成物保全を継承する。
+- 次のvalidation: R6 source確定後に親の12面full CI相当を実行し、Cargo競合を避けて実Tauri2端末・20 DO接続・合同/大会各2曲、通常ARENA2試合/BPL/BPL4を検証する。これは実施依頼と次checkpointの記録であり、未実行の結果をPASSへしない。
+- current status / stop condition: R5 `COMPLETE`（local commit済み）、R6進行中、R7実GO未送信、最終full未実行。今回のcoordinator出力は記録更新のみで停止し、全製品C完了/最終監査完了は主張しない。
+
+### R6 first freeze — 初回統合証拠と最終full開始
+
+- owner `/root/front_resume` がR6の初回source凍結を報告。tracked 6paths: `apps/client/src/services/e2e-scenario-runner.ts`、`scripts/capture-host-event-visuals.mjs`、`scripts/host-event-e2e.test.mjs`、`scripts/run-host-event-e2e.ps1`、`scripts/run-local-e2e.ps1`、`scripts/start-local-two-clients.ps1`。task追記はcoordinator単独scopeとして検証source hash対象から除く。再編集が必要になった場合は親へ通知し、source凍結と検証証拠の対応を取り直す。
+- front結果: root typecheck/lint PASS、Host Event integration `6/6 PASS`、PowerShell syntax/diff PASS。R1後から継続したR6旧consumer型診断3件はこのroot typecheck実行で解消した。
+- integration対象: 合同/大会各2曲、20 capacity、15人の14提出待機と締切前復帰、次曲deadline/late拒否、旧protocol/Ready action拒否。これは初回integration suite証拠であり、実Tauri2端末・各source・実DO20WSの追加統合証拠をすべて取得したとは扱わない。
+- 親の12面full CI相当runnerはsession `17945` で実際に開始し、source manifest/hashを記録済み。現時点agents/design/lint PASS、typecheck実行中。全12面の結果は未受領であり最終full PASSは未確定。
+- frontは親のCargo終了を待って競合を避け、ignored helperによる実DO20WS/14-of-15の実統合を継続する。通常実TauriとHost Eventはport衝突を避けて順次実行する。この進行境界を実端末検証の完了と混同しない。
+- current status / stop condition: R6進行中、R7最終GO未送信。今回は取得証拠とfreeze/実行開始の記録までで停止。coordinatorは製品source・git index/commitを変更しない。全製品PASS/C完了は未判定。
+
+### R6 local full CI相当 — 12面PASSとsource対応
+
+- 親runner session `17945` はexit `0`、`12/12 PASS`。実行HEADは `10112c37d153b929cd5bbf58cf0a7ecb3f74fafb` とR6 dirty 6source固定内容、finish UTC `2026-10-05T10:47:24`。新仕様oracleを実行したlocal full相当の結果で、hosted CIを実行したとは扱わない。
+
+| 最終local full面 | 結果 |
+| --- | --- |
+| `npm run check:agents` | PASS / exit 0 |
+| `npm run check:design-contracts` | PASS / exit 0 |
+| `npm run lint` | PASS / exit 0 |
+| root `npm run typecheck` | PASS / exit 0 |
+| `npm run build:client` | PASS / exit 0 |
+| `npm run test:client-stats` | PASS / 17項目 / exit 0 |
+| `npm --workspace @infinitas/client run test` | PASS / 145 / exit 0 |
+| `npm run test:worker` | PASS / 187 / exit 0 |
+| `npx tsx --test scripts/host-event-e2e.test.mjs` | PASS / 6 / exit 0 |
+| Tauri `cargo check` | PASS / exit 0 |
+| Tauri `cargo test` | PASS / 20 / exit 0 |
+| Worker `npx wrangler deploy --dry-run` | PASS / exit 0、本番deployなし |
+
+- evidence: ignored `.tmp/issue-188-phase-c/final-ci/` の各command log、`results.json`、`validation-source.json`。親はmanifest全current sourceのSHA256一致を確認した。task/docsはhash対象から除外し、記録追記が製品検証sourceの同一性を変えないよう分離する。runner準備時のsyntax/root-path checkもPASS。local Windows/Node22と継承quick/full stepに対するparityを上記12面で満たす。
+- 親はfull Cargo終了後にfrontへ実Tauri Cargoの実GOを送信済み。R6 runtime validationはまだ未完了で、実DO20接続/14-of-15、合同/大会各2曲、通常ARENA2/BPL/BPL4、visual captureをownerが継続する。12面PASSはこれらの追加runtime gateを代替しない。
+- current status / stop condition: R6 runtime validation継続中、R7最終GO未送信、全製品C未完了。公開・本番drainは未実施でC境界外。今回の出力は結果/証拠対応の記録までで停止し、製品/Git操作は行わない。
+
+### R5 MCP証拠のsource reconciliation完了
+
+- 親はMCP pageをclose後、元root `.playwright-mcp` の今回task-owned生成25filesを内容SHA manifestで確認し、安全な絶対target pathを検証して新worktree ignored `.tmp/root-browser-evidence/r5-mcp/` へMoveした。
+- evidence: `.tmp/root-browser-evidence/r5-move-manifest.json`。25filesのSHA一致、元source path不存在、元root `v1` のgit status cleanをread-backしPASS。旧原本/stashの削除は行っていない。上記source reconciliation gateはこのbatchについて `COMPLETE`。
+- 画像provenance対応: 元 `.playwright-mcp/root-ui-305-allranks-scroll-corrected.png` → 現 `.tmp/root-browser-evidence/r5-mcp/root-ui-305-allranks-scroll-corrected.png`、元 `.playwright-mcp/root-ui-305-host-next-fixed.png` → 現 `.tmp/root-browser-evidence/r5-mcp/root-ui-305-host-next-fixed.png`。過去の原URL/取得場所は観測履歴として保持し、現保存先はmanifestで追跡する。
+- 今後MCPが新batchを生成した場合は同様にtask-owned証拠を保全・source read-backする。今回の移動完了はR6/R7や製品C完了を意味しない。
+
+### R6実端末開始・harness raceと再freeze gate
+
+- frontは実Tauri CASUALのsession `8198` を実際に開始。task-owned Worker `8790` / Vite `1420`、実Tauri2 clientのCargo compileは `.tmp/cargo-e2e` へ隔離している。runtime結果は未完了。
+- 発見したharness race: 兼任HostのLOBBY自動開始がHost自身1participantだけで先に進む。親はR6 runnerの最低2participant待ち条件への補正GOを送信済み。製品の1人 `START_EVENT` を拒否する仕様変更ではなく、検証harnessだけを対象にする。補正/再実行の証拠は未受領。
+- tracked source再編集の通知を受領したため、上のlocal full `12/12 PASS` は初回freeze内容の証拠として保持する。最終freeze後にsource manifest整合を再取得し、必要なfull再実行で最終sourceとの対応を確認する。前sourceのPASSを再編集後の無条件PASSへ読み替えない。
+- 親はR6最小実証境界をfrontへ再掲した: 実Tauri2 client＋補助WSで**同一開催の20枠**を構成する（専任Hostは20枠外、兼任Hostは20枠内）。別室WS20と別室Tauri2を組み合わせてこの条件をPASSにしない。
+- ignored supplemental daemon/既存harness最小拡張は計画内として許可済み。新dependency/CI・製品仕様の追加はしない。source3種＋legacy、TECH skip/SOURCE_UNAVAILABLEの証拠対応表もfrontへ要求済みで、結果待ち。
+- current status / stop condition: R6 runtime未完了、R7最終GO未送信、C全体未完了。今回は記録scopeの更新のみで停止。再freeze/同一開催20枠/各sourceの不足を暗黙補完せずownerの具体的証拠で解消する。
+
+### R6実画面validation gap — C-LOCAL-05 と再run境界
+
+- 親が同開催20人CASUAL batch `runtime-host-event-casual-20261005-195445` の実成果物をread-only確認。client-a active/event-finalは双方65734bytesの同画像で通常Lobby、client-b final-mobileも通常Lobbyだった。summaryのscreenshots PASSやsnapshot phase=resultだけでは実開催viewを証明できず、現時点の最終visual PASSとしては不採用。
+- state/source/WSの2曲進行証拠はその経路の限定証拠として保持し、画面検証だけを未完了へ戻す。R5のeventSnapshot強制view撤去は合意どおりで、検証のために製品force-backを復活させない。
+- 親はfrontへR6 harness/E2E observabilityのexplicit navigationと実DOM/画面predicate確認を加え、合同/大会20人の実Tauriを再runする実GOを送信した。必要ならApp E2E-onlyの最小callbackを同frontのR6 ownershipで扱うことは許可済み。通常製品のnavigation仕様は変更しない。
+- 別室real DO JSONはUTC `10:54:38` 時点の `6 groups PASS`。4capacity20（types×roles）と15人中14待機/reJOIN/deadlineLate/results2/invalid upsertの証拠を含む。別roomの直接WS検証として有効だが、同開催Tauri2＋WS20のruntime条件と併用して満たしたことにはしない。
+- tracked予定の `testdata/e2e/host-event/ws-participants.mjs` WS daemon追加はR6 scope内として事前許可済み。現時点は未追跡のR6成果物として存在する。再編集/追加sourceにより初回full manifestは旧内容の証拠となる。再freeze後にsource整合と必要full再実行を行い、最終commitとの対応を残す。
+- current status / stop condition: C-LOCAL-05は未解消、実開催render未完了、R7未開始、最終full再freeze待ち、C全体未完了。今回は台帳/証拠境界の記録のみで停止し、製品/Git操作は行わない。
+
+### R6 visual再検証の中間確認・native viewport gap
+
+- 親が新CASUAL batch `195940` の実画像を独立確認: ACTIVE20cards/footer、Host切断300秒、participant result、final desktopの2曲complete/footerが開催画面として描画され、explicit navigation補正の方向を確認した。fresh全final/大会証拠は未受領でC-LOCAL-05全体はまだ未解消。
+- 追加gap: native mobile390pngはsidebar約100px/header一行のdesktop layoutが切られ、footerが見えない。正本Tauri config/test configは `minWidth=1280 / minHeight=900` で、MoveWindowによる外枠390だけでは実WebView viewport反映を証明できない。
+- 親はfrontへ実 `innerWidth / innerHeight`、overflow、footer寸法とresize反映後captureを記録する最小補正GOを送信済み。製品configを無断変更しない。検証用生成runtime overrideのminSizeだけ調整する方法、またはnative1280証拠とbrowser305/390 responsive証拠を明示分離する方法は許可済み。clip390native画像をPASSへ読み替えない。
+- 親のvalidation gap証拠: ignored `.tmp/issue-188-phase-c/root-r6-visual-finding.json`。画像SHAと同値baselineを保持し、補正後fresh証拠との差を追跡する。C-LOCAL-05の製品forceback復活禁止・harness/E2E-only境界は維持する。
+- SOURCE_UNAVAILABLE/TECH skipの不足証拠を補うため、親はfrontへR6内で `apps/client/src/services/event-source-submission.test.ts / source-submission.test.ts` の最小追加を再assignした。同front単独ownerで標準test登録とroot型検査を維持する。新dependency/CI/API形式変更は許可しない。
+- 通常実端末E2Eでは親所有Worker `8787` を `SkipWorker` でreuseすることを許可済み。実行結果は未受領。R7最終GO未送信、最終source再freeze/full結果待ち、C全体未完了。
+- stop condition: 本taskの証拠/台帳更新のみ完了。実端末最終visual・source failure tests・通常E2Eをcoordinatorが代行/補完せず、各ownerからの結果で判定する。
+
+### C再開2 — 停止確認・actual ownership・証拠ゲート（2026-10-08 JST）
+
+- objective: 既B計画・初回C Kickoff・初回spawn・1回目再開の実績を保持し、停止前のR6差分と未解消findingを引き継いで、同じPhase Cを検証・独立監査・local commitまで継続する。新仕様や公開計画の再定義は行わない。
+- success criteria: 実績と予定、検証したsourceと現在source、owner報告と親の独立確認を区別し、V1〜V9・C-LOCAL-01〜05の不足証拠を追跡する。最終sourceに対応するfull相当・R6実端末・R7両最終監査とfinding処置が揃った後だけC完了判定へ進む。
+- Stage / affected layers / contract-sensitive / execution profile / Plan Mode: Phase C継続、client/Worker/shared/規範/検証scriptの既計画内全差分、yes / `High-Risk` / required。本taskのbounded計画と初回C Kickoffを継承する。適用規約はroot 3文書と既記録のclient/worker/sharedローカル規約。
+- current request ceiling: `implementation-ready / Phase C実装・検証・独立監査・local commitまで`、Implementation authorization: `YES`。allowed outputs now: 引渡し済みownerの計画内最小修正、隔離検証証拠、独立監査報告、coordinatorによる本taskのC追記、親によるscope限定local commit。
+- forbidden outputs now: push、PR/Issue等の外部write、merge、deploy、本番drain、仕様/CI/依存/lockfile変更、他owner編集のrevert、旧stash・原本・worktree・branchのdelete/apply。coordinatorは製品/design docs/Git index/commitを変更しない。
+- next unlock condition: 実装の追加ユーザー解除は不要。R6 source再freeze→親の最終full相当とsource manifest照合→R6不足証拠の受領/確認→親のR7最終GO→両監査・finding disposition→scope限定local commitの依存gateを維持する。公開・外部操作は別の明示指示が必要。
+- 親は再開時のlive agent listが `/root` のみで旧ハンドルが消失し、旧ownerが停止済みと確認してからwrite scopeを再assignした。coordinatorの本task C追記とfrontのR6 scopeは単独ownerを維持し、停止前dirty差分を引き継いだ。初回と1回目再開のspawn記録は上の歴史記録を維持する。
+
+#### delegation execution record — 再開2の実spawn確認
+
+| role / actual agent id | spawned | objective / ownership / 確認時status |
+| --- | --- | --- |
+| execution-coordinator `/root/coordinator_c_resume2` | yes | 本taskのC追記・証拠台帳整合だけをwrite、記録継続中 |
+| front-implementer `/root/front_c_resume2` | yes | R6 harness/scripts/testdata/client observabilityと再assign済みsource testsを単独write、実端末/検証継続中 |
+| contract-auditor `/root/contract_c_resume2` | yes | R0〜R6全差分/正本/証拠の契約監査をread-only準備中、R7最終GO未送信 |
+| implementation-auditor `/root/implementation_c_resume2` | yes | R0〜R6全差分/視覚正本/証拠の実装監査をread-only準備中、R7最終GO未送信 |
+
+- 根拠: 親が4 actual idの実spawn/read-back、全4担当 `gpt-6.1-sol / fork none` と上記ownership/statusを通知した。coordinatorも自身/front/contractのlive存在を確認した。監査担当の準備・spawnを最終監査実行済みとは扱わない。
+- server-implementerの初回/1回目再開とR3 `COMPLETE` は上の実績を保持する。再開2は新serverをspawnしていない。現在Worker write taskはなく、監査でWorker修正が必要になった場合は親が元roleへbounded scopeを再assignする。coordinatorから再委譲なし: 親が分割した単一task記録scopeで再分割不要。
+- front packetのin-scope追加確認: 既R6の6tracked paths、事前許可済み `testdata/e2e/host-event/ws-participants.mjs`、E2E-only `apps/client/src/app/App.tsx` のnavigation/observability最小callback、再assign済み `event-source-submission.test.ts / source-submission.test.ts`。製品のforce-backを復活させず、通常navigation/source/API形式は維持する。
+- allowed side effects / continue-without-escalation boundary: 各ownerは既R6/R7 packet内の最小修正・typed tests・実検証・証拠更新を自走可。検証生成runtime overrideのminSizeだけを305pxまで調整し、実 `innerWidth / innerHeight`・overflow・footer/主操作寸法・capture反映を証拠化する許可を持つ。製品Tauri configの変更、clip画像を実viewport検証へ読み替えることは不可。実Tauriは可視、helperはhidden、停止対象はtask-owned PIDだけ。
+- expected output / stop condition: 各ownerは `COMPLETE/BLOCKED/ESCALATION`、実command/結果、source・画像/DOM・finding証拠と残riskを返す。coordinatorは受領済み実績の記録までで止まり、親の最終GO前にclosing appendやC全体COMPLETEを書かない。
+
+#### 再開時点の履歴・環境・進捗のread-back
+
+- local HEADを `10112c37d153b929cd5bbf58cf0a7ecb3f74fafb` とread-back。E0固定#189 `90856a4` の履歴merge `f87f05a`、R0 `36a6c7d`、R1 `ede3b3c`、R2 `6e11dc0`、R4 `3c17193`、R3 `88a16a8`、R5 `10112c3` はcommitted成果として保持する。R6と本taskの後続追記はdirtyのまま引継ぎ、R6 commit済みとは扱わない。
+- 親の再開前確認ではlocal検証7portsにlistenなし、旧検証processは停止済み。これは再開前の状態であり、以下の新ownerによるruntime起動へ更新される。旧 `8787 / 18821` を稼働中として無条件reuseしない。
+- 親は元root `v1` clean、既存stash2件・旧worktrees・試作原本の保持を確認した。R5 MCP25filesは既記録のSHA一致moveと `.tmp/root-browser-evidence/r5-mcp/` 保存を維持し、旧原本削除0。新batchのsource residueが生じた場合はtask-owned証拠を保全しread-backする。
+- 前の利用制限で一度停止したが、停止前にはR5 commit、初回freezeのlocal full `12/12 PASS`、実runtime validation gapの発見と最小補正証拠取得が進んだ。同じ未解消gateの反復だけを根拠にno-progressと判定しない。現在は2026-10-08の再開記録として継続する。
+- 初回full `12/12 PASS` はHEAD `10112c3`＋旧6dirty source/旧manifestの証拠。その後のApp callback/source tests/daemon/harness再編集を含む現在sourceの最終PASSへ適用しない。親の最終runnerは分離batchで実行可能な準備状態だが、現在sourceに対する最終full結果は未取得。hosted CIも未実行。
+
+#### C-LOCAL-05とV1〜V9の継続checkpoint
+
+- C-LOCAL-01/02はR4限定、03/04はR5限定 `fixed` を維持し、最終R6/R7の全consumer・実統合検証の残riskを保持する。**C-LOCAL-05は未解消**であり、現在のC完了を阻害するvalidation gapとして継続する。
+- `195445` の通常Lobby画像はvisual証拠として不採用。`195940` の開催desktop描画は親確認済みの限定証拠で、native390のclipはmobile PASSにしない。E2E-only explicit navigation/DOM predicate、生成runtime overrideだけのminSize補正、actual viewport/footer/captureが新検証境界。
+- 親経由でfrontのCASUAL batch `200630` actual DOM報告を受領: 全captureのpageは `event-room`、LOBBY/PICKING/ACTIVEは20cards、desktop `inner1280×900 / footer881`、mobile `inner374×805 / footer792`、horizontal overflow false。ownerのsummary/DOM報告であり、親のfresh画像独立確認前なのでC-LOCAL-05を `fixed` としない。
+- frontのfresh TOURNAMENT runはsession `50134` で実開始、Worker `8790` / Vite `1420` は新helper自身の所有。親はCargo競合を避けて待機する。開始実績のみであり、TOURNAMENT結果・通常ARENA2試合/BPL/BPL4の3実端末結果・新captureの結果はまだ未受領。
+
+| 残gate / 対応V | 必要な取得・判定 | 現時点の扱い |
+| --- | --- | --- |
+| R6同開催20枠と各2曲 / V1・V2・V8 | CASUAL/TOURNAMENTの実Tauri2＋補助WSを同じ開催へ接続し、3役割/人数/Readyなし・実view/overflow/主操作と履歴を証拠化 | CASUAL owner報告受領・親fresh画像確認待ち、TOURNAMENT実行中 |
+| R6例外/各source / V3・V4・V5・V7 | 14/15待機・締切前復帰/後拒否、Host切断/再JOIN、history再読込/無効upsert、3source＋legacy、SOURCE_UNAVAILABLE/TECH skipを各command/test/実証へ対応 | 既pure/直接WS/owner限定証拠を保持、新source failure testsと最終対応表待ち |
+| 通常回帰 / V1・V6・V9 | ARENA2試合、BPL、BPL4実端末と既Worker経路の証拠を分け、開催変更が通常Ready等へ波及しないことを確認 | 通常3実端末結果未受領 |
+| 最終local/CI parity / V1〜V9 | 最新tracked/untracked source SHA256と12面full相当、標準test登録/root型検査、継承quick/full CI stepの保持とlocal commit内容照合 | 親runner準備のみ、旧full PASSの適用禁止 |
+| R7両最終監査 / V6・V9および全V | 親の最終GO後にcontract/implementation両最終報告、finding→disposition→evidence→remaining risk、Blocker/Must fix処置を取得 | 両担当準備中、最終GO/最終結果未取得 |
+
+- Replan Gate: 新仕様判断、契約/互換/依存/CI/resource拡張、通常仕様変更、参照不能、ownership衝突、必須検証不能が生じたら影響packetを停止して親へ `ESCALATION`。合意内のharness・証拠補完は上のcontinue境界で継続する。
+- 記録更新の状態: `COMPLETE`（今回の再開/取得済み証拠記録scope限定）。R6 runtime・現在source最終full・R7両最終監査・C-LOCAL-05は未完了、Phase C全体は未完了。coordinatorは製品/Git/外部操作を行わず、次の親/owner実績受領を待つ。
+
+### 再開2追加checkpoint — CASUAL実画像確認とC-LOCAL-06候補
+
+- 親が2026-10-08にCASUAL batch `200630` のclient-a ACTIVEとclient-b final-mobile実画像を独立確認したとの通知を受領。20cards、未公開結果のprivacy、footerを確認し、mobile actual `inner374×805 / footer792`、横overflowなしのDOM証拠と対応した。上の「親fresh画像確認待ち」はこの限定範囲で解消。CASUAL batch全場面の再確認やfresh TOURNAMENT/new captureの完了へ読み替えない。
+- C-LOCAL-05 disposition: 引き続き未解消。CASUALのexplicit navigation/actual viewport補正は上の画像確認を部分証拠とし、fresh TOURNAMENTとcaptureの確認が揃うまで `fixed` にしない。初回clip390画像の不採用と、製品config/force-backの変更禁止は維持する。
+
+| ID / severity | finding -> disposition / owner | evidence / remaining risk |
+| --- | --- | --- |
+| C-LOCAL-06 / Must fix候補 | implementation-auditorが曲別順位カードのself欠落を報告。`EventFinalReview.tsx` の `rank !== null && rank <= 3` 抽出だけでは4位以下・欠場の自分のカードが表示されず、「上位3人＋必要なら自分」と差異がある。親は同一front ownerへ最小表示修正を追加assign済み、修正/検証返却待ち | 正本 `issue-188-draft.md:82`、規範 `05_screen_list.md:498`、保存試作 `prototype/event-host-led-prototype.html:368/369` のtop3＋own。coordinatorも現抽出と試作のown追加をread-only照合。候補受領のcheckpointでありR7最終verdictではない。修正・typed回帰・viewport再確認・最終source fullと監査は未取得 |
+
+- actual ownership更新: `/root/front_c_resume2` に `apps/client/src/features/event/EventFinalReview.tsx` と必要最小の関連tests/visualを追加assignした親実績を受領。既 `EventFinalReview.test.tsx` のtyped回帰とR6 visualで扱い、親/coordinator/auditorはread-onlyを維持する。新ownerのspawnや他scopeのtakeoverは行っていない。
+- bounded objective / success criteria: 上位3人を維持し、プレー参加者のselfが上位に含まれない場合は4位以下・欠場のselfカードも一度だけ表示する。専任Hostの架空selfを追加しない。詳細表のHost全順位/参加者周辺＋全順位切替、同順位の同強調、欠場理由/値と大会pt、0結果表示を維持し、上位内selfの重複を防ぐ。
+- validation / expected output: 公開typeに沿う4位以下self・欠場self・上位self重複なし・専任Host・同点の最小回帰、標準client unitとroot型検査の対象含有、関連lint/build/diff、および1280/390/305pxでカード/表/footer/overflowの影響証拠をfrontから受領する。source変更を最終manifest/fullへ反映し、implementation-auditorの再確認へ渡す。結果未取得をPASSへしない。
+- allowed side effects / continue-without-escalation boundary / stop condition: 合意した結果表示内の最小抽出・表示・typed tests/visual補完まで。順位/pt計算、Wire/storage shape、source/通常対戦仕様、CI/依存を変更しない。仕様判断やscope拡張が必要なら親へReplan、packet修正検証返却で停止。R7最終GOはまだ未送信でclosing appendは行わない。
+- status: `COMPLETE`（本追加記録scope限定）。C-LOCAL-06候補は未解消、C-LOCAL-05・R6不足証拠・現在source最終full・R7両最終監査も継続中。前checkpointのlocal commitまでのceilingと禁止境界を維持する。
+
+### C再開3 — coordinator再assign・取得済み証拠のcheckpoint（2026-10-08 JST）
+
+- objective / success criteria: 既B・初回C・再開1/2の履歴を保持して、停止後に取得したR6実績をsource別に追跡し、V1〜V9とfindingの最終判定に必要な残gateを明示する。今回のstop conditionは本task Cの記録更新まで。親の全gate成功GO前に最終closingやC全体COMPLETEを書かない。
+- Stage / affected layers / contract-sensitive / execution profile / Plan Mode: Phase C継続、既R0〜R6のclient/Worker/shared/規範/検証scope、yes / High-Risk / required。本taskと合意draft、publication保存試作・prototype-review、root/local規約を継承する。
+- current request ceiling / Implementation authorization: `implementation-ready / Phase C実装・検証・独立監査・local commitまで / YES`。allowed outputs nowは元ownerの既合意内最小補正・検証・独立監査、本coordinatorのC追記、親のscope限定local commit。forbidden outputs nowはpush、GitHub全write、PR/Issue/merge/deploy、本番drain、仕様/CI/依存/lockfile変更、他owner差分revert、旧stash/branch/worktree/原本のapply/delete。coordinatorは製品/design/Git index/commitを変更しない。
+- next unlock condition / dependency order: downstream実装のユーザー解除は取得済み。frontのfresh両type再runとsource freeze、親の最終full/manifest照合、両R7最終GO/結果/finding処置、scope限定local commit、C closingの順にgateを満たす。公開/外部操作は別の明示指示が必要。
+
+#### delegation execution record — 再開3の実在・ownership
+
+| role / actual agent id | spawned | ownership / 確認時status |
+| --- | --- | --- |
+| execution-coordinator `/root/coordinator_c_resume3` | yes | 停止済み旧coordinatorから本task C追記だけを再assign、証拠記録中 |
+| front-implementer `/root/front_c_resume2` | yes（再開2の同handle継続） | R6と追加assign済みC-LOCAL-06の単独writeを継承、fresh再検証中 |
+| contract-auditor `/root/contract_c_resume2` | yes（再開2から継続） | read-only準備COMPLETEのみ、最終R7 GO/製品verdict未 |
+| implementation-auditor `/root/implementation_c_resume2` | yes（再開2から継続） | read-only準備COMPLETEのみ、最終R7 GO/製品verdict未 |
+
+- 根拠: 親が旧coordinator handle消失/停止確認後に本scopeを再assignし、coordinatorはlive agent listで上記4 actual idとstatusをread-backした。全担当のsticky modelは `gpt-6.1-sol`。同frontはusage errorによる一度停止後、親がUTC 13:47の継続で同handleへscopeを再assignし再開した実績を受領。親/coordinatorの製品writeはない。serverの初回/再開とR3 COMPLETEは既履歴を保持し、新server spawnはない。
+- 本coordinatorのallowed side effects / continue-without-escalation boundary: task Cのappendとread-only証拠/Git照合、自身のignored検査証拠だけ。既合意内の記録は自走し、新仕様/互換/CI/依存判断、ownership衝突や証拠不足がある場合は親へESCALATION。No-delegate reason: 親に分割済みの単一記録scopeで再分割不要。他owner差分は保持する。
+- read-back: HEAD `10112c37d153b929cd5bbf58cf0a7ecb3f74fafb`、branch/worktreeはE0記録どおり。E0 merge `f87f05a` と開始 `64c640f`・固定#189 `90856a4` 両parent、R0〜R5のlocal commitsを保持する。R6とC追記は未commitで、最終source/commitと旧証拠の一致を未確定のまま保持する。親確認の元root `v1` clean、stash2件、worktrees5件と試作原本は保全継続。旧session `85109` はmissing、旧task-owned helpers/listeners消失を親が確認済みとの通知を受領し、旧sessionを稼働中としてreuseしない。
+
+#### R6実績の取得根拠・source境界
+
+- normal-runtime実績: ignored `.tmp/issue-188-phase-c/normal-runtime/results.json` をcoordinatorがread-back。ARENA `reflux-reflux-full / matches=2` はUTC `00:15:07→00:19:54`、BPL `mixed-daken-v3-notebook / matches=1` は `00:19:54→00:23:31`、BPL4同scenarioは `00:23:31→00:29:00`、3runともexitCode 0。通常create→Ready→pick→play→resultの実端末証拠として受領し、全例外をこの3runで実行したとは扱わない。
+- 補助の通常境界: owner記録 `.tmp/issue-188-phase-c/r6-owner-summary.md / r6-validation-evidence.json` はproduction直接importのignored補助tests 70/70 PASS、公開型fixture `.mts` の明示 `npx tsc -p .tmp/issue-188-phase-c/tsconfig.normal-supplement.json` PASSを報告。duplicate譜面差替えとSKIP_HOST_ASSIGN拒否は補助assert、TIMEOUT/FORCE_ADVANCE/ROOM_STATE_LOSTは標準Worker testsへ対応する。補助testsを実端末での当該例外操作証拠にしない。
+- native限定証拠: `testdata/runtime/e2e/host-event-casual-20261008-090950` / `host-event-tournament-20261008-091219` の両client state/eventsをread-back。両typeとも20participants・20eligible・公開結果2曲・両client historyReloaded=true、最終event-room描画のDOMはdesktop1280×900/footer881、mobile実inner374×805/footer792、横overflowfalse。親はbackgroundLobbyと2曲finalの実画像をactual view済みと通知した。CASUALは専任Host＋19補助WS＋実参加者、TOURNAMENTは兼任Host＋18補助WS＋実参加者の同開催証拠で、別室realDOの6groupsとは分ける。
+- nativeログのgap: 上記両batchの `event_background_submission_started` は起動直後lobby、roundId/roundStatusがnull。CASUAL client-bと大会両clientの後続 `event_background_submission_accepted` は実第2曲roundId・lobby・server SUBMITTEDを持つが、startedログを第2曲の開始証明に使わない。親は同frontへ最小oracle補正後、fresh両type再実行と最終freezeを実GO済み。上記batchは限定有効証拠として保持し、補正後sourceの最終PASSへ流用しない。
+- `.tmp/issue-188-phase-c/root-r6-native-confirmation.json` は親のactual image view/SHA記録だが、記載大会は旧090040まで。新090950/091219の親viewは今回の親通知と当該runtimeを根拠として区別する。通常Lobby/stale startup/別app/外枠390clipの不採用batchは既記録とowner記録を保持し、再採用しない。
+- visual fixture: `.tmp/issue-188-phase-c/r6-visual-final/manifest.json` の5状態×1280/390/305px=15caseでrole/state assert、horizontalOverflow=false、mainActionVisible=true、footer781/831をread-back。`.tmp/issue-188-phase-c/r6-self-cards-scrolled/manifest.json` のself10/欠場/top3/ties×3幅=12caseはself1枚、全順位click後20rows、scrollY0、footer781/831。4位以下/欠場selfは4cards、top3selfは3cardsで重複なし。これは公開fixtureのrender/操作証拠で、実server順位/pt計算や20端末通信の代替証拠ではない。
+- ownerのclient153、lint/root型、integration6、PowerShell3syntaxとsource failure tests結果はowner報告/ログhashの限定証拠として受領。両source tests/FinalReview testは標準client test登録とroot型面を担い、tmp補助fixtureとmjsは明示コマンドで補完する。旧full12PASSは旧6dirty source/manifestの実績で、現在のApp/runner/scripts/tests/daemon差分を含む最終fullへ適用しない。hosted CIは未実行。
+
+#### finding disposition checkpointとV1〜V9残gate
+
+| finding / severity | disposition / evidence | remaining risk |
+| --- | --- | --- |
+| C-LOCAL-01/02 / Must fix | R4限定fixedとcommit/testsの既記録を継承 | 現source fullとR7全consumer最終照合待ち |
+| C-LOCAL-03/04 / Must fix | R5限定fixedと日本語理由/viewport/実操作証拠を継承 | 最終統合・R7再照合待ち |
+| C-LOCAL-05 / Must fix・validation gap | navigation/actual viewport/capture補正、親の両type新実画像viewとDOM/2曲/historyの部分証拠取得 | started nullのoracle補正後fresh両type・source freeze/full・R7が未のため最終fixed未 |
+| C-LOCAL-06 / Must fix候補 | frontのtop3＋必要self最小補正・typed testsと12case/all ranks操作証拠受領 | 親の最終source fullとimplementation-auditor最終再確認前、最終fixed未 |
+
+| V | 今回の取得済み証拠と経路区別 | 残gate |
+| --- | --- | --- |
+| V1 | 別室realDOのcapacity、同開催native20枠2type、normal3run | fresh両type/source対応とR7最終 |
+| V2 | R2/integrationの対象0・LEFT/KICK/pending・Readyなし、native各2曲、15case20cards/主操作 | oracle補正後fresh/full/R7 |
+| V3 | 別室realDO14/15・復帰/締切/late拒否、4source×2metric/replay/障害typed tests、native第2曲actualLobby中SUBMITTED | started誤log補正後freshと最終full、各source実parser/unit対応をR7照合 |
+| V4 | R2固定N/同点/欠場数値、realDO invalid upsert、R4同期、fixture欠場0pt/同強調/0曲 | fixture値を数値正当性証拠にせず最終R7で対応確認 |
+| V5 | R2/R3 fake-clock300秒直前/一致/超過・alarm/復元、realDO/native短Host断/reJOIN | 実時計300秒待ちとは区別しR7期限/復元経路照合 |
+| V6 | protocol1/旧Ready拒否・両方向fail-closed/秘匿の標準tests、nativeACTIVE非公開画像、normal3runの通常Ready | 現sourcefullとR7全channel/consumer監査 |
+| V7 | browser v1/v2/未知/保存失敗/原本保持unit、Rust v2 save legacy保持、native両client再読込/2曲schema2 | fresh/source対応・最終Rust/full・R7照合 |
+| V8 | R5入口/戻る/役割/確認操作、native両type実view・backgroundLobby、15case3幅主操作/overflow | freshnative/finalsource・R7視覚正本最終照合 |
+| V9 | R0規範/R5確認量・前曲無効化、C06 self12case/全順位click、通常境界の標準＋補助検証 | R7両最終GO/報告・finding処置、local commitと最終C closing |
+
+- Replan Gate / risk notes: 新仕様・契約互換・CI/依存/resource変更、通常仕様の変更、参照不能、ownership衝突、必須検証不能はaffected packetを止めて親へESCALATION。合意内のoracle/証拠補完は既continue境界で自走する。hostedCI、本番drain/deploy、全OS/DPI/読み上げは未実施で、C検証と公開gateを分ける。
+- checkpoint status: `COMPLETE`（本再開3記録scope限定）。Phase C全体・fresh両type/runtime source freeze・現source最終full・両R7最終監査・C-LOCAL-05/06最終disposition・R6 local commit/closingは未完了。親の全gate成功GOを受けるまで最終closingを追記しない。
+
+### R6 final freeze・local commit・R7 FINAL GO checkpoint（2026-10-08 JST）
+
+- objective / success criteria / stop condition: 親から取得したfresh両typeとcurrent-source full/commit対応を実績として記録し、両R7最終GOを実行recordへ更新する。今回の停止は記録更新まで。両auditor返却・親の全gate成功GO前にR7/C最終COMPLETEやclosingを記入しない。
+- 実行境界: Phase C / High-Risk / contract-sensitive yes / Plan Mode requiredを継承。current request ceilingはR7独立監査とscope限定local commitまで、Implementation authorization YES。allowed outputsは単独ownerによるC追記とread-only照合、自身ignored proof。forbidden outputsは製品/design/index/commit編集、外部write/公開/merge/deploy/drain、旧stash/worktree/branch/原本apply/delete。他owner差分は戻さない。next unlock conditionは両最終監査返却・finding処置・親GOで、外部操作は別明示指示が必要。
+- R6 owner `/root/front_c_resume2` は担当範囲COMPLETE、12files freeze後source編集停止。最終owner記録は `.tmp/issue-188-phase-c/r6-owner-summary.md` SHA256 `E4E7C85A298D1C3412BFE44AED3A751E8FA63227B1CC74F8C85C8E2ACD49F4C4`。coordinatorもSHA一致をread-backした。最終runtime証拠は同directory `r6-final-runtime-evidence.json` SHA256 `C2F71183A183E27E001FAB5CDD3B7D27C14939C4DFAEDFD7A95AA53C1849339E`、sourceは `r6-source-freeze.json`。当時HEAD10112c3＋dirty freezeで実行した証拠で、下記commit後の一致を別に照合した。
+- 親のscope限定local commit実績: C-LOCAL-06表示/tests2pathsは `c79a3b771fca36c7173d7775f3cf6663b4dcd7fe`、R6の10pathsは `98ae4a9ec31faacb4abdbdb5f8fc5cc940841e7a`。coordinatorもHEADと両commit statsをread-back。実装writeはfront、Git commitは親が担当した。本task C追記だけがdirtyであり、文書commit/最終closingは未実施。
+
+#### fresh両type・native・normalの最終検証証拠
+
+- 最終batchは `testdata/runtime/e2e/host-event-casual-20261008-225436` と `host-event-tournament-20261008-225717`。coordinatorはruntime証拠の両clientをread-backし、各type内で同じroom/event ID、20participants、2曲各20result rows、両client history reload2曲、native schema2 JSON2曲/COMPLETEを確認。CASUAL event `c05875e2-1aaf-4359-92ea-ab2c3cdabc47`、TOURNAMENT `f70ff465-f6db-4a4f-9555-e2c011b99516`。専任Host＋19補助WS＋実参加者／兼任Host＋18補助WS＋実参加者を同開催の実Tauri2と対応する。
+- 各11枚、計22 native画像とDOM/log/state/補助WS/nativehistory SHAを最終runtime証拠に保持。desktop実inner1280×900/footer881、native外枠390の実inner374×805/footer792、横overflowfalse。305/390/1280のbrowser15caseとC06 self12caseはfixtureのrender/実click証拠として分離し、native305や実順位計算を行ったとは扱わない。
+- 起動直後null started誤logをfrontが最小補正し、fresh両runの第2曲actualLobby/PLAYING/ACTIVE/CONNECTEDでroundId非nullの開始が1回、same round server SUBMITTEDへ対応。CASUAL Bはround `21b1d476-2130-4052-b09a-44ecdb4820a1` UTC13:56:14→13:56:24、大会Bは `e62cee30-75b6-4070-b2fa-ab7551c135e0` UTC13:58:53→13:59:03。大会兼任Host Aもsame roundで背景提出受理。実reflux observationと受付ログを保持し、seat/intentionalexitを変更していない。旧null batchは履歴/限定通信証拠として保持する。
+- 親の独立actual image view通知: fresh CASUAL背景Lobbyと2曲final mobile、TOURNAMENT A20card/非公開ACTIVEと2曲final mobile、self10 narrow・欠場mobile・tiesdesktopを実閲覧。ownerの実画像view/DOM assertと親確認を分けて受領。C-LOCAL-05/06の補正と影響検証はこの証拠で最終監査へ渡すが、独立R7 verdictは未取得。
+- normal3実Tauri exit0（ARENA2試合/BPL/BPL4）、補助70testsと公開型fixture明示tsc PASS、4source×2metric/unit/parser/replay/障害TECH、browser v1/v2/未知/原本保持/保存失敗は既記録とowner最終報告の具体path/commandsに対応する。実nativeは3source、Host断は短いreJOIN、300秒境界はfake-clock、通常例外は標準Worker/補助testsへ対応し、実端末で全部行ったとは扱わない。
+- task-owned runtime helpersのfinally停止/空きread-backは `r6-runtime-cleanup.json` UTC14:00:47、指定8ports listen0、Cargo/rustc/client/該当helper0をownerが報告。これは実行processの終了で、旧worktree/branch/stash/原本のcleanupではない。
+
+#### current-source local full・CI parity・commit対応
+
+- 親の最終fullは `.tmp/issue-188-phase-c/final-ci-r6-20261008-late/results.json`、UTC14:05:25〜14:06:06、12/12 exit0をcoordinatorもread-back。resultsのHEADは実行当時10112c3で、dirty sourceを `validation-source.json` の472files SHA256へ固定した。commit後親のSHA照合0mismatch、coordinatorの同manifest対現source472files照合も0mismatch。本taskはmanifest対象外で、記録appendによる製品source変更はない。
+
+| local full相当command | 実結果 |
+| --- | --- |
+| `npm run check:agents` | PASS |
+| `npm run check:design-contracts` | PASS |
+| `npm run lint` | PASS |
+| root `npm run typecheck` | PASS |
+| `npm run build:client` | PASS |
+| `npm run test:client-stats` | PASS 17項目 |
+| `npm --workspace @infinitas/client run test` | PASS 153/153 |
+| `npm run test:worker` | PASS 187/187 |
+| `npx tsx --test scripts/host-event-e2e.test.mjs` | PASS 6/6 |
+| `cargo check --manifest-path apps/client/src-tauri/Cargo.toml` | PASS |
+| `cargo test --manifest-path apps/client/src-tauri/Cargo.toml` | PASS 20tests |
+| worker cwd `npx wrangler deploy --dry-run` | PASS |
+
+- CI parity: E0継承workflowのWindows/Node22、PR quick/tag/manual full、design-contract/client unit/Host Event integration、full cargo check/test/build/Wranglerを保持。coordinatorもworkflowの該当stepとNode22/quick-full接続をread-only再確認した。root型面と標準列挙testがtouched3testsを含み、mjs/ignored typedfixtureは明示実行で補う。新依存/lockfile/CI変更なし。hosted CIは未実行で、上記はlocal full相当。旧full12PASSを今回の完成証拠へ流用していない。
+
+#### delegation execution record — R7 FINAL GO実送信
+
+| actual auditor / ownership | 実績 / status |
+| --- | --- |
+| `/root/contract_c_resume2` / R0〜R6全差分・正本・証拠のread-only契約監査 | 親がHEAD98ae4a9/source manifest/fresh証拠でR7 FINAL GO送信済み、running / final pending |
+| `/root/implementation_c_resume2` / 同全差分と視覚正本・V1〜V9のread-only実装監査 | 親が同HEADでR7 FINAL GO送信済み、running / final pending |
+
+- 根拠: 親の実GO送信通知とcoordinatorのlive agent read-backで両runningを確認。将来予定や準備COMPLETEを最終監査完了へ読み替えない。最終finding→disposition→evidence→remaining risk、CR-01〜07とC-LOCAL-01〜06の最終判定は両返却後に集約する。
+- status / remaining gates: `COMPLETE`（本証拠/GO checkpoint記録scope限定）。R6/current-source full/source-commit整合/local製品commitは取得済み。R7両最終verdict、未処理Blocker/Must fixゼロの確認、親の全gate成功GO、C最終closingとtask local commitが未。High-Riskの本番drain/公開・hostedCI/全OS-DPI-読み上げは別gate/残riskとして保持。Replan/continue境界は前節どおり。
+
+#### R7 GO後の親追加visual確認
+
+- 親がfresh TOURNAMENT225717の `artifacts/client-b.event-background-submission.png` を実画像toolで独立閲覧し、通常Lobby・公開room0・通常対戦sidebar activeと「開催へ戻る」を確認した通知を受領。上のCASUAL確認と合わせて、**両最新typeの背景Lobby画像を親もactual view済み**。背景での開催接続/提出維持は同roundログ・server SUBMITTEDと組み合わせる証拠であり、画像だけで受付成功を判定しない。
+- 両R7最終verdict/親の全gate成功GOは未受領のまま。coordinatorは最終closingやC全体COMPLETEを記入せず、製品/外部/Git操作なし。
+
+### R7契約最終監査受領 — 実装最終待ち（2026-10-08 JST）
+
+- objective / success criteria / stop condition: 正式FINAL GO後の契約最終verdictと全finding処置を、準備/途中報告から分けて記録する。親から `/root/contract_c_resume2` のimmutable製品HEAD `98ae4a9ec31faacb4abdbdb5f8fc5cc940841e7a` に対する最終報告を受領。statusは **COMPLETE / pass-with-followups**、未解消Blocker/Must fix 0、新規契約finding 0、missing updates 0。実装監査の最終返却と親の全gate成功GOが未のため、今回のstopは契約結果記録まで。C最終closingはNO。
+- 現境界: Phase C / High-Risk / implementation-ready、R7とscope限定local commitまでの既ceilingを継承。coordinatorはtask C append/read-only/self ignored proofのみ。製品/design/index/commit、push/GitHub全write/merge/deploy/drain、旧stash/worktree/branch/原本apply/deleteは禁止。next unlockはimplementation最終返却・全finding処置・親GOで、追加のsynthetic実装許可を要求しない。
+- 契約分類は開催専用breaking v1→v2。protocol/live snapshot/DO record/history新保存を2へ同期し、通常protocol/minimum client/Readyを維持。旧/未知開催はfail-closed、history1 readerは原本保持、DO1の自動移行なし。drainは公開gateとして分離し、Cに未処理Must fixがあるという意味ではない。
+- 最終独立検証: client関連55/55、Worker関連85/85 PASS（fail/skip/cancel 0）、ignored `.tmp/issue-188-phase-c/r7-contract-client-98ae4a9.log / r7-contract-worker-98ae4a9.log`。coordinatorも末尾件数/結果をread-back。auditorは472source manifest、12freeze files、34runtime hashesとpeer2件を照合し全mismatch0と報告。fresh両type同event20枠・各2曲20rows、native4history COMPLETE、CASUAL B/TOURNAMENT A・Bの非null第2曲actualLobby→same round SUBMITTED各1を独立read-back済み。V1〜V9の契約証拠を確認した正式最終結果で、準備COMPLETEとは区別する。
+- 親のcommit後固定証拠 `.tmp/issue-188-phase-c/root-final-readback.json` もcoordinatorがread-back。472SHA一致/full12PASS、当時dirty freeze→製品commit内容同一、本taskをmanifestから除外、開始64c640fと固定#189 90856a4両ancestor、元root v1 cleanとstash2件保持、productionOperations noneを確認。JSONのR7 pendingは保存時UTC14:15:13時点の記録であり、契約最終受領は本追記で更新する。
+
+#### 契約側最終finding台帳 — finding → disposition → evidence → remaining risk
+
+| finding | 契約側最終disposition | evidence | remaining risk / 境界 |
+| --- | --- | --- | --- |
+| CR-01 / 開始集合 | fixed | `event-room-state.ts:795 / :1314` の対象0拒否、CONNECTED/DISCONNECTED保持・LEFT/KICK/pending除外、固定N。R2/tests・fresh20枠各2曲 | 実20Tauri総起動は行わず2実Tauri＋補助WS。実装監査最終待ち |
+| CR-02 / version・新旧consumer | fixed | strict protocol/snapshot/DO/history2、create/JOIN/capabilities/guard、旧/未知拒否・通常Ready維持。独立client/Worker tests | 公開時client/server切替はdrainゲート後 |
+| CR-03 / schema1稼働record | Cコードfixed、公開gate分離 | `event-room-controller.test.mjs:412` の全5phase schema1拒否/原record保持、ROOM_STATE_LOST、再初期化/cleanup拒否、DO1自動変換なし | 本番旧接続/復元可能record不存在、terminal retention1800満了、原本保持rollbackを公開前に実証。C Must fix残ではない |
+| CR-04 / history互換 | fixed | history専用DTO、v1 byte/key保持、メモリ内ready除去、v2 key/`.v2.json`、標準unit/Rust test、fresh両type両端末4nativeJSON schema2/2曲/COMPLETE | 全OSの保存環境差は未総当たり、旧JSON自動走査はscope外 |
+| CR-05 / authority・操作時期 | fixed | readsyncをmutationPending前に許可、Host断中提出のみ、PICKING前曲invalid、Kick後受理済結果保持、古socket/権限試験とR5操作証拠 | 実装監査の役割UI/確認量最終照合待ち |
+| CR-06 / 新oracle・検証面 | fixed | 標準client/Worker test entries、root型面、fresh非null第2曲background oracle、472SHA/freeze/commit/full12対応、独立55+85 | hosted CI未実行。local full相当と区別 |
+| CR-07 / source維持 | 維持確認、fixed | parser authority再実装なし、4source×2metric unit/replay/障害、Rust20、実端末3source・expected_keyと最初の有効提出 | 全source×metric実端末総当たりは未。unit/parser/nativeの分担で確認 |
+| C-LOCAL-01 / snapshot shape | fixed | required top/nested strictshape fail-closedのR4補正/tests、独立client55と最終full | 実装監査最終待ち |
+| C-LOCAL-02 / pending中read | fixed | read action判定優先のR4補正、STATE_GET/RESULTS_GET回帰、独立client55/full | 実装監査最終待ち |
+| C-LOCAL-03 / raw enum | fixed | 既知終了/欠場理由の日本語labels、storage/API原値維持、R5 tests・最終full | 未知原本は保持、実装監査の表示最終待ち |
+| C-LOCAL-04 / 主操作viewport | fixed | 内部scrollとfooter固定、R5親実操作、R6 15case/C06 12case footer/overflow・fresh actualviewport | 全OS/DPI未、実装監査最終待ち |
+| C-LOCAL-05 / native実描画gap | fixed | fresh両type計22native images、DOM/pixel/actualviewport、親actualview、background非null2曲受理とhistory4件、invalid旧batch不採用保持 | 実Tauri2＋補助WS、native305とはしない、実装側最終判定待ち |
+| C-LOCAL-06 / top3＋self欠落 | fixed | commitc79a3b7、top3＋必要self/欠場理由0pt/重複なし typedtests、self12case実click/all20rows・親画像view | fixtureの架空値を配点証明にせずR2数値試験と分離。実装最終待ち |
+
+- 残riskは20実Tauri同時起動、実時計300秒待機（fake-clock299999/300000/300001ms＋短実断で分担）、全source×metric実端末総当たり、hostedCI、全OS/DPI、公開drain/1800秒retention/原本保持rollback未実施。これらを契約未処理Blocker/Must fixや公開成功へ読み替えない。既合意continue/Replan境界を維持する。
+- delegation execution record更新: contract auditorは正式R7 **COMPLETE / pass-with-followups**、implementation auditorはfinal pending。coordinatorの本記録scopeはCOMPLETE。R7全体/C closing/task local commitは、implementation返却と親全gate成功GOまで未完了のまま。
+
+### Phase C final closing — 両R7最終結果とlocal停止（2026-10-08 JST）
+
+- objective / success criteria: 合意draftの7製品AC、V1〜V9、13findingの処置、各ownerの実成果/監査/検証とlocal commitを一つの現在状態へ集約する。既B・初回C・過去再開/pending checkpointは当時の歴史として全byte保持し、このclosingだけを最終技術判定の参照先にする。
+- 親がimplementation最終verdictを受領して**C final closing GOを実送信**。coordinatorは受領後に本記録を確定した。Stage Phase C、execution profile High-Risk、contract-sensitive yes、Plan Mode required（既bounded Bと実C Kickoffで充足）、root/local適用規約とsticky全subagent gpt-6.1-solを継承する。
+- current request ceiling: `implementation-ready / Phase C実装・検証・独立監査・local commitまで / Implementation authorization YES`。allowed outputs nowは本最終task C追記と親のこの文書のscope限定local commit/read-back。forbidden outputs nowはpush、GitHub全write、PR/Issue作成更新close、merge、deploy、本番drain、旧worktree/branch/stash/原本のdelete/apply、新仕様/CI/依存/lockfile変更。他owner差分を戻さない。coordinatorは製品/design/index/commit/外部操作を行っていない。
+- stop condition: R7/localまでで停止。**技術gateは全COMPLETE、本closing artifactもCOMPLETE。残る本taskのlocal記録commit/read-backを親が実行した時点でPhase Cを終了する。** 記録commitの自己参照hashは本文へ先取りせず、親の最終commit read-backを確定証拠とする。next unlock condition: 公開/PR/外部操作/Phase D等は別の明示指示と各gateを要する。実装解除を再要求しない。
+
+#### delegation execution record — 両R7 FINAL返却
+
+| role / actual agent id / owner | immutable監査対象 / 正式最終結果 |
+| --- | --- |
+| contract-auditor `/root/contract_c_resume2` / read-only契約監査 | 製品HEAD `98ae4a9ec31faacb4abdbdb5f8fc5cc940841e7a`、COMPLETE / pass-with-followups。未解消Blocker/Must fix0、新規契約finding0、missing updates0 |
+| implementation-auditor `/root/implementation_c_resume2` / read-only実装監査 | 同HEAD、COMPLETE / pass-with-followups。未処理Blocker/Must fix0、新findings0、責務境界違反0、V1〜V9必要証拠充足/必須validation gapなし |
+| front-implementer `/root/front_c_resume2` / R6＋追加C06単独write | freeze済みCOMPLETE、source停止・runtime終了。上の初回R4/R5と各再開履歴も保持 |
+| execution-coordinator `/root/coordinator_c_resume3` / task C単独append | 本closing COMPLETE。製品/Git/外部writeなし、記録handoff後停止 |
+| 親 `/root` / R1・Git・全gate判定 | 全gate成功GO済み、製品commits/freeze照合済み、本task記録commit/read-backだけ残る |
+
+- implementation独立検証は重点127/127＋guards/replay/sync15/15＋通常補助70/70＝**212/212 PASS**、公開型fixture明示tsc PASS。coordinatorも `.tmp/issue-188-phase-c/r7-implementation-independent-tests.log / r7-implementation-guards.log / r7-normal-supplement.log` のpass/fail/skip/cancel件数をread-backし、`r7-normal-fixture-type.log` は診断出力なし・exit0を親の最終報告で受領した。contract独立client55/55＋Worker85/85、local full12面PASSは前節記録どおり。
+- implementationは472current-source SHA mismatch0、36native image/state/event/history/peer hash mismatch0、C06 typed/12case自己1枚・top3自己時3cards/他4cards・全順位20行/footerを再照合した。self10 narrow/欠場mobile/tiesdesktopをactual viewし、保存試作の曲・中央カード・footer・右情報・狭幅2列・selfに対応すると判定。E2E-only navigationとruntime-only minSizeに限定し、製品force-back/normal波及なしを確認。contractの34runtime hashes＋peer2、親のfresh両type背景/最終/大会ACTIVEとself画像actual viewは、それぞれ別確認面として保持する。
+- normal ARENA2試合、BPL3stage、BPL4の実TauriとReady/replay/sourcealias/history、標準/補助のduplicate/TIMEOUT/FORCE_ADVANCE/SKIP_HOST_ASSIGN/ROOM_STATE_LOSTを独立確認。実端末と標準/補助testsの経路分担を維持し、架空fixture・短実断・native2台をそれ以上の実証へ拡張しない。
+
+#### 7製品AC → 実装・最終証拠・V対応
+
+正本は `docs/ux/issue-188-redesign/issue-188-draft.md` の「製品に求める観測可能な受入条件」。R0の規範対応表は保持し、最終実装/証拠を次のとおり対応する。
+
+| AC / 観測可能な結果 | 実装 / 最終証拠 | V / 判定 |
+| --- | --- | --- |
+| 1 Top通常を保持、専用作成/参加/履歴、画面移動と退出を区別 | R5 App/Sidebar/Entry/Create/Join/History、R4参加排他と接続維持。R5親実入力/戻り操作、fresh両type actualLobbyで接続/自動提出→開催復帰、独立実装監査 | V1/V7/V8/V9 PASS |
+| 2 Ready/連続設定なし、曲/対象/次曲待ち/Host待ち、正常連続無操作 | R1開催SET_READY撤去、R2eligible投影、R4 App全体source監視/replay、R5役割view。integration6、4source×2metric、fresh同開催20枠・各2曲・非null第2曲background受理 | V2/V3/V8 PASS |
+| 3 確定譜面/対象1人/Host接続で開始、休憩切断保持、対象0拒否 | R2 state/controller、R5server対象数/Host操作。pure CONNECTED/DISCONNECTED/LEFT/KICK/pending/0試験、fresh20対象、source/Host短実断とfake-clock | V2/V3/V5/V8 PASS |
+| 4 14/15未提出を待つ、締切確認1人、実行後欠場0pt/N維持 | R2締切/配点、R5確認と欠場表示。15人pure/別室realDO14/15→締切/late拒否、R5確認操作、C06欠場0pt/理由、固定N数値tests | V3/V4/V8/V9 PASS |
+| 5 一時復帰は同曲初回提出可、締切後不可、枠保持、LEFT復帰次曲 | R2/R3session/対象受付、R4reconnect/source/replay。pure＋realDO同曲reJOIN/deadline/late、freshHost断中受付、古socket/idempotency、LEFT/pending試験 | V2/V3/V5/V6 PASS |
+| 6 専任source/自己カード不要、兼任自己状態と全体操作、参加者Host操作なし | R4専任source不要、R5Host/participant境界、C06 top3＋必要self。3役割tests/visual、CASUAL専任とTOURNAMENT兼任実Tauri、20cards/秘匿ACTIVE/participant final、両監査 | V1/V2/V8/V9 PASS |
+| 7 未公開score/順位秘匿、同点/N/欠場/300秒/無効期間/完全部分維持 | R2集計/期限、R3全channel秘匿/復元、R4history DTO/v1 reader/v2保存、R5結果。pure数値/299999・300000・300001ms/controller全channel、realDO invalid upsert、history unit/Rust20/fresh4native完全、0曲/同強調fixtureと両監査 | V3/V4/V5/V6/V7/V9 PASS |
+
+#### V1〜V9 最終PASS・証拠の面
+
+| V | 最終採用証拠 / 経路 | 最終判定 |
+| --- | --- | --- |
+| V1 | R2容量/役割、R3非公開lobby、別室realDO4capacity、fresh2type同開催native2＋補助WS20枠、normal3run | PASS |
+| V2 | authoritative eligible/0/LEFT/KICK/pending、Readyなしintegration6、fresh各2曲20結果/役割view | PASS |
+| V3 | pure/realDO14/15・締切前復帰/後拒否、4source×2metric/replay/SOURCE_UNAVAILABLE/TECH、fresh非null2曲背景受理 | PASS |
+| V4 | 固定N・1/1/3・欠場SCORE0/MISSCOUNT9999/0pt数値試験、invalid revision/upsert、0曲/同強調/欠場fixture | PASS |
+| V5 | fake-clock300秒直前/一致/超過、alarm/復元/ROOM_STATE_LOST、短い実Host断/reJOIN（実時計300秒待機とは区別） | PASS |
+| V6 | protocol/未知/新旧両方向fail-closed、秘匿全message/ACK/reJOIN/RESULTS、malformed guard、normalReadyと実ACTIVE画像 | PASS |
+| V7 | browser v1/v2/未知/破損/原本保持/保存失敗、Rust legacy JSON保持、fresh両type両端末reload/schema2完全2曲、通常stats | PASS |
+| V8 | 保存試作対応、R5入口/実入力/戻り/3役割、3幅15caseとfresh22native実DOM/pixel/主操作/接続維持 | PASS |
+| V9 | R0 7規範、R5確認表/前曲無効化/結果全順位/C06 self12case、全fullと両独立最終監査/finding処置 | PASS |
+
+#### 13finding 最終台帳 — 両監査の処置・証拠・残risk
+
+| finding | 最終disposition | evidence | remaining risk |
+| --- | --- | --- | --- |
+| CR-01 / Ready gate・開始集合 | fixed | R2 state795/1314対象0拒否・切断保持・LEFT/KICK/pending、pure/fresh20×2 | 2実Tauri＋補助WSでの20接続、20実Tauri総起動未 |
+| CR-02 / breaking version・consumer | fixed | v2 strict同期、create/JOIN/capabilities/guard、旧/未知拒否、通常Ready維持、両監査 | 公開切替はdrain後 |
+| CR-03 / DO1復元 | Cコードfixed、公開gate分離 | controller.test412全5phase原本保持/fail-closed/ROOM_STATE_LOST、自動移行なし | 本番drain/旧record・接続不存在/1800秒retention/rollback未。C Must fix残ではない |
+| CR-04 / history live依存・互換 | fixed | 専用DTO、v1 reader/key/byte保持、v2 key/JSON、unit/Rust、4nativeCOMPLETE | 全OS保存差の総当たり未 |
+| CR-05 / UI authority・readsync | fixed | pending前read許可、Host断提出のみ、PICKING前曲invalid、Kick済提出保持、R5操作/独立tests | 合意外の操作/仕様拡張なし |
+| CR-06 / 旧oracle・検証面 | fixed | 新oracle/標準entry/root型面/fresh非null背景、full12/472SHA/freeze/commit/両監査一致 | hostedCI未実行、local full相当 |
+| CR-07 / source維持 | 維持確認、fixed | parser authority再実装なし、4×2unit/Rust/replay、実3source、source failure/TECH | 全source×metric実端末総当たり未 |
+| C-LOCAL-01 / required snapshot shape | fixed | strictshape補正/R4 tests/独立55/full/両最終確認 | 未知版fail-closedを維持 |
+| C-LOCAL-02 / mutationPending read | fixed | read判定優先/R4 policy tests/replay-sync独立/full | authoritative同期を維持 |
+| C-LOCAL-03 / raw理由enum | fixed | JP labels/room-history typed tests/storage原値保持/両監査 | 未知原本保持 |
+| C-LOCAL-04 / footer押出し | fixed | 内部scroll/R5親操作/3幅capture/C06全順位scroll/freshactualfooter | 全OS/DPI未 |
+| C-LOCAL-05 / native画面gap | fixed | fresh22native/DOM/親実view/非null2曲背景/4history、旧invalid不採用保存、両監査 | native実inner374×805、305はbrowser面、2Tauri＋補助WS |
+| C-LOCAL-06 / selfカード欠落 | fixed | c79a3b7 typedtests、self12case自己1/top3自己時3cards/他4、欠場理由0pt・全20行/scroll/footer/親＋auditor実view | fixture値を配点証明にせずR2数値面と分離 |
+
+- 両最終verdictは全13findingについて上の処置を確認し、未処理Blocker/Must fix 0、必須validation gap 0。`pass-with-followups` の残riskを未処理findingの暗黙延期にしない。新しいfollow-up Issue番号や公開操作を作っていない。
+
+#### E0〜R6履歴・local成果・保全の最終read-back
+
+- E0は開始最新v1 `64c640fab3a4e03a0a7fe8f71b9bf259be675167` に固定#189 `90856a42d9e199b49d97966e1dd620e6b626b5dd` を履歴mergeした `f87f05a7bc07e1b70dd1cc97e846625ecbce0572`。coordinatorも両ancestorの到達性をexit0で最終確認。87files旧差分/CI保持、E0 quick8面は旧Ready baseline再現として保持し、新7ACのPASSはR0〜R7の上記証拠による。
+- local logical commits（coordinatorがgit log read-back）: R0 `36a6c7d`、R1 `ede3b3c`、R2 `6e11dc0`、R4 `3c17193`、R3 `88a16a8`、R5 `10112c3`、C06 `c79a3b771fca36c7173d7775f3cf6663b4dcd7fe`、R6 `98ae4a9ec31faacb4abdbdb5f8fc5cc940841e7a`。依存checkpointとownership引渡しの実施歴を保持する。
+- 最終製品HEADは98ae4a9。local full当時HEAD10112c3＋frozen dirty contentとcommit後sourceを472files SHAで0mismatch確認（親root-final-readback＋coordinator再照合＋両auditor）。12freeze/typedtest標準entrypoint、native/log/保存原本証拠の整合を確認。本taskはmanifest対象外なのでこのappendで製品再freeze/テスト再実行を必要とする製品変更はない。
+- 元root v1 clean、保全stash `issue-188-phase-a-b-originals-published-pr-191` と `codex-pr3-before-sync`、既存worktrees5件・旧branch・試作原本を保持。R5 MCP25filesのSHA一致reconciliationは既履歴を保持。実runtime process終了はtask-owned PIDだけで、元WIP/原本/stash/worktreeのdelete/applyは0。parent read-backを保全根拠にし、coordinatorはcleanupを実行していない。
+
+#### 最終現状・停止境界
+
+| 面 | 現在状態 / 完了証拠 |
+| --- | --- |
+| 7製品AC / V1〜V9 | 全PASS、上の実装/経路対応、必須gapなし |
+| 13finding | 全処置済み、未処理Blocker/Must fix0、両監査が確認 |
+| 両R7独立監査 | COMPLETE / pass-with-followups、契約55+85・実装212＋typedfixture、immutable98ae4a9 |
+| local full / CI parity | 12/12 PASS、472source一致、標準test/root型＋mjs明示面。hostedCI未実行 |
+| local製品commits | E0〜R6/C06全read-back、最終98ae4a9、両ancestor維持 |
+| 元root/旧資料/WIP | v1 clean・stash2/worktrees5/原本保持、未知/user-owned process停止なし |
+| 本closing artifact / 最終文書commit | artifact COMPLETE・親GO済み。親によるtask限定local commit/read-backだけ残る。完了後Phase C停止 |
+| ceiling / 禁止操作 | R7/localのみ。push/GitHub/PR/Issue/merge/deploy/delete/applyなし・禁止継続 |
+| 公開gate・残risk | 本番drain/1800秒retention/旧record接続不存在/原本保全rollback未実施。hostedCI/全OS-DPI-読み上げ/実時計300秒待機/全source×metric native総当たり未。公開許可/成功とは扱わない |
+
+- Replan Gateは新仕様/契約互換/CI依存/resource判断、ownership衝突、証拠不整合、新Must fixの発見でaffected packet停止・ESCALATION。既scopeの記録を締めた現在、coordinatorは追加実装/監査/公開へ進まず停止する。
+- final closing artifact status: **COMPLETE**。技術gate全COMPLETE、親の最終task local commit/read-backをもって本Phase Cを終了する。古いpending checkpointは履歴として保持し、現在のpendingは上表の記録commitだけ。
