@@ -227,7 +227,7 @@ jobs:
         if: steps.detect_diff.outputs.diff_detected == 'true'
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: "22.23.4"
           cache: npm
 
       - name: Validate deploy configuration

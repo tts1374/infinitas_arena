@@ -11,5 +11,8 @@
   },
   "devDependencies": {
     "tsx": "^4.21.0"
+  },
+  "volta": {
+    "extends": "../../package.json"
   }
 }
