@@ -1,0 +1,4 @@
+interface:
+  display_name: "Issue Start Prompt Flow"
+  short_description: "正本と phase 境界を保持して、次チャットへ渡せる短い開始指示文を作る"
+  default_prompt: "Use $issue-start-prompt-flow to write a concise Japanese handoff prompt for the specified Issue or task."
