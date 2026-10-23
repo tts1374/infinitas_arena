@@ -1,4 +1,4 @@
-import type { ChartSearchEntry, LobbyListResponse, RoomSettings } from "@infinitas/shared";
+import type { ChartSearchEntry, EventRoomSettings, LobbyListResponse, RoomSettings } from "@infinitas/shared";
 import type { ISO8601String } from "@infinitas/shared/models/common";
 
 export interface ApiErrorResponse {
@@ -14,6 +14,18 @@ export interface CreateRoomResponse {
   created_at: ISO8601String;
   expires_at: ISO8601String;
   settings: RoomSettings;
+}
+
+export interface CreateEventRoomResponse {
+  room_id: string;
+  generation: number;
+  join_code: string;
+  settings: EventRoomSettings;
+}
+
+export interface CapabilitiesResponse {
+  host_event_protocol: 1;
+  host_event_accept_new: boolean;
 }
 
 export type ListLobbyResponse = LobbyListResponse;

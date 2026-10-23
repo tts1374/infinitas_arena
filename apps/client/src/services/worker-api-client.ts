@@ -2,6 +2,7 @@ import type {
   ChartDifficulty,
   ChartSearchEntry,
   ChartSearchQuery,
+  EventRoomSettings,
   LobbyListResponse,
   MatchmakingQueueRequest,
   MatchmakingQueueTicket,
@@ -11,6 +12,60 @@ import type {
   RoomSettings,
   SongPack,
 } from "@infinitas/shared";
+import clientPackageJson from "../../package.json";
+
+const APP_VERSION = typeof clientPackageJson.version === "string" ? clientPackageJson.version : "unknown";
+
+export interface CapabilitiesResponse {
+  host_event_protocol?: number;
+  host_event_accept_new?: boolean;
+}
+
+export interface HostEventCapabilitiesAvailability {
+  hostEventsAvailable: boolean;
+  hostEventCreationAvailable: boolean;
+}
+
+const DISABLED_HOST_EVENT_CAPABILITIES: HostEventCapabilitiesAvailability = {
+  hostEventsAvailable: false,
+  hostEventCreationAvailable: false,
+};
+
+export class HostEventCapabilitiesTracker {
+  private generation = 0;
+
+  start(): { generation: number; availability: HostEventCapabilitiesAvailability } {
+    this.generation += 1;
+    return { generation: this.generation, availability: DISABLED_HOST_EVENT_CAPABILITIES };
+  }
+
+  resolve(generation: number, capabilities: CapabilitiesResponse): HostEventCapabilitiesAvailability | null {
+    if (generation !== this.generation) return null;
+    return {
+      hostEventsAvailable: supportsHostEvents(capabilities),
+      hostEventCreationAvailable: supportsHostEventCreation(capabilities),
+    };
+  }
+
+  cancel(generation: number): void {
+    if (generation === this.generation) this.generation += 1;
+  }
+}
+
+export interface CreateEventRoomRequest {
+  host_event_protocol: 1;
+  client_version: string;
+  host_player_id: string;
+  host_display_name: string;
+  settings: EventRoomSettings;
+}
+
+export interface CreateEventRoomResponse {
+  room_id: string;
+  generation: number;
+  join_code: string;
+  settings: EventRoomSettings;
+}
 
 export interface CreateRoomResponse {
   room_id: string;
@@ -161,6 +216,38 @@ function appendQueryParam(searchParams: URLSearchParams, key: string, value: str
 export async function listLobby(baseUrl: string): Promise<ListLobbyResponse> {
   const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
   return requestJson<ListLobbyResponse>(`${normalizedBaseUrl}/api/lobby`, { method: "GET" });
+}
+
+export async function getCapabilities(baseUrl: string, signal?: AbortSignal): Promise<CapabilitiesResponse> {
+  const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
+  try {
+    return await requestJson<CapabilitiesResponse>(`${normalizedBaseUrl}/api/capabilities`, {
+      method: "GET",
+      ...(signal ? { signal } : {}),
+    });
+  } catch (error) {
+    if (error instanceof WorkerApiError && (error.status === 404 || error.status === 0)) return {};
+    throw error;
+  }
+}
+
+export function supportsHostEvents(capabilities: CapabilitiesResponse): boolean {
+  return capabilities.host_event_protocol === 1;
+}
+
+export async function createEventRoom(
+  baseUrl: string,
+  request: Omit<CreateEventRoomRequest, "host_event_protocol" | "client_version">,
+): Promise<CreateEventRoomResponse> {
+  const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
+  return requestJson<CreateEventRoomResponse>(`${normalizedBaseUrl}/api/event-rooms`, {
+    method: "POST",
+    body: JSON.stringify({ host_event_protocol: 1, client_version: APP_VERSION, ...request } satisfies CreateEventRoomRequest),
+  });
+}
+
+export function supportsHostEventCreation(capabilities: CapabilitiesResponse): boolean {
+  return supportsHostEvents(capabilities) && capabilities.host_event_accept_new === true;
 }
 
 export async function createRoom(baseUrl: string, settings: RoomSettings): Promise<CreateRoomResponse> {

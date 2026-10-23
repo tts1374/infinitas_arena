@@ -2,7 +2,10 @@ import type { ExpectedKey, SkipReason } from "@infinitas/shared";
 import type { ParsedSourceChangePayload, ParsedSourceObservationPayload } from "./tauri-bridge";
 import type { DebugInjectionTemplate, DebugResultTemplate } from "../debug/types";
 import { roomStore } from "../stores/room-store";
+import { eventRoomStore } from "../stores/event-room-store";
 import { settingsStore } from "../stores/settings-store";
+import { observationMatchesExpected } from "./source-observation";
+import { buildEventNotebookFingerprint, eventNotebookReplayGuard } from "./event-notebook-replay";
 
 export interface SourceSubmitOutcome {
   ok: boolean;
@@ -115,38 +118,6 @@ function rememberNotebookTimestamp(context: ActiveRoundContext, rawTimestamp: st
     }
     lastSubmittedNotebookTimestampByRoomPlayer.delete(oldestKey);
   }
-}
-
-function observationMatchesExpected(
-  observation: ParsedSourceObservationPayload,
-  expectedKey: ExpectedKey,
-  source: ParsedSourceChangePayload["source"],
-): boolean {
-  const expectedChartId =
-    typeof expectedKey.chart_id === "number" && Number.isInteger(expectedKey.chart_id) && expectedKey.chart_id > 0
-      ? expectedKey.chart_id
-      : null;
-  const observedChartId =
-    typeof observation.chartId === "number" && Number.isInteger(observation.chartId) && observation.chartId > 0
-      ? observation.chartId
-      : null;
-
-  if (expectedChartId !== null) {
-    if (observedChartId !== null && observedChartId !== expectedChartId) {
-      return false;
-    }
-
-    if (source === "daken_counter_v3" && observedChartId === null) {
-      return false;
-    }
-  }
-
-  const observedPlayStyle = observation.playStyle ?? expectedKey.play_style;
-  return (
-    observedPlayStyle === expectedKey.play_style &&
-    observation.difficulty === expectedKey.difficulty &&
-    observation.titleSearchKey === expectedKey.title_search_key
-  );
 }
 
 function metricLabelFromWinMetric(winMetric: "SCORE" | "MISSCOUNT"): MetricLabel {
@@ -382,6 +353,71 @@ export function submitParsedSourceChange(
       ok: false,
       message: `${originLabel} does not contain any observations to submit.`,
     };
+  }
+
+  const eventState = eventRoomStore.getState();
+  const eventSnapshot = eventState.snapshot;
+  if (
+    eventState.connectionStatus === "CONNECTED" &&
+    eventSnapshot?.phase === "PLAYING" &&
+    eventSnapshot.event_id !== null &&
+    eventSnapshot.selected_chart !== null &&
+    eventSnapshot.current_round_id !== null &&
+    eventState.playerId !== null &&
+    eventSnapshot.current_playing_player_ids.includes(eventState.playerId)
+  ) {
+    const me = eventSnapshot.participants.find((participant) => participant.player_id === eventState.playerId);
+    if (me?.round_status !== "PENDING") {
+      return { ok: false, message: "This event participant has already completed the current round." };
+    }
+    const expectedKey = eventSnapshot.selected_chart.expected_key;
+    const matchedObservation = parsedChange.observations.find((observation) =>
+      observationMatchesExpected(observation, expectedKey, parsedChange.source),
+    );
+    if (!matchedObservation) return { ok: false, message: "No observation matched the current event round expected key." };
+    const notebookFingerprint = buildEventNotebookFingerprint(matchedObservation);
+    if (parsedChange.source === "inf-notebook") {
+      const replay = eventNotebookReplayGuard.rejection(eventSnapshot.event_id, eventState.playerId, matchedObservation.timestamp, notebookFingerprint);
+      if (replay !== null) {
+        return { ok: false, message: `Skipped inf-notebook event auto-submit because timestamp ${replay.current} is not newer than ${replay.previous}.` };
+      }
+    }
+    const metricValue = eventSnapshot.settings.win_metric === "SCORE" ? matchedObservation.score : matchedObservation.misscount;
+    const metricValidation = ensureMetricValue(metricValue, "Derived metric");
+    if (metricValidation !== null) return metricValidation;
+    const sent = eventRoomStore.submitResult(
+      {
+        play_style: matchedObservation.playStyle ?? expectedKey.play_style,
+        difficulty: matchedObservation.difficulty,
+        title_search_key: matchedObservation.titleSearchKey,
+        ...(typeof matchedObservation.chartId === "number" && matchedObservation.chartId > 0
+          ? { chart_id: matchedObservation.chartId }
+          : {}),
+      },
+      metricValue,
+      {
+        source: parsedChange.source,
+        timestamp: matchedObservation.timestamp,
+        difficulty: matchedObservation.difficulty,
+        title: matchedObservation.title,
+        title_search_key: matchedObservation.titleSearchKey,
+        score: matchedObservation.score,
+        misscount: matchedObservation.misscount,
+        file_path: parsedChange.filePath,
+        ...(matchedObservation.sourceMetaExtras ?? {}),
+      },
+      parsedChange.source === "inf-notebook"
+        ? {
+            eventId: eventSnapshot.event_id,
+            playerId: eventState.playerId,
+            timestamp: matchedObservation.timestamp,
+            fingerprint: notebookFingerprint,
+          }
+        : undefined,
+    );
+    return sent
+      ? { ok: true, message: `Auto-submitted ${eventSnapshot.settings.win_metric} from ${originLabel}.` }
+      : { ok: false, message: "Failed to send event SUBMIT for the injected payload." };
   }
 
   const activeRoundContext = getActiveRoundContext();

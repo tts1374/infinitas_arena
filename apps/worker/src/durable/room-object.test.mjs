@@ -14,6 +14,10 @@ class TestStorage {
     this.#records.set(key, value);
   }
 
+  async delete(key) {
+    return this.#records.delete(key);
+  }
+
   async deleteAlarm() {
     this.#alarm = null;
   }
@@ -116,6 +120,19 @@ async function createRoomObject() {
 
   return roomObject;
 }
+
+test("event initialization uses the same Room DO with a separate record and blocks normal initialization", async () => {
+  const state = new TestDurableObjectState();
+  const roomObject = new RoomDurableObject(state, { ...createEnv(), MIN_SUPPORTED_CLIENT_VERSION: "1.4.0", HOST_EVENT_ACCEPT_NEW: "true" });
+  const eventPayload = { room_id: "event-1", created_at: new Date().toISOString(), host_player_id: "host", host_display_name: "Host",
+    settings: { event_name: "event", event_type: "CASUAL", host_plays: false, play_style: "SP", win_metric: "SCORE", visibility: "PRIVATE", join_code: "ABCDEFGH" } };
+  const eventResponse = await roomObject.fetch(new Request("https://room.internal/internal/event-init", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(eventPayload) }));
+  assert.equal(eventResponse.status, 200);
+  assert.equal((await state.storage.get("event-room-record")).room_kind, "HOST_EVENT");
+  assert.equal(await state.storage.get("room-record"), undefined);
+  const normalResponse = await roomObject.fetch(new Request("https://room.internal/internal/init", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ room_id: "event-1", created_at: new Date().toISOString(), settings: buildSettings() }) }));
+  assert.equal(normalResponse.status, 409);
+});
 
 function enableAutoMatchRoom(roomObject) {
   roomObject.roomState.settings.auto_match = true;

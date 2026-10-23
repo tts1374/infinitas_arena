@@ -8,11 +8,13 @@ import {
   writeE2EStateDump,
 } from "./e2e-observability";
 import { roomStore } from "../stores/room-store";
+import { eventRoomStore } from "../stores/event-room-store";
 import { settingsStore, isRoomEntryReady } from "../stores/settings-store";
 import { sourceStore } from "../stores/source-store";
 import { readMatchHistory } from "./match-history-overlay";
 import { selectActiveMatchHistory } from "./match-history-view-model";
 import { statsArchiveService } from "./stats-archive";
+import { eventHistoryService, isReadableEventHistory } from "./event-history";
 
 type GetView = () => string;
 
@@ -28,7 +30,75 @@ let startMatchRequestedKey: string | null = null;
 let pickRequestedKey: string | null = null;
 const completedMatchIds = new Set<string>();
 let returnToLobbyRequestedForMatchId: string | null = null;
+let rematchTimerId: number | null = null;
+let automationTimerId: number | null = null;
+let eventConnectRequested = false;
+let eventStartRequested = false;
+let eventPickRequestedRevision: number | null = null;
+let eventReadyRequestedRoundId: string | null = null;
+let eventRoundStartRequestedId: string | null = null;
+let eventNextPickRequestedId: string | null = null;
+let eventNextPickAttemptCount = 0;
+let eventNextPickLastAttemptAtMs = 0;
+let eventEndRequested = false;
+let eventDisconnectTriggered = false;
+let eventHostDisconnectLogged = false;
+let eventHostReconnectLogged = false;
+let eventReloadScheduled = false;
+let eventLobbyObservedAtMs: number | null = null;
+let eventPickingObservedAtMs: number | null = null;
+let eventFirstResultObservedAtMs: number | null = null;
+let eventReconnectAdvanceTimerId: number | null = null;
+let eventReconnectAdvancePollCount = 0;
+const capturedEventStates = new Set<string>();
+const observedEventResultRoundIds = new Set<string>();
+const eventResultObservedAtMs = new Map<string, number>();
 const stopSubscriptions: (() => void)[] = [];
+
+const RESULT_EVIDENCE_SETTLE_MS = 1_000;
+const EVENT_DISCONNECT_TRIGGERED_KEY = "inf-arena-e2e-event-disconnect-triggered";
+const EVENT_HISTORY_RELOAD_KEY = "inf-arena-e2e-event-history-reload";
+const E2E_PAGE_LOAD_NONCE = crypto.randomUUID();
+
+function hasReloadedCurrentEventHistory(eventId: string | null): boolean {
+  if (eventId === null) return false;
+  try {
+    const marker = JSON.parse(sessionStorage.getItem(EVENT_HISTORY_RELOAD_KEY) ?? "null") as { eventId?: unknown; pageLoadNonce?: unknown } | null;
+    return marker?.eventId === eventId &&
+      typeof marker.pageLoadNonce === "string" && marker.pageLoadNonce !== E2E_PAGE_LOAD_NONCE &&
+      eventHistoryService.list().some((entry) => isReadableEventHistory(entry) && entry.event_id === eventId);
+  } catch {
+    return false;
+  }
+}
+
+function wasEventDisconnectTriggered(): boolean {
+  return eventDisconnectTriggered || sessionStorage.getItem(EVENT_DISCONNECT_TRIGGERED_KEY) === "1";
+}
+
+function scheduleEventAdvanceAfterReconnect(roundId: string | null): void {
+  if (roundId === null || eventReconnectAdvanceTimerId !== null) return;
+  eventReconnectAdvanceTimerId = window.setTimeout(() => {
+    eventReconnectAdvanceTimerId = null;
+    eventReconnectAdvancePollCount += 1;
+    const state = eventRoomStore.getState();
+    const snapshot = state.snapshot;
+    if (snapshot?.phase !== "PLAYING" || snapshot.round_phase !== "RESULT" || snapshot.current_round_id !== roundId) return;
+    const canAttempt = state.connectionStatus === "CONNECTED" && snapshot.host.connected && state.pendingMutationRequestIds.length === 0;
+    if (canAttempt && eventNextPickAttemptCount < 3) {
+      const sent = eventRoomStore.nextPick();
+      if (sent) {
+        eventNextPickRequestedId = roundId;
+        eventNextPickAttemptCount += 1;
+        eventNextPickLastAttemptAtMs = Date.now();
+        void logE2EEvent("event_next_pick_reconnect_attempted", { sent, attempt: eventNextPickAttemptCount, roundId });
+      }
+    }
+    if (eventReconnectAdvancePollCount < 12 && eventRoomStore.getState().snapshot?.round_phase === "RESULT") {
+      scheduleEventAdvanceAfterReconnect(roundId);
+    }
+  }, 1_000);
+}
 
 function getActivePlayerId(): string {
   const roomState = roomStore.getState();
@@ -105,6 +175,9 @@ function buildStateDumpPayload(activeView: string) {
   const sourceState = sourceStore.getState();
   const settingsState = settingsStore.getState();
   const matchHistory = readMatchHistory();
+  const visualRoot = typeof document === "undefined"
+    ? null
+    : (document.getElementById("visual-capture-root") as HTMLElement | null);
 
   return {
     activeView,
@@ -123,13 +196,214 @@ function buildStateDumpPayload(activeView: string) {
     sourcePaths: settingsState.saved.sourcePaths,
     matchHistory,
     activeMatchHistory: selectActiveMatchHistory(matchHistory),
+    eventRoom: eventRoomStore.getState(),
+    eventHistory: eventHistoryService.list(),
+    eventHistoryReloaded: hasReloadedCurrentEventHistory(eventRoomStore.getState().snapshot?.event_id ?? null),
+    visualLayout: visualRoot === null ? null : {
+      clientWidth: visualRoot.clientWidth,
+      scrollWidth: visualRoot.scrollWidth,
+      viewportWidth: document.documentElement.clientWidth,
+      hasHorizontalOverflow: visualRoot.scrollWidth > visualRoot.clientWidth,
+    },
     e2e: runtimeConfig.e2e,
   };
 }
 
+function captureEventState(label: string): void {
+  if (capturedEventStates.has(label)) return;
+  capturedEventStates.add(label);
+  window.setTimeout(() => {
+    const target = (document.getElementById("visual-capture-root") as HTMLElement | null) ?? document.body;
+    void captureE2EScreenshot(label, target);
+  }, 250);
+}
+
+function eventConnectionSettings() {
+  const settings = settingsStore.getState().saved;
+  return {
+    apiBaseUrl: settings.apiBaseUrl,
+    roomId: runtimeConfig.e2e.roomId!,
+    joinCode: runtimeConfig.e2e.joinCode ?? "",
+    playerId: settings.playerId,
+    displayName: settings.displayName,
+    source: settings.source,
+    songUnlocks: {
+      bit_unlocked: settings.bitUnlockEnabled,
+      djp_unlocked: settings.djpUnlockEnabled,
+      allow_leggendaria: settings.allowLeggendaria,
+      owned_pack_ids: settings.ownedPackIds,
+    },
+  };
+}
+
+async function ensureEventConnected(): Promise<void> {
+  if (eventConnectRequested || !runtimeConfig.e2e.roomId) return;
+  eventConnectRequested = eventRoomStore.connect(eventConnectionSettings());
+  if (!eventConnectRequested) await logE2EEvent("event_join_request_failed", { roomId: runtimeConfig.e2e.roomId });
+}
+
+async function maybeDriveHostEvent(): Promise<void> {
+  const state = eventRoomStore.getState();
+  const snapshot = state.snapshot;
+  if (snapshot === null) return;
+  const isHost = state.sessionRole === "HOST";
+  const self = snapshot.participants.find((participant) => participant.player_id === state.playerId);
+  const roundNumber = state.resultRounds.length + 1;
+
+  if (isHost && wasEventDisconnectTriggered() && state.connectionStatus === "DISCONNECTED" && !eventHostDisconnectLogged) {
+    eventHostDisconnectLogged = true;
+    await logE2EEvent("event_host_disconnected_observed", { phase: snapshot.phase, roundId: snapshot.current_round_id });
+  }
+
+  if (!snapshot.host.connected) {
+    if (snapshot.event_id !== null) captureEventState("event-host-disconnected");
+    if (snapshot.event_id !== null && !eventHostDisconnectLogged) {
+      eventHostDisconnectLogged = true;
+      await logE2EEvent("event_host_disconnected_observed", { phase: snapshot.phase, roundId: snapshot.current_round_id });
+    }
+    return;
+  }
+  if (isHost && wasEventDisconnectTriggered() && eventHostDisconnectLogged && !eventHostReconnectLogged && state.connectionStatus === "CONNECTED") {
+    eventHostReconnectLogged = true;
+    await logE2EEvent("event_host_reconnected_observed", { phase: snapshot.phase, roundId: snapshot.current_round_id });
+  }
+  if (snapshot.phase === "LOBBY") {
+    captureEventState("event-lobby");
+    if (isHost && snapshot.participants.length > 0 && !eventStartRequested) {
+      eventLobbyObservedAtMs ??= Date.now();
+      // Native two-client launch can take several seconds before the outer
+      // harness regains control. Keep this E2E-only state stable long enough
+      // to assert and capture both real windows.
+      if (Date.now() - eventLobbyObservedAtMs < 5_000) return;
+      eventStartRequested = eventRoomStore.startEvent();
+    }
+    return;
+  }
+  if (snapshot.phase === "PICKING") {
+    if (eventNextPickRequestedId !== null && eventNextPickRequestedId !== snapshot.current_round_id) {
+      eventNextPickRequestedId = null;
+      eventNextPickAttemptCount = 0;
+      eventNextPickLastAttemptAtMs = 0;
+    }
+    captureEventState(`event-picking-round-${roundNumber}`);
+    if (isHost && snapshot.selected_chart === null && eventPickRequestedRevision !== snapshot.selection_revision) {
+      eventPickRequestedRevision = snapshot.selection_revision;
+      try {
+        const response = await listRoomCharts(settingsStore.getState().saved.apiBaseUrl, snapshot.room_id, {
+          play_style: snapshot.settings.play_style,
+          level_filter: "ANY",
+          limit: 20,
+        });
+        const used = new Set(state.resultRounds.map((round) => round.chart.chart_key));
+        const chart = response.charts.find((entry) => !used.has(entry.chart_key)) ?? response.charts[0];
+        if (chart) eventRoomStore.confirmPick(chart.chart_key);
+      } catch (error) {
+        await logE2EEvent("event_auto_pick_failed", { reason: error instanceof Error ? error.message : "unknown" });
+      }
+      return;
+    }
+    if (snapshot.selected_chart !== null && self && !self.pending_next && !self.ready && eventReadyRequestedRoundId !== snapshot.current_round_id) {
+      eventReadyRequestedRoundId = snapshot.current_round_id;
+      eventRoomStore.setReady(true);
+      return;
+    }
+    if (isHost && snapshot.selected_chart !== null && eventRoundStartRequestedId !== snapshot.current_round_id) {
+      const eligible = snapshot.participants.filter(
+        (participant) =>
+          !participant.pending_next &&
+          (participant.connection_state === "CONNECTED" || participant.connection_state === "DISCONNECTED"),
+      );
+      if (eligible.length > 0 && eligible.every((participant) => participant.ready)) {
+        eventPickingObservedAtMs ??= Date.now();
+        if (Date.now() - eventPickingObservedAtMs < 5_000) return;
+        eventRoundStartRequestedId = snapshot.current_round_id;
+        eventRoomStore.startRound();
+      }
+    }
+    return;
+  }
+  if (snapshot.phase === "PLAYING" && snapshot.round_phase === "ACTIVE") {
+    captureEventState(`event-active-round-${roundNumber}`);
+    return;
+  }
+  if (snapshot.phase === "PLAYING" && snapshot.round_phase === "RESULT") {
+    if (snapshot.latest_result !== null) observedEventResultRoundIds.add(snapshot.latest_result.round_id);
+    captureEventState(`event-result-round-${state.resultRounds.length}`);
+    if (!isHost) return;
+    const resultRoundId = snapshot.latest_result?.round_id ?? snapshot.current_round_id;
+    if (resultRoundId !== null) {
+      const firstObservedAt = eventResultObservedAtMs.get(resultRoundId) ?? Date.now();
+      eventResultObservedAtMs.set(resultRoundId, firstObservedAt);
+      if (Date.now() - firstObservedAt < 5_000) return;
+    }
+    // EVENT_STATE can announce RESULT before the public results page arrives. Do not
+    // advance (or skip the disconnect probe) until this round is in the public feed.
+    const disconnectWasTriggered = wasEventDisconnectTriggered();
+    if ((!state.resultsSyncComplete || state.resultRounds.length === 0) && !disconnectWasTriggered) return;
+    if (runtimeConfig.e2e.eventDisconnectHost && !disconnectWasTriggered && state.resultRounds.length === 1) {
+      eventFirstResultObservedAtMs ??= Date.now();
+      if (Date.now() - eventFirstResultObservedAtMs < 1_500) return;
+      eventDisconnectTriggered = eventRoomStore.interruptTransportForE2E(4_000);
+      if (eventDisconnectTriggered) {
+        sessionStorage.setItem(EVENT_DISCONNECT_TRIGGERED_KEY, "1");
+        await logE2EEvent("event_host_disconnect_triggered", { roundId: snapshot.current_round_id });
+        scheduleEventAdvanceAfterReconnect(snapshot.current_round_id);
+      }
+      return;
+    }
+    const latestResultAlreadySynced = snapshot.latest_result !== null && state.resultRounds.some(
+      (round) => round.round_id === snapshot.latest_result?.round_id,
+    );
+    const completedRoundCount = Math.max(
+      observedEventResultRoundIds.size,
+      state.resultRounds.length + (snapshot.latest_result !== null && !latestResultAlreadySynced ? 1 : 0),
+    );
+    if (completedRoundCount < runtimeConfig.e2e.eventRoundCount) {
+      if (state.connectionStatus !== "CONNECTED") return;
+      if (state.pendingMutationRequestIds.length > 0) return;
+      const sameRound = eventNextPickRequestedId === snapshot.current_round_id;
+      if (sameRound && (eventNextPickAttemptCount >= 3 || Date.now() - eventNextPickLastAttemptAtMs < 2_000)) return;
+      const sent = eventRoomStore.nextPick();
+      if (sent) {
+        eventNextPickRequestedId = snapshot.current_round_id;
+        eventNextPickAttemptCount = sameRound ? eventNextPickAttemptCount + 1 : 1;
+        eventNextPickLastAttemptAtMs = Date.now();
+        await logE2EEvent("event_next_pick_attempted", { sent, attempt: eventNextPickAttemptCount, roundId: snapshot.current_round_id, completedRoundCount, connectionStatus: state.connectionStatus });
+      } else {
+        await logE2EEvent("event_next_pick_failed", { roundId: snapshot.current_round_id, completedRoundCount, connectionStatus: state.connectionStatus });
+      }
+    } else if (state.resultRounds.length >= runtimeConfig.e2e.eventRoundCount && !eventEndRequested) {
+      eventEndRequested = eventRoomStore.endEvent();
+    }
+    return;
+  }
+  if (snapshot.phase === "RESULT" || snapshot.phase === "CLOSED") {
+    captureEventState("event-final");
+    if (state.resultsSyncComplete && state.resultRounds.length >= runtimeConfig.e2e.eventRoundCount) {
+      const reloaded = hasReloadedCurrentEventHistory(snapshot.event_id);
+      if (reloaded) {
+        await logE2EEvent("event_history_reloaded", { eventId: snapshot.event_id, rounds: state.resultRounds.length, historyEntries: eventHistoryService.list().length });
+      } else if (!eventReloadScheduled) {
+        eventReloadScheduled = true;
+        sessionStorage.setItem(EVENT_HISTORY_RELOAD_KEY, JSON.stringify({ eventId: snapshot.event_id, pageLoadNonce: E2E_PAGE_LOAD_NONCE }));
+        await logE2EEvent("event_history_reload_requested", { eventId: snapshot.event_id });
+        window.setTimeout(() => window.location.reload(), 3_000);
+      }
+    }
+  }
+}
+
 async function updateStateDump(activeView: string, reason: string): Promise<void> {
   const roomSnapshot = roomStore.getState().snapshot;
-  const nextSignature = `${buildStateSignature(roomSnapshot)}|${reason}|${activeView}`;
+  const eventState = eventRoomStore.getState();
+  const eventSignature = eventState.snapshot === null
+    ? "event:null"
+    : `event:${eventState.snapshot.revision}:${eventState.snapshot.phase}:${eventState.snapshot.round_phase}:${eventState.resultRounds.length}:${eventState.resultsSyncComplete}`;
+  const visualRoot = document.getElementById("visual-capture-root") as HTMLElement | null;
+  const layoutSignature = visualRoot === null
+    ? "layout:null"
+    : `layout:${visualRoot.clientWidth}:${visualRoot.scrollWidth}:${document.documentElement.clientWidth}`;
+  const nextSignature = `${buildStateSignature(roomSnapshot)}|${eventSignature}|${reason}|${activeView}|${layoutSignature}`;
   if (lastStateSignature === nextSignature) {
     return;
   }
@@ -341,17 +615,23 @@ async function maybeAutoReturnToLobbyForRematch(): Promise<void> {
     return;
   }
 
-  const sent = roomStore.returnToLobby();
   returnToLobbyRequestedForMatchId = resultMatchId;
-  await logE2EEvent("return_to_lobby_sent", {
-    roomId: snapshot.room_id,
-    matchId: resultMatchId,
-    actorPlayerId: activePlayerId,
-    hostPlayerId: snapshot.host_player_id,
-    completedMatches: completedMatchIds.size,
-    targetMatches: runtimeConfig.e2e.matchCount,
-    sent,
-  });
+  if (rematchTimerId !== null) {
+    window.clearTimeout(rematchTimerId);
+  }
+  rematchTimerId = window.setTimeout(() => {
+    rematchTimerId = null;
+    const sent = roomStore.returnToLobby();
+    void logE2EEvent("return_to_lobby_sent", {
+      roomId: snapshot.room_id,
+      matchId: resultMatchId,
+      actorPlayerId: activePlayerId,
+      hostPlayerId: snapshot.host_player_id,
+      completedMatches: completedMatchIds.size,
+      targetMatches: runtimeConfig.e2e.matchCount,
+      sent,
+    });
+  }, RESULT_EVIDENCE_SETTLE_MS);
 }
 
 async function runAutomationStep(getView: GetView): Promise<void> {
@@ -364,6 +644,13 @@ async function runAutomationStep(getView: GetView): Promise<void> {
   try {
     do {
       automationStepQueued = false;
+      if (runtimeConfig.e2e.roomKind === "HOST_EVENT") {
+        await ensureEventConnected();
+        await maybeDriveHostEvent();
+        await updateStateDump(getView(), "event_automation_step");
+        await maybeCaptureFailure(getView());
+        continue;
+      }
       await ensureRoomConnected();
       await maybeAutoReadyAndStart();
       await maybeAutoPick();
@@ -389,6 +676,38 @@ function clearRunnerState(): void {
   pickRequestedKey = null;
   completedMatchIds.clear();
   returnToLobbyRequestedForMatchId = null;
+  eventConnectRequested = false;
+  eventStartRequested = false;
+  eventPickRequestedRevision = null;
+  eventReadyRequestedRoundId = null;
+  eventRoundStartRequestedId = null;
+  eventNextPickRequestedId = null;
+  eventNextPickAttemptCount = 0;
+  eventNextPickLastAttemptAtMs = 0;
+  eventEndRequested = false;
+  eventDisconnectTriggered = false;
+  eventHostDisconnectLogged = false;
+  eventHostReconnectLogged = false;
+  eventReloadScheduled = false;
+  eventLobbyObservedAtMs = null;
+  eventPickingObservedAtMs = null;
+  eventFirstResultObservedAtMs = null;
+  eventReconnectAdvancePollCount = 0;
+  if (eventReconnectAdvanceTimerId !== null) {
+    window.clearTimeout(eventReconnectAdvanceTimerId);
+    eventReconnectAdvanceTimerId = null;
+  }
+  capturedEventStates.clear();
+  observedEventResultRoundIds.clear();
+  eventResultObservedAtMs.clear();
+  if (rematchTimerId !== null) {
+    window.clearTimeout(rematchTimerId);
+    rematchTimerId = null;
+  }
+  if (automationTimerId !== null) {
+    window.clearInterval(automationTimerId);
+    automationTimerId = null;
+  }
   while (stopSubscriptions.length > 0) {
     const stop = stopSubscriptions.pop();
     stop?.();
@@ -422,6 +741,11 @@ export function startE2EScenarioRunner(getView: GetView): () => void {
     }),
   );
   stopSubscriptions.push(
+    eventRoomStore.subscribe(() => {
+      void runAutomationStep(getView);
+    }),
+  );
+  stopSubscriptions.push(
     sourceStore.subscribe(() => {
       void updateStateDump(getView(), "source_state_changed");
     }),
@@ -431,6 +755,13 @@ export function startE2EScenarioRunner(getView: GetView): () => void {
       void updateStateDump(getView(), "stats_archive_changed");
     }),
   );
+
+  // Transport reconnects do not necessarily change a store after the final
+  // JOIN/results messages. A low-frequency tick keeps the deterministic E2E
+  // driver moving without affecting production (the runner is E2E-only).
+  automationTimerId = window.setInterval(() => {
+    void runAutomationStep(getView);
+  }, 500);
 
   void runAutomationStep(getView);
 

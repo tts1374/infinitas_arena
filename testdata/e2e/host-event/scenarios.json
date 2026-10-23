@@ -1,0 +1,14 @@
+{
+  "casual": {
+    "event_type": "CASUAL",
+    "host_plays": false,
+    "players": ["casual-a", "casual-b"],
+    "round_metrics": [[2100, 1900], [2200, 2000]]
+  },
+  "tournament": {
+    "event_type": "TOURNAMENT",
+    "host_plays": true,
+    "players": ["tournament-a", "tournament-b"],
+    "round_metrics": [[2400, 2400], [2500, 2300]]
+  }
+}

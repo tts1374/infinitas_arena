@@ -1,6 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { CLOSE_REASONS } from "@infinitas/shared";
+import {
+  CLIENT_MESSAGE_TYPES,
+  CLOSE_REASONS,
+  HOST_EVENT_PHASES,
+  HOST_EVENT_PROTOCOL,
+  SERVER_MESSAGE_TYPES,
+} from "@infinitas/shared";
 import { RoomLobbyState } from "./room-state.ts";
 
 function buildChart(chartKey, titleSearchKey, title, level) {
@@ -129,3 +135,14 @@ test("RESULT_READY payload follows structured per_round/per_player contract", ()
   assert.equal(Array.isArray(firstPlayer.rounds), true);
 });
 
+test("host event protocol is additive and uses dedicated message families", () => {
+  assert.equal(HOST_EVENT_PROTOCOL, 1);
+  assert.deepEqual(HOST_EVENT_PHASES, ["LOBBY", "PICKING", "PLAYING", "RESULT", "CLOSED"]);
+  assert.equal(CLIENT_MESSAGE_TYPES.includes("ROOM_JOIN"), true);
+  assert.equal(CLIENT_MESSAGE_TYPES.includes("EVENT_JOIN"), true);
+  assert.equal(CLIENT_MESSAGE_TYPES.includes("EVENT_ACTION"), true);
+  assert.equal(SERVER_MESSAGE_TYPES.includes("ROOM_UPDATED"), true);
+  for (const type of ["EVENT_JOIN_ACCEPTED", "EVENT_STATE", "EVENT_ACTION_ACK", "EVENT_RESULTS", "EVENT_ERROR"]) {
+    assert.equal(SERVER_MESSAGE_TYPES.includes(type), true);
+  }
+});

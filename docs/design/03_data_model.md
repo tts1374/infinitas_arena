@@ -447,3 +447,37 @@ type LobbyRoomSummary = {
 - 読み込み側は「現行 + 直前 schema_version」のみサポートし、それ以前は空アーカイブへフォールバックする。
 - 加法的変更（optional項目追加）は同一 schema_version で許容する。
 - 互換 fallback（`current_match_id -> RESULT_READY.summary.match_id -> room_id`）は維持し、順序を変更しない。
+
+---
+
+## 10. Host開催データ（schema v1）
+
+通常`room-record`と開催recordは別storage keyとし、`room_kind`で判別する。`room_kind`欠落recordは従来の通常roomとして扱い、`room_kind=HOST_EVENT`を通常roomへhydrateしない。開催recordのschema/種別/必須状態が不正な場合は空開催を生成せず`ROOM_STATE_LOST`で終了する。
+
+### 10.1 EventRoomRecord
+
+- identity: `schema_version=1 / room_kind=HOST_EVENT / room_id / generation / event_id:string|null`
+- settings: `event_name / event_type=CASUAL|TOURNAMENT / host_plays:boolean / play_style=SP|DP / win_metric=SCORE|MISSCOUNT / join_code`。`event_name`は通常`room_comment`と同じく空文字を許可し、最大80文字、CR/LF禁止、保存時の暗黙trimなしとする。
+- progress: `phase / round_phase:ACTIVE|RESULT|null / revision / selection_revision / selected_chart / current_round_id / created_at / started_at / ended_at / end_reason`。LOBBYでは`event_id/started_at=null`、`START_EVENT`成功と同じ保存境界で両方を発行する。
+- host: `host_player_id / connected / initial_connect_deadline / disconnect_deadline`
+- participants: stable player id、表示名、connection/left/kicked、source、所持解禁、ready、pending_next。兼任Hostはparticipant、専任Hostは非participant。
+- tournament: `fixed_roster_player_ids / scoring_size_n`を`START_EVENT`で固定し、その後の退出/Kick/欠場で変更しない。
+- 公開`EventRoomSnapshot`にも`fixed_roster_player_ids:string[] / scoring_size_n:number|null`を含め、開催メタデータの権威情報とする。合同プレーと未開始LOBBYは`[] / null`。曲ページング`EVENT_RESULTS`へは重複格納しない。
+- round: `round_id / chart / selection_revision / eligible_player_ids / playing_player_ids / started_at / confirmed_at / invalidated_at / public_revision`。現在の準備状態は`participants[].ready`を正とし、roundの準備人数は`eligible_player_ids`との積から導出する。round内へ重複した`ready_player_ids`を保存しない。
+- private submissionsは公開stateと型を分離し、`SUBMITTED|ABSENT`、metric/source、欠場理由、受理時刻を保持する。欠場理由は`SKIP|DEADLINE|LEFT|KICKED|NOT_PRESENT`。
+- public result entryは`playing_player_ids`に限定する。ただし大会では固定名簿のうち当該曲で欠場扱いとなる対象も含める。合同プレーの未準備者/pending_nextはparticipant stateには残すが、round resultや偽`ABSENT`を生成しない。同値は同順位/順位飛ばし、有効提出者へ`N-rank+1`、欠場はrankなし/0pt。合同プレーはpoints/overallを持たない。
+- invalidated roundは履歴へ残すが総合から除外する。総合は有効な公開roundから毎回再計算する。
+- idempotencyはplayer/request key、payload fingerprint、処理結果を終了後回収まで保持する。
+
+### 10.2 永続化と復元
+
+- state、公開結果、idempotencyを同じ確定境界で保存し、ACK/配信は保存後に行う。
+- 復元時はschema/room_kindを検証し、接続をstable player idへ再関連付け、絶対Host期限を現在時刻で評価する。alarm/再起動/接続試行で期限を書き換えない。
+- 開催中に通常30分TTLを適用しない。終了から1800秒後にsocket、開催record、round、idempotencyを回収する。
+
+### 10.3 EventHistoryRecord
+
+- 保存単位は開催。`schema_version=1`、開催ID/名称/種別、開始終了時刻/理由、Host/兼任区分、SP/DP・指標、大会名簿/N、曲ID/譜面/対象者、確定時刻、各人の結果/欠場理由/順位/pt、無効状態、総合、最終受信時刻、受信revision、最終同期済み曲数、`complete|partial`を保持する。
+- Tauriはapp data配下`event-results/<event_id>.json`、browserは開催専用storage keyへ保存する。曲ID/revision単位でupsertし、重複通知で曲やptを重複追加しない。
+- 最終結果と全公開曲が揃うまでpartial。途中退出/Kick/切断は受信済み範囲を残し、専任Hostも保存する。
+- 未知開催schemaは原本を保持して読めない旨を表示する。通常room archive、`matches/match_games/play_results/personal_bests`へ変換・流入させない。

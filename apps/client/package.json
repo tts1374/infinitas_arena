@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0 --port 1420",
     "build": "vite build",
     "build:test": "vite build --mode test",
-    "test": "tsx --test src/dev/visual-scenarios.test.ts src/features/room/picking-countdown-display.test.tsx src/features/room/picking-countdown.test.ts src/features/room/presentation-shared.test.ts src/features/room/quick-chat.test.ts src/features/room/round-phase.test.ts src/pages/auto-match-waiting-count-polling.test.ts src/services/match-history-overlay.test.ts src/services/spectator-client.test.ts src/services/worker-api-client.test.ts",
+    "test": "tsx --test src/dev/event-visual-scenarios.test.ts src/dev/visual-scenarios.test.ts src/pages/EventRoomPage.visual.test.tsx src/features/event/EventFinalReview.test.tsx src/features/event/EventHostInvite.test.tsx src/features/event/event-name.test.ts src/features/event/event-presentation.test.ts src/services/event-action-policy.test.ts src/services/event-history.test.ts src/services/event-join-policy.test.ts src/services/event-notebook-replay.test.ts src/services/event-results-sync.test.ts src/services/event-ws-client.test.ts src/services/participation-mode.test.ts src/services/source-submission.test.ts src/features/room/picking-countdown-display.test.tsx src/features/room/picking-countdown.test.ts src/features/room/presentation-shared.test.ts src/features/room/quick-chat.test.ts src/features/room/round-phase.test.ts src/pages/auto-match-waiting-count-polling.test.ts src/services/match-history-overlay.test.ts src/services/spectator-client.test.ts src/services/worker-api-client.test.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",

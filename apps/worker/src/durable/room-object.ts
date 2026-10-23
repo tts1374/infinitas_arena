@@ -38,6 +38,8 @@ import {
   type RoundTransitionResult,
 } from "./room-state";
 import { workerChartMaster } from "../master/chart-master";
+import { EVENT_ROOM_RECORD_STORAGE_KEY, EventRoomController } from "./event-room-controller";
+import type { EventRoomStatePersistenceRecord } from "./event-room-state";
 
 type RoomSocketRole = "HOST" | "PLAYER" | "SPECTATOR";
 type JoinAcceptedSessionRole = "HOST" | "PLAYER" | "SPECTATOR";
@@ -74,6 +76,7 @@ interface SocketCloseContext {
 interface DurableObjectStorageLike {
   get<T>(key: string): Promise<T | undefined>;
   put<T>(key: string, value: T): Promise<void>;
+  delete(key: string): Promise<unknown>;
   deleteAlarm(): Promise<void>;
   setAlarm(scheduledTime: number | Date): Promise<void>;
 }
@@ -825,6 +828,7 @@ function parseRoomSocketAttachment(value: unknown): RoomSocketAttachment | null 
 
 export class RoomDurableObject {
   private readonly roomState = new RoomLobbyState(workerChartMaster);
+  private readonly eventController: EventRoomController;
   private readonly sessionsBySocket = new Map<WebSocket, RoomSocketSession>();
   private readonly activeSocketByPlayerId = new Map<string, WebSocket>();
   private readonly seenClientMessageIds = new Map<string, Set<string>>();
@@ -839,9 +843,19 @@ export class RoomDurableObject {
     private readonly state: DurableObjectStateLike,
     private readonly env: WorkerEnv,
   ) {
+    this.eventController = new EventRoomController(this.state, this.env);
     this.minSupportedClientVersion = resolveMinSupportedClientVersion(this.env.MIN_SUPPORTED_CLIENT_VERSION);
     this.readyPromise = this.state.blockConcurrencyWhile(async () => {
       const record = await this.state.storage.get<RoomDurableRecord>(ROOM_RECORD_STORAGE_KEY);
+      const eventRecord = await this.state.storage.get<EventRoomStatePersistenceRecord>(EVENT_ROOM_RECORD_STORAGE_KEY);
+      if (record !== undefined && eventRecord !== undefined) {
+        await this.eventController.restore({ room_id: eventRecord.room_id, invalid: "dual-room-record" });
+        return;
+      }
+      if (eventRecord !== undefined) {
+        await this.eventController.restore(eventRecord);
+        return;
+      }
       if (record !== undefined) {
         this.roomState.hydrate(record.room_state);
         this.processedRequestKeys = [...record.processed_request_keys];
@@ -974,6 +988,9 @@ export class RoomDurableObject {
     if (url.pathname === "/internal/init" && request.method === "POST") {
       return this.handleInternalInitialize(request);
     }
+    if (url.pathname === "/internal/event-init" && request.method === "POST") {
+      return this.handleInternalEventInitialize(request);
+    }
     if (url.pathname === "/internal/recreate" && request.method === "POST") {
       return this.handleInternalRecreate(request);
     }
@@ -993,14 +1010,15 @@ export class RoomDurableObject {
       if (request.method !== "GET") {
         return jsonResponse(405, { error: "Method not allowed." });
       }
-      return this.handleInternalChartSearch(url);
+      return this.eventController.ownsRoom() ? this.eventController.chartSearch(url) : this.handleInternalChartSearch(url);
     }
     if (!isWebSocketUpgradeRequest(request)) {
       return new Response("Expected websocket upgrade request.", { status: 426 });
     }
 
     const roomIdHeader = request.headers.get("x-room-id");
-    if (this.roomState.isInitialized() && roomIdHeader !== this.roomState.getRoomId()) {
+    const ownedRoomId = this.eventController.ownsRoom() ? this.eventController.roomId() : this.roomState.isInitialized() ? this.roomState.getRoomId() : null;
+    if (ownedRoomId !== null && roomIdHeader !== ownedRoomId) {
       return new Response("room_id routing mismatch.", { status: 400 });
     }
 
@@ -1012,6 +1030,10 @@ export class RoomDurableObject {
     const serverSocket = socketPair[1];
 
     this.state.acceptWebSocket(serverSocket);
+    if (this.eventController.ownsRoom()) {
+      this.eventController.registerSocket(serverSocket);
+      return new Response(null, { status: SWITCHING_PROTOCOLS_STATUS, webSocket: clientSocket } as ResponseInit);
+    }
     const attachment = this.buildInitialSocketAttachment();
     this.writeSocketAttachment(serverSocket, attachment);
     this.registerSocketSession(serverSocket, attachment);
@@ -1024,11 +1046,27 @@ export class RoomDurableObject {
 
   async alarm(): Promise<void> {
     await this.readyPromise;
+    if (this.eventController.ownsRoom()) return this.eventController.alarm(new Date());
     await this.processDueTransitions(new Date());
     await this.syncAlarm();
   }
 
+  private async handleInternalEventInitialize(request: Request): Promise<Response> {
+    if (this.roomState.isInitialized() || this.eventController.ownsRoom()) return jsonResponse(409, { error: "ROOM_KIND_CONFLICT" });
+    let payload: unknown;
+    try { payload = await request.json(); } catch { return jsonResponse(400, { error: "Invalid JSON payload." }); }
+    if (!isRecord(payload) || typeof payload.room_id !== "string" || typeof payload.created_at !== "string" ||
+        typeof payload.host_player_id !== "string" || typeof payload.host_display_name !== "string" || !isRecord(payload.settings)) {
+      return jsonResponse(400, { error: "Invalid event room initialization payload." });
+    }
+    try {
+      await this.eventController.initialize(payload as unknown as import("./event-room-state").EventRoomInitializationInput);
+      return jsonResponse(200, { ok: true, room_id: payload.room_id });
+    } catch (error) { return jsonResponse(400, { error: error instanceof Error ? error.message : "Failed to initialize event room." }); }
+  }
+
   private async handleInternalInitialize(request: Request): Promise<Response> {
+    if (this.eventController.ownsRoom()) return jsonResponse(409, { error: "ROOM_KIND_CONFLICT" });
     let payload: unknown;
     try {
       payload = await request.json();
@@ -1192,6 +1230,7 @@ export class RoomDurableObject {
     message: string | ArrayBuffer | ArrayBufferView,
   ): Promise<void> {
     await this.readyPromise;
+    if (this.eventController.ownsRoom()) return this.eventController.message(socket, message);
     await this.handleSocketMessage(socket, message);
   }
 
@@ -1202,6 +1241,7 @@ export class RoomDurableObject {
     wasClean: boolean,
   ): Promise<void> {
     await this.readyPromise;
+    if (this.eventController.ownsRoom()) return this.eventController.close(socket);
     await this.handleSocketClose(socket, {
       trigger: "close",
       code,
@@ -1212,6 +1252,7 @@ export class RoomDurableObject {
 
   async webSocketError(socket: WebSocket, error: unknown): Promise<void> {
     await this.readyPromise;
+    if (this.eventController.ownsRoom()) return this.eventController.close(socket);
     const session = this.getOrCreateSocketSession(socket);
     this.logRoomEvent({
       level: "WARN",
