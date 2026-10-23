@@ -1,0 +1,4 @@
+interface:
+  display_name: "Issue Authoring Flow"
+  short_description: "確定した仕様から、範囲・受け入れ条件・検証が対応する Issue 本文を作る"
+  default_prompt: "Use $issue-authoring-flow to draft a bounded implementation Issue in Japanese from the agreed requirements."

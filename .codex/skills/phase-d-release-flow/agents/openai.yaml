@@ -1,4 +1,4 @@
 interface:
   display_name: "Phase D Release Flow"
-  short_description: "Automate Phase D release steps"
-  default_prompt: "Use this skill to run Phase D release operations: bump version, commit/push, conditional deploy workflows, and GitHub Release note update."
+  short_description: "Run authorized releases or draft user-facing announcements"
+  default_prompt: "Use $phase-d-release-flow for the requested release operations or announcement text, preserving the current authorization boundary."
