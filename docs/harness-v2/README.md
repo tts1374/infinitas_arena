@@ -12,6 +12,8 @@
 
 ## 読み順と結論
 
+#197の隔離試作は [prototype.md](prototype.md)、保証との対応は [prototype-coverage.md](prototype-coverage.md)、実行証跡は [prototype-evidence.md](prototype-evidence.md) を参照する。以下の#196調査入力と#198事前比較条件は維持する。
+
 | 文書 | 内容 |
 | --- | --- |
 | [inventory.md](inventory.md) | root/local Governance、8 Agent、15 Skill、ゲート・補助資料の分類、重複・衝突マップ |
