@@ -1,0 +1,23 @@
+{
+  "request_id": "example-current-user-request",
+  "base_revision": "4b600d3445edc71d0599058809c9a89b04591760",
+  "objective": "隔離trialの局所文書に明確な説明を追加する",
+  "kind": "change",
+  "ceiling": "implementation",
+  "target": "isolated-trial",
+  "acceptance": [{"id": "AC1", "text": "docs/trial-note.mdに依頼された説明がある"}],
+  "non_goals": ["製品・契約変更", "公開操作"],
+  "allowed_paths": ["docs/trial-note.md"],
+  "forbidden_paths": ["apps", "packages", ".github"],
+  "artifact_paths": ["docs/trial-note.md"],
+  "grants": [{"operation": "edit", "target": "docs/trial-note.md", "source": "user", "request_id": "example-current-user-request", "evidence": "現在の依頼で隔離trialの文書編集を明示許可"}],
+  "authority_history": [],
+  "references": [{"path": "docs/harness-v2/requirements.md", "revision": "97042277cbcab273d202fa215cadf3094ab9f11a"}],
+  "stop_conditions": ["ACと必要証拠が揃った時", "許可・scope・WIPの境界を超える時"],
+  "semantics": [],
+  "owners": [{"owner": "parent", "paths": ["docs/trial-note.md"], "status": "active"}],
+  "implementers": ["parent"],
+  "paused_paths": [],
+  "decisions": [],
+  "checkpoint": {"unfinished": ["AC1"], "integration_complete": false}
+}
