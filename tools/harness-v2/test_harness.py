@@ -1,6 +1,7 @@
 """P1-P8 executable probes. All remote operations use policy.stub only."""
 import copy
 import json
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -345,10 +346,49 @@ class EvidenceTests(unittest.TestCase):
 
 
 class IsolationTests(unittest.TestCase):
+    def fixture_source(self, root):
+        """Self-contained archive fixture; no source/PRODUCT_BASE Git history.
+
+        Product files and the guard reference remain the fixed baseline content
+        shipped in both source and trial. Real PRODUCT_BASE export is additionally
+        exercised by the source-checkout integration smoke, not assumed in tests.
+        """
+        source = root / "source"
+        source.mkdir()
+        for rel in ("AGENTS.md", "apps/client/AGENTS.md", "apps/worker/AGENTS.md", "packages/shared/AGENTS.md",
+                    "apps/web/AGENTS.md", "apps/update-worker/AGENTS.md", "apps/future/deep/AGENTS.override.md",
+                    "WORKFLOW.md", "QUALITY.md"):
+            target = source / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("Legacy fixture requires WORKFLOW.md and QUALITY.md\n", encoding="utf-8")
+        product_files = ["docs/design/01_fsm.md", "docs/design/02_ws_protocol.md", "docs/design/03_data_model.md",
+                         "docs/design/05_screen_list.md", "docs/design/06_source_io_spec.md", "docs/design/07_constants.md",
+                         "docs/design/08_repo_structure.md", "packages/shared/src/enums/room.ts", "packages/shared/src/ws/server.ts",
+                         "docs/harness-v2/requirements.md"]
+        for rel in product_files:
+            target = source / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(harness.SOURCE_ROOT / rel, target)
+        legacy = harness.SOURCE_ROOT / ".harness-v2-legacy/check-design-contracts.mjs"
+        if not legacy.exists():
+            legacy = harness.SOURCE_ROOT / "scripts/check-design-contracts.mjs"
+        (source / "scripts").mkdir()
+        shutil.copyfile(legacy, source / "scripts/check-design-contracts.mjs")
+        subprocess.run(["git", "init", "-b", "codex/export-fixture", str(source)], check=True, capture_output=True)
+        harness.git(source, "add", ".")
+        harness.git(source, "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "-m", "fixed export fixture")
+        return source, harness.git(source, "rev-parse", "HEAD").decode().strip()
+
+    def fixture_export(self, root):
+        source, revision = self.fixture_source(root)
+        destination = root / "trial"
+        with patch.object(harness, "SOURCE_ROOT", source):
+            harness.install(source, destination, revision)
+        return destination
+
     def test_export_replaces_all_active_legacy_governance(self):
         with tempfile.TemporaryDirectory(prefix="harness-v2-export-test-") as tmp:
-            destination = Path(tmp) / "trial"
-            harness.install(harness.SOURCE_ROOT, destination, harness.PRODUCT_BASE)
+            destination = self.fixture_export(Path(tmp))
             # Check every active location, not just the previously enumerated
             # client/worker/shared paths. Blueprint files are not active here.
             actual = {p.relative_to(destination).as_posix() for p in destination.rglob("AGENTS*.md")
@@ -358,6 +398,51 @@ class IsolationTests(unittest.TestCase):
                 self.assertEqual((destination / rel).read_bytes(), (harness.HERE / "runtime" / rel).read_bytes())
             self.assertFalse((destination / "WORKFLOW.md").exists())
             self.assertFalse((destination / "QUALITY.md").exists())
+
+    def test_trial_design_guard_retains_all_product_checks(self):
+        with tempfile.TemporaryDirectory(prefix="harness-v2-design-test-") as tmp:
+            trial = self.fixture_export(Path(tmp))
+            command = ["node", "scripts/check-design-contracts.mjs"]
+            self.assertEqual(subprocess.run(command, cwd=trial, capture_output=True).returncode, 0)
+            legacy = (trial / ".harness-v2-legacy/check-design-contracts.mjs").read_text(encoding="utf-8")
+            # Mutate each original product assertion independently. A missing
+            # requirement cannot be hidden by the new governance adapter.
+            import re
+            declarations = re.findall(r'^assertIncludes\(failures, ("(?:\\.|[^"\\])*"), ("(?:\\.|[^"\\])*")\);$', legacy, re.MULTILINE)
+            product_checks = [(json.loads(f), json.loads(p)) for f, p in declarations if json.loads(f) not in {"AGENTS.md", "QUALITY.md"}]
+            self.assertEqual(len(product_checks), 10)
+            for rel, pattern in product_checks:
+                with self.subTest(file=rel, pattern=pattern):
+                    target = trial / rel
+                    before = target.read_bytes()
+                    target.write_text(before.decode("utf-8").replace(pattern, "REMOVED_FOR_REGRESSION"), encoding="utf-8", newline="\n")
+                    process = subprocess.run(command, cwd=trial, capture_output=True)
+                    self.assertNotEqual(process.returncode, 0)
+                    self.assertIn(rel.encode(), process.stderr)
+                    target.write_bytes(before)
+            screen = trial / "docs/design/05_screen_list.md"
+            before = screen.read_bytes()
+            for changed in (b"```\n" + before, before + "\n## 11.4 主な操作\n".encode("utf-8")):
+                screen.write_bytes(changed)
+                self.assertNotEqual(subprocess.run(command, cwd=trial, capture_output=True).returncode, 0)
+            screen.write_bytes(before)
+            self.assertEqual(subprocess.run(command, cwd=trial, capture_output=True).returncode, 0)
+
+    def test_trial_design_guard_rejects_missing_norms_and_unknown_guard(self):
+        with tempfile.TemporaryDirectory(prefix="harness-v2-norm-test-") as tmp:
+            trial = self.fixture_export(Path(tmp))
+            command = ["node", "scripts/check-design-contracts.mjs"]
+            for rel in ("AGENTS.md", "docs/harness-v2/requirements.md", "docs/design/06_source_io_spec.md", ".harness-v2.json"):
+                target = trial / rel
+                before = target.read_bytes()
+                target.unlink()
+                self.assertNotEqual(subprocess.run(command, cwd=trial, capture_output=True).returncode, 0)
+                target.write_bytes(before)
+            guard = trial / ".harness-v2-legacy/check-design-contracts.mjs"
+            guard.write_bytes(guard.read_bytes() + b"\n// unsupported new guard\n")
+            process = subprocess.run(command, cwd=trial, capture_output=True)
+            self.assertNotEqual(process.returncode, 0)
+            self.assertIn(b"unsupported legacy design guard revision", process.stderr)
 
     def test_timeout_keeps_partial_log_and_attempt(self):
         with tempfile.TemporaryDirectory() as tmp:

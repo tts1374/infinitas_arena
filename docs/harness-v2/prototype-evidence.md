@@ -105,3 +105,20 @@ Phase C継続の正本は#197と本PR。Review response kickoff: READY。実行p
 独立再監査I197-R1はCOMPLETE / pass。実exportの4規約の内容一致、独立18 JSON往復・9 CRLF JSONLイベントの秘密マスク/parse/usage保持を確認し、未処理Blocker/Must fixなし。監査対象は`harness.py` SHA256 `31042452fddd92e653a1969f3ecaea72a25dd876b2e5228b277f759748f42092`、`test_harness.py` SHA256 `877851c0c35e62785625fe9afad85522962274a0ae0a493d13c7b7ecf3077b20`。
 
 `prototype-results.json`の初回run/usage/hashは履歴証拠として書き換えない。#198の構成freezeは引き続き**レビュー修正後のPR最終HEAD**を使う。振り返り: 配置場所の列挙漏れは全active規約のexport検査、文字列regexと構造化データの混同はparse/serialize roundtripで防止する。新たな統治文書/Skillや製品仕様変更は追加しない。
+
+## PR #201 再レビュー対応（2026-10-26）
+
+正本#197、High-Risk、親が唯一のwriter、独立監査I197-R2、commit/push/返信/resolve/再レビュー依頼までの境界を継続する。追加2件は共に「元checkoutでの成功をtrialでの実行可能性へ拡張していた」検証不足として扱った。
+
+| finding | disposition / evidence | remaining risk |
+| --- | --- | --- |
+| [R3 / P2](https://github.com/tts1374/infinitas_arena/pull/201#discussion_r4375093356): trialのdesign gateが除外済み規約を要求 | fixed。export時にだけdesign entrypointをv2版へoverlay。元checkerは非実行の参照データとして保全し、固定SHA照合後に製品10 assertionを再利用。画面2条件・source正本を維持し、規約参照をv2へ変更。各製品pattern欠落、画面条件、規範欠落、未対応guard版の拒否を試験 | 対応する元guardは比較基点の固定版。別版は意図どおり停止してadapter reviewを要求 |
+| [R4 / P2](https://github.com/tts1374/infinitas_arena/pull/201#discussion_r4375093361): export試験がtrialにない基点commitを要求 | fixed。旧6規約＋将来のnested override・製品正本・元guardを自作fixture repositoryへ保存し、そのfixture commitをexportする方式へ変更。試験自体は元checkoutのGit履歴に依存しない。固定製品基点の実export検証も別途実施 | 製品基点からの新規exportは引き続き元checkoutで行う。trialへ履歴を捏造しない |
+
+元checkoutで**36 tests PASS**、さらに固定製品基点から新規exportした`issue197-review2-trial`内で、selectorの実entrypoint `harness.py run --check design` と `--check harness-test`（36 tests）がともにexit 0。前後fingerprintは`b51b7423105e13aa10b3cd342661e00cd5e6d8f7b8f7a32cd2d6476ad332e2ac`で一致。独立監査は当該trialにPRODUCT_BASE objectが存在しないことも確認した。
+
+design log SHA256: `3463a5127d22f2f6ba0df02e3dd94fb174eeee3e9c7dd785a9e8f1b00d44159b`。harness-test log SHA256: `3b74050d93726700a764395016cad284fa56f54423e1e6b115a097144ef055d9`。compileall/node構文検査、元check:agents/design、lint/root型、stats17項目・Worker98 tests、strict実ロードもPASS。初回fixtureのCRLFによるguard hash不一致は改行だけ正規化して修正し、未知ロジックの拒否は維持した。
+
+独立再監査I197-R2はCOMPLETE / pass。source/trial双方の全36 testsとdesign guard、全製品assertion/画面条件/規範欠落/未知guardの拒否を確認し、未処理Blocker/Must fixなし。監査hashは`harness.py=c1999937cd724352125d1c257f5767097735a7910f01e90756614e09a75ea304`、`test_harness.py=c047d6e98bb4b480cd36b04b779c659747e3b4100b6f5b2e4cc06e6a970921fb`、runtime guard=`0250720a411d1c0c9c506cfc6dd56ab14234b51a4666917a63ea8333430bf112`。
+
+振り返り: 同根経路としてselectorのmandatory commandと実export先を照合し、ファイル存在・設定ロードだけで検証完了としない。製品/既存script/CI/権限/ownershipは変更せず、v2の隔離runtimeと試験を修正した。初回計測JSONは引き続き履歴のまま保全する。

@@ -21,6 +21,7 @@ Goal → 親の実行 → 検証 → 必要時の独立レビュー → AC/Qの�
 | `harness.py` | Goal読込、Git snapshot、試用export、選択・stub・検証実行・再開・計測のCLI |
 | `test_harness.py` | P1〜P8、正当な許可経路、selector、古い証拠、実装漏れへの負試験 |
 | `runtime_smoke.py` | 実app-serverのconfig/read・skills/listを使うread-onlyロード確認 |
+| `runtime/scripts/check-design-contracts.mjs` | trial内だけのdesign入口。固定した元guardの製品assertionをデータとして再利用し、規範参照をv2へ整合 |
 | `live_trial.py` / `smoke-plan.json` | 新規Codexセッションでの固定シナリオと事前評価項目。#198の比較実験とは別 |
 
 O01: 共通規則をroot一つ、domain正本を既存Q/designへ、定型手順だけ2 Skillへ分けた。O02: selectorはPython標準ライブラリで実装し、新たな依存/lockfile変更を避けた。O03: 一人でcontract/behaviorをcoverageできる独立reviewerを基本にする。O04: 実ロード・実起動で検証し、CLI/APIの能力をdesktop全体の検証へ拡張しない。O05: 製品検証の自動化gapは明示manual gateで保全する。O06の採否は#198へ残す。
@@ -40,6 +41,10 @@ python tools/harness-v2/runtime_smoke.py --root C:/trial/arena-v2 --output C:/tr
 ```
 
 installerは製品を比較基点`4b600d3445edc71d0599058809c9a89b04591760`からexportし、旧root/local治理文書と`.codex`/`.agents`を除いた**新規の独立Git repository**へv2を展開する。ただしQ04が参照する既存`fsm-protocol-invariants.md`だけは参照資料として残す（旧SKILL.md/Agentはロードしない）。元worktree/branch/index/stashにはwriteしない。destination既存、symlink/脱出、非通常archive entryを拒否する。途中失敗時は不完全destinationを保持し、別の新規destinationで再試行する。自動削除しない。
+
+trialの`check:design-contracts`はv2版へ置き換える。元checkerは`.harness-v2-legacy/check-design-contracts.mjs`へ参照データとして保全し、固定SHA（LF正規化後）を照合して製品10 assertionを抽出する。旧コードのeval/importはしない。画面2条件とSource I/Oの意図を維持し、旧AGENTS/QUALITY参照だけをv2 root・Q09・design正本へ移す。未知checker版は自動で検査を省略せず停止する。元checkoutのchecker/CIは変更しない。
+
+export回帰testは独立した試験用Git履歴を作るため、trial自身に製品基点objectがなくても実行できる。固定製品基点からの実exportは元checkoutのintegration検証で行う。`install`の固定revision解決は引き続き元checkoutで行い、trialに架空の製品履歴を付与しない。
 
 marker `.harness-v2.json` がmode、製品基点、harness revision、runtime hashを示す。未commit試作のrevisionは`worktree:<fingerprint>`と表示し、正式freezeと混同しない。`--harness-revision`はsourceがcleanかつHEAD一致の場合だけ受理する。旧構成へ戻るには、trialを離れ元checkoutで新しいCodexセッションを開始する。元checkoutの旧8 Agent/15 Skillと設定は残る。進行中のこのチャットへ別のAGENTS/configを後付けロードしたと主張しない。
 

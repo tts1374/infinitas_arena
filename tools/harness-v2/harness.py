@@ -198,7 +198,12 @@ def install(source, destination, revision, harness_revision=None):
                 target.mkdir(parents=True, exist_ok=True)
             elif member.isfile():
                 target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(archive.extractfile(member).read())
+                data = archive.extractfile(member).read()
+                target.write_bytes(data)
+                if rel == "scripts/check-design-contracts.mjs":
+                    reference = assert_contained(destination, ".harness-v2-legacy/check-design-contracts.mjs")
+                    reference.parent.mkdir(parents=True, exist_ok=True)
+                    reference.write_bytes(data)
             else:
                 raise ValueError("non-regular archive member refused")
     # Source runtime files are copied only to this newly created owned destination.
