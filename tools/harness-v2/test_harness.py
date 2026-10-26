@@ -3,6 +3,7 @@ import copy
 import json
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -247,6 +248,38 @@ class AuthorityProbes(unittest.TestCase):
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_redaction_preserves_json_values_and_jsonl_metrics(self):
+        event = {"type": "turn.completed", "reason": "failed token=SYNTHETIC_VALUE",
+                 "usage": {"input_tokens": 123, "output_tokens": 5},
+                 "nested": [{"Password": "SYNTHETIC_PASSWORD", "ok": True}, None, 7],
+                 "quoted": 'failure "api_key": "SYNTHETIC_API"'}
+        with tempfile.TemporaryDirectory() as tmp:
+            events = Path(tmp) / "events.jsonl"
+            for serialized in (json.dumps(event), json.dumps(event, indent=2),
+                               json.dumps({"reason": "failed token=SYNTHETIC_VALUE"})):
+                masked = harness.redact(serialized)
+                decoded = json.loads(masked)
+                self.assertNotIn("SYNTHETIC", masked)
+                self.assertIn("[REDACTED]", decoded["reason"])
+            raw = json.dumps({"type": "turn.started", "reason": "token=SYNTHETIC_START"}) + "\n" + json.dumps(event) + "\n"
+            events.write_text(harness.redact(raw), encoding="utf-8")
+            rows = [json.loads(line) for line in events.read_text().splitlines()]
+            self.assertEqual(rows[1]["usage"], event["usage"])
+            self.assertEqual(rows[1]["nested"], [{"Password": "[REDACTED]", "ok": True}, None, 7])
+            self.assertNotIn("SYNTHETIC", events.read_text())
+            self.assertEqual(harness.metrics(events, {})["usage"], [event["usage"]])
+
+    def test_cli_redaction_output_remains_parseable_json(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            events, metadata = Path(tmp) / "events.jsonl", Path(tmp) / "metadata.json"
+            events.write_text('{"type":"turn.completed","usage":{"input_tokens":9}}\n', encoding="utf-8")
+            metadata.write_text(json.dumps({"reason": "failed token=SYNTHETIC_VALUE", "nested": {"api_key": "SYNTHETIC_KEY"}}), encoding="utf-8")
+            process = subprocess.run([sys.executable, str(harness.HERE / "harness.py"), "metrics", "--events", str(events), "--metadata", str(metadata)], check=True, capture_output=True)
+            decoded = json.loads(process.stdout)
+            self.assertNotIn(b"SYNTHETIC", process.stdout)
+            self.assertEqual(decoded["nested"]["api_key"], "[REDACTED]")
+            self.assertEqual(decoded["usage"], [{"input_tokens": 9}])
+
     def test_pr_publication_validates_existing_patch_without_authorizing_new_edit(self):
         g = goal(kind="pr-publish", publication_fingerprint="fixed-patch", grants=[])
         grant(g, "pr", g["target"])
@@ -312,6 +345,20 @@ class EvidenceTests(unittest.TestCase):
 
 
 class IsolationTests(unittest.TestCase):
+    def test_export_replaces_all_active_legacy_governance(self):
+        with tempfile.TemporaryDirectory(prefix="harness-v2-export-test-") as tmp:
+            destination = Path(tmp) / "trial"
+            harness.install(harness.SOURCE_ROOT, destination, harness.PRODUCT_BASE)
+            # Check every active location, not just the previously enumerated
+            # client/worker/shared paths. Blueprint files are not active here.
+            actual = {p.relative_to(destination).as_posix() for p in destination.rglob("AGENTS*.md")
+                      if "tools/harness-v2/runtime/" not in p.relative_to(destination).as_posix()}
+            self.assertEqual(actual, {"AGENTS.md", "apps/client/AGENTS.md", "apps/worker/AGENTS.md", "packages/shared/AGENTS.md"})
+            for rel in actual:
+                self.assertEqual((destination / rel).read_bytes(), (harness.HERE / "runtime" / rel).read_bytes())
+            self.assertFalse((destination / "WORKFLOW.md").exists())
+            self.assertFalse((destination / "QUALITY.md").exists())
+
     def test_timeout_keeps_partial_log_and_attempt(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "trial"

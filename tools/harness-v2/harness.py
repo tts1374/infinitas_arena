@@ -19,11 +19,35 @@ HERE = Path(__file__).resolve().parent
 SOURCE_ROOT = HERE.parent.parent
 SECRET = re.compile(r"(?i)(?:gh[pousr]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+|sk-[A-Za-z0-9_-]{8,}|(?:authorization\s*:\s*bearer\s+)\S+|(?:token|password|secret|api_key)\s*[=:]\s*[^\s,;]+)")
 JSON_SECRET = re.compile(r'''(?is)(["'](?:token|password|secret|api_key|authorization)["']\s*:\s*)(["'])(?:\\.|(?!\2).)*?\2''')
+SECRET_KEYS = {"token", "password", "secret", "api_key", "authorization"}
+
+
+def _redact_text(text):
+    text = JSON_SECRET.sub(lambda m: m[1] + '"[REDACTED]"', text)
+    return SECRET.sub("[REDACTED]", text)
+
+
+def redact_value(value):
+    """Mask JSON values before serialization, preserving keys and data types."""
+    if isinstance(value, dict):
+        return {k: "[REDACTED]" if k.lower() in SECRET_KEYS else redact_value(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [redact_value(v) for v in value]
+    return _redact_text(value) if isinstance(value, str) else value
 
 
 def redact(text):
-    text = JSON_SECRET.sub(lambda m: m[1] + '"[REDACTED]"', text)
-    return SECRET.sub("[REDACTED]", text)
+    """Preserve valid JSON/JSONL framing; plain logs use best-effort masking."""
+    try:
+        return json.dumps(redact_value(json.loads(text)), ensure_ascii=True)
+    except json.JSONDecodeError:
+        lines = []
+        for line in text.split("\n"):
+            try:
+                lines.append(json.dumps(redact_value(json.loads(line)), ensure_ascii=True))
+            except json.JSONDecodeError:
+                lines.append(_redact_text(line))
+        return "\n".join(lines)
 
 
 def now():
@@ -163,12 +187,11 @@ def install(source, destination, revision, harness_revision=None):
     commit = git(source, "rev-parse", "--verify", revision + "^{commit}").decode().strip()
     raw = git(source, "archive", "--format=tar", commit)
     destination.mkdir(parents=True)
-    local_agents = {"apps/client/AGENTS.md", "apps/worker/AGENTS.md", "packages/shared/AGENTS.md"}
     inactive_reference = ".codex/skills/fsm-protocol-guard/references/fsm-protocol-invariants.md"
     with tarfile.open(fileobj=io.BytesIO(raw)) as archive:
         for member in archive:
             rel = member.name.rstrip("/")
-            if not rel or (under(rel, ".codex") and rel != inactive_reference) or under(rel, ".agents") or rel in {"AGENTS.md", "WORKFLOW.md", "QUALITY.md"} | local_agents:
+            if not rel or (under(rel, ".codex") and rel != inactive_reference) or under(rel, ".agents") or Path(rel).name in {"AGENTS.md", "AGENTS.override.md"} or rel in {"WORKFLOW.md", "QUALITY.md"}:
                 continue
             target = assert_contained(destination, rel)
             if member.isdir():

@@ -90,3 +90,18 @@ PR差分は`tools/harness-v2/**`とこのdocsの3新規文書・実測JSON・REA
 構成freezeは**このPRの最終HEAD**とする。#198担当はPRからfull SHAを取得し、clean checkoutで`--harness-revision`を指定する。product base、入力hash、モデル/effort/tier/環境、親子原usageと欠測、AC/Q・試行・review/findingをcomparison-planどおり記録する。今回の総親子token/active timeは未計測であり、削減率を算出しない。
 
 公開には`commit-pr-flow`と`commit-plan-enforcer`のscope/検証gateを適用する。今回ユーザー指定の進め方に従い、旧ABCD/Kickoffの形式的再生成は行わない。merge/Issue close/deploy/release/cleanupへ進まない。振り返り: 新たな手順書やIssueへ広げず、監査で発見したgateの穴をこの試作内で修正した。残る製品実証と採用判断は既存#198へ引き継ぐ。
+
+## PR #201 レビュー対応（2026-10-26）
+
+Phase C継続の正本は#197と本PR。Review response kickoff: READY。実行profileはHigh-Risk（隔離と秘密/証跡処理）、親が唯一のwriter、実装非担当がcontract/behaviorを再監査する。今回もcommit/push/返信/resolve/再レビュー依頼までとし、merge等の禁止は維持する。
+
+| finding | disposition / evidence | remaining risk |
+| --- | --- | --- |
+| [R1 / P2](https://github.com/tts1374/infinitas_arena/pull/201#discussion_r4374884607): trialに旧web/update-worker AGENTSが残る | fixed。`d18a614`の実exportで2 file残存を再現。旧規約は全配置のbasename `AGENTS.md` / `AGENTS.override.md`を除外し、runtime版だけをoverlayする。既定基点の全6 AGENTSを照合し、実trialのactive規約がv2 root/client/worker/sharedの4件に完全一致する回帰試験を追加 | v2版を追加していないsubtreeはrootのQ/design境界を継承する。将来の追加domain固有判断は必要時に行う |
+| [R2 / P2](https://github.com/tts1374/infinitas_arena/pull/201#discussion_r4374884617): 秘密マスクでJSONの閉quoteが失われる | fixed。旧版の合成token入力でJSONDecodeErrorを再現。JSON全体/JSONL各行をparseし、dict/list/文字列値を再帰マスクしてserializeする。CLI stdout、live_trialのevent保存、metrics readerの同根経路を点検し、実CLI parse、nested field、JSONL→usage roundtripを追加 | 非JSONの自由文ログはbest-effort、任意秘密の完全検出ではない |
+
+最新のv2専用検証は**34 tests PASS**（初回31件＋回帰3件）、compileall PASS。旧check:agents/design、lint/root typecheck、stats17項目、Worker98 testsもPASS。新しいtrialへexportしたstrict app-server probeでも親子Sol・2 Skill enabled/error0を確認し、runtime hashは初回と同一。製品や既存CIに変更はないため、実製品E2E・高コストのモデル反復は再実行していない。
+
+独立再監査I197-R1はCOMPLETE / pass。実exportの4規約の内容一致、独立18 JSON往復・9 CRLF JSONLイベントの秘密マスク/parse/usage保持を確認し、未処理Blocker/Must fixなし。監査対象は`harness.py` SHA256 `31042452fddd92e653a1969f3ecaea72a25dd876b2e5228b277f759748f42092`、`test_harness.py` SHA256 `877851c0c35e62785625fe9afad85522962274a0ae0a493d13c7b7ecf3077b20`。
+
+`prototype-results.json`の初回run/usage/hashは履歴証拠として書き換えない。#198の構成freezeは引き続き**レビュー修正後のPR最終HEAD**を使う。振り返り: 配置場所の列挙漏れは全active規約のexport検査、文字列regexと構造化データの混同はparse/serialize roundtripで防止する。新たな統治文書/Skillや製品仕様変更は追加しない。
