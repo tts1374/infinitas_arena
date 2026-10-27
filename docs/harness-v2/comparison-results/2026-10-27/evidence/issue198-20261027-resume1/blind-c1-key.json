@@ -1,0 +1,16 @@
+{
+  "A": {
+    "archive": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C1-legacy-1",
+    "experiment": "issue198-20261026-c",
+    "run_id": "C1-legacy-1",
+    "lane": "legacy",
+    "evidence_sha256": "c5d55a61e2dad6e41643fe361b37f46c0e8550acc05c5f5cb1be9fecd2b25e98"
+  },
+  "B": {
+    "archive": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\archives\\C1-v2-1-environment-retry1",
+    "experiment": "issue198-20261027-resume1",
+    "run_id": "C1-v2-1-environment-retry1",
+    "lane": "v2",
+    "evidence_sha256": "3558eec203e3490e9e193044fd83ce5187925d80284578d2a5e887c01f7c5b05"
+  }
+}

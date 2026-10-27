@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: SongSearchModalView displays null as --:-- with text-cyan-400
+ok 1 - SongSearchModalView displays null as --:-- with text-cyan-400
+  ---
+  duration_ms: 12.2599
+  type: 'test'
+  ...
+# Subtest: SongSearchModalView displays 0 as 00:00 with text-red-500
+ok 2 - SongSearchModalView displays 0 as 00:00 with text-red-500
+  ---
+  duration_ms: 2.3801
+  type: 'test'
+  ...
+# Subtest: SongSearchModalView displays 10 as 00:10 with text-red-500
+ok 3 - SongSearchModalView displays 10 as 00:10 with text-red-500
+  ---
+  duration_ms: 1.9564
+  type: 'test'
+  ...
+# Subtest: SongSearchModalView displays 30 as 00:30 with text-amber-500
+ok 4 - SongSearchModalView displays 30 as 00:30 with text-amber-500
+  ---
+  duration_ms: 1.7875
+  type: 'test'
+  ...
+# Subtest: SongSearchModalView displays 31 as 00:31 with text-cyan-400
+ok 5 - SongSearchModalView displays 31 as 00:31 with text-cyan-400
+  ---
+  duration_ms: 1.8532
+  type: 'test'
+  ...
+# Subtest: SongSearchModalView displays 65 as 01:05 with text-cyan-400
+ok 6 - SongSearchModalView displays 65 as 01:05 with text-cyan-400
+  ---
+  duration_ms: 2.707
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 797.8078

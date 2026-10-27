@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: actual lobby route barrier keeps newer summary: ineligible, recreate=false
+ok 1 - actual lobby route barrier keeps newer summary: ineligible, recreate=false
+  ---
+  duration_ms: 21.79
+  type: 'test'
+  ...
+# Subtest: actual lobby route barrier keeps newer summary: ineligible, recreate=true
+ok 2 - actual lobby route barrier keeps newer summary: ineligible, recreate=true
+  ---
+  duration_ms: 1.968
+  type: 'test'
+  ...
+# Subtest: actual lobby route barrier keeps newer summary: lost, recreate=false
+ok 3 - actual lobby route barrier keeps newer summary: lost, recreate=false
+  ---
+  duration_ms: 1.7834
+  type: 'test'
+  ...
+# Subtest: actual lobby route barrier keeps newer summary: lost, recreate=true
+ok 4 - actual lobby route barrier keeps newer summary: lost, recreate=true
+  ---
+  duration_ms: 1.7382
+  type: 'test'
+  ...
+# Subtest: actual route fails open on 5xx
+ok 5 - actual route fails open on 5xx
+  ---
+  duration_ms: 1.1257
+  type: 'test'
+  ...
+# Subtest: actual route fails open on network
+ok 6 - actual route fails open on network
+  ---
+  duration_ms: 1.7455
+  type: 'test'
+  ...
+# Subtest: legacy counter -> scalar -> cold instance and bounded helper state (unit, not actual hibernation)
+ok 7 - legacy counter -> scalar -> cold instance and bounded helper state (unit, not actual hibernation)
+  ---
+  duration_ms: 36.363
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 333.3528

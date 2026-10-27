@@ -1,0 +1,72 @@
+{
+  "case_id": "C1",
+  "specification": "## C1: 局所Client表示の回帰修正\n\n**共通Goal:** 「選曲画面でauthoritative残時間がnullのとき、曲検索modalが00:00と表示する回帰を直す。未取得は`--:--`、実際の0は`00:00`、正値は既存の分秒表示を保つ。タイマー/FSM/WS/保存の意味は変えない。」\n\n- 入力: 基点の`apps/client/src/components/SongSearchModalView.tsx`の残時間表示で、null分岐の`--:--`だけを`00:00`に変えたseed patch。準備時に一箇所だけ置換されたことを確認しhash固定。既存testは変更しない。\n- scope: その表示componentと直接必要な表示test。Worker/shared/計算helper/依存/CIは禁止。UI正本はこのAC表と基点の表示をrenderしたreference（null/0/65秒）を準備担当が保存したもの。\n- 期待値: null=`--:--`、0=`00:00`、65=`01:05`。RoomArenaのnull表示、host/non-host、modal開閉、選曲操作、取得済み数値の配色を維持。nullから独自のカウントを始めない。\n- 検証: root型/lint/client build、client標準test（`picking-countdown-display.test.tsx`を含む）とstats。browserでnull/0/65・幅320/1024の視覚/overflow/選択操作を確認。要求対象はReact表示で、Tauri固有の新挙動はない。\n- 監査: 独立比較reviewerはdiffとvisual evidenceを確認。実行者が自分の修正を確認することと区別。低リスクの実行自体にSubagentは必須としない。\n- 合格: 全期待値と回帰・scope・権限条件を満たす。AC不充足/数値を偽装/不要なWS変更/未確認画像をPASS扱いしたら不合格。\n",
+  "scope_note": "Only the exact component/producer/consumer and directly required tests described in specification; directory grants do not authorize unrelated changes.",
+  "allowed_paths": [
+    "apps/client/src/components/SongSearchModalView.tsx",
+    "apps/client/src/features/room"
+  ],
+  "commands": [
+    [
+      "npm",
+      "run",
+      "lint"
+    ],
+    [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    [
+      "npm",
+      "run",
+      "test:client-stats"
+    ],
+    [
+      "npm",
+      "run",
+      "test:worker"
+    ],
+    [
+      "npm",
+      "run",
+      "build:client"
+    ],
+    [
+      "npm",
+      "--workspace",
+      "@infinitas/client",
+      "run",
+      "test"
+    ]
+  ],
+  "quality": [
+    "Q11",
+    "Q12",
+    "Q13",
+    "Q14",
+    "Q15",
+    "Q16"
+  ],
+  "fixture": {
+    "seconds": [
+      null,
+      0,
+      65
+    ],
+    "expected": [
+      "--:--",
+      "00:00",
+      "01:05"
+    ],
+    "widths": [
+      320,
+      1024
+    ],
+    "roles": [
+      "host",
+      "non-host"
+    ],
+    "baseline_gap": "Fixed baseline numbers render 0:00/1:05. Preserve actual reference; repaired runs must meet the pre-existing plan AC 00:00/01:05."
+  }
+}

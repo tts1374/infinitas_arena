@@ -1,0 +1,25 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ '50b2200bd65e37b650cc3eabfa13c0020117ab53c0c5d7a6ba55daa31c59100f'
+- '3aacd73e97ea603f5b628532aae7900450f4914beab3750eb9ee2d0a16ba00d4'
+
+    at file:///<trial>/.tmp/evidence/verify-evidence.mjs:56:10
+    at Array.map (<anonymous>)
+    at file:///<trial>/.tmp/evidence/verify-evidence.mjs:47:26
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '50b2200bd65e37b650cc3eabfa13c0020117ab53c0c5d7a6ba55daa31c59100f',
+  expected: '3aacd73e97ea603f5b628532aae7900450f4914beab3750eb9ee2d0a16ba00d4',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.4

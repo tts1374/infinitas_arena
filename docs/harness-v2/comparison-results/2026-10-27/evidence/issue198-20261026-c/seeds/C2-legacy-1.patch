@@ -1,0 +1,28 @@
+diff --git a/apps/worker/src/durable/lobby-directory-object.ts b/apps/worker/src/durable/lobby-directory-object.ts
+index 7332874..bb357bc 100644
+--- a/apps/worker/src/durable/lobby-directory-object.ts
++++ b/apps/worker/src/durable/lobby-directory-object.ts
+@@ -162,14 +162,7 @@ function restoreLastIssuedUpdatedAt(
+ 
+   if (isFiniteNumber(input)) {
+     lastIssuedUpdatedAt = input;
+-  } else if (isRecord(input)) {
+-    for (const rawUpdatedAt of Object.values(input)) {
+-      if (!isFiniteNumber(rawUpdatedAt)) {
+-        continue;
+-      }
+ 
+-      lastIssuedUpdatedAt = Math.max(lastIssuedUpdatedAt, rawUpdatedAt);
+-    }
+   }
+ 
+   for (const room of rooms.values()) {
+@@ -281,7 +274,7 @@ export class LobbyDirectoryDO {
+ 
+     const now = Date.now();
+     this.cleanupExpired(now);
+-    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt + 1);
++    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt);
+     this.lastIssuedUpdatedAt = nextUpdatedAt;
+ 
+     const normalized: LobbyRoomSummary = {

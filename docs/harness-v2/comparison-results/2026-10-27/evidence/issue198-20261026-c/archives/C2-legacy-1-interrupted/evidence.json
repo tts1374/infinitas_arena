@@ -1,0 +1,1040 @@
+{
+  "archived_at": "2026-10-27T05:51:52.129776+00:00",
+  "experiment": "issue198-20261026-c",
+  "run_id": "C2-legacy-1",
+  "case": "C2",
+  "lane": "legacy",
+  "input_hash": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+  "initial_head": "e9ab91eff8ca75119df90c442302ca6fdd3f195c",
+  "manifest_sha256": "24b03b4d99de170be358abe9893754e074921432a0bc0908adeac46c836850dc",
+  "executor_claim": {
+    "caseId": "C2",
+    "status": "COMPLETE",
+    "fullAcceptanceProven": false,
+    "summary": "最小実装修正・必須ローカル検証・独立契約/挙動監査を完了。実hibernationは未実証のため全保証PASSとは扱わない。",
+    "source": ".tmp/comparison/input.json",
+    "plan": "tasks/comparison-c2.md",
+    "environment": ".tmp/evidence/environment.json",
+    "startedAt": "2026-10-27T00:15:00Z (approximate first command; precise command times in commands.jsonl)",
+    "endedAt": "2026-10-27T00:23:38.642Z",
+    "wallLimitMinutes": 120,
+    "snapshot": {
+      "capturedAt": "2026-10-27T00:22:04.194Z",
+      "head": "e9ab91eff8ca75119df90c442302ca6fdd3f195c",
+      "branch": "codex/legacy-trial",
+      "status": " M apps/worker/src/durable/lobby-directory-object.test.mjs\n M apps/worker/src/durable/lobby-directory-object.ts\n?? tasks/comparison-c2.md\n",
+      "changed": [
+        "apps/worker/src/durable/lobby-directory-object.test.mjs",
+        "apps/worker/src/durable/lobby-directory-object.ts"
+      ],
+      "files": {
+        "apps/worker/src/durable/lobby-directory-object.ts": "1f8c7ad026be9858e8bb43df5fad37f754cc0679236acfcac5d9d65772efee9f",
+        "apps/worker/src/durable/lobby-directory-object.test.mjs": "1ebd5c195bc92b7983632597ff7f229abb1cf70b4223e6f73a060e492452cede"
+      },
+      "seededSha256": "a253cd566704efee55d2ddc6146c915a97c3f540551ecf1a435aacd52ad9d8e9",
+      "patchSha256": "28745c1cc4eff4dba5030a828c991a4ebac679af76d184c85f3e4805bb940c62",
+      "fixtureHashes": {
+        ".tmp/comparison/input.json": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+        ".tmp/comparison/c2-barrier.test.mjs": "80bdfa8eff4cf113f6ac827638e806d0137fc4d6536303fc6805949fcdff2fab",
+        ".tmp/comparison/runtime.json": "0f1b002696434cacdf41febf8dfac405ed27db4425db4d98159cd45f2b973889"
+      },
+      "staged": ""
+    },
+    "acceptanceCriteria": [
+      {
+        "id": "AC01",
+        "status": "pass",
+        "requirement": "同ms1000のupsert2回でtoken strict増加、旧1000 remove=false",
+        "evidence": [
+          ".tmp/evidence/implementation.json",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-worker-standard.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log"
+        ],
+        "detail": "既存same-ms test＋actual route barrier。"
+      },
+      {
+        "id": "AC02",
+        "status": "pass",
+        "requirement": "delete→recreate後に旧cleanupで新summaryを削除しない",
+        "evidence": [
+          ".tmp/evidence/implementation.json",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log",
+          ".tmp/evidence/runtime/attempt-1793060446024/report.json"
+        ],
+        "detail": "同ms unit/barrierと実restart後recreate2503。"
+      },
+      {
+        "id": "AC03",
+        "status": "pass",
+        "requirement": "legacy map最大2500/clock2000からnew token>2500",
+        "evidence": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-worker-standard.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log",
+          ".tmp/evidence/runtime/attempt-1793060446024/report.json"
+        ],
+        "detail": "削除済entryも読取り、実storage legacy→新process2501。"
+      },
+      {
+        "id": "AC04",
+        "status": "pass",
+        "requirement": "scalar保存→新instance復元後もstrict増加",
+        "evidence": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-worker-standard.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log",
+          ".tmp/evidence/runtime/attempt-1793060446024/report.json"
+        ],
+        "detail": "空rooms/remove/TTL/clock rollback unit、実runtime scalar2501→2502→2503。"
+      },
+      {
+        "id": "AC05",
+        "status": "pass",
+        "requirement": "remove/TTL後にper-room tombstoneを蓄積しない",
+        "evidence": [
+          ".tmp/evidence/implementation.json",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log",
+          ".tmp/evidence/runtime/attempt-1793060446024/report.json"
+        ],
+        "detail": "helperは1 scalar、標準testはempty roomsと2 keys、barrierは200件churn、実storage remove後2 keys。"
+      },
+      {
+        "id": "AC06",
+        "status": "pass",
+        "requirement": "/api/lobby保留probe→new upsert→eligible=false/404 ROOM_STATE_LOST解放でnewer保持",
+        "evidence": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log",
+          ".tmp/evidence/behavior-review.json"
+        ],
+        "detail": "actual route/service/DO code。storage/probeはmockでありlive network raceではない。"
+      },
+      {
+        "id": "AC07",
+        "status": "pass",
+        "requirement": "delete/recreateとprobe完了順序逆転",
+        "evidence": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log",
+          ".tmp/evidence/behavior-review.json"
+        ],
+        "detail": "2古probeを開始しnewerへupsert、2番目を先に解放し1番目を後に解放。"
+      },
+      {
+        "id": "AC08",
+        "status": "pass",
+        "requirement": "5xx/通信失敗でfail-open、削除しない",
+        "evidence": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-worker-standard.log"
+        ],
+        "detail": "共通2試験と既存route failure tests。"
+      },
+      {
+        "id": "AC09",
+        "status": "pass",
+        "requirement": "公開schema/TTL/一覧条件を維持",
+        "evidence": [
+          ".tmp/evidence/final-snapshot.json",
+          ".tmp/evidence/contract-review.json",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log"
+        ],
+        "detail": "product差分はhelper復元とtoken発行のみ。DTO/定数/route/shared/clientは変更なし。"
+      },
+      {
+        "id": "AC10",
+        "status": "pass",
+        "requirement": "root型/lint/標準worker/stats/design/bundle dry-run",
+        "evidence": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-root-lint.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-448-root-typecheck.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-474-client-stats.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-worker-standard.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-447-design-contracts.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-478-agents-parity.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-507-worker-bundle-dry-run.log"
+        ],
+        "detail": "Worker100/100、共通barrier7/7、独立再実行18/18。"
+      },
+      {
+        "id": "AC11",
+        "status": "pass",
+        "requirement": "標準reconnect遅延close/ROOM_STATE_LOST/既存冪等性guard回帰",
+        "evidence": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-worker-standard.log",
+          ".tmp/evidence/behavior-review.json"
+        ],
+        "detail": "標準request_id重複guard成功。同client_msg_id replayの直接実証とは扱わない。"
+      },
+      {
+        "id": "AC12",
+        "status": "pass",
+        "requirement": "隔離local Worker/DO実再起動とcounter/一覧read-back",
+        "evidence": [
+          ".tmp/evidence/runtime/attempt-1793060446024/report.json",
+          ".tmp/evidence/owned-runtime-readback.json"
+        ],
+        "detail": "4つの別wrangler/workerd実行、同じrepo内SQLite保存先。固定clockのtest-only transport wrapperが実product classを呼ぶ。"
+      },
+      {
+        "id": "AC13",
+        "status": "unproven",
+        "requirement": "実hibernation/resume保証",
+        "evidence": [
+          ".tmp/evidence/behavior-review.json",
+          ".tmp/evidence/runtime/attempt-1793060446024/report.json"
+        ],
+        "detail": "hibernation固有のidle eviction/socket resumeは未実施。new instance unitやprocess restartから実証したと呼ばない。正本の明示に従い残リスク。"
+      },
+      {
+        "id": "AC14",
+        "status": "pass",
+        "requirement": "実装非担当の契約/挙動レビュー",
+        "evidence": [
+          ".tmp/evidence/contract-review.json",
+          ".tmp/evidence/behavior-review.json"
+        ],
+        "detail": "2名独立review。最終product hashをread-back、重大finding修正確認、未処理Blocker/Must fixなし。"
+      }
+    ],
+    "quality": [
+      {
+        "id": "Q05",
+        "status": "unproven",
+        "requirement": "DO復元/再接続",
+        "evidence": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-worker-standard.log",
+          ".tmp/evidence/runtime/attempt-1793060446024/report.json",
+          ".tmp/evidence/behavior-review.json"
+        ],
+        "detail": "標準socket遅延close/state lossと実LobbyDirectoryDO restartはpass。実hibernation/Room DO attachment resumeはunproven。"
+      },
+      {
+        "id": "Q06",
+        "status": "pass",
+        "requirement": "lobby race/成長",
+        "evidence": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-worker-standard.log",
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log",
+          ".tmp/evidence/runtime/attempt-1793060446024/report.json",
+          ".tmp/evidence/contract-review.json",
+          ".tmp/evidence/behavior-review.json"
+        ],
+        "detail": "same-ms/recreate/reorder/legacy/scalar/bounded helper/public schemaを確認。"
+      },
+      {
+        "id": "Q12",
+        "status": "pass",
+        "requirement": "検証面/失敗透明性",
+        "evidence": [
+          ".tmp/evidence/commands.jsonl",
+          ".tmp/evidence/behavior-review-commands.jsonl",
+          ".tmp/evidence/behavior-review.json"
+        ],
+        "detail": "標準membership確認、source.tsはroot型対象、.mjsはtsx実行面。CI quick全command＋worker full bundleをローカル再現。初回failを保持。client full/nativeは非変更面、CIサービス実行とは呼ばない。"
+      },
+      {
+        "id": "Q13",
+        "status": "pass",
+        "requirement": "write/WIP安全",
+        "evidence": [
+          ".tmp/evidence/kickoff.json",
+          ".tmp/evidence/final-snapshot.json"
+        ],
+        "detail": "worker単独writer、親は同scope編集なし。shared writer root予約（変更禁止）。初期clean、最終2 product files+taskだけ、stage/commitなし。"
+      },
+      {
+        "id": "Q14",
+        "status": "pass",
+        "requirement": "証拠/独立性",
+        "evidence": [
+          ".tmp/evidence/contract-review.json",
+          ".tmp/evidence/behavior-review.json",
+          ".tmp/evidence/final-snapshot.json"
+        ],
+        "detail": "実装非担当2名、最終hash一致、finding→disposition→evidence→remaining risk。"
+      },
+      {
+        "id": "Q15",
+        "status": "pass",
+        "requirement": "操作権限",
+        "evidence": [
+          "tasks/comparison-c2.md",
+          ".tmp/evidence/kickoff.json",
+          ".tmp/evidence/commands.jsonl"
+        ],
+        "detail": "許可されたローカル変更・検証のみ。外部write/commit/push/PR/merge/Issue/deploy/release/cleanupなし。wrangler deployはdry-runのみ。自分のruntime停止は明示許可内。"
+      },
+      {
+        "id": "Q16",
+        "status": "pass",
+        "requirement": "秘密/外部入力",
+        "evidence": [
+          ".tmp/evidence/owned-runtime-readback.json",
+          ".tmp/evidence/runtime/attempt-1793060446024/report.json",
+          ".tmp/evidence/environment.json"
+        ],
+        "detail": "秘密値収集なし。test configは本番vars/resourcesなし。loopback割当port、所有child treeだけ停止。外部MCP/apps/pluginsなし、他repo/process操作なし。"
+      }
+    ],
+    "validation": {
+      "commandsIndex": ".tmp/evidence/commands.jsonl",
+      "independentCommandsIndex": ".tmp/evidence/behavior-review-commands.jsonl",
+      "passed": [
+        {
+          "label": "root-lint",
+          "command": "npm run lint",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-root-lint.log"
+        },
+        {
+          "label": "root-typecheck",
+          "command": "npm run typecheck",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-448-root-typecheck.log"
+        },
+        {
+          "label": "client-stats",
+          "command": "npm run test:client-stats",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-474-client-stats.log"
+        },
+        {
+          "label": "worker-standard",
+          "command": "npm run test:worker",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-453-worker-standard.log"
+        },
+        {
+          "label": "design-contracts",
+          "command": "npm run check:design-contracts",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-447-design-contracts.log"
+        },
+        {
+          "label": "agents-parity",
+          "command": "npm run check:agents",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-478-agents-parity.log"
+        },
+        {
+          "label": "c2-barrier",
+          "command": "node --import tsx --test .tmp/comparison/c2-barrier.test.mjs",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-482-c2-barrier.log"
+        },
+        {
+          "label": "worker-bundle-dry-run",
+          "command": "$env:WRANGLER_SEND_METRICS=\"false\"; $env:WRANGLER_LOG_PATH=\"../../.tmp/evidence/bundle-wrangler.log\"; npx --no-install wrangler deploy --dry-run",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091853-507-worker-bundle-dry-run.log"
+        },
+        {
+          "label": "runtime-restart-retry-03",
+          "command": "node .tmp/evidence/runtime-restart.mjs",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-092045-634-runtime-restart-retry-03.log"
+        },
+        {
+          "label": "owned-runtime-readback",
+          "command": "$runtimeReport = Get-Content -Raw .tmp/evidence/runtime/report.json | ConvertFrom-Json; $remaining = @(); foreach ($record in $runtimeReport.processes) { $ownedProcess = Get-Process -Id $record.pid -ErrorAction SilentlyContinue; if ($ownedProcess) { $remaining += $ownedProcess.Id } }; $listeners = @(); foreach ($record in $runtimeReport.processes) { $listeners += @(Get-NetTCPConnection -State Listen -LocalAddress 127.0.0.1 -LocalPort $record.port,$record.inspector -ErrorAction SilentlyContinue | Select-Object LocalAddress,LocalPort,OwningProcess) }; [ordered]@{ownedPids=@($runtimeReport.processes.pid); remainingOwnedProcesses=$remaining; listenersOnAllocatedPorts=$listeners; runtimeStatus=$runtimeReport.status; checkedAt=(Get-Date).ToString(\"o\")} | ConvertTo-Json -Depth 5 | Tee-Object -FilePath .tmp/evidence/owned-runtime-readback.json; if ($remaining.Count -gt 0 -or $listeners.Count -gt 0) { exit 1 }; exit 0",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-092125-082-owned-runtime-readback.log"
+        },
+        {
+          "label": "snapshot",
+          "command": "node .tmp/evidence/snapshot.mjs",
+          "exit": 0,
+          "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-092203-715-snapshot.log"
+        }
+      ],
+      "testCounts": {
+        "workerStandard": 100,
+        "commonBarrier": 7,
+        "independentFocused": 18
+      },
+      "membership": ".tmp/evidence/implementation.json",
+      "typeSurface": "Source .ts included by root tsconfig; .mjs tests are executable JS, outside tsc/lint include and tested via tsx."
+    },
+    "independentReview": {
+      "contractArtifact": ".tmp/evidence/contract-review.json",
+      "behaviorArtifact": ".tmp/evidence/behavior-review.json",
+      "contractVerdict": "pass-with-followups",
+      "behaviorVerdict": "pass-with-followups",
+      "unresolvedBlocker": 0,
+      "unresolvedMustFix": 0,
+      "dispositionLedgers": [
+        [
+          {
+            "finding": "C2-C01",
+            "disposition": "resolved",
+            "evidence": "確定source hash + 標準same-ms/recreate + 共通barrier 4ケース",
+            "remainingRisk": "C2-C03参照"
+          },
+          {
+            "finding": "C2-C02",
+            "disposition": "resolved",
+            "evidence": "確定source hash + legacy/scalar単体 + runtime/report.json 4 phases",
+            "remainingRisk": "破損state全般・実hibernationへ保証を拡張しない"
+          },
+          {
+            "finding": "C2-C03",
+            "disposition": "未実証を明記して残す",
+            "evidence": "input.json許容境界、fixture/reportの保証範囲",
+            "remainingRisk": "実hibernation未実証"
+          }
+        ],
+        [
+          {
+            "finding": "B01",
+            "disposition": "fixed",
+            "evidence": "final +1差分/独立18pass/実runtime strict増加",
+            "remainingRisk": "B03"
+          },
+          {
+            "finding": "B02",
+            "disposition": "fixed",
+            "evidence": "legacy最大値分岐/legacy2500 unitと実storage復元",
+            "remainingRisk": "既存破損state方針は変更なし"
+          },
+          {
+            "finding": "B03",
+            "disposition": "explicit residual risk, no hibernation PASS claim",
+            "evidence": "unit名/runtime fixture区分",
+            "remainingRisk": "actual hibernation未実証"
+          },
+          {
+            "finding": "B04",
+            "disposition": "限定した証跡記述",
+            "evidence": "standard test内容と差分不変",
+            "remainingRisk": "same-client_msg_id replay直接試験なし"
+          }
+        ]
+      ]
+    },
+    "actualSpawns": [
+      {
+        "role": "server-implementer",
+        "spawned": "yes",
+        "agentId": "/root/c2_implementation",
+        "objective": "bounded C2 worker fix and direct tests",
+        "ownership": [
+          "apps/worker/src/durable/lobby-directory-object.ts",
+          "apps/worker/src/durable/lobby-directory-object.test.mjs",
+          "apps/worker/src/routes/lobby.test.mjs"
+        ],
+        "status": "COMPLETE",
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "noDelegateReason": "N/A",
+        "roleDefaultEffort": true
+      },
+      {
+        "role": "contract-auditor",
+        "spawned": "yes",
+        "agentId": "/root/c2_contract_review",
+        "objective": "independent storage/public contract audit",
+        "ownership": [
+          ".tmp/evidence/contract-review*"
+        ],
+        "status": "COMPLETE",
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "noDelegateReason": "N/A",
+        "roleDefaultEffort": true
+      },
+      {
+        "role": "implementation-auditor",
+        "spawned": "yes",
+        "agentId": "/root/c2_behavior_review",
+        "objective": "independent race/restore/growth and validation audit",
+        "ownership": [
+          ".tmp/evidence/behavior-review*"
+        ],
+        "status": "COMPLETE",
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "noDelegateReason": "N/A",
+        "roleDefaultEffort": true
+      }
+    ],
+    "sharedWriter": "/root reserved, no shared edits authorized or performed",
+    "retries": [
+      {
+        "label": "implementation-baseline",
+        "command": "$env:PATH = \"$((Get-Location).Path)\\.tmp\\toolchain;$env:PATH\"; node node_modules/tsx/dist/cli.mjs --test apps/worker/src/durable/lobby-directory-object.test.mjs",
+        "exit": 1,
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091739-210-implementation-baseline.log",
+        "disposition": "注入defectの3件失敗を再現後、最小修正とfocused成功。"
+      },
+      {
+        "label": "runtime-restart",
+        "command": "node .tmp/evidence/runtime-restart.mjs",
+        "exit": 1,
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091907-306-runtime-restart.log",
+        "disposition": "unsupported --no-interactive、起動前fail。対応済flagへ変更。",
+        "report": ".tmp/evidence/runtime/attempt-01-failed.json"
+      },
+      {
+        "label": "runtime-restart-retry-02",
+        "command": "node .tmp/evidence/runtime-restart.mjs",
+        "exit": 1,
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-091926-770-runtime-restart-retry-02.log",
+        "disposition": "local server起動後500、read-backなし。owned tree停止。短いrepo内persistence pathへ変更し再試行。path長が原因という説明は推論で、OS診断は未取得。",
+        "report": ".tmp/evidence/runtime/attempt-1793060367179/report.json"
+      },
+      {
+        "label": "runtime-restart-retry-03",
+        "command": "node .tmp/evidence/runtime-restart.mjs",
+        "exit": 0,
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1\\.tmp\\evidence\\commands\\20261027-092045-634-runtime-restart-retry-03.log",
+        "disposition": "全4phase成功。所有process/portの終了read-back済み。",
+        "report": ".tmp/evidence/runtime/attempt-1793060446024/report.json"
+      }
+    ],
+    "unproven": [
+      {
+        "surface": "actual DO hibernation",
+        "status": "unproven",
+        "reason": "hibernation固有のidle eviction/attachment/socket resumeは試験していない。"
+      },
+      {
+        "surface": "native/source/browser",
+        "status": "unproven",
+        "applicableToC2Change": false,
+        "reason": "C2はworker lobby限定。今回実行しておらずPASSにしない。"
+      },
+      {
+        "surface": "same-client_msg_id replay across Room DO restore",
+        "status": "unproven",
+        "applicableToC2Change": false,
+        "reason": "既存request_id duplicate guardと区別。Room DO/idempotency実装に差分なし。"
+      }
+    ],
+    "remainingRisks": [
+      "actual hibernation未実証",
+      "local test transport wrapper上のLobbyDirectoryDO restartでありfull room/source/native/browser E2Eではない",
+      "既存破損state処理やnumber表現上限の製品方針は今回変更・再認定しない",
+      "retry02失敗原因のpath長は短縮後成功からの推論",
+      "初回taskkillのOS日本語出力にdecode崩れあり。exit/PIDは記録済み、以後のhelperはCP932 decode+raw bytes保存へ補正。製品差分と成功assertionに影響なし"
+    ],
+    "governanceFeedback": {
+      "result": "none",
+      "reason": "観測された2 seed不具合を製品修正と回帰検証で解消。検証面/独立性/未実証は既存規則で記録可能であり規約変更不要・禁止。"
+    },
+    "prohibitedOperationsPerformed": [],
+    "ownedProcessesStopped": ".tmp/evidence/owned-runtime-readback.json"
+  },
+  "independent_comparison_verdict": "pending; this collector makes no quality decision",
+  "runtime_result": {
+    "run_id": "C2-legacy-1",
+    "attempt": 0,
+    "case_id": "C2",
+    "lane": "legacy",
+    "product_base": "4b600d3445edc71d0599058809c9a89b04591760",
+    "harness_commit": "4b600d3445edc71d0599058809c9a89b04591760",
+    "input_hash": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "started_at": "2026-10-27T00:15:42.038263+00:00",
+    "ended_at": "2026-10-27T00:23:39.809108+00:00",
+    "wall_seconds": 477.7708561000002,
+    "exit_code": 1,
+    "timeout": false,
+    "before": {
+      "head": "e9ab91eff8ca75119df90c442302ca6fdd3f195c",
+      "branch": "codex/legacy-trial",
+      "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {},
+      "fingerprint": "20c653b525753453cfb8b7812485ff499ecaab0d83e66b80577b6429e9985b27"
+    },
+    "after": {
+      "head": "e9ab91eff8ca75119df90c442302ca6fdd3f195c",
+      "branch": "codex/legacy-trial",
+      "status_hash": "1e0f6055e698d83b5d4f1ddd94a09616cedee2165de1483f6c328047eb5c8295",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "28745c1cc4eff4dba5030a828c991a4ebac679af76d184c85f3e4805bb940c62",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {
+        "apps/worker/src/durable/lobby-directory-object.test.mjs": "1ebd5c195bc92b7983632597ff7f229abb1cf70b4223e6f73a060e492452cede",
+        "apps/worker/src/durable/lobby-directory-object.ts": "1f8c7ad026be9858e8bb43df5fad37f754cc0679236acfcac5d9d65772efee9f",
+        "tasks/comparison-c2.md": "daf0275b51c3987d95c268f8a6391a39ed131cbeab5ad4e3b51940a6f26228e5"
+      },
+      "fingerprint": "c1853b8a2b04e4bad8a57308e55bd8ac21526128782e51fb9f528458ddf2765d"
+    },
+    "all_agents_total_tokens": null,
+    "active_seconds": null,
+    "spawn_ids": null,
+    "review": null,
+    "verdict": "unproven; independent evaluation pending",
+    "usage": null
+  },
+  "events": {
+    "thread_id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+    "events": 103,
+    "usage": null,
+    "terminal": [
+      {
+        "type": "error",
+        "message": "You’ve hit your usage limit. Upgrade to Pro (https://chatgpt.com/explore/pro), visit https://chatgpt.com/settings/usage to purchase more credits or try again at 1:50 PM."
+      },
+      {
+        "type": "turn.failed",
+        "error": {
+          "message": "You’ve hit your usage limit. Upgrade to Pro (https://chatgpt.com/explore/pro), visit https://chatgpt.com/settings/usage to purchase more credits or try again at 1:50 PM."
+        }
+      }
+    ],
+    "latest_message": "隔離した実ローカルDOの再起動試験も成功しました。同じ保存領域を使って4回起動し、legacy値2500から2501、scalar復元後に2502、削除後の再起動で2503へ進むことと、古い削除条件が拒否されることを確認しました。起動したprocessと割当portが残っていないことも確認済みです。\n\n2回目の起動試験は内部500で失敗し、保存先を短いrepo内パスにした3回目で成功しました。両方の証跡を残しています。実hibernationは今回の再起動試験では実証できないため、未実証として報告します。\n",
+    "commands": [
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Location; & .tmp/toolchain/node.exe --version; & .tmp/toolchain/npm.cmd --version; Get-Command node,npm | Select-Object Name,Source,CommandType | ConvertTo-Json; node -p \"JSON.stringify({version:process.version,execPath:process.execPath,cwd:process.cwd(),path:process.env.PATH})\"; npm --version'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw AGENTS.md; Get-Content -Raw .tmp/comparison/input.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'New-Item -ItemType Directory -Force .tmp/evidence | Out-Null; $envReadback = [ordered]@{ timestamp = (Get-Date).ToString('\"'o'); explicitNode = (& .tmp/toolchain/node.exe --version); explicitNpm = (& .tmp/toolchain/npm.cmd --version); commands = @(Get-Command node,npm | Select-Object Name,Source,CommandType); cli = (node -p \\\"JSON.stringify({version:process.version,execPath:process.execPath,cwd:process.cwd()})\\\" | ConvertFrom-Json); cliNpm = (npm --version); expectedNode='v22.23.4'; expectedNpm='10.9.9' }; \"'$envReadback | ConvertTo-Json -Depth 6 | Set-Content -Encoding utf8 .tmp/evidence/environment.json; Get-Content -Raw .tmp/evidence/environment.json; Get-Content -Raw WORKFLOW.md; Get-Content -Raw QUALITY.md; Get-Content -Raw apps/worker/AGENTS.md'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .codex/skills/phase-c-kickoff-flow/SKILL.md; Get-Content -Raw .codex/skills/fsm-protocol-guard/SKILL.md; Get-Content -Raw .codex/skills/quality-check-matrix/SKILL.md; Get-Content -Raw C:/Users/tts13/.codex/skills/windows-utf8-safe-write/SKILL.md; Get-Content -Raw .codex/agents/contract-auditor.toml; Get-Content -Raw .codex/agents/server-implementer.toml; git status --short; Get-Content -Raw .tmp/comparison/runtime.json; Get-Content -Raw .tmp/comparison/reference/visual.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .codex/skills/phase-c-kickoff-flow/SKILL.md; Get-Content -Raw .codex/skills/fsm-protocol-guard/SKILL.md; Get-Content -Raw .codex/skills/quality-check-matrix/SKILL.md'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw C:/Users/tts13/.codex/skills/windows-utf8-safe-write/SKILL.md; Get-Content -Raw apps/worker/AGENTS.md; Get-Content -Raw .codex/agents/server-implementer.toml; Get-Content -Raw .codex/agents/contract-auditor.toml; Get-Content -Raw .codex/agents/implementation-auditor.toml; Get-Content -Raw .tmp/comparison/runtime.json; git status --short'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw QUALITY.md; Get-Content -Raw package.json; Get-Content -Raw apps/worker/tsconfig.json; rg --files .tmp/comparison; Get-Content -Raw apps/worker/src/durable/lobby-directory-object.ts; Get-Content -Raw apps/worker/src/routes/lobby.ts'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/comparison/requirements.md; Get-Content -Raw .tmp/comparison/runtime.json; Get-Content -Raw .codex/agents/implementation-auditor.toml; Get-Content -Raw .codex/skills/quality-check-matrix/references/quality-verification-matrix.md; Get-Content -Raw .codex/skills/fsm-protocol-guard/references/fsm-protocol-invariants.md; Get-Content -Raw .codex/skills/fsm-protocol-guard/references/fsm-protocol-risk-matrix.md; Get-Content -Raw apps/worker/package.json; Get-Content -Raw tsconfig.json; Get-Content -Raw .github/workflows/ci.yml'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label initial-state -Command 'git status --short; git rev-parse HEAD; git branch --show-current; Get-FileHash apps/worker/src/durable/lobby-directory-object.ts -Algorithm SHA256; Get-Content -Raw .tmp/evidence/environment.json'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw apps/worker/wrangler.toml; Get-Content -Raw wrangler.toml; Get-Content -Raw apps/worker/src/services/lobby-directory.ts; Get-Content -Raw .tmp/comparison/c2-barrier.test.mjs; Get-Content -Raw .github/workflows/validate-reusable.yml'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content -Raw apps/worker/src/index.ts; Get-Content -Raw apps/worker/src/routes/rooms.ts; Get-Content -Raw apps/worker/src/types/env.ts; rg -n 'lobby|ROOM_STATE_LOST|restore|reconnect|hibernation|persist' QUALITY.md docs/design/01_fsm.md docs/design/10_regression_guard_addendum.md; rg --files scripts | rg 'e2e|local'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label toolchain-readback -Command '& .tmp/toolchain/node.exe --version; & .tmp/toolchain/npm.cmd --version; Get-Command node,npm,npx | Select-Object Name,Source | ConvertTo-Json; node -p \\\"JSON.stringify({version:process.version,execPath:process.execPath,cwd:process.cwd()})\\\"; npm --version'; Get-Content -Raw node_modules/wrangler/package.json | Select-Object -First 1; rg -n 'ip|inspector-port|persist-to|no-bundle|usage|metrics' node_modules/wrangler/config-schema.json | Select-Object -First 35\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label design-contracts -Command 'npm run check:design-contracts'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label c2-barrier -Command 'node --import tsx --test .tmp/comparison/c2-barrier.test.mjs'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label agents-parity -Command 'npm run check:agents'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label client-stats -Command 'npm run test:client-stats'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label worker-standard -Command 'npm run test:worker'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label worker-bundle-dry-run -Directory (Join-Path (Get-Location) 'apps/worker') -Command '\"'$env:WRANGLER_SEND_METRICS=\"false\"; $env:WRANGLER_LOG_PATH=\"../../.tmp/evidence/bundle-wrangler.log\"; npx --no-install wrangler deploy --dry-run'\"'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label root-typecheck -Command 'npm run typecheck'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label root-lint -Command 'npm run lint'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label runtime-restart -Command 'node .tmp/evidence/runtime-restart.mjs'\"",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label final-diff -Command 'git diff --check; if (\"'$LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; git diff --stat; git diff -- apps/worker/src/durable/lobby-directory-object.ts apps/worker/src/durable/lobby-directory-object.test.mjs; Get-FileHash apps/worker/src/durable/lobby-directory-object.ts,apps/worker/src/durable/lobby-directory-object.test.mjs -Algorithm SHA256 | ConvertTo-Json; git status --short'\"'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/evidence/runtime/01-legacy-seed.log; Get-Content -Raw .tmp/evidence/commands.jsonl; Get-Content -Raw .tmp/evidence/implementation.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Copy-Item -LiteralPath .tmp/evidence/runtime/report.json -Destination .tmp/evidence/runtime/attempt-01-failed.json; Copy-Item -LiteralPath .tmp/evidence/runtime/01-legacy-seed.log -Destination .tmp/evidence/runtime/attempt-01-startup.log'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-ChildItem .tmp/evidence/runtime -Directory | Select-Object Name; Get-Content -Tail 35 (Get-ChildItem .tmp/evidence/runtime -Filter '01-legacy-seed.log' -Recurse | Sort-Object LastWriteTime | Select-Object -Last 1).FullName; Get-Content -Raw QUALITY.md | Select-Object -First 1\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content -Head 60 (Get-ChildItem .tmp/evidence/runtime -Filter '01-legacy-seed.log' -Recurse | Sort-Object LastWriteTime | Select-Object -Last 1).FullName\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content -Tail 80 (Get-ChildItem .tmp/evidence/runtime -Filter '01-legacy-seed-wrangler.log' -Recurse | Sort-Object LastWriteTime | Select-Object -Last 1).FullName\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"rg -n -i 'sqlite|exception|failed|error|directory|too long|denied' .tmp/evidence/runtime/attempt-1793060367179/01-legacy-seed-wrangler.log | Select-Object -First 25\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label runtime-restart-retry-02 -Command 'node .tmp/evidence/runtime-restart.mjs'\"",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-ChildItem .tmp/evidence/runtime/attempt-1793060367179 -File -Recurse | Select-Object FullName,@{n='Length';e={\"'$_.FullName.Length}} | ConvertTo-Json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label runtime-restart-retry-03 -Command 'node .tmp/evidence/runtime-restart.mjs'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label owned-runtime-readback -Command '\"'$runtimeReport = Get-Content -Raw .tmp/evidence/runtime/report.json | ConvertFrom-Json; $remaining = @(); foreach ($record in $runtimeReport.processes) { $ownedProcess = Get-Process -Id $record.pid -ErrorAction SilentlyContinue; if ($ownedProcess) { $remaining += $ownedProcess.Id } }; $listeners = @(); foreach ($record in $runtimeReport.processes) { $listeners += @(Get-NetTCPConnection -State Listen -LocalAddress 127.0.0.1 -LocalPort $record.port,$record.inspector -ErrorAction SilentlyContinue | Select-Object LocalAddress,LocalPort,OwningProcess) }; [ordered]@{ownedPids=@($runtimeReport.processes.pid); remainingOwnedProcesses=$remaining; listenersOnAllocatedPorts=$listeners; runtimeStatus=$runtimeReport.status; checkedAt=(Get-Date).ToString(\"o\")} | ConvertTo-Json -Depth 5 | Tee-Object -FilePath .tmp/evidence/owned-runtime-readback.json; if ($remaining.Count -gt 0 -or $listeners.Count -gt 0) { exit 1 }; exit 0'\"'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label snapshot -Command 'node .tmp/evidence/snapshot.mjs'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-ChildItem .tmp/evidence -Filter '*review*.json' | Select-Object Name; Get-Content -Raw .tmp/evidence/contract-review.json -ErrorAction SilentlyContinue; Get-Content -Raw .tmp/evidence/behavior-review.json -ErrorAction SilentlyContinue\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \".tmp/evidence/run-command.ps1 -Label executor-finalize -Command 'node .tmp/evidence/finalize.mjs'\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/evidence/contract-review.json'",
+        "exit_code": 0,
+        "status": "completed"
+      }
+    ],
+    "unparsed_tail_bytes": 0,
+    "events_sha256": "8551f4bd268f4f5f75bd62ac61fdcaeffa04c52d71107d6fb1019be6851ae26f"
+  },
+  "family_telemetry": {
+    "status": "linked trace observations; terminal states still require inspection",
+    "thread_id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+    "spawn_ids": [
+      "01a17ab7-bb54-7fb0-8140-c3b43c9884d5",
+      "01a17ab7-db78-7ee0-89b5-fcab6e84e51e",
+      "01a17ab7-f6a9-7872-9e04-499fa5c73d7f"
+    ],
+    "spawn_attempt_count": 3,
+    "traces": [
+      {
+        "thread_id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+        "trace_found": true,
+        "trace_sha256": "2abd181f8a3e1c626beda0e5dddba028f8c911b34ec55419648e93a2f45a5c66",
+        "metadata": {
+          "id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+          "parent_thread_id": null,
+          "agent_role": null,
+          "agent_path": null,
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": "exec"
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 3336990,
+          "cached_input_tokens": 3222912,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 18180,
+          "reasoning_output_tokens": 3167,
+          "total_tokens": 3355170
+        },
+        "spawn_calls": [
+          {
+            "call_id": "call_9bf49fb2ee8248bd965f75c2a76a9e00",
+            "agent_type": "server-implementer",
+            "task_name": "c2_implementation",
+            "model": "gpt-6.1-sol",
+            "effort": "medium"
+          },
+          {
+            "call_id": "call_0929c8e9e3e54d6081a623a01fb8a75a",
+            "agent_type": "contract-auditor",
+            "task_name": "c2_contract_review",
+            "model": "gpt-6.1-sol",
+            "effort": "high"
+          },
+          {
+            "call_id": "call_2c3bfc2b9129464dad138d47f9aa5e55",
+            "agent_type": "implementation-auditor",
+            "task_name": "c2_behavior_review",
+            "model": "gpt-6.1-sol",
+            "effort": "high"
+          }
+        ],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T00:23:39.455Z",
+          "error": true
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      },
+      {
+        "thread_id": "01a17ab7-bb54-7fb0-8140-c3b43c9884d5",
+        "trace_found": true,
+        "trace_sha256": "71f28576b04bcba6a6a396a989aa39dda8ebd8a528ba1c7cba403d8ebc4d7848",
+        "metadata": {
+          "id": "01a17ab7-bb54-7fb0-8140-c3b43c9884d5",
+          "parent_thread_id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+          "agent_role": "server-implementer",
+          "agent_path": "/root/c2_implementation",
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": {
+            "subagent": {
+              "thread_spawn": {
+                "parent_thread_id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+                "depth": 1,
+                "agent_path": "/root/c2_implementation",
+                "agent_nickname": "Darwin",
+                "agent_role": "server-implementer"
+              }
+            }
+          }
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "medium",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 810622,
+          "cached_input_tokens": 750336,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 3733,
+          "reasoning_output_tokens": 258,
+          "total_tokens": 814355
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T00:18:44.609Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      },
+      {
+        "thread_id": "01a17ab7-db78-7ee0-89b5-fcab6e84e51e",
+        "trace_found": true,
+        "trace_sha256": "a104e87bab39e359b15c7fd73a819feb1b5c0d79c18ad0e9b5499f557c62df64",
+        "metadata": {
+          "id": "01a17ab7-db78-7ee0-89b5-fcab6e84e51e",
+          "parent_thread_id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+          "agent_role": "contract-auditor",
+          "agent_path": "/root/c2_contract_review",
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": {
+            "subagent": {
+              "thread_spawn": {
+                "parent_thread_id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+                "depth": 1,
+                "agent_path": "/root/c2_contract_review",
+                "agent_nickname": "Confucius",
+                "agent_role": "contract-auditor"
+              }
+            }
+          }
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 1512628,
+          "cached_input_tokens": 1431296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 9290,
+          "reasoning_output_tokens": 1270,
+          "total_tokens": 1521918
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T00:23:00.452Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      },
+      {
+        "thread_id": "01a17ab7-f6a9-7872-9e04-499fa5c73d7f",
+        "trace_found": true,
+        "trace_sha256": "9873811f0c42a7a4da5b47d8d2860f3a8926e7e70f5cf91cdffdae52cfaa25b4",
+        "metadata": {
+          "id": "01a17ab7-f6a9-7872-9e04-499fa5c73d7f",
+          "parent_thread_id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+          "agent_role": "implementation-auditor",
+          "agent_path": "/root/c2_behavior_review",
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-legacy-1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": {
+            "subagent": {
+              "thread_spawn": {
+                "parent_thread_id": "01a17ab6-7cc6-7ee2-9cc5-cdc771ada6ea",
+                "depth": 1,
+                "agent_path": "/root/c2_behavior_review",
+                "agent_nickname": "Parfit",
+                "agent_role": "implementation-auditor"
+              }
+            }
+          }
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 2305848,
+          "cached_input_tokens": 2221568,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 10271,
+          "reasoning_output_tokens": 1365,
+          "total_tokens": 2316119
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T00:22:45.142Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      }
+    ],
+    "coverage_complete": true,
+    "all_agents_total_tokens": null,
+    "limitation": "No token inference; missing child telemetry or unmatched spawn makes total null. Provider counters retained verbatim."
+  },
+  "timing": {
+    "started_at": "2026-10-27T00:15:42.038263+00:00",
+    "model_terminal_at": "2026-10-27T00:23:39.455Z",
+    "wall_to_model_terminal_seconds": 477.416737,
+    "cli_wall_seconds": 477.7708561000002,
+    "active_seconds": null
+  },
+  "after": {
+    "head": "e9ab91eff8ca75119df90c442302ca6fdd3f195c",
+    "branch": "codex/legacy-trial",
+    "status_hash": "1e0f6055e698d83b5d4f1ddd94a09616cedee2165de1483f6c328047eb5c8295",
+    "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_diff_hash": "28745c1cc4eff4dba5030a828c991a4ebac679af76d184c85f3e4805bb940c62",
+    "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "files": {
+      "apps/worker/src/durable/lobby-directory-object.test.mjs": "1ebd5c195bc92b7983632597ff7f229abb1cf70b4223e6f73a060e492452cede",
+      "apps/worker/src/durable/lobby-directory-object.ts": "1f8c7ad026be9858e8bb43df5fad37f754cc0679236acfcac5d9d65772efee9f",
+      "tasks/comparison-c2.md": "daf0275b51c3987d95c268f8a6391a39ed131cbeab5ad4e3b51940a6f26228e5"
+    },
+    "fingerprint": "c1853b8a2b04e4bad8a57308e55bd8ac21526128782e51fb9f528458ddf2765d"
+  },
+  "untracked_files": {
+    "tasks/comparison-c2.md": {
+      "sha256": "daf0275b51c3987d95c268f8a6391a39ed131cbeab5ad4e3b51940a6f26228e5",
+      "content": "# C2 合成変更の実行計画\n\n- Stage: Phase A/B 確定、C kickoff 待ち。正本 `.tmp/comparison/input.json`。\n- objective: 同ms/upsert/delete-recreate の stale cleanup を防ぎ、legacy/scalar 保存復元と bounded helper state を維持する。\n- execution profile: High-Risk。Plan Mode: 必須（この計画成果物を使用）。\n- affected layer: Worker LobbyDirectoryDO と直接関連testのみ。root/worker AGENTS、WORKFLOW、QUALITY適用。\n- contract-sensitive: 内部storage復元。公開DTO/schema/TTL/一覧条件は維持。旧mapと現scalarを読む互換方針。\n- fixed decisions: input.jsonのGoal/AC/禁止事項。pending decisions: none。\n- current request ceiling: implementation + validation + independent audit + local evidence。\n- implementation authorization: YES（ユーザー明示）。next unlock condition: kickoff完了後はnone。\n- success criteria: 同ms strict増加、削除再作成保護、legacy最大2500を超過、scalar復元、remove/TTL後の補助state bounded、barrier順序逆転とfail-open、標準検証、隔離local再起動read-back。\n- stop condition: 環境不一致、scope/権限拡張が必須、未処理Blocker/Must fix、実証不能の必須保証。\n- allowed side effects: scoped worker/test edits、tasks/.tmp artifact、所有loopback runtimeと隔離.tmp persistence。自分のprocessだけ停止。\n- forbidden outputs: commit/push/PR/merge/Issue write/deploy/release/cleanup、依存/lockfile/CI/規約/比較条件変更、外部write、秘密収集、他repo/runtime/process操作。\n- non-goals: client/shared/public schema、製品仕様、native/source/browser UI変更。\n- changes: 注入済み2 defectを最小修正、関連regression test補強。\n- impact: 公開互換維持、内部map→scalar読取互換修復。Cloudflare構成変更なし。\n- validation: input.json全command、共通c2-barrier、標準membership確認、隔離wrangler local実再起動、diff/hash、契約/挙動独立監査。実hibernation/browser/native/source未実施はPASSにしない。\n- rollback: 本試行の差分をreview可能に保持。自動restore/cleanupしない。\n- commit split: commit禁止、単一bounded diffとして提出。\n\n## Delegation packets\n\n共通: 各担当はroot/worker AGENTSとinput.jsonを読み、環境Node22.23.4/npm10.9.9をread-back。model gpt-6.1-sol、role既定effort。全試行command/exit/logを.tmp/evidenceに保存。並行作業者の編集をrevertしない。\n\n### server-implementer\n- task label: C2-worker-fix\n- objective/success criteria: 上記Goal/ACを最小worker差分で満たす。\n- in-scope files/layer: lobby-directory-object.ts、同test、routes/lobby.test.mjs。cleanup呼出変更が真に必要なら先に親へ通知。\n- non-goals/forbidden scope: 上記禁止事項全部。shared writerはroot一人に予約、shared変更自体は禁止。\n- allowed side effects: 担当scope編集、自分専用.tmp/evidence/implementation artifact。\n- expected output: 変更点、lifecycle/protocol影響、検証、shared/doc影響、follow-up、COMPLETE/BLOCKED/ESCALATION。\n- validation: 既存test + 必要なrace/restore/growth追加。標準membershipと型面を記録。\n- continue-without-escalation boundary: 確定仕様内の最小修正/test。kickoff READY通知まではread-only。\n- escalation: scope拡張/互換再定義/環境不一致/未決。\n\n### contract-auditor\n- task label: C2-contract-review\n- objective: 内部storageと公開schema、legacy/scalar、bounded growthの独立監査。\n- success criteria: 規範と実diffに基づくfindings/disposition、互換判定、validation gaps。\n- in-scope files/layer: worker変更と関連docs/sharedをread-only。\n- non-goals/forbidden scope: 実装修正/製品scope拡張と上記禁止操作。\n- allowed side effects: .tmp/evidence/contract-review artifactのみ。\n- expected output: findings severity、根拠、disposition ledger、verdict、COMPLETE/BLOCKED/ESCALATION。\n- validation: 最終diff/hash、独立コード読解。未実証を合格にしない。\n- continue-without-escalation boundary: kickoff前はread-only予備調査、最終diff通知後に監査。\n- escalation: 未処理Blocker/Must fix、契約判断不能。\n\n### implementation-auditor\n- task label: C2-behavior-review\n- objective: race/restore/growth/fail-open/reconnectと検証面の独立監査。\n- success criteria: barrier順序逆転、実runtime再起動とunitの区別、Q05/Q06/Q12〜16の証拠を点検。\n- in-scope files/layer: worker変更/関連tests/evidence read-only。\n- non-goals/forbidden scope: 実装修正と上記禁止操作。\n- allowed side effects: .tmp/evidence/behavior-review artifactのみ。\n- expected output: findings/disposition/evidence/remaining risk、parity、verdict、COMPLETE/BLOCKED/ESCALATION。\n- validation: 独立読解、必要なら自分専用ログ付きread-only test。\n- continue-without-escalation boundary: 最終diffまでは予備調査、通知後に最終監査。\n- escalation: 証拠不足、未処理Blocker/Must fix。\n"
+    }
+  },
+  "tracked_patch_sha256": "28745c1cc4eff4dba5030a828c991a4ebac679af76d184c85f3e4805bb940c62",
+  "raw_capture": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C2-legacy-1-attempt0\\events.jsonl",
+  "raw_capture_sha256": "8551f4bd268f4f5f75bd62ac61fdcaeffa04c52d71107d6fb1019be6851ae26f",
+  "cost_scope": "CLI parent and linked children only. Shared preparation/comparison adjudication costs are separate and not fully measured."
+}

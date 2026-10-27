@@ -1,0 +1,12 @@
+{
+  "case": "C3",
+  "lane": "v2",
+  "repeat": 1,
+  "run_id": "C3-v2-1",
+  "root": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C3-v2-1",
+  "head": "519823959f095ea07bc9f567b713e9a17c6a05e9",
+  "input_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+  "seed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "prompt": "あなたは新しい独立Codex比較executorです。root AGENTS.mdと.tmp/comparison/input.jsonを読み、そこに固定されたGoal/AC/禁止事項に従い、実装・検証・必要な独立監査まで行ってください。\n独立したこのrepo内の合成変更だけを許可します。既存ハーネスの作業規則に従い、必要artifactはtasksまたは.tmpへ保存可能です。製品scopeは仕様記載の最小限。依存/lockfile/CI/製品規約/許可/比較条件は変更禁止。\ncommit/push/PR/merge/Issue write/deploy/release/cleanup、秘密の収集、他のrepo/runtime/processへの操作は禁止。wrangler deploy --dry-runのみ検証用bundleとして許可します。ローカルサーバは127.0.0.1の割当portで、自分が起動したprocessだけを使い停止してください。既存run-local-e2e.ps1は既存listener再利用と可視窓があるためそのまま起動禁止です。\n実際に必要なSubagentは起動し、IDと担当を保存。C2/C3は実装非担当の契約/挙動レビュー必須。shared writerは明示一人、同scope writer競合なし。子のmodelはgpt-6.1-sol、effortはハーネスのrole既定を使用し記録。\n共通検証コマンドはinput.json、追加testは標準membership/型面を確認し必要なものを明示実行。全試行のcommand/exit/logを.tmp/evidenceへ保存。browser helperは.tmp/comparison/browser_fixture.mjsで、node helper --root . --output .tmp/evidence/visual （--prepare-only は設置のみ）。基点referenceは.tmp/comparison/reference。未実施のnative/source/DO restartやbrowserをPASSにしないこと。\nwall上限120分。完成時または環境/品質のblocking時には.tmp/evidence/executor.jsonへAC/Qごとのpass/fail/unprovenと証拠、独立review/finding disposition、実spawn、再試行、残リスクを保存し、日本語でCOMPLETE/BLOCKED/ESCALATIONを返す。実証不能のACはunprovenとし、完全合格を偽装しないでください。\n\n環境revision2の共通追加条件: 最初に .tmp/toolchain/node.exe --version と .tmp/toolchain/npm.cmd --version、Get-Command node/npm、CLI内の実環境を.tmp/evidence/environment.jsonへread-backしてください。Nodeはv22.23.4、npmは10.9.9を使用します。PATH先頭にこのrepoの.tmp/toolchainが設定されています。異なるversionを代用して実装・検証せず、環境不一致ならBLOCKEDを保存して停止してください。実行は全方式で同じローカル権限、外部MCP/apps/plugins無効です。権限が広くても他repo/秘密/非所有process/外部write禁止は維持します。browserの固定pathは.tmp/comparison/runtime.jsonとreference/visual.jsonです。C2共通追加試験は node --import tsx --test .tmp/comparison/c2-barrier.test.mjs ですが、unitを実hibernationや実local DO restartと混同しません。C3の旧consumer sourceと値fixtureは.tmp/comparison/old-consumersとsnapshot-values.jsonです。\n",
+  "environment_revision": "I198-conditions-2"
+}

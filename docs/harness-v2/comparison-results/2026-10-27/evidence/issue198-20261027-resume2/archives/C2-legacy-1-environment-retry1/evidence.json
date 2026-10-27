@@ -1,0 +1,1367 @@
+{
+  "archived_at": "2026-10-27T06:14:49.070791+00:00",
+  "experiment": "issue198-20261027-resume2",
+  "run_id": "C2-legacy-1-environment-retry1",
+  "case": "C2",
+  "lane": "legacy",
+  "input_hash": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+  "initial_head": "992883524aa59169fc3f67793b42fe328c0592c7",
+  "manifest_sha256": "de5aff6f0d5f7700ffe73a59639cbed51e0d41bd99412f3e6a9a44ce95a6f316",
+  "executor_claim": {
+    "caseId": "C2",
+    "status": "COMPLETE",
+    "fullyProven": false,
+    "statusMeaning": "Scoped implementation and required feasible local verification/audits complete. Actual hibernation remains explicitly unproven under specification exception; this is not an all-guarantees PASS.",
+    "sourceOfTruth": ".tmp/comparison/input.json",
+    "environment": {
+      "timestamp": "2026-10-27T05:56:16.2604737Z",
+      "explicitNode": "v22.23.4",
+      "explicitNpm": "10.9.9",
+      "resolvedCommands": [
+        {
+          "Name": "node.exe",
+          "Source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+          "CommandType": 32
+        },
+        {
+          "Name": "npm.ps1",
+          "Source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\npm.ps1",
+          "CommandType": 16
+        }
+      ],
+      "cli": {
+        "version": "v22.23.4",
+        "execPath": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "platform": "win32",
+        "arch": "x64",
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "pathHead": "C:\\Program Files\\PowerShell\\7"
+      },
+      "cliNpm": "10.9.9",
+      "exits": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "expectedNode": "v22.23.4",
+      "expectedNpm": "10.9.9",
+      "match": true
+    },
+    "snapshot": {
+      "capturedAt": "2026-10-27T06:03:17.503Z",
+      "head": "992883524aa59169fc3f67793b42fe328c0592c7",
+      "branch": "codex/legacy-trial",
+      "initialStatus": "clean (recorded before implementation)",
+      "finalStatus": " M apps/worker/src/durable/lobby-directory-object.test.mjs\n M apps/worker/src/durable/lobby-directory-object.ts\n?? tasks/comparison-c2.md\n",
+      "diffSha256": "2ae2915717bf3da23cd46f634e0207de0232fd73ee7531caf015af3b33f40dda",
+      "files": [
+        {
+          "file": "apps/worker/src/durable/lobby-directory-object.ts",
+          "sha256": "1f8c7ad026be9858e8bb43df5fad37f754cc0679236acfcac5d9d65772efee9f",
+          "baselineSha256": "a253cd566704efee55d2ddc6146c915a97c3f540551ecf1a435aacd52ad9d8e9",
+          "utf8NoBom": true,
+          "crCount": 0
+        },
+        {
+          "file": "apps/worker/src/durable/lobby-directory-object.test.mjs",
+          "sha256": "13a7b5733bb3ecf0eeb68c3bcfd6faec6bf1e6eb06f7da0ccf9e2f709ceda2c6",
+          "baselineSha256": "1321bf9943c81941df3433a50945419c617b4322b61faca8632de808e4516d91",
+          "utf8NoBom": true,
+          "crCount": 0
+        }
+      ],
+      "scope": "Only two allowed worker files plus task artifact. No staged diff.",
+      "stagedDiff": "",
+      "diffCheck": "",
+      "diffCheckExit": 0
+    },
+    "startedAt": "2026-10-27T05:56:16.2604737Z",
+    "finishedAt": "2026-10-27T06:07:35.240Z",
+    "wallLimitMinutes": 120,
+    "goal": "Prevent stale lobby cleanup from deleting newer/recreated summaries; restore durable monotonic tokens and bounded helper state without public behavior changes.",
+    "acceptanceCriteria": [
+      {
+        "id": "AC01",
+        "status": "pass",
+        "summary": "Two upserts at now=1000 issue 1000 then 1001; stale1000 remove=false",
+        "evidence": [
+          ".tmp/evidence/implementer-fixed-targeted.log"
+        ]
+      },
+      {
+        "id": "AC02",
+        "status": "pass",
+        "summary": "Same-ms delete/recreate retains newer summary under old remove",
+        "evidence": [
+          ".tmp/evidence/implementer-fixed-targeted.log",
+          ".tmp/evidence/barrier.log"
+        ]
+      },
+      {
+        "id": "AC03",
+        "status": "pass",
+        "summary": "Legacy map maximum2500 at clock2000 yields2501; scalar persisted",
+        "evidence": [
+          ".tmp/evidence/implementer-fixed-targeted.log",
+          ".tmp/evidence/barrier.log",
+          ".tmp/evidence/contract-review-check.log"
+        ]
+      },
+      {
+        "id": "AC04",
+        "status": "pass",
+        "summary": "Scalar survives empty-room snapshot restore and backwards clock",
+        "evidence": [
+          ".tmp/evidence/implementer-fixed-targeted.log",
+          ".tmp/evidence/runtime-restart-attempt2-result.json"
+        ]
+      },
+      {
+        "id": "AC05",
+        "status": "pass",
+        "summary": "Helper remains scalar plus live rooms; delete/TTL cleanup has no per-room tombstones; 200 unique-room churn",
+        "evidence": [
+          ".tmp/evidence/implementer-fixed-targeted.log",
+          ".tmp/evidence/barrier.log",
+          ".tmp/evidence/contract-review-check.log"
+        ]
+      },
+      {
+        "id": "AC06",
+        "status": "pass",
+        "summary": "Real route/service to actual directory with deferred mocked probes: eligible=false/404 ROOM_STATE_LOST, upsert/recreate, reversed probe completions preserve newer summary",
+        "evidence": [
+          ".tmp/evidence/barrier.log"
+        ],
+        "limit": "ROOM_DO transport mocked; this barrier unit is not real hibernation/local restart"
+      },
+      {
+        "id": "AC07",
+        "status": "pass",
+        "summary": "5xx/network probe failure is fail-open and retains summary",
+        "evidence": [
+          ".tmp/evidence/barrier.log"
+        ]
+      },
+      {
+        "id": "AC08",
+        "status": "pass",
+        "summary": "Public DTO keys, TTL boundaries and list filters unchanged",
+        "evidence": [
+          ".tmp/evidence/product.diff",
+          ".tmp/evidence/contract-review-check.log"
+        ]
+      },
+      {
+        "id": "AC09",
+        "status": "pass",
+        "summary": "Root lint/typecheck/stats, standard worker99, contracts, worker dry-run all pass; quick-CI agents check also pass",
+        "evidence": [
+          ".tmp/evidence/lint.json",
+          ".tmp/evidence/typecheck.json",
+          ".tmp/evidence/client-stats.json",
+          ".tmp/evidence/implementer-worker-standard-command.json",
+          ".tmp/evidence/contracts.json",
+          ".tmp/evidence/bundle.json",
+          ".tmp/evidence/agents.json",
+          ".tmp/evidence/validation-surface.json"
+        ]
+      },
+      {
+        "id": "AC10",
+        "status": "pass",
+        "summary": "Real isolated local workerd/DO restarted twice with same SQLite path; list/scalar read-back and token1001→1002→1003 despite clock rollback; owned processes stopped",
+        "evidence": [
+          ".tmp/evidence/runtime-restart-attempt2-result.json",
+          ".tmp/evidence/owned-process-readback.json"
+        ]
+      },
+      {
+        "id": "AC11",
+        "status": "unproven",
+        "summary": "Actual production-like DO hibernation not induced or claimed; allowed explicit limitation",
+        "evidence": [
+          ".tmp/evidence/validation-surface.json"
+        ]
+      },
+      {
+        "id": "AC12",
+        "status": "pass",
+        "summary": "Scoped minimal repair; no client/shared/DTO/constants/dependency/CI/governance/permission/comparison-condition changes",
+        "evidence": [
+          ".tmp/evidence/product-snapshot.json",
+          ".tmp/evidence/product.diff",
+          ".tmp/evidence/kickoff.json"
+        ]
+      }
+    ],
+    "quality": [
+      {
+        "id": "Q05",
+        "status": "unproven",
+        "summary": "Standard reconnect stale-socket/ROOM_STATE_LOST/idempotency regressions pass and real local restart pass; actual hibernation remains unproven",
+        "evidence": [
+          ".tmp/evidence/implementer-worker-standard.log",
+          ".tmp/evidence/runtime-restart-attempt2-result.json",
+          ".tmp/evidence/validation-surface.json"
+        ]
+      },
+      {
+        "id": "Q06",
+        "status": "pass",
+        "summary": "Freshness/race/restore/growth and public-contract preservation covered",
+        "evidence": [
+          ".tmp/evidence/barrier.log",
+          ".tmp/evidence/implementer-fixed-targeted.log",
+          ".tmp/evidence/contract-review-check.log"
+        ]
+      },
+      {
+        "id": "Q12",
+        "status": "pass",
+        "summary": "All attempts including seed failures/runtime retry saved; standard membership and .mjs static-type limitation explicit",
+        "evidence": [
+          ".tmp/evidence/retries.json",
+          ".tmp/evidence/validation-surface.json"
+        ]
+      },
+      {
+        "id": "Q13",
+        "status": "pass",
+        "summary": "Single worker writer, explicit no-write shared owner; initial clean, scoped final diff, no staging/cleanup",
+        "evidence": [
+          ".tmp/evidence/kickoff.json",
+          ".tmp/evidence/product-snapshot.json"
+        ]
+      },
+      {
+        "id": "Q14",
+        "status": "pass",
+        "summary": "Actual independent contract/behavior reviewers, immutable product hashes, findings dispositions retained",
+        "evidence": [
+          ".tmp/evidence/behavior-review-result.md",
+          ".tmp/evidence/contract-review.md"
+        ]
+      },
+      {
+        "id": "Q15",
+        "status": "pass",
+        "summary": "Only authorized repo-local implementation/verification; no publish/commit/PR/Issue/deploy/release/cleanup",
+        "evidence": [
+          ".tmp/evidence/kickoff.json",
+          ".tmp/evidence/product-snapshot.json"
+        ]
+      },
+      {
+        "id": "Q16",
+        "status": "pass",
+        "summary": "Owned loopback/persistence/process identity and stop read-back; no production credentials or external input authority; generated ephemeral proxy fields redacted",
+        "evidence": [
+          ".tmp/evidence/owned-process-readback.json",
+          ".tmp/evidence/redaction.json",
+          ".tmp/evidence/retries.json"
+        ],
+        "remainingRisk": "Ephemeral owned-runtime token appeared in earlier tool output before detection; runtime stopped; not a production credential."
+      }
+    ],
+    "commands": [
+      {
+        "evidence": ".tmp/evidence/agents.json",
+        "label": "agents",
+        "command": [
+          "npm",
+          "run",
+          "check:agents"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+          "run",
+          "check:agents"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T05:58:52.075Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\agents.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T05:58:52.353Z"
+      },
+      {
+        "evidence": ".tmp/evidence/barrier.json",
+        "label": "barrier",
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          ".tmp/comparison/c2-barrier.test.mjs"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          "--import",
+          "tsx",
+          "--test",
+          ".tmp/comparison/c2-barrier.test.mjs"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T05:59:16.770Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\barrier.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T05:59:17.170Z"
+      },
+      {
+        "evidence": ".tmp/evidence/bundle.json",
+        "label": "bundle",
+        "command": [
+          "npx",
+          "--no-install",
+          "wrangler",
+          "deploy",
+          "--dry-run"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\apps\\worker",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node_modules\\npm\\bin\\npx-cli.js",
+          "--no-install",
+          "wrangler",
+          "deploy",
+          "--dry-run"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T05:59:16.776Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\bundle.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T05:59:19.269Z"
+      },
+      {
+        "evidence": ".tmp/evidence/client-stats.json",
+        "label": "client-stats",
+        "command": [
+          "npm",
+          "run",
+          "test:client-stats"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+          "run",
+          "test:client-stats"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T05:58:49.721Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\client-stats.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T05:58:50.897Z"
+      },
+      {
+        "evidence": ".tmp/evidence/contracts.json",
+        "label": "contracts",
+        "command": [
+          "npm",
+          "run",
+          "check:design-contracts"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+          "run",
+          "check:design-contracts"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T05:58:51.354Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\contracts.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T05:58:51.576Z"
+      },
+      {
+        "evidence": ".tmp/evidence/environment-command.json",
+        "command": [
+          ".tmp/toolchain/node.exe --version",
+          ".tmp/toolchain/npm.cmd --version",
+          "Get-Command node,npm | Select-Object Name,Source,CommandType",
+          "node -p JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch,cwd:process.cwd()})",
+          "npm --version"
+        ],
+        "exit": 0,
+        "log": ".tmp/evidence/environment.json",
+        "note": "Initial explicit and CLI read-back saved before product work. Shell runner prepends its PowerShell directory to PATH, but node/npm resolve to repository .tmp/toolchain and required versions. Validation runner explicitly puts repo toolchain first and uses its node executable/npm CLI. No alternative version used."
+      },
+      {
+        "evidence": ".tmp/evidence/executor-generation.json",
+        "label": "executor-generation",
+        "command": [
+          "node",
+          ".tmp/evidence/build-executor.mjs"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          ".tmp/evidence/build-executor.mjs"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T06:06:00.782Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\executor-generation.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T06:06:00.852Z"
+      },
+      {
+        "evidence": ".tmp/evidence/final-verification.json",
+        "label": "final-verification",
+        "command": [
+          "node",
+          ".tmp/evidence/verify-executor.mjs"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          ".tmp/evidence/verify-executor.mjs"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T06:06:32.494Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\final-verification.log",
+        "exit": 1,
+        "signal": null,
+        "endedAt": "2026-10-27T06:06:32.570Z"
+      },
+      {
+        "evidence": ".tmp/evidence/implementer-fixed-targeted-command.json",
+        "command": "node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\implementer-fixed-targeted.log",
+        "npm": "10.9.9",
+        "exit": 0,
+        "node": "v22.23.4"
+      },
+      {
+        "evidence": ".tmp/evidence/implementer-seed-tests-command.json",
+        "exit": 1,
+        "npm": "10.9.9",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\implementer-seed-tests.log",
+        "command": "node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs",
+        "node": "v22.23.4"
+      },
+      {
+        "evidence": ".tmp/evidence/implementer-worker-standard-command.json",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\implementer-worker-standard.log",
+        "command": "npm run test:worker",
+        "npm": "10.9.9",
+        "node": "v22.23.4",
+        "exit": 0
+      },
+      {
+        "evidence": ".tmp/evidence/lint.json",
+        "label": "lint",
+        "command": [
+          "npm",
+          "run",
+          "lint"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+          "run",
+          "lint"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T05:58:38.089Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\lint.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T05:58:43.291Z"
+      },
+      {
+        "evidence": ".tmp/evidence/redact.json",
+        "label": "redact",
+        "command": [
+          "node",
+          ".tmp/evidence/redact-owned-logs.mjs"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          ".tmp/evidence/redact-owned-logs.mjs"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T06:02:25.870Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\redact.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T06:02:25.929Z"
+      },
+      {
+        "evidence": ".tmp/evidence/runtime-restart-attempt2.json",
+        "label": "runtime-restart-attempt2",
+        "command": [
+          "node",
+          ".tmp/evidence/runtime-restart.mjs",
+          "attempt2"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          ".tmp/evidence/runtime-restart.mjs",
+          "attempt2"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T06:00:57.377Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\runtime-restart-attempt2.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T06:00:59.502Z"
+      },
+      {
+        "evidence": ".tmp/evidence/runtime-restart.json",
+        "label": "runtime-restart",
+        "command": [
+          "node",
+          ".tmp/evidence/runtime-restart.mjs"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          ".tmp/evidence/runtime-restart.mjs"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T06:00:18.623Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\runtime-restart.log",
+        "exit": 1,
+        "signal": null,
+        "endedAt": "2026-10-27T06:00:20.400Z"
+      },
+      {
+        "evidence": ".tmp/evidence/snapshot-command.json",
+        "label": "snapshot-command",
+        "command": [
+          "node",
+          ".tmp/evidence/capture-snapshot.mjs"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          ".tmp/evidence/capture-snapshot.mjs"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T06:03:17.389Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\snapshot-command.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T06:03:17.831Z"
+      },
+      {
+        "evidence": ".tmp/evidence/snapshot.json",
+        "label": "snapshot",
+        "command": [
+          "node",
+          ".tmp/evidence/capture-snapshot.mjs"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          ".tmp/evidence/capture-snapshot.mjs"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T06:01:35.597Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\snapshot.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T06:01:35.998Z"
+      },
+      {
+        "evidence": ".tmp/evidence/typecheck.json",
+        "label": "typecheck",
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+        "executable": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+        "args": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+          "run",
+          "typecheck"
+        ],
+        "node": "v22.23.4",
+        "startedAt": "2026-10-27T05:58:43.764Z",
+        "log": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1\\.tmp\\evidence\\typecheck.log",
+        "exit": 0,
+        "signal": null,
+        "endedAt": "2026-10-27T05:58:49.267Z"
+      }
+    ],
+    "delegation": [
+      {
+        "role": "server-implementer",
+        "spawned": "yes",
+        "agentId": "/root/c2_implementer",
+        "ownership": "directory DO and directly required scoped worker tests",
+        "status": "COMPLETE",
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "noDelegateReason": "N/A"
+      },
+      {
+        "role": "contract-auditor",
+        "spawned": "yes",
+        "agentId": "/root/c2_contract",
+        "ownership": "read-only product review; .tmp/evidence/contract-review*",
+        "status": "COMPLETE",
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "noDelegateReason": "N/A"
+      },
+      {
+        "role": "implementation-auditor",
+        "spawned": "yes",
+        "agentId": "/root/c2_behavior",
+        "ownership": "read-only product review; .tmp/evidence/behavior-review*",
+        "status": "COMPLETE",
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "noDelegateReason": "N/A"
+      }
+    ],
+    "sharedWriter": "/root; shared edits forbidden and none made",
+    "independentReviewArtifacts": [
+      ".tmp/evidence/behavior-review-result.md",
+      ".tmp/evidence/contract-review.md"
+    ],
+    "independentCommandLogs": [
+      ".tmp/evidence/contract-review-commands.log",
+      ".tmp/evidence/behavior-review-commands.log"
+    ],
+    "auditVerdicts": [
+      {
+        "agentId": "/root/c2_contract",
+        "verdict": "pass-with-followups",
+        "status": "COMPLETE",
+        "artifact": ".tmp/evidence/contract-review.md"
+      },
+      {
+        "agentId": "/root/c2_behavior",
+        "verdict": "pass-with-followups",
+        "status": "COMPLETE",
+        "artifact": ".tmp/evidence/behavior-review-result.md"
+      }
+    ],
+    "findingsDisposition": [
+      {
+        "finding": "Seed same-ms/recreate freshness token reuse",
+        "severity": "Must fix",
+        "disposition": "fixed",
+        "evidence": [
+          ".tmp/evidence/product.diff",
+          ".tmp/evidence/implementer-seed-tests.log",
+          ".tmp/evidence/barrier.log"
+        ],
+        "remainingRisk": "Actual hibernation unproven"
+      },
+      {
+        "finding": "Seed legacy map high-water mark ignored",
+        "severity": "Must fix",
+        "disposition": "fixed",
+        "evidence": [
+          ".tmp/evidence/product.diff",
+          ".tmp/evidence/implementer-fixed-targeted.log"
+        ],
+        "remainingRisk": "No reverse migration to old map-only binary promised"
+      },
+      {
+        "finding": "First local runtime adapter attempt500",
+        "severity": "Note",
+        "disposition": "failed attempt preserved; adapter adjusted; second attempt passed, product unchanged",
+        "evidence": [
+          ".tmp/evidence/retries.json",
+          ".tmp/evidence/runtime-restart-attempt2-result.json"
+        ],
+        "remainingRisk": "Exact initial adapter root cause not isolated"
+      },
+      {
+        "finding": "Snapshot artifact overwritten by command metadata",
+        "severity": "Should fix",
+        "disposition": "fixed separate product-snapshot.json and snapshot-command.json; independent read-back",
+        "evidence": [
+          ".tmp/evidence/product-snapshot.json",
+          ".tmp/evidence/snapshot-command.json"
+        ],
+        "remainingRisk": "none"
+      },
+      {
+        "finding": "Generated local proxy authentication in debug logs",
+        "severity": "Should fix",
+        "disposition": "owned saved logs redacted; owned runtime stopped; independent read-back; exposure acknowledged",
+        "evidence": [
+          ".tmp/evidence/redaction.json",
+          ".tmp/evidence/retries.json",
+          ".tmp/evidence/behavior-review-result.md"
+        ],
+        "remainingRisk": "Earlier tool history still contains ephemeral generated value; no production credential"
+      },
+      {
+        "finding": "Actual hibernation/native/source/browser evidence absent",
+        "severity": "Note",
+        "disposition": "unproven explicitly; native/source/browser not applicable to C2 scoped product diff",
+        "evidence": [
+          ".tmp/evidence/validation-surface.json"
+        ],
+        "remainingRisk": "No claim of those runtime guarantees"
+      }
+    ],
+    "retries": {
+      "seedRegression": {
+        "status": "expected fail before repair",
+        "command": "implementer-seed-tests-command.json",
+        "log": "implementer-seed-tests.log",
+        "exit": 1,
+        "tests": {
+          "pass": 6,
+          "fail": 3
+        },
+        "resolution": "minimal two-location repair; fixed targeted 10/10 and worker 99/99"
+      },
+      "runtimeRestart": [
+        {
+          "attempt": 1,
+          "command": "runtime-restart.json",
+          "log": "runtime-restart.log",
+          "result": "runtime-restart-result.json",
+          "exit": 1,
+          "error": "first /internal/list returned 500 internal error",
+          "stop": "finally runtime.stop() completed; assigned port released",
+          "disposition": "test adapter only: removed redundant second blockConcurrencyWhile and shortened fixture worker/class/persistence path; product unchanged",
+          "rootCause": "not uniquely established; multiple adapter changes made, no claim that either cause was proven"
+        },
+        {
+          "attempt": 2,
+          "command": "runtime-restart-attempt2.json",
+          "log": "runtime-restart-attempt2.log",
+          "result": "runtime-restart-attempt2-result.json",
+          "exit": 0,
+          "resultSummary": "three real workerd starts, same SQLite persistence, two restarts, list/scalar read-back, backward clock and stale remove assertions passed; all assigned listeners stopped"
+        }
+      ],
+      "reviewLogRedaction": {
+        "finding": "Wrangler debug logs emitted ephemeral owned-runtime proxy-secret fields",
+        "disposition": "redact owned logs, preserve command outcomes and behavior evidence",
+        "evidence": "redaction.json",
+        "remainingRisk": "The ephemeral generated token appeared in an earlier tool output before detection; owned runtime already stopped. No production credential/source collected."
+      },
+      "finalEvidenceVerification": {
+        "firstCommand": "final-verification.json",
+        "firstLog": "final-verification.log",
+        "firstExit": 1,
+        "failure": "Checker expected literal [REDACTED], but reviewer used [REDACTED_EPHEMERAL]. False positive for actual secret leakage; value was already redacted.",
+        "disposition": "Artifact owner independently confirmed zero real token remnants before/after; normalized marker to [REDACTED] and recorded exit0/read-back in behavior-review-commands.log.",
+        "retryCommand": "final-verification-attempt2.json",
+        "retryLog": "final-verification-attempt2.log",
+        "finalReadback": "final-verification-result.json"
+      }
+    },
+    "residualRisks": [
+      "Actual DO hibernation not reproduced",
+      "Native/source/browser not run and not marked PASS",
+      "MJS tests are runtime tested, not statically TypeScript checked"
+    ],
+    "forbiddenActionsPerformed": [],
+    "governanceReflection": {
+      "outcome": "none",
+      "reason": "No governance edits authorized; observed implementation defects fixed and evidence filename collision repaired locally."
+    },
+    "usage": {
+      "tokens": "unmeasured",
+      "cost": "unmeasured",
+      "subagentUsage": "unmeasured; included in no savings claim"
+    },
+    "finalVerification": {
+      "status": "pass",
+      "timestamp": "2026-10-27T06:07:21.434Z",
+      "codeHashesMatch": true,
+      "evidencePathsExist": true,
+      "savedProxyFieldsRedacted": true,
+      "scopeOnly": true,
+      "mandatoryCommandsExit0": true,
+      "actualHibernation": "unproven",
+      "independentReviews": [
+        {
+          "agentId": "/root/c2_contract",
+          "verdict": "pass-with-followups",
+          "status": "COMPLETE",
+          "artifact": ".tmp/evidence/contract-review.md"
+        },
+        {
+          "agentId": "/root/c2_behavior",
+          "verdict": "pass-with-followups",
+          "status": "COMPLETE",
+          "artifact": ".tmp/evidence/behavior-review-result.md"
+        }
+      ],
+      "gitStatus": " M apps/worker/src/durable/lobby-directory-object.test.mjs\n M apps/worker/src/durable/lobby-directory-object.ts\n?? tasks/comparison-c2.md\n"
+    },
+    "finalVerificationCommand": ".tmp/evidence/final-verification-attempt2.json"
+  },
+  "independent_comparison_verdict": "pending; this collector makes no quality decision",
+  "runtime_result": {
+    "run_id": "C2-legacy-1-environment-retry1",
+    "attempt": 0,
+    "case_id": "C2",
+    "lane": "legacy",
+    "product_base": "4b600d3445edc71d0599058809c9a89b04591760",
+    "harness_commit": "4b600d3445edc71d0599058809c9a89b04591760",
+    "input_hash": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "started_at": "2026-10-27T05:55:53.009591+00:00",
+    "ended_at": "2026-10-27T06:07:41.573050+00:00",
+    "wall_seconds": 708.5634610999987,
+    "exit_code": 0,
+    "timeout": false,
+    "before": {
+      "head": "992883524aa59169fc3f67793b42fe328c0592c7",
+      "branch": "codex/legacy-trial",
+      "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {},
+      "fingerprint": "0e4bb93c87d289c2a674b5bd2e15d153f00fc4e0b9e54b257715c4ac999eabcb"
+    },
+    "after": {
+      "head": "992883524aa59169fc3f67793b42fe328c0592c7",
+      "branch": "codex/legacy-trial",
+      "status_hash": "1e0f6055e698d83b5d4f1ddd94a09616cedee2165de1483f6c328047eb5c8295",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "2ae2915717bf3da23cd46f634e0207de0232fd73ee7531caf015af3b33f40dda",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {
+        "apps/worker/src/durable/lobby-directory-object.test.mjs": "13a7b5733bb3ecf0eeb68c3bcfd6faec6bf1e6eb06f7da0ccf9e2f709ceda2c6",
+        "apps/worker/src/durable/lobby-directory-object.ts": "1f8c7ad026be9858e8bb43df5fad37f754cc0679236acfcac5d9d65772efee9f",
+        "tasks/comparison-c2.md": "de617f0cfa1b66a78141881b5cb8c162bcf75b5a19b335633e0a84f67499fbc7"
+      },
+      "fingerprint": "018d7da08c186b7d640e1de29e6603e8ada1f14f237dfd3725c80791651881cd"
+    },
+    "all_agents_total_tokens": null,
+    "active_seconds": null,
+    "spawn_ids": null,
+    "review": null,
+    "verdict": "unproven; independent evaluation pending",
+    "usage": [
+      {
+        "input_tokens": 4428057,
+        "cached_input_tokens": 4332416,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 23617,
+        "reasoning_output_tokens": 6256
+      }
+    ]
+  },
+  "events": {
+    "thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+    "events": 126,
+    "usage": [
+      {
+        "input_tokens": 4428057,
+        "cached_input_tokens": 4332416,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 23617,
+        "reasoning_output_tokens": 6256
+      }
+    ],
+    "terminal": [
+      {
+        "type": "turn.completed",
+        "usage": {
+          "input_tokens": 4428057,
+          "cached_input_tokens": 4332416,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 23617,
+          "reasoning_output_tokens": 6256
+        }
+      }
+    ],
+    "latest_message": "COMPLETE。C2 の最小修正・検証・独立監査を完了しました。\n\n- Worker 標準 99/99、barrier 7/7、共通検証コマンドは成功。\n- 実ローカル DO の再起動・保存復元を確認。起動したプロセスは停止済み。\n- 独立監査に未処理の Blocker / Must fix はありません。\n- 実 hibernation は **unproven**。完全合格とは記録していません。\n\nAC/Q 別結果、spawn、失敗・再試行、残リスクは [executor.json](C:/Users/tts13/Documents/Codex/experiments/issue198-20261027-resume2/trials/C2-legacy-1-environment-retry1/.tmp/evidence/executor.json) に保存しました。",
+    "commands": [
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Location; & .\\\\.tmp\\\\toolchain\\\\node.exe --version; & .\\\\.tmp\\\\toolchain\\\\npm.cmd --version; Get-Command node,npm | Select-Object Name,Source,CommandType; node -p \\\"JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch,cwd:process.cwd()})\\\"; npm --version\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw AGENTS.md; Get-Content -Raw .tmp/comparison/input.json; Get-Content -Raw .tmp/comparison/runtime.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '$evidence = Join-Path (Get-Location) '\"'.tmp/evidence'; New-Item -ItemType Directory -Force -Path \"'$evidence | Out-Null; $nodeExplicit = & .'\"\\\\.tmp\\\\toolchain\\\\node.exe --version; \"'$nodeExit = $LASTEXITCODE; $npmExplicit = & .'\"\\\\.tmp\\\\toolchain\\\\npm.cmd --version; \"'$npmExit = $LASTEXITCODE; $resolved = @(Get-Command node,npm | Select-Object Name,Source,CommandType); $cli = node -p \"JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch,cwd:process.cwd(),pathHead:process.env.PATH.split('\"';')[0]})\\\"; \"'$cliExit = $LASTEXITCODE; $npmCli = npm --version; $npmCliExit = $LASTEXITCODE; $result = [ordered]@{ timestamp = (Get-Date).ToUniversalTime().ToString('\"'o'); explicitNode = \"'$nodeExplicit; explicitNpm = $npmExplicit; resolvedCommands = $resolved; cli = ($cli | ConvertFrom-Json); cliNpm = $npmCli; exits = @($nodeExit,$npmExit,$cliExit,$npmCliExit); expectedNode = '\"'v22.23.4'; expectedNpm = '10.9.9'; match = (\"'$nodeExplicit -eq '\"'v22.23.4' -and \"'$npmExplicit -eq '\"'10.9.9' -and (\"'$cli | ConvertFrom-Json).version -eq '\"'v22.23.4' -and \"'$npmCli -eq '\"'10.9.9') }; [IO.File]::WriteAllText((Join-Path \"'$evidence '\"'environment.json'), (\"'$result | ConvertTo-Json -Depth 8), [Text.UTF8Encoding]::new($false)); Get-Content -Raw .tmp/evidence/environment.json; git status --short; Get-Content -Raw WORKFLOW.md; Get-Content -Raw QUALITY.md; Get-Content -Raw apps/worker/AGENTS.md; Get-Content -Raw .codex/agents/contract-auditor.toml; Get-Content -Raw .codex/agents/implementation-auditor.toml'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .codex/skills/phase-c-kickoff-flow/SKILL.md; Get-Content -Raw .codex/skills/fsm-protocol-guard/SKILL.md; Get-Content -Raw .codex/skills/quality-check-matrix/SKILL.md; Get-Content -Raw .codex/skills/plan-mode-gate/SKILL.md; Get-Content -Raw C:/Users/tts13/.codex/skills/windows-utf8-safe-write/SKILL.md'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw QUALITY.md; Get-Content -Raw apps/worker/AGENTS.md; Get-Content -Raw .codex/agents/server-implementer.toml; Get-Content -Raw .codex/config.toml'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content -Raw apps/worker/src/durable/lobby-directory-object.ts; Get-Content -Raw apps/worker/src/routes/lobby.ts; Get-Content -Raw package.json; Get-Content -Raw apps/worker/package.json; Get-Content -Raw apps/worker/tsconfig.json; rg --files .tmp/comparison; rg --files apps/worker/src | rg 'test|AGENTS'; Get-Content -Raw .github/workflows/ci.yml\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/comparison/requirements.md; Get-Content -Raw .tmp/comparison/c2-barrier.test.mjs; Get-Content -Raw apps/worker/src/services/lobby-directory.ts; Get-Content -Raw wrangler.toml; Get-Content -Raw .github/workflows/validate-reusable.yml; Get-Content -Raw tsconfig.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"rg --files apps/worker | rg 'wrangler|AGENTS'; Get-Content -Raw apps/worker/wrangler.jsonc; Get-Content -Raw .tmp/comparison/reference/visual.json; git rev-parse HEAD; git branch --show-current; git status --short\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw apps/worker/wrangler.toml; Get-Content -Raw apps/worker/src/durable/lobby-directory-object.test.mjs; Get-Content -Raw .codex/skills/phase-c-kickoff-flow/references/kickoff-checklist.md; Get-Content -Raw .codex/skills/fsm-protocol-guard/references/fsm-protocol-invariants.md'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content -Raw .tmp/toolchain/npm.cmd; Get-Content -Raw .tmp/toolchain/npm.ps1; rg -n 'WRANGLER_LOG_PATH|WRANGLER_HOME|persist-to|INSPECTOR_PORT' node_modules/wrangler/wrangler-dist/cli.js | Select-Object -First 18\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs lint . npm run lint'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs typecheck . npm run typecheck'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs client-stats . npm run test:client-stats'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs contracts . npm run check:design-contracts'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs agents . npm run check:agents'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"rg -n 'unstable_dev|unstable_startWorker|DevWorker|StartWorkerOptions' node_modules/wrangler/wrangler-dist/cli.d.ts | Select-Object -First 35; git diff -- apps/worker/src/durable/lobby-directory-object.ts apps/worker/src/durable/lobby-directory-object.test.mjs; Get-Content -Raw .tmp/evidence/implementer-result.md\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs barrier . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs bundle apps/worker npx --no-install wrangler deploy --dry-run'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content node_modules/wrangler/wrangler-dist/cli.d.ts -TotalCount 118; Get-Content -Raw .tmp/evidence/barrier.log; Get-Content -Raw .tmp/evidence/bundle.log'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs runtime-restart . node .tmp/evidence/runtime-restart.mjs'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/evidence/runtime-restart.log; Get-Content -Raw .tmp/evidence/runtime-restart-result.json; git status --short; Get-Content -Raw .tmp/evidence/implementer-worker-standard-command.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content -Raw .tmp/evidence/runtime-restart-wrangler.log | Select-Object -Last 1; rg -n 'constructor\\\\(|blockConcurrencyWhile|extends' apps/worker/src/index.ts apps/worker/src/durable/room-object.ts | Select-Object -First 15; rg --files .tmp/evidence/runtime-persistence\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"node -e \\\"const fs=require('fs');const p=process.cwd();console.log(p.length);for(const f of fs.readdirSync('.tmp/evidence/runtime-persistence/v3/do/comparison-c2-isolated-FixtureDirectory'))console.log(p.length+('/.tmp/evidence/runtime-persistence/v3/do/comparison-c2-isolated-FixtureDirectory/'+f).length)\\\"\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs runtime-restart-attempt2 . node .tmp/evidence/runtime-restart.mjs attempt2'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/evidence/runtime-restart-attempt2-result.json; Get-Content -Tail 12 .tmp/evidence/lint.log; Get-Content -Tail 12 .tmp/evidence/typecheck.log; Get-Content -Tail 15 .tmp/evidence/implementer-worker-standard.log'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs snapshot . node .tmp/evidence/capture-snapshot.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs redact . node .tmp/evidence/redact-owned-logs.mjs; $ids = @(29152,32456,36068,30452,7800,32732,33684,29312,31100,34748,33440,28720); $rows = foreach ($ownedId in $ids) { $found = Get-Process -Id $ownedId -ErrorAction SilentlyContinue; [ordered]@{ pid = $ownedId; stillPresent = [bool]$found } }; [IO.File]::WriteAllText((Join-Path (Get-Location) '\"'.tmp/evidence/owned-process-readback.json'), (\"'$rows | ConvertTo-Json -Depth 5), [Text.UTF8Encoding]::new($false)); Get-Content -Raw .tmp/evidence/owned-process-readback.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/evidence/snapshot.json; Get-Content -Raw .tmp/evidence/redaction.json; Get-ChildItem .tmp/evidence -File | Select-Object Name,Length; Get-Content -Raw .tmp/evidence/contract-review-check-command.json'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs snapshot-command . node .tmp/evidence/capture-snapshot.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/evidence/product-snapshot.json; Get-Content -Tail 20 .tmp/evidence/contract-review-commands.log; Get-Content -Tail 12 .tmp/evidence/behavior-review-commands.log'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/evidence/behavior-review-result.md; Get-Content -Tail 8 .tmp/evidence/contract-review-commands.log'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs executor-generation . node .tmp/evidence/build-executor.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs final-verification . node .tmp/evidence/verify-executor.mjs; Get-Content -Raw .tmp/evidence/executor-generation.log; Get-Content -Raw .tmp/evidence/final-verification-result.json'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/evidence/final-verification.log'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"node -e \\\"const fs=require('fs');for(const f of fs.readdirSync('.tmp/evidence').filter(x=>x.endsWith('.log'))){const t=fs.readFileSync('.tmp/evidence/'+f,'utf8');let n=0;for(const m of t.matchAll(/\\\\x22MF-Proxy-Shared-Secret\\\\x22\\\\s*:\\\\s*\\\\x22([\"'^'\"\\\\x22]*)\\\\x22/g))if(m[1]\"'!=='\"'[REDACTED]')n++;if(n)console.log(JSON.stringify({file:f,fields:n}));}\\\"\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs executor-generation-final . node .tmp/evidence/build-executor.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'node .tmp/evidence/run-command.mjs final-verification-attempt2 . node .tmp/evidence/verify-executor.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Raw .tmp/evidence/final-verification-result.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"node -e \\\"const fs=require('fs');const p='.tmp/evidence/executor.json';const e=JSON.parse(fs.readFileSync(p,'utf8'));e.finalVerification=JSON.parse(fs.readFileSync('.tmp/evidence/final-verification-result.json','utf8'));e.finalVerificationCommand='.tmp/evidence/final-verification-attempt2.json';e.finishedAt=new Date().toISOString();fs.writeFileSync(p,JSON.stringify(e,null,2)+'\\\\n');console.log(JSON.stringify({status:e.status,fullyProven:e.fullyProven,quality:e.quality.map(q=>[q.id,q.status]),finalVerification:e.finalVerification.status}));\\\"\"",
+        "exit_code": 0,
+        "status": "completed"
+      }
+    ],
+    "unparsed_tail_bytes": 0,
+    "events_sha256": "c48beb3d054f6ad147b18faabeeca42f00e043ad76412503a2965567f562da07"
+  },
+  "family_telemetry": {
+    "status": "linked trace observations; terminal states still require inspection",
+    "thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+    "spawn_ids": [
+      "01a17bef-168c-7af3-8709-69ad6d5e41b0",
+      "01a17bef-380c-76c1-84ee-fde99e9e997e",
+      "01a17bef-5218-7a71-98af-18c60ea99191"
+    ],
+    "spawn_attempt_count": 3,
+    "traces": [
+      {
+        "thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+        "trace_found": true,
+        "trace_sha256": "819c1eb04a6013c4f34bf216ddc636929bbbf1560a35701c05def4b3a38c1bbd",
+        "metadata": {
+          "id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+          "parent_thread_id": null,
+          "agent_role": null,
+          "agent_path": null,
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": "exec"
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 4428057,
+          "cached_input_tokens": 4332416,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 23617,
+          "reasoning_output_tokens": 6256,
+          "total_tokens": 4451674
+        },
+        "spawn_calls": [
+          {
+            "call_id": "call_048f53e155ac4525a6a0859b6967616e",
+            "agent_type": "server-implementer",
+            "task_name": "c2_implementer",
+            "model": "gpt-6.1-sol",
+            "effort": "medium"
+          },
+          {
+            "call_id": "call_aed86b988b41486c99b344c71612f5e3",
+            "agent_type": "contract-auditor",
+            "task_name": "c2_contract",
+            "model": "gpt-6.1-sol",
+            "effort": "high"
+          },
+          {
+            "call_id": "call_f3c8b1be929a4028b91a69b36c2d4feb",
+            "agent_type": "implementation-auditor",
+            "task_name": "c2_behavior",
+            "model": "gpt-6.1-sol",
+            "effort": "high"
+          }
+        ],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T06:07:40.615Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      },
+      {
+        "thread_id": "01a17bef-168c-7af3-8709-69ad6d5e41b0",
+        "trace_found": true,
+        "trace_sha256": "bed7cc57aac99bd06b163006cc66c001f69be506f6572a8efccca1d7b91022df",
+        "metadata": {
+          "id": "01a17bef-168c-7af3-8709-69ad6d5e41b0",
+          "parent_thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+          "agent_role": "server-implementer",
+          "agent_path": "/root/c2_implementer",
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": {
+            "subagent": {
+              "thread_spawn": {
+                "parent_thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+                "depth": 1,
+                "agent_path": "/root/c2_implementer",
+                "agent_nickname": "Galileo",
+                "agent_role": "server-implementer"
+              }
+            }
+          }
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "medium",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 536036,
+          "cached_input_tokens": 491648,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 3913,
+          "reasoning_output_tokens": 287,
+          "total_tokens": 539949
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T05:59:07.067Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      },
+      {
+        "thread_id": "01a17bef-380c-76c1-84ee-fde99e9e997e",
+        "trace_found": true,
+        "trace_sha256": "117f521887dd47658dd0782225bf58b3b7b664b0076a9d001a21a0225defba78",
+        "metadata": {
+          "id": "01a17bef-380c-76c1-84ee-fde99e9e997e",
+          "parent_thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+          "agent_role": "contract-auditor",
+          "agent_path": "/root/c2_contract",
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": {
+            "subagent": {
+              "thread_spawn": {
+                "parent_thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+                "depth": 1,
+                "agent_path": "/root/c2_contract",
+                "agent_nickname": "Maxwell",
+                "agent_role": "contract-auditor"
+              }
+            }
+          }
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 2191639,
+          "cached_input_tokens": 2108672,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 13010,
+          "reasoning_output_tokens": 2820,
+          "total_tokens": 2204649
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T06:05:23.364Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      },
+      {
+        "thread_id": "01a17bef-5218-7a71-98af-18c60ea99191",
+        "trace_found": true,
+        "trace_sha256": "3e0e3a66971bd06c8df67e82e3855aebefb028537ad278280d8ff88d1b8ea1fd",
+        "metadata": {
+          "id": "01a17bef-5218-7a71-98af-18c60ea99191",
+          "parent_thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+          "agent_role": "implementation-auditor",
+          "agent_path": "/root/c2_behavior",
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": {
+            "subagent": {
+              "thread_spawn": {
+                "parent_thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+                "depth": 1,
+                "agent_path": "/root/c2_behavior",
+                "agent_nickname": "Huygens",
+                "agent_role": "implementation-auditor"
+              }
+            }
+          }
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          },
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 2319066,
+          "cached_input_tokens": 2244224,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 11812,
+          "reasoning_output_tokens": 2284,
+          "total_tokens": 2330878
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T06:07:10.589Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      }
+    ],
+    "coverage_complete": true,
+    "all_agents_total_tokens": 9527150,
+    "limitation": "No token inference; missing child telemetry or unmatched spawn makes total null. Provider counters retained verbatim."
+  },
+  "timing": {
+    "started_at": "2026-10-27T05:55:53.009591+00:00",
+    "model_terminal_at": "2026-10-27T06:07:40.615Z",
+    "wall_to_model_terminal_seconds": 707.605409,
+    "cli_wall_seconds": 708.5634610999987,
+    "active_seconds": null
+  },
+  "after": {
+    "head": "992883524aa59169fc3f67793b42fe328c0592c7",
+    "branch": "codex/legacy-trial",
+    "status_hash": "1e0f6055e698d83b5d4f1ddd94a09616cedee2165de1483f6c328047eb5c8295",
+    "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_diff_hash": "2ae2915717bf3da23cd46f634e0207de0232fd73ee7531caf015af3b33f40dda",
+    "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "files": {
+      "apps/worker/src/durable/lobby-directory-object.test.mjs": "13a7b5733bb3ecf0eeb68c3bcfd6faec6bf1e6eb06f7da0ccf9e2f709ceda2c6",
+      "apps/worker/src/durable/lobby-directory-object.ts": "1f8c7ad026be9858e8bb43df5fad37f754cc0679236acfcac5d9d65772efee9f",
+      "tasks/comparison-c2.md": "de617f0cfa1b66a78141881b5cb8c162bcf75b5a19b335633e0a84f67499fbc7"
+    },
+    "fingerprint": "018d7da08c186b7d640e1de29e6603e8ada1f14f237dfd3725c80791651881cd"
+  },
+  "untracked_files": {
+    "tasks/comparison-c2.md": {
+      "sha256": "de617f0cfa1b66a78141881b5cb8c162bcf75b5a19b335633e0a84f67499fbc7",
+      "content": "# C2 実行計画\n\n- Stage: Phase A/B 確定 → C implementation / independent audit → evidence。\n- 正本: `.tmp/comparison/input.json` と user の比較 executor 制約。\n- objective: 古い lobby probe が新しい summary を削除しないこと。token の同 ms 単調性、legacy/scalar 復元、bounded helper state を維持する。\n- success criteria: input の期待値および Q05/Q06/Q12–Q16 を証拠に対応付ける。未実証は unproven とする。\n- affected layers: worker の directory DO と直接関連 test。contract-sensitive: internal persistence/recovery。\n- execution profile: High-Risk。Plan Mode gate: required（本計画 artifact で充足、対話モードの変更を意味しない）。\n- current request ceiling: implementation-ready + local verification + independent audit + final evidence。\n- Implementation authorization: YES。next unlock condition: none。\n- non-goals / forbidden scope: client/shared/public DTO/TTL/filter、依存/lockfile/CI/governance/permission/比較条件の変更。commit/push/PR/外部 write/deploy/release/cleanup、他 repo・秘密・非所有 process の操作。\n- allowed side effects: scoped worker code/tests、tasks と .tmp evidence、割当 loopback port の owned process、隔離 persistence、bundle dry-run。\n- stop condition: Node/npm 不一致、scope 外変更が必須、品質 blocker または wall 120 分到達。実 hibernation 未再現は unproven。\n- changes: token increment と legacy high-water mark 読取を最小修復。既存 test を維持し不足する race/restore/growth 検証のみ追加。\n- compatibility: 公開 schema と storage key を維持。legacy map と scalar の両方を復元。scalar 1 値で per-room tombstone を持たない。\n- validation: input 共通 6 command、c2-barrier test、必要な追加 test 明示実行、isolated local Worker/DO restart + counter/list read-back。標準 membership と型検証範囲を確認。\n- rollback: scoped diff の review のみ。自動 restore/delete は行わない。\n- commit split: 禁止につき実行なし。\n- shared writer: `/root` のみ、ただし shared は禁止 scope のため書込みなし。\n- write ownership: server-implementer が指定 worker DO と直接関連 tests。親は tasks/.tmp evidence/runtime harness。auditors は各 review artifact のみ。\n\n## Delegation packets\n\n共通 forbidden scope は上記 user 制約すべて。各子は他の writer と共存し、他者の変更を revert しない。Node/npm は指定 toolchain のみ。全実行 command/exit/log は自身の .tmp/evidence prefix に保存する。外部 MCP/apps/plugins は使わない。\n\n### server-implementer\n- task label: C2 minimal freshness/restore repair\n- objective / success criteria: input の seed defects を修正し unit race/restore/growth が通る最小差分。\n- in-scope files/layer: `apps/worker/src/durable/lobby-directory-object.ts`、同 `.test.mjs`、必要時のみ `apps/worker/src/routes/lobby.test.mjs`。services は read-only。\n- non-goals: 公開仕様変更、実 runtime harness。\n- allowed side effects: 上記 worker files と `.tmp/evidence/implementer*`。\n- expected output: diff、tests、membership/type surface、risk、COMPLETE/BLOCKED/ESCALATION。\n- validation: 標準 directory/route tests と必要な追加 tests、seed failing evidence → fix passing evidence。\n- continue-without-escalation boundary: 上記既存責務の最小修正・不足テスト。\n- escalation: shared/client/サービス変更や仕様判断が必要な場合。\n\n### contract-auditor\n- task label: C2 independent contract audit\n- objective / success criteria: internal storage vs public schema、restore compatibility、TTL/filter、race、bounded-growth の独立 review。\n- in-scope files/layer: worker diff と関係 docs/tests の read-only。\n- non-goals: 実装担当・製品編集。\n- allowed side effects: `.tmp/evidence/contract-review*` のみ。\n- expected output: severity findings、finding/disposition/evidence/remaining risk ledger、verdict、状態。\n- validation: diff と実行証拠、必要な read-only 検証。\n- continue-without-escalation boundary: 根拠収集と review artifact 保存。\n- escalation: scope 外契約変更、未処理 Blocker/Must fix。\n\n### implementation-auditor\n- task label: C2 independent behavior audit\n- objective / success criteria: 同 ms/delete-recreate/reorder/fail-open/restart/growth の coverage と標準 test/型検証面を独立 review。\n- in-scope files/layer: worker diff、tests、evidence の read-only。\n- non-goals: 実装担当・製品編集。\n- allowed side effects: `.tmp/evidence/behavior-review*` のみ。\n- expected output: findings ledger、検証 gap、residual risk、verdict、状態。\n- validation: 実 command logs と AC 対応、必要な read-only 検証。\n- continue-without-escalation boundary: 根拠収集と review artifact 保存。\n- escalation: 実証不能な mandatory AC / 品質 blocker。\n"
+    }
+  },
+  "tracked_patch_sha256": "2ae2915717bf3da23cd46f634e0207de0232fd73ee7531caf015af3b33f40dda",
+  "raw_capture": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\runs\\C2-legacy-1-environment-retry1-attempt0\\events.jsonl",
+  "raw_capture_sha256": "c48beb3d054f6ad147b18faabeeca42f00e043ad76412503a2965567f562da07",
+  "cost_scope": "CLI parent and linked children only. Shared preparation/comparison adjudication costs are separate and not fully measured."
+}

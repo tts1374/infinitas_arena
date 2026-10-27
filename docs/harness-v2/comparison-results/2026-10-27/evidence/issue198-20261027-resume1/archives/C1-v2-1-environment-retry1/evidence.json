@@ -1,0 +1,1640 @@
+{
+  "archived_at": "2026-10-27T00:01:26.564805+00:00",
+  "experiment": "issue198-20261027-resume1",
+  "run_id": "C1-v2-1-environment-retry1",
+  "case": "C1",
+  "lane": "v2",
+  "input_hash": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+  "initial_head": "e77a10753f5e70c2f93cdfd3a9bcb3c486fbbad9",
+  "manifest_sha256": "448d0a96b165cdcf8c63bebafdbba742f59fdab0a33e6079f68cf321a48ffb6c",
+  "executor_claim": {
+    "status": "COMPLETE",
+    "verdict": "COMPLETE",
+    "run_id": "C1-v2-1-environment-retry1",
+    "case_id": "C1",
+    "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae",
+    "validated_goal": ".tmp/evidence/goal-at-validation.json",
+    "input_hash": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+    "base_revision": "e77a10753f5e70c2f93cdfd3a9bcb3c486fbbad9",
+    "product_base": "4b600d3445edc71d0599058809c9a89b04591760",
+    "acceptance": {
+      "AC1": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/diff-1.log",
+          ".tmp/evidence/client-test-1.log",
+          ".tmp/evidence/visual/visual.json"
+        ],
+        "note": "Baseline null display regression failed before repair; all exact values pass after repair; no time derivation changed."
+      },
+      "AC2": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/visual/visual.json",
+          ".tmp/evidence/integrity.json",
+          ".tmp/evidence/review/review.json"
+        ],
+        "note": "12 browser states, actual screenshot review, preserved colors and RoomArena text. Fixture controls synthesize open/close; actual product callback handles selection."
+      },
+      "AC3": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/commands.json",
+          ".tmp/evidence/surfaces-1.log"
+        ],
+        "note": "Fixed six commands plus workspace types. Standard client 66/66, worker 98/98, stats 17 assertions. No new/changed test; existing display .test.tsx belongs to standard test and both type surfaces."
+      },
+      "AC4": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/snapshot-initial.json",
+          ".tmp/evidence/final-snapshot-1.log",
+          ".tmp/evidence/integrity.json",
+          ".tmp/evidence/diff-1.log"
+        ]
+      },
+      "AC5": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/review/review.json"
+        ]
+      }
+    },
+    "quality": {
+      "Q11": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/comparison/input.json",
+          ".tmp/comparison/reference/visual.json",
+          ".tmp/evidence/visual/visual.json",
+          ".tmp/evidence/integrity.json",
+          ".tmp/evidence/review/review.json"
+        ]
+      },
+      "Q12": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/commands.json",
+          ".tmp/evidence/surfaces-1.log",
+          ".tmp/evidence/baseline-display-1.log"
+        ]
+      },
+      "Q13": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/snapshot-initial.json",
+          ".tmp/evidence/final-snapshot-1.log",
+          ".tmp/evidence/integrity.json"
+        ],
+        "note": "Parent sole product writer; reviewer artifact-only writer. Shared writer parent with no shared writes authorized or performed."
+      },
+      "Q14": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/review/review.json"
+        ],
+        "note": "Actual implementation-nonparticipant agent /root/c1_independent_review; actual images and code independently inspected."
+      },
+      "Q15": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/goal-at-validation.json",
+          ".tmp/evidence/diff-1.log"
+        ],
+        "note": "Only local C1 edit and local validation/evidence. No external action/commit/cleanup; no self-approve."
+      },
+      "Q16": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/environment.json",
+          ".tmp/evidence/integrity.json"
+        ],
+        "note": "Only allowlisted environment versions/paths collected; fixed helper creates own loopback listener/browser and closes them; no external app or MCP tools, no secrets or nonowned process actions."
+      }
+    },
+    "commands": {
+      "lint": [
+        {
+          "id": "lint",
+          "argv": [
+            "npm",
+            "run",
+            "lint"
+          ],
+          "actual_argv": [
+            "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+            "run",
+            "lint"
+          ],
+          "attempt": 1,
+          "started_at": "2026-10-26T23:55:07.880403+00:00",
+          "ended_at": "2026-10-26T23:55:15.853954+00:00",
+          "exit_code": 0,
+          "log": ".tmp/evidence/lint-1.log",
+          "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+        }
+      ],
+      "types": [
+        {
+          "id": "types",
+          "argv": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "actual_argv": [
+            "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+            "run",
+            "typecheck"
+          ],
+          "attempt": 1,
+          "started_at": "2026-10-26T23:55:07.885967+00:00",
+          "ended_at": "2026-10-26T23:55:15.854856+00:00",
+          "exit_code": 0,
+          "log": ".tmp/evidence/types-1.log",
+          "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae",
+          "metadata_source": "actual exec tool result; preserved after manifest concurrent-writer collision"
+        }
+      ],
+      "stats": [
+        {
+          "id": "stats",
+          "argv": [
+            "npm",
+            "run",
+            "test:client-stats"
+          ],
+          "actual_argv": [
+            "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+            "run",
+            "test:client-stats"
+          ],
+          "attempt": 1,
+          "started_at": "2026-10-26T23:55:30.462153+00:00",
+          "ended_at": "2026-10-26T23:55:32.703972+00:00",
+          "exit_code": 0,
+          "log": ".tmp/evidence/stats-1.log",
+          "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+        }
+      ],
+      "worker-test": [
+        {
+          "id": "worker-test",
+          "argv": [
+            "npm",
+            "run",
+            "test:worker"
+          ],
+          "actual_argv": [
+            "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+            "run",
+            "test:worker"
+          ],
+          "attempt": 1,
+          "started_at": "2026-10-26T23:55:30.449420+00:00",
+          "ended_at": "2026-10-26T23:55:33.636478+00:00",
+          "exit_code": 0,
+          "log": ".tmp/evidence/worker-test-1.log",
+          "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+        }
+      ],
+      "client-build": [
+        {
+          "id": "client-build",
+          "argv": [
+            "npm",
+            "run",
+            "build:client"
+          ],
+          "actual_argv": [
+            "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+            "run",
+            "build:client"
+          ],
+          "attempt": 1,
+          "started_at": "2026-10-26T23:55:30.470427+00:00",
+          "ended_at": "2026-10-26T23:55:38.815090+00:00",
+          "exit_code": 0,
+          "log": ".tmp/evidence/client-build-1.log",
+          "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+        }
+      ],
+      "client-test": [
+        {
+          "id": "client-test",
+          "argv": [
+            "npm",
+            "--workspace",
+            "@infinitas/client",
+            "run",
+            "test"
+          ],
+          "actual_argv": [
+            "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+            "--workspace",
+            "@infinitas/client",
+            "run",
+            "test"
+          ],
+          "attempt": 1,
+          "started_at": "2026-10-26T23:55:30.480564+00:00",
+          "ended_at": "2026-10-26T23:55:32.827019+00:00",
+          "exit_code": 0,
+          "log": ".tmp/evidence/client-test-1.log",
+          "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+        }
+      ],
+      "client-types": [
+        {
+          "id": "client-types",
+          "argv": [
+            "npm",
+            "run",
+            "typecheck:client"
+          ],
+          "actual_argv": [
+            "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+            "run",
+            "typecheck:client"
+          ],
+          "attempt": 1,
+          "started_at": "2026-10-26T23:55:30.488948+00:00",
+          "ended_at": "2026-10-26T23:55:36.378458+00:00",
+          "exit_code": 0,
+          "log": ".tmp/evidence/client-types-1.log",
+          "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+        }
+      ],
+      "browser": [
+        {
+          "id": "browser",
+          "argv": [
+            "node",
+            ".tmp/comparison/browser_fixture.mjs",
+            "--root",
+            ".",
+            "--output",
+            ".tmp/evidence/visual",
+            "--playwright",
+            "C:/Users/tts13/AppData/Local/npm-cache/_npx/9833c18b2d85bc59/node_modules/playwright/index.mjs",
+            "--browser-executable",
+            "C:/Users/tts13/AppData/Local/ms-playwright/chromium-1208/chrome-win64/chrome.exe"
+          ],
+          "actual_argv": [
+            "node",
+            ".tmp/comparison/browser_fixture.mjs",
+            "--root",
+            ".",
+            "--output",
+            ".tmp/evidence/visual",
+            "--playwright",
+            "C:/Users/tts13/AppData/Local/npm-cache/_npx/9833c18b2d85bc59/node_modules/playwright/index.mjs",
+            "--browser-executable",
+            "C:/Users/tts13/AppData/Local/ms-playwright/chromium-1208/chrome-win64/chrome.exe"
+          ],
+          "attempt": 1,
+          "started_at": "2026-10-26T23:55:44.736173+00:00",
+          "ended_at": "2026-10-26T23:55:59.569681+00:00",
+          "exit_code": 0,
+          "log": ".tmp/evidence/browser-1.log",
+          "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+        }
+      ],
+      "surfaces": [
+        {
+          "id": "surfaces",
+          "argv": [
+            "node",
+            ".tmp/evidence/surfaces.mjs"
+          ],
+          "actual_argv": [
+            "node",
+            ".tmp/evidence/surfaces.mjs"
+          ],
+          "attempt": 1,
+          "started_at": "2026-10-26T23:57:11.777169+00:00",
+          "ended_at": "2026-10-26T23:57:12.155566+00:00",
+          "exit_code": 0,
+          "log": ".tmp/evidence/surfaces-1.log",
+          "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+        }
+      ]
+    },
+    "all_command_attempts": [
+      {
+        "id": "explicit-node",
+        "argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+          "--version"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+          "--version"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:54:14.641659+00:00",
+        "ended_at": "2026-10-26T23:54:14.708698+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/explicit-node-1.log",
+        "fingerprint": "e16c8bb4cd46dcea6564ede53147d66c60e850a13b031a06e24d384ce784b1bd"
+      },
+      {
+        "id": "explicit-npm",
+        "argv": [
+          "npm",
+          "--version"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+          "--version"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:54:15.022616+00:00",
+        "ended_at": "2026-10-26T23:54:15.335350+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/explicit-npm-1.log",
+        "fingerprint": "e16c8bb4cd46dcea6564ede53147d66c60e850a13b031a06e24d384ce784b1bd"
+      },
+      {
+        "id": "cli-node",
+        "argv": [
+          "node",
+          "-p",
+          "JSON.stringify({version:process.version,execPath:process.execPath,cwd:process.cwd()})"
+        ],
+        "actual_argv": [
+          "node",
+          "-p",
+          "JSON.stringify({version:process.version,execPath:process.execPath,cwd:process.cwd()})"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:54:15.623488+00:00",
+        "ended_at": "2026-10-26T23:54:15.665606+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/cli-node-1.log",
+        "fingerprint": "e16c8bb4cd46dcea6564ede53147d66c60e850a13b031a06e24d384ce784b1bd"
+      },
+      {
+        "id": "cli-npm",
+        "argv": [
+          "npm",
+          "version",
+          "--json"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+          "version",
+          "--json"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:54:15.957115+00:00",
+        "ended_at": "2026-10-26T23:54:16.290865+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/cli-npm-1.log",
+        "fingerprint": "e16c8bb4cd46dcea6564ede53147d66c60e850a13b031a06e24d384ce784b1bd"
+      },
+      {
+        "id": "resolution",
+        "argv": [
+          "powershell",
+          "-NoProfile",
+          "-Command",
+          "Get-Command node,npm | Select-Object Name,Source,CommandType | ConvertTo-Json"
+        ],
+        "actual_argv": [
+          "powershell",
+          "-NoProfile",
+          "-Command",
+          "Get-Command node,npm | Select-Object Name,Source,CommandType | ConvertTo-Json"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:54:16.581796+00:00",
+        "ended_at": "2026-10-26T23:54:16.918944+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/resolution-1.log",
+        "fingerprint": "e16c8bb4cd46dcea6564ede53147d66c60e850a13b031a06e24d384ce784b1bd"
+      },
+      {
+        "id": "baseline-display",
+        "argv": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "apps/client/src/features/room/picking-countdown-display.test.tsx"
+        ],
+        "actual_argv": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "apps/client/src/features/room/picking-countdown-display.test.tsx"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:54:26.486758+00:00",
+        "ended_at": "2026-10-26T23:54:27.561172+00:00",
+        "exit_code": 1,
+        "log": ".tmp/evidence/baseline-display-1.log",
+        "fingerprint": "b75ec516a8b737f4e63495d662bb2ab7b9e4b922edb02f5f709a7b86af2fe26b"
+      },
+      {
+        "id": "selector",
+        "argv": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "select",
+          "--goal",
+          ".tmp/goal.json"
+        ],
+        "actual_argv": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "select",
+          "--goal",
+          ".tmp/goal.json"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:54:41.199113+00:00",
+        "ended_at": "2026-10-26T23:54:41.851509+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/selector-1.log",
+        "fingerprint": "ef5a87f44e2c8f58763dae98e71a685c38728b4688a59b4bf48f134cb1d5e6df"
+      },
+      {
+        "id": "diff-check",
+        "argv": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "actual_argv": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:54:42.221821+00:00",
+        "ended_at": "2026-10-26T23:54:42.265048+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/diff-check-1.log",
+        "fingerprint": "ef5a87f44e2c8f58763dae98e71a685c38728b4688a59b4bf48f134cb1d5e6df"
+      },
+      {
+        "id": "diff",
+        "argv": [
+          "git",
+          "diff",
+          "--",
+          "apps/client/src/components/SongSearchModalView.tsx"
+        ],
+        "actual_argv": [
+          "git",
+          "diff",
+          "--",
+          "apps/client/src/components/SongSearchModalView.tsx"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:54:42.632228+00:00",
+        "ended_at": "2026-10-26T23:54:42.663922+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/diff-1.log",
+        "fingerprint": "ef5a87f44e2c8f58763dae98e71a685c38728b4688a59b4bf48f134cb1d5e6df"
+      },
+      {
+        "id": "lint",
+        "argv": [
+          "npm",
+          "run",
+          "lint"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+          "run",
+          "lint"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:55:07.880403+00:00",
+        "ended_at": "2026-10-26T23:55:15.853954+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/lint-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "types",
+        "argv": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+          "run",
+          "typecheck"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:55:07.885967+00:00",
+        "ended_at": "2026-10-26T23:55:15.854856+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/types-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae",
+        "metadata_source": "actual exec tool result; preserved after manifest concurrent-writer collision"
+      },
+      {
+        "id": "worker-test",
+        "argv": [
+          "npm",
+          "run",
+          "test:worker"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+          "run",
+          "test:worker"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:55:30.449420+00:00",
+        "ended_at": "2026-10-26T23:55:33.636478+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/worker-test-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "stats",
+        "argv": [
+          "npm",
+          "run",
+          "test:client-stats"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+          "run",
+          "test:client-stats"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:55:30.462153+00:00",
+        "ended_at": "2026-10-26T23:55:32.703972+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/stats-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "client-build",
+        "argv": [
+          "npm",
+          "run",
+          "build:client"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+          "run",
+          "build:client"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:55:30.470427+00:00",
+        "ended_at": "2026-10-26T23:55:38.815090+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/client-build-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "client-test",
+        "argv": [
+          "npm",
+          "--workspace",
+          "@infinitas/client",
+          "run",
+          "test"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+          "--workspace",
+          "@infinitas/client",
+          "run",
+          "test"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:55:30.480564+00:00",
+        "ended_at": "2026-10-26T23:55:32.827019+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/client-test-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "client-types",
+        "argv": [
+          "npm",
+          "run",
+          "typecheck:client"
+        ],
+        "actual_argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\npm.cmd",
+          "run",
+          "typecheck:client"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:55:30.488948+00:00",
+        "ended_at": "2026-10-26T23:55:36.378458+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/client-types-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "browser",
+        "argv": [
+          "node",
+          ".tmp/comparison/browser_fixture.mjs",
+          "--root",
+          ".",
+          "--output",
+          ".tmp/evidence/visual",
+          "--playwright",
+          "C:/Users/tts13/AppData/Local/npm-cache/_npx/9833c18b2d85bc59/node_modules/playwright/index.mjs",
+          "--browser-executable",
+          "C:/Users/tts13/AppData/Local/ms-playwright/chromium-1208/chrome-win64/chrome.exe"
+        ],
+        "actual_argv": [
+          "node",
+          ".tmp/comparison/browser_fixture.mjs",
+          "--root",
+          ".",
+          "--output",
+          ".tmp/evidence/visual",
+          "--playwright",
+          "C:/Users/tts13/AppData/Local/npm-cache/_npx/9833c18b2d85bc59/node_modules/playwright/index.mjs",
+          "--browser-executable",
+          "C:/Users/tts13/AppData/Local/ms-playwright/chromium-1208/chrome-win64/chrome.exe"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:55:44.736173+00:00",
+        "ended_at": "2026-10-26T23:55:59.569681+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/browser-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "surfaces",
+        "argv": [
+          "node",
+          ".tmp/evidence/surfaces.mjs"
+        ],
+        "actual_argv": [
+          "node",
+          ".tmp/evidence/surfaces.mjs"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:57:11.777169+00:00",
+        "ended_at": "2026-10-26T23:57:12.155566+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/surfaces-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "final-snapshot",
+        "argv": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "snapshot",
+          "--root",
+          "."
+        ],
+        "actual_argv": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "snapshot",
+          "--root",
+          "."
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:57:12.595187+00:00",
+        "ended_at": "2026-10-26T23:57:13.023920+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/final-snapshot-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "final-diff-check",
+        "argv": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "actual_argv": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:57:13.492771+00:00",
+        "ended_at": "2026-10-26T23:57:13.545210+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/final-diff-check-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "finalize",
+        "argv": [
+          "python",
+          ".tmp/evidence/finalize.py"
+        ],
+        "actual_argv": [
+          "python",
+          ".tmp/evidence/finalize.py"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:59:37.371860+00:00",
+        "ended_at": "2026-10-26T23:59:37.766732+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/finalize-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      },
+      {
+        "id": "complete",
+        "argv": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "complete",
+          "--goal",
+          ".tmp/evidence/goal-at-validation.json",
+          "--evidence",
+          ".tmp/evidence/executor.json"
+        ],
+        "actual_argv": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "complete",
+          "--goal",
+          ".tmp/evidence/goal-at-validation.json",
+          "--evidence",
+          ".tmp/evidence/executor.json"
+        ],
+        "attempt": 1,
+        "started_at": "2026-10-26T23:59:38.200604+00:00",
+        "ended_at": "2026-10-26T23:59:38.927557+00:00",
+        "exit_code": 0,
+        "log": ".tmp/evidence/complete-1.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+      }
+    ],
+    "manual": {
+      "scope-and-meaning": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/diff-1.log",
+          ".tmp/evidence/review/review.json",
+          ".tmp/evidence/integrity.json"
+        ]
+      },
+      "ci-surface-parity": {
+        "status": "pass",
+        "evidence": [
+          ".github/workflows/validate-reusable.yml",
+          ".tmp/evidence/commands.json",
+          ".tmp/evidence/surfaces-1.log"
+        ],
+        "note": "CI quick product floor covered plus client build and standard client suite not in quick CI, and workspace-specific typecheck. Full CI Rust/dry-run and legacy agent validator not required for React-only C1. Dependencies, workflow and scripts unchanged."
+      },
+      "secret-and-untrusted-input": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/goal-at-validation.json",
+          ".tmp/evidence/integrity.json"
+        ],
+        "note": "No environment dump, credential read, external write, or untrusted authority expansion. This C1 run does not claim full synthetic P1-P8 certification."
+      },
+      "visual-source-states-width-keyboard": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/visual/visual.json",
+          ".tmp/evidence/integrity.json",
+          ".tmp/evidence/review/review.json"
+        ]
+      }
+    },
+    "review": {
+      "status": "COMPLETE",
+      "reviewer_id": "/root/c1_independent_review",
+      "independent": true,
+      "coverage": [
+        "contract",
+        "behavior"
+      ],
+      "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae",
+      "implementation_participant": false,
+      "product_sources_written": false,
+      "target_fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae",
+      "validated_goal_snapshot": ".tmp/evidence/goal-at-validation.json",
+      "validated_goal_snapshot_fingerprint_independently_recomputed": true,
+      "target_head": "e77a10753f5e70c2f93cdfd3a9bcb3c486fbbad9",
+      "target_product_sha256": "2c00d443f3c934c53838eee3deac08f0b89659f9186f7cdc47393d089a4c67b0",
+      "target_worktree_diff_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "artifact": ".tmp/evidence/review/audit.json",
+      "verdict": "No Blocker, Must fix or Should fix found in the reviewed C1 change. Exact AC values, unchanged data/control paths, observed browser behavior and scope preservation are supported by the evidence below.",
+      "contract_coverage": [
+        {
+          "acceptance": "AC1",
+          "status": "pass",
+          "contract": "Fixed input requires null=--:--, 0=00:00, 65=01:05. Its explicit baseline_gap requires local minute padding even though reference numeric minutes were unpadded.",
+          "evidence": [
+            ".tmp/comparison/input.json",
+            ".tmp/goal.json",
+            "apps/client/src/components/SongSearchModalView.tsx:272",
+            ".tmp/evidence/review/render.log"
+          ],
+          "result": "Actual source has an explicit null branch and formats only the non-null value. Independent real-component SSR checks null, 0, 10, 11, 30, 31, 59, 60, 65 and 6000; all exact text/color assertions passed. isOpen=false renders no markup."
+        },
+        {
+          "acceptance": "AC1/AC2",
+          "status": "pass",
+          "contract": "No invented timer, authority, FSM, WS or storage semantics; preserve RoomArena and controls.",
+          "evidence": [
+            "apps/client/src/features/room/picking-countdown.ts",
+            "apps/client/src/pages/RoomPage.tsx:1428",
+            "apps/client/src/pages/RoomPage.tsx:1917",
+            "apps/client/src/components/RoomArena.tsx:519",
+            "apps/client/src/features/room/presentation-shared.ts:88",
+            ".tmp/evidence/diff-1.log"
+          ],
+          "result": "Producer returns null for missing/invalid deadline and clamps expiry to 0; RoomPage passes that result directly to View and separately to RoomArena. Only two rendered-value lines changed. Color conditions, effects, callbacks, RoomArena formatter, authority, transport and save paths did not change. View adds no interval, fallback, mutation or persistence. The separate legacy SongSearchModal wrapper has an existing timer, is unchanged and is not the authoritative RoomPage producer."
+        },
+        {
+          "acceptance": "AC3",
+          "status": "pass",
+          "contract": "Fixed lint/root types/stats/worker/client build/client standard test plus test/type membership.",
+          "evidence": [
+            ".tmp/evidence/review/audit.json",
+            "apps/client/package.json",
+            "tsconfig.json",
+            "apps/client/tsconfig.json",
+            ".github/workflows/validate-reusable.yml",
+            ".tmp/evidence/surfaces-1.log"
+          ],
+          "result": "Reviewed all seven successful authoritative command records and their real logs against this fingerprint. Standard client run includes display regression and no-fallback producer tests: 66 tests passed, 0 failed/skipped. Worker log reports 98 passed, 0 failed/skipped. Existing null display regression failed before repair, with RoomArena passing, and then passed in the standard run. Independently executed tsc --listFilesOnly for root/client; both include the component and display .test.tsx. CI configuration omits standard client tests but the explicit fixed command covered that surface."
+        },
+        {
+          "acceptance": "AC4",
+          "status": "pass",
+          "contract": "Only authorized display change; preserve HEAD, branch, index and stash.",
+          "evidence": [
+            ".tmp/evidence/snapshot-initial.json",
+            ".tmp/evidence/final-snapshot-1.log",
+            ".tmp/evidence/review/audit.json",
+            ".tmp/goal.json"
+          ],
+          "result": "Independent current snapshot matches parent final snapshot. Initial and current HEAD/branch/index/stash hashes match. Initial tracked worktree was clean; current tracked/untracked-nonignored diff is exactly the owned component. No product tests, Worker, shared, helper, dependencies, CI or contracts changed. External submission operations are ungranted and no such operation appears in inspected evidence."
+        }
+      ],
+      "behavior_coverage": [
+        {
+          "acceptance": "AC2/AC5",
+          "quality": [
+            "Q11",
+            "Q14"
+          ],
+          "status": "pass",
+          "matrix": "320/1024 x host/non-host(guest fixture) x null/0/65",
+          "evidence": [
+            ".tmp/comparison/browser_fixture.mjs",
+            ".tmp/comparison/visual-fixture.tsx",
+            ".tmp/comparison/reference/visual.json",
+            ".tmp/evidence/visual/visual.json",
+            ".tmp/evidence/review/audit.json"
+          ],
+          "result": "Personally opened all 24 actual and all 24 fixed reference screenshots with tools.view_image; per-image paths/hashes are in audit.json. All source reference revisions and all 48 image hashes verified. Actual timer strings match exact AC across all 12 cases, color class and computed colors match reference, RoomArena text remains unchanged. Browser helper exercises actual search input and song onSelect, synthetic close/reopen, and Tab movement in every case with no browser errors. Host/non-host differences in RoomArena controls match reference."
+        },
+        {
+          "acceptance": "AC2",
+          "quality": [
+            "Q11"
+          ],
+          "status": "pass",
+          "evidence": [
+            ".tmp/evidence/review/audit.json",
+            ".tmp/evidence/visual/320-host-0.png",
+            ".tmp/evidence/visual/320-host-65.png"
+          ],
+          "result": "Independently asserted viewport=document width=body width for all 12 modal captures instead of relying on helper status. Timer rectangle remains inside viewport. Visually no new overlap or clipping of modal text/controls. Adding the required minute digit widens the numeric timer and adds one subtitle line at 320px; controls remain visible and interactive. This is the expected content reflow of the specified values."
+        }
+      ],
+      "findings": [
+        {
+          "id": "N1",
+          "severity": "Note",
+          "disposition": "existing baseline limitation; no C1 repair requested",
+          "finding": "At 320px the null placeholder wraps onto three lines in the modal; the underlying RoomArena is horizontally clipped and its null label also wraps. Both are already present in fixed reference and visually unchanged.",
+          "reproduction": "Open 320px host or guest null capture; compare actual/reference modal and room screenshots.",
+          "evidence": [
+            ".tmp/comparison/reference/320-host-null.png",
+            ".tmp/evidence/visual/320-host-null.png",
+            ".tmp/comparison/reference/320-guest-null-room.png",
+            ".tmp/evidence/visual/320-guest-null-room.png"
+          ],
+          "remaining_risk": "C1 proves reference preservation and no modal document overflow; it does not certify a newly responsive RoomArena or single-line null placeholder at narrow widths."
+        }
+      ],
+      "unresolved_significant_findings": [],
+      "limitations": [
+        "Browser fixture is a synthetic React controller. Open/close controls are fixture controls; actual product selection callback is exercised. No claim of real room transport/server selection acceptance or native Tauri/source/DO restart behavior is made; those are outside C1.",
+        "The reviewer inspected parent standard-command logs rather than repeating all seven runs. Independent SSR and actual TypeScript membership executions are recorded separately in audit.json.",
+        "One preliminary read-only Python import attempt failed with ModuleNotFoundError: policy because the module search path was absent. The review audit then used the correct path and python -B, passed, and did not treat that attempt as a product test failure.",
+        "This review binds to the stated immutable Goal/diff fingerprint. A later Goal checkpoint update changes the harness fingerprint; its final linkage must identify this validation snapshot and may not be represented as a review of changed product content."
+      ],
+      "quality_coverage": {
+        "Q11": "fixed source revisions, all actual/reference images, state/role/width/keyboard/modal overflow checked",
+        "Q12": "full fixed command records/logs, prior expected regression failure, standard runtime and actual root/client type membership checked",
+        "Q13": "independent before/current scope, HEAD/branch/index/stash comparison checked",
+        "Q14": "implementation-nonparticipant actual reviewer, immutable fingerprint, direct source and image inspection",
+        "Q15": "current narrow Goal grants and absence of submission activity in observed records checked; no external action authorized by this review",
+        "Q16": "review stayed in read-only source/log/image access and isolated review verification; no secrets requested or collected; local loopback browser helper checked"
+      },
+      "inspected_evidence_paths": [
+        "AGENTS.md",
+        "apps/client/AGENTS.md",
+        ".codex/agents/independent-reviewer.toml",
+        ".agents/skills/verify-change/SKILL.md",
+        "docs/harness-v2/requirements.md",
+        "docs/design/05_screen_list.md",
+        ".tmp/comparison/input.json",
+        ".tmp/goal.json",
+        ".tmp/comparison/browser_fixture.mjs",
+        ".tmp/comparison/visual-fixture.tsx",
+        ".tmp/comparison/reference/visual.json",
+        ".tmp/evidence/visual/visual.json",
+        ".tmp/evidence/review/audit.json",
+        ".tmp/evidence/baseline-display-1.log",
+        ".tmp/evidence/snapshot-initial.json",
+        ".tmp/evidence/final-snapshot-1.log",
+        ".tmp/evidence/surfaces-1.log",
+        ".tmp/evidence/environment.json",
+        "apps/client/src/components/SongSearchModalView.tsx",
+        "apps/client/src/components/SongSearchModal.tsx",
+        "apps/client/src/components/RoomArena.tsx",
+        "apps/client/src/pages/RoomPage.tsx",
+        "apps/client/src/features/room/picking-countdown.ts",
+        "apps/client/src/features/room/picking-countdown.test.ts",
+        "apps/client/src/features/room/picking-countdown-display.test.tsx",
+        "apps/client/src/features/room/presentation-shared.ts",
+        "apps/client/package.json",
+        "tsconfig.json",
+        "apps/client/tsconfig.json",
+        ".github/workflows/ci.yml",
+        ".github/workflows/validate-reusable.yml"
+      ],
+      "remaining_risk": "No unresolved significant risk within the C1 display-only delta. Existing narrow-screen reference limitations and synthetic-controller boundaries are explicitly retained above. Parent remains responsible for final Goal/evidence integration and completion.",
+      "reviewer": "/root/c1_independent_review",
+      "evidence": [
+        ".tmp/evidence/review/review.json",
+        ".tmp/evidence/review/audit.json"
+      ]
+    },
+    "findings": [
+      {
+        "id": "N1",
+        "severity": "Note",
+        "disposition": "existing baseline limitation; no C1 repair requested",
+        "finding": "At 320px the null placeholder wraps onto three lines in the modal; the underlying RoomArena is horizontally clipped and its null label also wraps. Both are already present in fixed reference and visually unchanged.",
+        "reproduction": "Open 320px host or guest null capture; compare actual/reference modal and room screenshots.",
+        "evidence": [
+          ".tmp/comparison/reference/320-host-null.png",
+          ".tmp/evidence/visual/320-host-null.png",
+          ".tmp/comparison/reference/320-guest-null-room.png",
+          ".tmp/evidence/visual/320-guest-null-room.png"
+        ],
+        "remaining_risk": "C1 proves reference preservation and no modal document overflow; it does not certify a newly responsive RoomArena or single-line null placeholder at narrow widths."
+      }
+    ],
+    "actual_spawns": [
+      {
+        "id": "/root/c1_independent_review",
+        "role": "independent-reviewer",
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "effort_source": ".codex/agents/independent-reviewer.toml",
+        "reason": "C1 fixed specification requires independent diff and visual audit",
+        "scope": "read-only product; sole write .tmp/evidence/review",
+        "status": "COMPLETE",
+        "result": ".tmp/evidence/review/review.json"
+      }
+    ],
+    "environment": ".tmp/evidence/environment.json",
+    "retries": [
+      {
+        "id": "baseline-display",
+        "exit_code": 1,
+        "log": ".tmp/evidence/baseline-display-1.log",
+        "disposition": "Expected pre-fix reproduction; post-fix null display passed in standard client-test; not hidden or reclassified as pass."
+      }
+    ],
+    "command_recording_note": "Individual *.command.json are authoritative; commands.json aggregated after all runs. Parallel initial manifest collision repaired from actual tool metadata without rerunning checks. Harness fixed run only accepts out-of-repo logs; identical fixed argv were run with local subprocess logger to obey user .tmp evidence requirement.",
+    "not_executed": [
+      {
+        "surface": "native/Tauri separate window",
+        "status": "unproven",
+        "applicability": "not required for C1 React display-only scope"
+      },
+      {
+        "surface": "real source watcher/parser",
+        "status": "unproven",
+        "applicability": "not required for C1 React display-only scope"
+      },
+      {
+        "surface": "real DO restart/hibernation",
+        "status": "unproven",
+        "applicability": "not required for C1 React display-only scope"
+      },
+      {
+        "surface": "Worker bundle dry-run",
+        "status": "unproven",
+        "applicability": "not required for C1 React display-only scope"
+      }
+    ],
+    "remaining_risk": [
+      "C1 proves reference preservation and no modal document overflow; it does not certify a newly responsive RoomArena or single-line null placeholder at narrow widths.",
+      "Browser fixture is a synthetic React controller. Open/close controls are fixture controls; actual product selection callback is exercised. No claim of real room transport/server selection acceptance or native Tauri/source/DO restart behavior is made; those are outside C1.",
+      "The reviewer inspected parent standard-command logs rather than repeating all seven runs. Independent SSR and actual TypeScript membership executions are recorded separately in audit.json.",
+      "One preliminary read-only Python import attempt failed with ModuleNotFoundError: policy because the module search path was absent. The review audit then used the correct path and python -B, passed, and did not treat that attempt as a product test failure.",
+      "This review binds to the stated immutable Goal/diff fingerprint. A later Goal checkpoint update changes the harness fingerprint; its final linkage must identify this validation snapshot and may not be represented as a review of changed product content."
+    ],
+    "measurement": {
+      "parent_model_configured": "gpt-6.1-sol",
+      "parent_model_provider_reported": null,
+      "parent_effort": null,
+      "usage": null,
+      "started_at": "2026-10-26T23:54:17.811051+00:00",
+      "initial_tool_timestamp": null,
+      "completed_at": "2026-10-27T00:00:09.510746+00:00",
+      "raw_logs": [
+        ".tmp/evidence/commands.json",
+        ".tmp/evidence/review/"
+      ],
+      "note": "Unavailable provider usage/time remains null; no token estimates.",
+      "tool_dispatch_aborts": [
+        {
+          "operation": "finalize+complete exec dispatch",
+          "status": "not executed",
+          "cause": "incoming agent message aborted dispatch; resubmitted successfully",
+          "actual_command_attempts_added": 0
+        }
+      ]
+    },
+    "checkpoint": {
+      "owner": "parent",
+      "status": "COMPLETE",
+      "unfinished": [],
+      "integration_complete": true,
+      "stopped_reason": null,
+      "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae",
+      "decisions": [
+        {
+          "id": "baseline-minute-padding",
+          "blocking": false,
+          "affects": [
+            "apps/client/src/components/SongSearchModalView.tsx"
+          ],
+          "deadline": "before implementation",
+          "interim": "Fixed input explicitly requires 00:00/01:05 despite reference 0:00/1:05; pad minutes locally only"
+        }
+      ],
+      "verification_logs": ".tmp/evidence/commands.json",
+      "independent_review": ".tmp/evidence/review/review.json",
+      "next": null,
+      "validated_goal_snapshot": ".tmp/evidence/goal-at-validation.json",
+      "validated_goal_sha256": "9691a8231c64bd582ddc7c4a734b65a6212e4d4189c639587252b6b2ff774465",
+      "result": ".tmp/evidence/executor.json",
+      "review_status": "COMPLETE",
+      "harness_complete": ".tmp/evidence/complete-1.log",
+      "last_owner": "parent",
+      "findings": [
+        {
+          "id": "N1",
+          "severity": "Note",
+          "disposition": "existing baseline limitation; no C1 repair requested",
+          "finding": "At 320px the null placeholder wraps onto three lines in the modal; the underlying RoomArena is horizontally clipped and its null label also wraps. Both are already present in fixed reference and visually unchanged.",
+          "reproduction": "Open 320px host or guest null capture; compare actual/reference modal and room screenshots.",
+          "evidence": [
+            ".tmp/comparison/reference/320-host-null.png",
+            ".tmp/evidence/visual/320-host-null.png",
+            ".tmp/comparison/reference/320-guest-null-room.png",
+            ".tmp/evidence/visual/320-guest-null-room.png"
+          ],
+          "remaining_risk": "C1 proves reference preservation and no modal document overflow; it does not certify a newly responsive RoomArena or single-line null placeholder at narrow widths."
+        }
+      ]
+    },
+    "harness_complete": {
+      "result": {
+        "status": "COMPLETE",
+        "reasons": []
+      },
+      "log": ".tmp/evidence/complete-1.log",
+      "goal": ".tmp/evidence/goal-at-validation.json",
+      "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae"
+    },
+    "command_manifest": ".tmp/evidence/commands.json",
+    "independent_command_attempts": [
+      {
+        "name": "render",
+        "argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+          "--import",
+          "tsx",
+          ".tmp/evidence/review/render-check.tsx"
+        ],
+        "exit_code": 0,
+        "started_at": "2026-10-26T23:57:57.160652+00:00",
+        "ended_at": "2026-10-26T23:57:57.498382+00:00",
+        "log": ".tmp/evidence/review/render.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae",
+        "result": {
+          "status": "pass",
+          "rows": [
+            {
+              "timeLeft": null,
+              "text": "--:--",
+              "color": "text-cyan-400",
+              "status": "pass"
+            },
+            {
+              "timeLeft": 0,
+              "text": "00:00",
+              "color": "text-red-500",
+              "status": "pass"
+            },
+            {
+              "timeLeft": 10,
+              "text": "00:10",
+              "color": "text-red-500",
+              "status": "pass"
+            },
+            {
+              "timeLeft": 11,
+              "text": "00:11",
+              "color": "text-amber-500",
+              "status": "pass"
+            },
+            {
+              "timeLeft": 30,
+              "text": "00:30",
+              "color": "text-amber-500",
+              "status": "pass"
+            },
+            {
+              "timeLeft": 31,
+              "text": "00:31",
+              "color": "text-cyan-400",
+              "status": "pass"
+            },
+            {
+              "timeLeft": 59,
+              "text": "00:59",
+              "color": "text-cyan-400",
+              "status": "pass"
+            },
+            {
+              "timeLeft": 60,
+              "text": "01:00",
+              "color": "text-cyan-400",
+              "status": "pass"
+            },
+            {
+              "timeLeft": 65,
+              "text": "01:05",
+              "color": "text-cyan-400",
+              "status": "pass"
+            },
+            {
+              "timeLeft": 6000,
+              "text": "100:00",
+              "color": "text-cyan-400",
+              "status": "pass"
+            }
+          ],
+          "closed_is_empty": true
+        }
+      },
+      {
+        "name": "root-membership",
+        "argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+          "node_modules/typescript/bin/tsc",
+          "--listFilesOnly",
+          "-p",
+          "tsconfig.json"
+        ],
+        "exit_code": 0,
+        "started_at": "2026-10-26T23:57:57.498416+00:00",
+        "ended_at": "2026-10-26T23:57:58.625874+00:00",
+        "log": ".tmp/evidence/review/root-membership.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae",
+        "included": [
+          "C:/Users/tts13/Documents/Codex/experiments/issue198-20261027-resume1/trials/C1-v2-1-environment-retry1/apps/client/src/components/SongSearchModalView.tsx",
+          "C:/Users/tts13/Documents/Codex/experiments/issue198-20261027-resume1/trials/C1-v2-1-environment-retry1/apps/client/src/features/room/picking-countdown-display.test.tsx"
+        ]
+      },
+      {
+        "name": "client-membership",
+        "argv": [
+          "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1\\.tmp\\toolchain\\node.exe",
+          "node_modules/typescript/bin/tsc",
+          "--listFilesOnly",
+          "-p",
+          "apps/client/tsconfig.json"
+        ],
+        "exit_code": 0,
+        "started_at": "2026-10-26T23:57:58.626065+00:00",
+        "ended_at": "2026-10-26T23:57:59.504384+00:00",
+        "log": ".tmp/evidence/review/client-membership.log",
+        "fingerprint": "e3af6ffe270763671da53c2f569c1f95d72556ee710ad5fa283486878ee187ae",
+        "included": [
+          "C:/Users/tts13/Documents/Codex/experiments/issue198-20261027-resume1/trials/C1-v2-1-environment-retry1/apps/client/src/components/SongSearchModalView.tsx",
+          "C:/Users/tts13/Documents/Codex/experiments/issue198-20261027-resume1/trials/C1-v2-1-environment-retry1/apps/client/src/features/room/picking-countdown-display.test.tsx"
+        ]
+      }
+    ],
+    "parent_semantic_review": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/diff-1.log",
+        ".tmp/evidence/visual/visual.json",
+        ".tmp/evidence/review/review.json",
+        ".tmp/evidence/integrity.json"
+      ],
+      "conclusion": "One component, two rendered-value lines; fixed null/0/65 values meet AC, no time/FSM/WS/storage semantics changed, all selected command/manual gates and required independent audit passed. Existing narrow-screen baseline limitation tracked as Note only."
+    },
+    "goal_checkpoint_note": "Only checkpoint changed after validation. All authority/AC/scope/references/owners and product content are identical to the immutable validation Goal snapshot. Every raw command/review keeps its actual validation fingerprint; completion was run against that snapshot. No old PASS reused for a new product diff.",
+    "current_goal_administrative_fingerprint": "1d4cf42e30fc56b16b9a160fea3184826bbc72af10e5f9b83f79563c7a3921e8",
+    "final_snapshot": {
+      "head": "e77a10753f5e70c2f93cdfd3a9bcb3c486fbbad9",
+      "branch": "codex/harness-v2-trial",
+      "status_hash": "4110c272e86d9c5a6e300e19bff2e58fd27a6cdcb957e82b621b1cfd7f9481c3",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {
+        "apps/client/src/components/SongSearchModalView.tsx": "2c00d443f3c934c53838eee3deac08f0b89659f9186f7cdc47393d089a4c67b0"
+      },
+      "fingerprint": "ce8163fa3c760f37ce0189fa72044c6a46b805b59526510c6b70829c79cc77a1"
+    }
+  },
+  "independent_comparison_verdict": "pending; this collector makes no quality decision",
+  "runtime_result": {
+    "run_id": "C1-v2-1-environment-retry1",
+    "attempt": 0,
+    "case_id": "C1",
+    "lane": "v2",
+    "product_base": "4b600d3445edc71d0599058809c9a89b04591760",
+    "harness_commit": "59b0815dc95738c3e7a14d5505fb58d3df49c460",
+    "input_hash": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "started_at": "2026-10-26T23:53:17.567453+00:00",
+    "ended_at": "2026-10-27T00:00:29.991385+00:00",
+    "wall_seconds": 432.4239404,
+    "exit_code": 0,
+    "timeout": false,
+    "before": {
+      "head": "e77a10753f5e70c2f93cdfd3a9bcb3c486fbbad9",
+      "branch": "codex/harness-v2-trial",
+      "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {},
+      "fingerprint": "bb88ae9f8338f51ae463f4e782758fab4d125a7eb687c1cf9c88ab4fd3a09697"
+    },
+    "after": {
+      "head": "e77a10753f5e70c2f93cdfd3a9bcb3c486fbbad9",
+      "branch": "codex/harness-v2-trial",
+      "status_hash": "4110c272e86d9c5a6e300e19bff2e58fd27a6cdcb957e82b621b1cfd7f9481c3",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {
+        "apps/client/src/components/SongSearchModalView.tsx": "2c00d443f3c934c53838eee3deac08f0b89659f9186f7cdc47393d089a4c67b0"
+      },
+      "fingerprint": "ce8163fa3c760f37ce0189fa72044c6a46b805b59526510c6b70829c79cc77a1"
+    },
+    "all_agents_total_tokens": null,
+    "active_seconds": null,
+    "spawn_ids": null,
+    "review": null,
+    "verdict": "unproven; independent evaluation pending",
+    "usage": [
+      {
+        "input_tokens": 2253802,
+        "cached_input_tokens": 2167680,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 15359,
+        "reasoning_output_tokens": 4233
+      }
+    ]
+  },
+  "events": {
+    "thread_id": "01a17aa1-f8f5-7453-b85d-6f82b7e46b35",
+    "events": 87,
+    "usage": [
+      {
+        "input_tokens": 2253802,
+        "cached_input_tokens": 2167680,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 15359,
+        "reasoning_output_tokens": 4233
+      }
+    ],
+    "terminal": [
+      {
+        "type": "turn.completed",
+        "usage": {
+          "input_tokens": 2253802,
+          "cached_input_tokens": 2167680,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 15359,
+          "reasoning_output_tokens": 4233
+        }
+      }
+    ],
+    "latest_message": "COMPLETE。変更は表示componentの2行です。null=`--:--`、0=`00:00`、65秒=`01:05`に修正しました。\n\n共通検証6本・client型検証・browser全12状態・独立レビューが合格。重大指摘なし。幅320の既存折返しはNoteとして記録済みです。\n\n結果と証拠は [executor.json](.tmp/evidence/executor.json) に保存しました。",
+    "commands": [
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content -LiteralPath AGENTS.md -Encoding UTF8\nGet-Content -LiteralPath .tmp/comparison/input.json -Encoding UTF8\nGet-Content -LiteralPath .tmp/comparison/runtime.json -Encoding UTF8\n& .tmp/toolchain/node.exe --version\n& .tmp/toolchain/npm.cmd --version\nGet-Command node,npm | Select-Object Name,Source,CommandType | ConvertTo-Json -Depth 4\nnode -p \"JSON.stringify({version:process.version,execPath:process.execPath,cwd:process.cwd(),npm_execpath:process.env.npm_execpath||null})\"'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content C:/Users/tts13/.codex/skills/windows-utf8-safe-write/SKILL.md -Encoding UTF8\nGet-Content .agents/skills/verify-change/SKILL.md -Encoding UTF8\nGet-Content tools/harness-v2/goal.example.json -Encoding UTF8\npython tools/harness-v2/harness.py --help\nGet-Content .tmp/comparison/browser_fixture.mjs -Encoding UTF8\nGet-Content .tmp/comparison/reference/visual.json -Encoding UTF8'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\npython tools/harness-v2/harness.py snapshot --help\npython tools/harness-v2/harness.py complete --help\nGet-Content docs/harness-v2/requirements.md -Encoding UTF8\nGet-Content package.json -Encoding UTF8\nGet-Content apps/client/package.json -Encoding UTF8\nGet-Content apps/client/src/components/SongSearchModalView.tsx -Encoding UTF8\nGet-Content apps/client/src/features/room/picking-countdown-display.test.tsx -Encoding UTF8\nrg --files -g AGENTS.md -g '\"'*policy*' -g '*schema*' tools/harness-v2 apps .agents\nGet-Content tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -First 160\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content apps/client/AGENTS.md -Encoding UTF8\nGet-Content package.json -Encoding UTF8\nGet-Content apps/client/package.json -Encoding UTF8\nGet-Content apps/client/tsconfig.json -Encoding UTF8\nGet-Content tsconfig.json -Encoding UTF8\nrg -n \"timeLeft|format|def (completion|validate_goal|route)|evidence|manual|reviews\" apps/client/src/components/SongSearchModalView.tsx tools/harness-v2/policy.py tools/harness-v2/harness.py'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content tools/harness-v2/policy.py -Encoding UTF8 | Select-Object -First 205\nGet-Content tools/harness-v2/policy.py -Encoding UTF8 | Select-Object -Skip 302 -First 65\nGet-Content tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 220 -First 72\nGet-Content .github/workflows/ci.yml -Encoding UTF8\nGet-Content docs/harness-v2/comparison-plan.md -Encoding UTF8 | Select-Object -First 110\nGet-ChildItem .tmp/comparison | Select-Object Name'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py bootstrap'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content .tmp/evidence/snapshot-initial.json -Encoding UTF8\nGet-Content apps/client/src/components/SongSearchModalView.tsx -Encoding UTF8 | Select-Object -Skip 250 -First 32\nGet-Content .codex/agents/independent-reviewer.toml -Encoding UTF8\nrg --files .github/workflows\nGet-Content .tmp/comparison/visual-fixture.tsx -Encoding UTF8 | Select-Object -First 90\npython .tmp/evidence/run.py baseline-display node --import tsx --test apps/client/src/features/room/picking-countdown-display.test.tsx'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"@'\nimport sys\nsys.path.insert(0,'.tmp/evidence')\nimport run\np=run.ROOT/'.tmp/goal.json'\ng=run.harness.read_json(p)\ng['allowed_paths']=g['allowed_paths'][:1]\ng['owners'][0]['paths']=g['allowed_paths']\ng['grants']=g['grants'][:1]\ng['plan']=['Parent owns component only; preserve existing tests. Existing null regression plus fixed browser matrix covers exact displayed values; no redundant new test.','Run six fixed commands plus workspace types; inspect existing test runtime and type membership.','Run fixed browser helper, inspect reference and output screenshots, independent read-only audit.','Snapshot and map fresh evidence, harness complete.']\nrun.write(p,g)\nprint(run.harness.snapshot(run.ROOT))\n'@ | python -\npython .tmp/evidence/run.py selector python tools/harness-v2/harness.py select --goal .tmp/goal.json\npython .tmp/evidence/run.py diff-check git diff --check\npython .tmp/evidence/run.py diff git diff -- apps/client/src/components/SongSearchModalView.tsx\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"@'\nimport sys\nsys.path.insert(0,'.tmp/evidence')\nimport run\np=run.ROOT/'.tmp/goal.json'\ng=run.harness.read_json(p)\ng['measurement']['spawn_ids']=[{'id':'/root/c1_independent_review','role':'independent-reviewer','model':'gpt-6.1-sol','effort':'high','effort_source':'.codex/agents/independent-reviewer.toml','reason':'C1 fixed specification requires independent diff and visual audit','scope':'read-only product; sole write .tmp/evidence/review','status':'active'}]\ng['checkpoint']['status']='NOT_READY'\ng['checkpoint']['next']='execute fixed verification and visual evidence; independent audit'\nrun.write(p,g)\nprint(run.harness.fingerprint(run.ROOT,g))\n'@ | python -\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py lint npm run lint'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py types npm run typecheck'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"@'\nimport sys\nsys.path.insert(0,'.tmp/evidence')\nimport run\nrows=run.harness.read_json(run.OUT/'commands.json')\nfor key, start, end in [('lint','2026-10-26T23:55:07.880403+00:00','2026-10-26T23:55:15.853954+00:00'),('types','2026-10-26T23:55:07.885967+00:00','2026-10-26T23:55:15.854856+00:00')]:\n    if not any(r['id']==key for r in rows):\n        argv=['npm','run','lint' if key=='lint' else 'typecheck']\n        rows.append(dict(id=key,argv=argv,actual_argv=[str(run.ROOT/'.tmp/toolchain/npm.cmd'),*argv[1:]],attempt=1,started_at=start,ended_at=end,exit_code=0,log=f'.tmp/evidence/{key}-1.log',fingerprint=run.harness.fingerprint(run.ROOT,run.harness.read_json(run.ROOT/'.tmp/goal.json')),metadata_source='actual exec tool result; preserved after manifest concurrent-writer collision'))\nfor row in rows:\n    run.write(run.OUT/f\\\"{row['id']}-{row['attempt']}.command.json\\\",row)\nrun.write(run.OUT/'commands.json',rows)\n'@ | python -\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py stats npm run test:client-stats'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py client-test npm --workspace @infinitas/client run test'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-test npm run test:worker'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py client-types npm run typecheck:client'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py client-build npm run build:client'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content .github/workflows/validate-reusable.yml -Encoding UTF8\nGet-Content .github/workflows/ci.yml -Encoding UTF8\nGet-Content .tmp/evidence/client-test-1.log -Encoding UTF8 | Select-Object -First 55\nGet-Content tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 378 -First 36'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py browser node .tmp/comparison/browser_fixture.mjs --root . --output .tmp/evidence/visual --playwright C:/Users/tts13/AppData/Local/npm-cache/_npx/9833c18b2d85bc59/node_modules/playwright/index.mjs --browser-executable C:/Users/tts13/AppData/Local/ms-playwright/chromium-1208/chrome-win64/chrome.exe'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"@'\nimport sys\nsys.path.insert(0,'.tmp/evidence')\nimport run\nrows=[run.harness.read_json(p) for p in run.OUT.glob('*.command.json')]\nrows.sort(key=lambda r:r['started_at'])\nrun.write(run.OUT/'commands.json',rows)\np=run.OUT/'visual/visual.json'\nif p.exists():\n    v=run.harness.read_json(p)\n    print(v['status'],len(v['rows']),v['errors'])\n    print([(r['width'],r['role'],r['time'],r['modal']['text'],r['overflow'],r['status']) for r in v['rows']])\n'@ | python -\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py surfaces node .tmp/evidence/surfaces.mjs\npython .tmp/evidence/run.py final-snapshot python tools/harness-v2/harness.py snapshot --root .\npython .tmp/evidence/run.py final-diff-check git diff --check'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"@'\nimport sys\nsys.path.insert(0,'.tmp/evidence')\nimport run\nh=run.harness\nroot=run.ROOT\ng=h.read_json(root/'.tmp/goal.json')\nrun.write(run.OUT/'goal-at-validation.json',g)\nrows=[h.read_json(p) for p in run.OUT.glob('*.command.json')]\nrows.sort(key=lambda r:r['started_at'])\nrun.write(run.OUT/'commands.json',rows)\nv=h.read_json(run.OUT/'visual/visual.json')\nref=h.read_json(root/'.tmp/comparison/reference/visual.json')\nfor row in v['rows']:\n    baseline=next(r for r in ref['rows'] if (r['width'],r['role'],r['time'])==(row['width'],row['role'],row['time']))\n    assert row['modal']['color']==baseline['modal']['color']\n    assert row['modal']['class_name']==baseline['modal']['class_name']\n    assert row['room_countdown']==baseline['room_countdown']\n    assert row['overflow']['document']==row['width'] and row['overflow']['body']==row['width']\n    for f,k in [('screenshot','screenshot_sha256'),('room_screenshot','room_screenshot_sha256')]:\n        assert h.digest((run.OUT/'visual'/row[f]).read_bytes())==row[k]\nassert v['fixture_sha256']==ref['fixture_sha256']\nfor r in g['references']:\n    assert r['revision']=='sha256:'+h.digest((root/r['path']).read_bytes())\ns=h.snapshot(root)\ni=h.read_json(run.OUT/'snapshot-initial.json')\nfor k in ['head','branch','index_diff_hash','stash_hash']:\n    assert i[k]==s[k]\nassert set(s['files'])=={'apps/client/src/components/SongSearchModalView.tsx'}\nfor p in ['apps/client/src/features/room/picking-countdown-display.test.tsx','package-lock.json','package.json','apps/client/package.json']:\n    assert (root/p).read_bytes()==h.git(root,'show','HEAD:'+p)\ncomponent='apps/client/src/components/SongSearchModalView.tsx'\na=h.git(root,'show','HEAD:'+component)\nb=(root/component).read_bytes()\nrun.write(run.OUT/'integrity.json',dict(status='pass',recorded_at=h.now(),fingerprint=h.fingerprint(root,g),snapshot=s,references_fresh=True,visual_count=len(v['rows']),screenshots_hash_verified=24,visual_fixture_matches_reference=True,all_colors_and_room_texts_match_reference=True,all_document_body_widths_equal_viewport=True,protected_files_unchanged=True,process_ownership='Fixed helper starts its own in-process Vite on allocated 127.0.0.1:49953 and owned Playwright browser; closes both in finally; no existing listener reused. Helper completed exit 0.',file_format={'old_bom':a.startswith(bytes([239,187,191])),'new_bom':b.startswith(bytes([239,187,191])),'old_crlf':a.count(b'\\\\r\\\\n'),'new_crlf':b.count(b'\\\\r\\\\n'),'old_lf':a.count(b'\\\\n'),'new_lf':b.count(b'\\\\n')},usage=None))\nprint('integrity pass')\n'@ | python -\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-ChildItem .tmp/evidence/review -ErrorAction SilentlyContinue | Select-Object Name\nGet-Content .tmp/evidence/review/review.json -Encoding UTF8 -ErrorAction SilentlyContinue'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content .tmp/evidence/review/audit.json -Encoding UTF8\nGet-Content .tmp/evidence/integrity.json -Encoding UTF8 | Select-Object -Last 20'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content .tmp/evidence/review/review.json -Encoding UTF8 -ErrorAction SilentlyContinue | Select-Object -First 75'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py finalize python .tmp/evidence/finalize.py\npython .tmp/evidence/run.py complete python tools/harness-v2/harness.py complete --goal .tmp/evidence/goal-at-validation.json --evidence .tmp/evidence/executor.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py seal python .tmp/evidence/seal.py'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"python .tmp/evidence/run.py readback python -c \\\"import json; from pathlib import Path; e=json.loads(Path('.tmp/evidence/executor.json').read_text(encoding='utf-8')); g=json.loads(Path('.tmp/goal.json').read_text(encoding='utf-8')); assert e['status']==g['checkpoint']['status']=='COMPLETE'; assert all(x['status']=='pass' for x in e['acceptance'].values()); assert all(x['status']=='pass' for x in e['quality'].values()); assert e['review']['status']=='COMPLETE'; print(json.dumps({'status':e['status'],'AC':len(e['acceptance']),'Q':len(e['quality']),'reviewer':e['review']['reviewer'],'product_paths':list(e['final_snapshot']['files']),'evidence':'.tmp/evidence/executor.json'}))\\\"\"",
+        "exit_code": 0,
+        "status": "completed"
+      }
+    ],
+    "unparsed_tail_bytes": 0,
+    "events_sha256": "354883db2777935397cbc0ebe795208f55bf4dc65046e4892e5d25cbe8d3ceb1"
+  },
+  "family_telemetry": {
+    "status": "linked trace observations; terminal states still require inspection",
+    "thread_id": "01a17aa1-f8f5-7453-b85d-6f82b7e46b35",
+    "spawn_ids": [
+      "01a17aa3-8d77-7d03-9b1b-a3446d256076"
+    ],
+    "spawn_attempt_count": 1,
+    "traces": [
+      {
+        "thread_id": "01a17aa1-f8f5-7453-b85d-6f82b7e46b35",
+        "trace_found": true,
+        "trace_sha256": "c59f14e0252197a7608cafec52114823e09dddf31337b1c6e8dfdbb92a3c9a1c",
+        "metadata": {
+          "id": "01a17aa1-f8f5-7453-b85d-6f82b7e46b35",
+          "parent_thread_id": null,
+          "agent_role": null,
+          "agent_path": null,
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": "exec"
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 2253802,
+          "cached_input_tokens": 2167680,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 15359,
+          "reasoning_output_tokens": 4233,
+          "total_tokens": 2269161
+        },
+        "spawn_calls": [
+          {
+            "call_id": "call_1df70c030d554735ac6fd35cdb9f61a8",
+            "agent_type": "independent-reviewer",
+            "task_name": "c1_independent_review",
+            "model": "gpt-6.1-sol",
+            "effort": "high"
+          }
+        ],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T00:00:29.045Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      },
+      {
+        "thread_id": "01a17aa3-8d77-7d03-9b1b-a3446d256076",
+        "trace_found": true,
+        "trace_sha256": "ba3f015645360ad1f6c38d62e683f2506eaf8d634d3d549e3805082350167995",
+        "metadata": {
+          "id": "01a17aa3-8d77-7d03-9b1b-a3446d256076",
+          "parent_thread_id": "01a17aa1-f8f5-7453-b85d-6f82b7e46b35",
+          "agent_role": "independent-reviewer",
+          "agent_path": "/root/c1_independent_review",
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trials\\C1-v2-1-environment-retry1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": {
+            "subagent": {
+              "thread_spawn": {
+                "parent_thread_id": "01a17aa1-f8f5-7453-b85d-6f82b7e46b35",
+                "depth": 1,
+                "agent_path": "/root/c1_independent_review",
+                "agent_nickname": "Laplace",
+                "agent_role": "independent-reviewer"
+              }
+            }
+          }
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 1647923,
+          "cached_input_tokens": 1569536,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 11821,
+          "reasoning_output_tokens": 2249,
+          "total_tokens": 1659744
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-26T23:59:28.806Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      }
+    ],
+    "coverage_complete": true,
+    "all_agents_total_tokens": 3928905,
+    "limitation": "No token inference; missing child telemetry or unmatched spawn makes total null. Provider counters retained verbatim."
+  },
+  "timing": {
+    "started_at": "2026-10-26T23:53:17.567453+00:00",
+    "model_terminal_at": "2026-10-27T00:00:29.045Z",
+    "wall_to_model_terminal_seconds": 431.477547,
+    "cli_wall_seconds": 432.4239404,
+    "active_seconds": null
+  },
+  "after": {
+    "head": "e77a10753f5e70c2f93cdfd3a9bcb3c486fbbad9",
+    "branch": "codex/harness-v2-trial",
+    "status_hash": "4110c272e86d9c5a6e300e19bff2e58fd27a6cdcb957e82b621b1cfd7f9481c3",
+    "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_diff_hash": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+    "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "files": {
+      "apps/client/src/components/SongSearchModalView.tsx": "2c00d443f3c934c53838eee3deac08f0b89659f9186f7cdc47393d089a4c67b0"
+    },
+    "fingerprint": "ce8163fa3c760f37ce0189fa72044c6a46b805b59526510c6b70829c79cc77a1"
+  },
+  "untracked_files": {},
+  "tracked_patch_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+  "raw_capture": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\runs\\C1-v2-1-environment-retry1-attempt0\\events.jsonl",
+  "raw_capture_sha256": "354883db2777935397cbc0ebe795208f55bf4dc65046e4892e5d25cbe8d3ceb1",
+  "cost_scope": "CLI parent and linked children only. Shared preparation/comparison adjudication costs are separate and not fully measured."
+}

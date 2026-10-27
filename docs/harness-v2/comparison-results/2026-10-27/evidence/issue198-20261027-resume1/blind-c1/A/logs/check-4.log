@@ -1,0 +1,4 @@
+
+> infinitas-arena@1.4.0 lint
+> eslint "apps/**/*.{ts,tsx}" "packages/**/*.{ts,tsx}" --max-warnings 0
+

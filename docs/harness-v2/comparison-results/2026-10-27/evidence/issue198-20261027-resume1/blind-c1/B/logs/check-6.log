@@ -1,0 +1,410 @@
+
+> @infinitas/client@1.4.0 test
+> tsx --test src/dev/visual-scenarios.test.ts src/features/room/picking-countdown-display.test.tsx src/features/room/picking-countdown.test.ts src/features/room/presentation-shared.test.ts src/features/room/quick-chat.test.ts src/features/room/round-phase.test.ts src/pages/auto-match-waiting-count-polling.test.ts src/services/match-history-overlay.test.ts src/services/spectator-client.test.ts src/services/worker-api-client.test.ts
+
+TAP version 13
+# Subtest: match history window fixture covers ARENA and BPL cards
+ok 1 - match history window fixture covers ARENA and BPL cards
+  ---
+  duration_ms: 5.9413
+  type: 'test'
+  ...
+# Subtest: cut-in visual scenarios are listed
+ok 2 - cut-in visual scenarios are listed
+  ---
+  duration_ms: 0.2249
+  type: 'test'
+  ...
+# Subtest: bpl cut-in scenario exposes own pick presentation metadata
+ok 3 - bpl cut-in scenario exposes own pick presentation metadata
+  ---
+  duration_ms: 2.4754
+  type: 'test'
+  ...
+# Subtest: arena cut-in scenario exposes own pick presentation metadata
+ok 4 - arena cut-in scenario exposes own pick presentation metadata
+  ---
+  duration_ms: 0.4562
+  type: 'test'
+  ...
+# Subtest: chart lookup by exact pick chart key resolves cut-in charts
+ok 5 - chart lookup by exact pick chart key resolves cut-in charts
+  ---
+  duration_ms: 0.4674
+  type: 'test'
+  ...
+# Subtest: SongSearchModalView renders a null authoritative countdown as unavailable
+ok 6 - SongSearchModalView renders a null authoritative countdown as unavailable
+  ---
+  duration_ms: 15.8557
+  type: 'test'
+  ...
+# Subtest: RoomArena selection display renders a null picking countdown as unavailable
+ok 7 - RoomArena selection display renders a null picking countdown as unavailable
+  ---
+  duration_ms: 9.0981
+  type: 'test'
+  ...
+# Subtest: getAuthoritativePickingCountdownSeconds derives the same countdown from the same deadline
+ok 8 - getAuthoritativePickingCountdownSeconds derives the same countdown from the same deadline
+  ---
+  duration_ms: 1.0226
+  type: 'test'
+  ...
+# Subtest: getAuthoritativePickingCountdownSeconds does not synthesize a fallback countdown
+ok 9 - getAuthoritativePickingCountdownSeconds does not synthesize a fallback countdown
+  ---
+  duration_ms: 0.1425
+  type: 'test'
+  ...
+# Subtest: getAuthoritativePickingCountdownSeconds clamps expired deadlines to zero
+ok 10 - getAuthoritativePickingCountdownSeconds clamps expired deadlines to zero
+  ---
+  duration_ms: 0.1614
+  type: 'test'
+  ...
+# Subtest: getAuthoritativePickingCountdownSeconds keeps PLAYING music select duration separate
+ok 11 - getAuthoritativePickingCountdownSeconds keeps PLAYING music select duration separate
+  ---
+  duration_ms: 0.1372
+  type: 'test'
+  ...
+# Subtest: maskJoinCode preserves length
+ok 12 - maskJoinCode preserves length
+  ---
+  duration_ms: 1.2456
+  type: 'test'
+  ...
+# Subtest: formatCountdown renders placeholder for null
+ok 13 - formatCountdown renders placeholder for null
+  ---
+  duration_ms: 0.1951
+  type: 'test'
+  ...
+# Subtest: formatCountdown renders mm:ss
+ok 14 - formatCountdown renders mm:ss
+  ---
+  duration_ms: 0.1426
+  type: 'test'
+  ...
+# Subtest: formatOrdinal handles ordinal suffixes
+ok 15 - formatOrdinal handles ordinal suffixes
+  ---
+  duration_ms: 0.1785
+  type: 'test'
+  ...
+# Subtest: formatRankLabel supports null ranks
+ok 16 - formatRankLabel supports null ranks
+  ---
+  duration_ms: 0.2323
+  type: 'test'
+  ...
+# Subtest: difficulty presentation helpers share a single canonical mapping
+ok 17 - difficulty presentation helpers share a single canonical mapping
+  ---
+  duration_ms: 1.3107
+  type: 'test'
+  ...
+# Subtest: normalizeRoomPlayerStatus falls back to UNCONFIRMED
+ok 18 - normalizeRoomPlayerStatus falls back to UNCONFIRMED
+  ---
+  duration_ms: 0.2023
+  type: 'test'
+  ...
+# Subtest: buildPresentationPlayerMaps derives status and metrics together
+ok 19 - buildPresentationPlayerMaps derives status and metrics together
+  ---
+  duration_ms: 0.3058
+  type: 'test'
+  ...
+# Subtest: quick chat categories keep kana-order tabs
+ok 20 - quick chat categories keep kana-order tabs
+  ---
+  duration_ms: 2.2104
+  type: 'test'
+  ...
+# Subtest: quick chat composition deletes one phrase block and enforces joined 20 character limit
+ok 21 - quick chat composition deletes one phrase block and enforces joined 20 character limit
+  ---
+  duration_ms: 0.4559
+  type: 'test'
+  ...
+# Subtest: quick chat snapshot reader returns bounded authoritative messages and visible bubbles
+ok 22 - quick chat snapshot reader returns bounded authoritative messages and visible bubbles
+  ---
+  duration_ms: 0.6562
+  type: 'test'
+  ...
+# Subtest: resolvePlayingRoundPresentation keeps inter-round result visible before the lead-in boundary
+ok 23 - resolvePlayingRoundPresentation keeps inter-round result visible before the lead-in boundary
+  ---
+  duration_ms: 3.9014
+  type: 'test'
+  ...
+# Subtest: resolvePlayingRoundPresentation does not show result before the expected lead-in window
+ok 24 - resolvePlayingRoundPresentation does not show result before the expected lead-in window
+  ---
+  duration_ms: 0.2562
+  type: 'test'
+  ...
+# Subtest: resolvePlayingRoundPresentation switches to MUSIC_SELECT at the lead-in boundary
+ok 25 - resolvePlayingRoundPresentation switches to MUSIC_SELECT at the lead-in boundary
+  ---
+  duration_ms: 0.3486
+  type: 'test'
+  ...
+# Subtest: resolvePlayingRoundPresentation does not keep result visible until IN_PLAY timing
+ok 26 - resolvePlayingRoundPresentation does not keep result visible until IN_PLAY timing
+  ---
+  duration_ms: 0.576
+  type: 'test'
+  ...
+# Subtest: resolvePlayingRoundPresentation keeps Round Result timing on corrected server time when local clock is behind
+ok 27 - resolvePlayingRoundPresentation keeps Round Result timing on corrected server time when local clock is behind
+  ---
+  duration_ms: 0.3776
+  type: 'test'
+  ...
+# Subtest: resolvePlayingRoundPresentation does not overstay Round Result when local clock is ahead
+ok 28 - resolvePlayingRoundPresentation does not overstay Round Result when local clock is ahead
+  ---
+  duration_ms: 0.2061
+  type: 'test'
+  ...
+# Subtest: resolvePlayingRoundPresentation keeps MUSIC SELECT timing on corrected server time when local clock is behind
+ok 29 - resolvePlayingRoundPresentation keeps MUSIC SELECT timing on corrected server time when local clock is behind
+  ---
+  duration_ms: 0.3975
+  type: 'test'
+  ...
+# Subtest: resolvePlayingRoundPresentation keeps PLAY START timing on corrected server time when local clock is ahead
+ok 30 - resolvePlayingRoundPresentation keeps PLAY START timing on corrected server time when local clock is ahead
+  ---
+  duration_ms: 0.202
+  type: 'test'
+  ...
+# Subtest: canApplyWaitingCountPollResult returns true for active request
+ok 31 - canApplyWaitingCountPollResult returns true for active request
+  ---
+  duration_ms: 1.276
+  type: 'test'
+  ...
+# Subtest: canApplyWaitingCountPollResult returns false for stale request
+ok 32 - canApplyWaitingCountPollResult returns false for stale request
+  ---
+  duration_ms: 0.1851
+  type: 'test'
+  ...
+# Subtest: resolveWaitingCountPollValue keeps fetched value for active request
+ok 33 - resolveWaitingCountPollValue keeps fetched value for active request
+  ---
+  duration_ms: 0.1586
+  type: 'test'
+  ...
+# Subtest: resolveWaitingCountPollValue applies fallback null for active request
+ok 34 - resolveWaitingCountPollValue applies fallback null for active request
+  ---
+  duration_ms: 0.1041
+  type: 'test'
+  ...
+# Subtest: resolveWaitingCountPollValue ignores disposed request
+ok 35 - resolveWaitingCountPollValue ignores disposed request
+  ---
+  duration_ms: 0.2625
+  type: 'test'
+  ...
+# Subtest: selectActiveMatchHistory displays only the latest mode and caps it at three matches
+ok 36 - selectActiveMatchHistory displays only the latest mode and caps it at three matches
+  ---
+  duration_ms: 2.3073
+  type: 'test'
+  ...
+# Subtest: selectActiveMatchHistory prefers active mode when another mode completed later
+ok 37 - selectActiveMatchHistory prefers active mode when another mode completed later
+  ---
+  duration_ms: 0.4349
+  type: 'test'
+  ...
+# Subtest: normalizeMatchHistoryMode treats BPL4 as BPL history
+ok 38 - normalizeMatchHistoryMode treats BPL4 as BPL history
+  ---
+  duration_ms: 0.1406
+  type: 'test'
+  ...
+# Subtest: selectActiveMatchHistory aggregates ARENA ranks and points for the active mode
+ok 39 - selectActiveMatchHistory aggregates ARENA ranks and points for the active mode
+  ---
+  duration_ms: 0.2971
+  type: 'test'
+  ...
+# Subtest: loadMatchHistoryDocument accepts current v1
+ok 40 - loadMatchHistoryDocument accepts current v1
+  ---
+  duration_ms: 0.4658
+  type: 'test'
+  ...
+# Subtest: createEmptyMatchHistory creates the v1 document persisted by start and reset
+ok 41 - createEmptyMatchHistory creates the v1 document persisted by start and reset
+  ---
+  duration_ms: 0.2856
+  type: 'test'
+  ...
+# Subtest: loadMatchHistoryDocument migrates the immediately previous unversioned shape to v1
+ok 42 - loadMatchHistoryDocument migrates the immediately previous unversioned shape to v1
+  ---
+  duration_ms: 0.2698
+  type: 'test'
+  ...
+# Subtest: loadMatchHistoryDocument warns and falls back for unsupported schema versions
+ok 43 - loadMatchHistoryDocument warns and falls back for unsupported schema versions
+  ---
+  duration_ms: 2.8117
+  type: 'test'
+  ...
+# Subtest: loadMatchHistoryDocument warns and falls back for malformed documents
+ok 44 - loadMatchHistoryDocument warns and falls back for malformed documents
+  ---
+  duration_ms: 0.4586
+  type: 'test'
+  ...
+# Subtest: loadMatchHistoryDocument rejects out-of-range ARENA ranks
+ok 45 - loadMatchHistoryDocument rejects out-of-range ARENA ranks
+  ---
+  duration_ms: 0.5924
+  type: 'test'
+  ...
+# Subtest: manual reset marks current archive matches as processed so they are not reinserted
+ok 46 - manual reset marks current archive matches as processed so they are not reinserted
+  ---
+  duration_ms: 0.2386
+  type: 'test'
+  ...
+# Subtest: buildSpectatorJoinMessage sends spectator payload without player fields
+ok 47 - buildSpectatorJoinMessage sends spectator payload without player fields
+  ---
+  duration_ms: 1.8313
+  type: 'test'
+  ...
+# Subtest: buildSpectatorJoinMessage omits empty join code
+ok 48 - buildSpectatorJoinMessage omits empty join code
+  ---
+  duration_ms: 0.3818
+  type: 'test'
+  ...
+# Subtest: buildSpectatorStateGetMessage sends an empty state refresh payload
+ok 49 - buildSpectatorStateGetMessage sends an empty state refresh payload
+  ---
+  duration_ms: 1.067
+  type: 'test'
+  ...
+# Subtest: buildSpectatorWebSocketUrl maps http and https API URLs to ws URLs
+ok 50 - buildSpectatorWebSocketUrl maps http and https API URLs to ws URLs
+  ---
+  duration_ms: 0.5235
+  type: 'test'
+  ...
+# Subtest: rankCurrentPlayers ranks only PLAYED confirmations and leaves sentinel statuses unranked
+ok 51 - rankCurrentPlayers ranks only PLAYED confirmations and leaves sentinel statuses unranked
+  ---
+  duration_ms: 1.1926
+  type: 'test'
+  ...
+# Subtest: rankCurrentPlayers preserves retained results while using live player metadata by player id
+ok 52 - rankCurrentPlayers preserves retained results while using live player metadata by player id
+  ---
+  duration_ms: 0.4274
+  type: 'test'
+  ...
+# Subtest: getSpectatorConfirmationLabel visibly distinguishes skipped and timed out confirmations
+ok 53 - getSpectatorConfirmationLabel visibly distinguishes skipped and timed out confirmations
+  ---
+  duration_ms: 0.2716
+  type: 'test'
+  ...
+# Subtest: getSpectatorRoundDisplay uses frozen round title and level with expected-key fallback
+ok 54 - getSpectatorRoundDisplay uses frozen round title and level with expected-key fallback
+  ---
+  duration_ms: 0.3466
+  type: 'test'
+  ...
+# Subtest: resolveRetainedSpectatorSnapshot keeps completed round until next round receives a confirmation
+ok 55 - resolveRetainedSpectatorSnapshot keeps completed round until next round receives a confirmation
+  ---
+  duration_ms: 0.3764
+  type: 'test'
+  ...
+# Subtest: resolveRetainedSpectatorSnapshot clears retained result at authoritative lobby boundary
+ok 56 - resolveRetainedSpectatorSnapshot clears retained result at authoritative lobby boundary
+  ---
+  duration_ms: 0.3764
+  type: 'test'
+  ...
+# Subtest: resolveRetainedSpectatorSnapshot clears old final result when auto-rematch changes match id
+ok 57 - resolveRetainedSpectatorSnapshot clears old final result when auto-rematch changes match id
+  ---
+  duration_ms: 0.2386
+  type: 'test'
+  ...
+# Subtest: applySpectatorSnapshotTransition retains and releases results for STATE_SNAPSHOT-equivalent updates
+ok 58 - applySpectatorSnapshotTransition retains and releases results for STATE_SNAPSHOT-equivalent updates
+  ---
+  duration_ms: 0.2045
+  type: 'test'
+  ...
+# Subtest: resetSpectatorSnapshotState clears live and retained snapshots for reconnect
+ok 59 - resetSpectatorSnapshotState clears live and retained snapshots for reconnect
+  ---
+  duration_ms: 0.2982
+  type: 'test'
+  ...
+# Subtest: upsertFinalResultHistory deduplicates by match id
+ok 60 - upsertFinalResultHistory deduplicates by match id
+  ---
+  duration_ms: 0.3419
+  type: 'test'
+  ...
+# Subtest: rankFinalPlayers gives tied BPL round wins the same competition rank
+ok 61 - rankFinalPlayers gives tied BPL round wins the same competition rank
+  ---
+  duration_ms: 0.455
+  type: 'test'
+  ...
+# Subtest: rankFinalPlayers preserves ARENA tie-break order and shared ranks
+ok 62 - rankFinalPlayers preserves ARENA tie-break order and shared ranks
+  ---
+  duration_ms: 12.4632
+  type: 'test'
+  ...
+# Subtest: rankFinalPlayers skips ARENA EX SCORE tie-break when any tied player lacks it
+ok 63 - rankFinalPlayers skips ARENA EX SCORE tie-break when any tied player lacks it
+  ---
+  duration_ms: 0.2773
+  type: 'test'
+  ...
+# Subtest: rankFinalPlayers skips ARENA timestamp tie-break when any remaining tied player lacks it
+ok 64 - rankFinalPlayers skips ARENA timestamp tie-break when any remaining tied player lacks it
+  ---
+  duration_ms: 0.2965
+  type: 'test'
+  ...
+# Subtest: getMatchmakingWaitingCount builds waiting-count query from mode/play_style/win_metric
+ok 65 - getMatchmakingWaitingCount builds waiting-count query from mode/play_style/win_metric
+  ---
+  duration_ms: 36.7941
+  type: 'test'
+  ...
+# Subtest: getMatchmakingWaitingCount rejects empty base URL
+ok 66 - getMatchmakingWaitingCount rejects empty base URL
+  ---
+  duration_ms: 0.9141
+  type: 'test'
+  ...
+1..66
+# tests 66
+# suites 0
+# pass 66
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1636.1985

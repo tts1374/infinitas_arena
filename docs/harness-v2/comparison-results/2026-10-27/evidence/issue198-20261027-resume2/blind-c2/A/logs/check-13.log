@@ -1,0 +1,5 @@
+
+> infinitas-arena@1.4.0 check:design-contracts
+> node ./scripts/check-design-contracts.mjs
+
+V2 design contract check passed (10 product assertions + screen/source/v2 norms).

@@ -1,0 +1,6 @@
+あなたは新しい独立Codex比較executorです。root AGENTS.mdと.tmp/comparison/input.jsonを読み、そこに固定されたGoal/AC/禁止事項に従い、実装・検証・必要な独立監査まで行ってください。
+独立したこのrepo内の合成変更だけを許可します。既存ハーネスの作業規則に従い、必要artifactはtasksまたは.tmpへ保存可能です。製品scopeは仕様記載の最小限。依存/lockfile/CI/製品規約/許可/比較条件は変更禁止。
+commit/push/PR/merge/Issue write/deploy/release/cleanup、秘密の収集、他のrepo/runtime/processへの操作は禁止。wrangler deploy --dry-runのみ検証用bundleとして許可します。ローカルサーバは127.0.0.1の割当portで、自分が起動したprocessだけを使い停止してください。既存run-local-e2e.ps1は既存listener再利用と可視窓があるためそのまま起動禁止です。
+実際に必要なSubagentは起動し、IDと担当を保存。C2/C3は実装非担当の契約/挙動レビュー必須。shared writerは明示一人、同scope writer競合なし。子のmodelはgpt-6.1-sol、effortはハーネスのrole既定を使用し記録。
+共通検証コマンドはinput.json、追加testは標準membership/型面を確認し必要なものを明示実行。全試行のcommand/exit/logを.tmp/evidenceへ保存。browser helperは.tmp/comparison/browser_fixture.mjsで、node helper --root . --output .tmp/evidence/visual （--prepare-only は設置のみ）。基点referenceは.tmp/comparison/reference。未実施のnative/source/DO restartやbrowserをPASSにしないこと。
+wall上限120分。完成時または環境/品質のblocking時には.tmp/evidence/executor.jsonへAC/Qごとのpass/fail/unprovenと証拠、独立review/finding disposition、実spawn、再試行、残リスクを保存し、日本語でCOMPLETE/BLOCKED/ESCALATIONを返す。実証不能のACはunprovenとし、完全合格を偽装しないでください。
