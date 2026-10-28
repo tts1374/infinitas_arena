@@ -1,0 +1,42 @@
+[
+  {
+    "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\experiment-hold.json",
+    "sha256": "ff900fa05fc7ad6af5be900b63601456ce64775e106fd4d5f52427a2a2c0632a",
+    "hold": {
+      "at": "2026-10-27T06:38:23.110976+00:00",
+      "status": "BLOCKED",
+      "reason": "C2-F1/F2 and C2-S1/S2; P decision sessions finished, C3 and repetitions not started",
+      "next": "Reproduction and runtime output prevention, symmetric new conditions/revision, preserve all failures and consumed retry ledger; never remove hold to silently reuse old conditions"
+    }
+  },
+  {
+    "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\experiment-hold.json",
+    "sha256": "a7104b08cb7875302bc80f35aea0ef2f7b3f1131a8aba42a05a3798446db46d2",
+    "hold": {
+      "at": "2026-10-27T06:38:23.111741+00:00",
+      "status": "BLOCKED",
+      "reason": "C2-F1/F2 and C2-S1/S2; P decision sessions finished, C3 and repetitions not started",
+      "next": "Reproduction and runtime output prevention, symmetric new conditions/revision, preserve all failures and consumed retry ledger; never remove hold to silently reuse old conditions"
+    }
+  },
+  {
+    "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\experiment-hold.json",
+    "sha256": "7c1e742e891a70843d2cb75abe86f16c1c3467c433383f30d8431b736f625578",
+    "hold": {
+      "at": "2026-10-27T06:38:23.112166+00:00",
+      "status": "BLOCKED",
+      "reason": "C2-F1/F2 and C2-S1/S2; P decision sessions finished, C3 and repetitions not started",
+      "next": "Reproduction and runtime output prevention, symmetric new conditions/revision, preserve all failures and consumed retry ledger; never remove hold to silently reuse old conditions"
+    }
+  },
+  {
+    "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\experiment-hold.json",
+    "sha256": "e6c9612e50db9335e3f3ed045be9d946a5a45f500e3243490fe2a250fe7511ee",
+    "hold": {
+      "at": "2026-10-27T06:38:23.112543+00:00",
+      "status": "BLOCKED",
+      "reason": "C2-F1/F2 and C2-S1/S2; P decision sessions finished, C3 and repetitions not started",
+      "next": "Reproduction and runtime output prevention, symmetric new conditions/revision, preserve all failures and consumed retry ledger; never remove hold to silently reuse old conditions"
+    }
+  }
+]

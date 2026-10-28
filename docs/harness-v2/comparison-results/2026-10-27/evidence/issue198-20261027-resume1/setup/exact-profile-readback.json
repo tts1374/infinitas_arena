@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-26T23:57:13.069884+00:00",
+  "method": "codex debug prompt-input with exact runtime profile/overrides; no model request",
+  "invocation_sha256": "517c3530a85c322c4d3bbe6d86a80fb14c0fa8931179153060bc4d6106e4c443",
+  "profile_sha256": "da518fd30d12b9d39c56c24a32360db6ce4f8ee70ba127fb733c99776b320ee6",
+  "project_config_sha256": "4730451f38cf0cf673fae13f8b8fa0ec5cf7f1c6e67fd9c221625b78ecf81207",
+  "observed_concurrency_slots_including_parent": 4,
+  "expected_child_limit": 3,
+  "project_config_active": true,
+  "declared_model": "gpt-6.1-sol",
+  "declared_subagent_model": "gpt-6.1-sol",
+  "prompt_sha256": "aa676db4731f1d98064a6f07a877884c56b976e2300ce43bb4f74381f442f422",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "project_skill_names": [
+    "submit-work",
+    "verify-change"
+  ],
+  "limitation": "Exact-profile resolved prompt and unchanged config hash. Actual model/effort/custom role use is separately checked in run trace. Raw prompt is not exported."
+}

@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-27T06:39:07.712653+00:00",
+  "inventory_files": 334,
+  "published_hash_mismatches": [],
+  "source_hash_mismatches": [],
+  "raw_histories_published": 0,
+  "known_runtime_value_occurrences": [],
+  "scan_scope_files": 365,
+  "scan_limit": "Exact known runtime value only, not arbitrary secret detection; values never written to this report",
+  "json_parse_errors": [],
+  "bom_paths": [],
+  "crlf_paths": [],
+  "raw_source_sha256": "c48beb3d054f6ad147b18faabeeca42f00e043ad76412503a2965567f562da07"
+}

@@ -1,0 +1,8 @@
+
+> infinitas-arena@1.4.0 typecheck:client
+> npm --workspace @infinitas/client run typecheck
+
+
+> @infinitas/client@1.4.0 typecheck
+> tsc --noEmit -p tsconfig.json
+

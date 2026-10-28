@@ -1,0 +1,2343 @@
+{
+  "scope": "Inputs, manifests, selected validation and independent audit packets. Raw CLI/session histories are deliberately not published.",
+  "files": [
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-a\\protected-before.json",
+      "path": "issue198-20261026-a/protected-before.json",
+      "source_sha256": "941e8adb7c05fd615598397b62363f340c0bf6314ac3c92830b97edfea345697",
+      "published_sha256": "941e8adb7c05fd615598397b62363f340c0bf6314ac3c92830b97edfea345697",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-a\\schedule.json",
+      "path": "issue198-20261026-a/schedule.json",
+      "source_sha256": "011c1380090197e5a206d83ac0263e610667375f07f7e77d2fdcefa192d8e24a",
+      "published_sha256": "011c1380090197e5a206d83ac0263e610667375f07f7e77d2fdcefa192d8e24a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-a\\inputs\\C1.json",
+      "path": "issue198-20261026-a/inputs/C1.json",
+      "source_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "published_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-a\\inputs\\C2.json",
+      "path": "issue198-20261026-a/inputs/C2.json",
+      "source_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "published_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-a\\inputs\\C3.json",
+      "path": "issue198-20261026-a/inputs/C3.json",
+      "source_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "published_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-a\\inputs\\prompt.txt",
+      "path": "issue198-20261026-a/inputs/prompt.txt",
+      "source_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "published_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-a\\inputs\\requirements.md",
+      "path": "issue198-20261026-a/inputs/requirements.md",
+      "source_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "published_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\ignored-input-attestation.json",
+      "path": "issue198-20261026-b/ignored-input-attestation.json",
+      "source_sha256": "82025e38485a849e839a4153a1527137ecbb9a644f17c2101ccef677b6db8512",
+      "published_sha256": "82025e38485a849e839a4153a1527137ecbb9a644f17c2101ccef677b6db8512",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\manifest.json",
+      "path": "issue198-20261026-b/manifest.json",
+      "source_sha256": "0d9922a149bc8da5e4c69cbc8906d65c19ffb3a5627b30e09b974c76f0180099",
+      "published_sha256": "0d9922a149bc8da5e4c69cbc8906d65c19ffb3a5627b30e09b974c76f0180099",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\preflight.json",
+      "path": "issue198-20261026-b/preflight.json",
+      "source_sha256": "094cdcedf005f587a4cf0bd7331eb83da96570d691708a5416d6c5468958299b",
+      "published_sha256": "094cdcedf005f587a4cf0bd7331eb83da96570d691708a5416d6c5468958299b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\protected-before.json",
+      "path": "issue198-20261026-b/protected-before.json",
+      "source_sha256": "941e8adb7c05fd615598397b62363f340c0bf6314ac3c92830b97edfea345697",
+      "published_sha256": "941e8adb7c05fd615598397b62363f340c0bf6314ac3c92830b97edfea345697",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\ready.json",
+      "path": "issue198-20261026-b/ready.json",
+      "source_sha256": "c9fc8dc7c2ae9cd2513955a9a58f7d0184a83d38f40dd35d6ae36d7d7935ac3e",
+      "published_sha256": "c9fc8dc7c2ae9cd2513955a9a58f7d0184a83d38f40dd35d6ae36d7d7935ac3e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\schedule.json",
+      "path": "issue198-20261026-b/schedule.json",
+      "source_sha256": "011c1380090197e5a206d83ac0263e610667375f07f7e77d2fdcefa192d8e24a",
+      "published_sha256": "011c1380090197e5a206d83ac0263e610667375f07f7e77d2fdcefa192d8e24a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\inputs\\C1.json",
+      "path": "issue198-20261026-b/inputs/C1.json",
+      "source_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "published_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\inputs\\C2.json",
+      "path": "issue198-20261026-b/inputs/C2.json",
+      "source_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "published_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\inputs\\C3.json",
+      "path": "issue198-20261026-b/inputs/C3.json",
+      "source_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "published_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\inputs\\probes-scoring.json",
+      "path": "issue198-20261026-b/inputs/probes-scoring.json",
+      "source_sha256": "7a28107cd839f312f5eb728188dcd7ee5dd4288e8068c0d3893b6a17e4542843",
+      "published_sha256": "7a28107cd839f312f5eb728188dcd7ee5dd4288e8068c0d3893b6a17e4542843",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\inputs\\probes.json",
+      "path": "issue198-20261026-b/inputs/probes.json",
+      "source_sha256": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+      "published_sha256": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\inputs\\prompt.txt",
+      "path": "issue198-20261026-b/inputs/prompt.txt",
+      "source_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "published_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\inputs\\requirements.md",
+      "path": "issue198-20261026-b/inputs/requirements.md",
+      "source_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "published_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trial-records\\C1-legacy-1.json",
+      "path": "issue198-20261026-b/trial-records/C1-legacy-1.json",
+      "source_sha256": "d77f39fe3987c297fb0e95bf0d9036b20f71e70102eb4cc7e91d7265a09b0356",
+      "published_sha256": "d77f39fe3987c297fb0e95bf0d9036b20f71e70102eb4cc7e91d7265a09b0356",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trial-records\\C1-v2-1.json",
+      "path": "issue198-20261026-b/trial-records/C1-v2-1.json",
+      "source_sha256": "3260da7d2623295ad114a9dd0fdf04c30dfd6779856c35747c385e0001e8a875",
+      "published_sha256": "3260da7d2623295ad114a9dd0fdf04c30dfd6779856c35747c385e0001e8a875",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trial-records\\C2-legacy-1.json",
+      "path": "issue198-20261026-b/trial-records/C2-legacy-1.json",
+      "source_sha256": "eb482db378dbcdb9270954f1959abdff0be05c019e31f2aade35435a8499df3f",
+      "published_sha256": "eb482db378dbcdb9270954f1959abdff0be05c019e31f2aade35435a8499df3f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trial-records\\C2-v2-1.json",
+      "path": "issue198-20261026-b/trial-records/C2-v2-1.json",
+      "source_sha256": "7b5135a5fef4f8d7939fbba2d415ded597987f83c76942fea088ca1d361273d9",
+      "published_sha256": "7b5135a5fef4f8d7939fbba2d415ded597987f83c76942fea088ca1d361273d9",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trial-records\\C3-legacy-1.json",
+      "path": "issue198-20261026-b/trial-records/C3-legacy-1.json",
+      "source_sha256": "fb3d6bb0082a70a573803f99fee0db326ef42788de55cfb66b463b8dd8d21346",
+      "published_sha256": "fb3d6bb0082a70a573803f99fee0db326ef42788de55cfb66b463b8dd8d21346",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trial-records\\C3-v2-1.json",
+      "path": "issue198-20261026-b/trial-records/C3-v2-1.json",
+      "source_sha256": "4604d024bcc956cc31d5d64770f89c557e49c764a51e2f555fb9668bf084bf8e",
+      "published_sha256": "4604d024bcc956cc31d5d64770f89c557e49c764a51e2f555fb9668bf084bf8e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trial-records\\P-legacy.json",
+      "path": "issue198-20261026-b/trial-records/P-legacy.json",
+      "source_sha256": "dd7d684527f4be3f61c188259257797cba1c846498dfe27fdd0bd009088e213a",
+      "published_sha256": "dd7d684527f4be3f61c188259257797cba1c846498dfe27fdd0bd009088e213a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trial-records\\P-v2.json",
+      "path": "issue198-20261026-b/trial-records/P-v2.json",
+      "source_sha256": "cf048c24cace68556c26f8e6f55d88f636f5ec1609e2711cea34b214ff1e95ee",
+      "published_sha256": "cf048c24cace68556c26f8e6f55d88f636f5ec1609e2711cea34b214ff1e95ee",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\seeds\\C1-legacy-1.patch",
+      "path": "issue198-20261026-b/seeds/C1-legacy-1.patch",
+      "source_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "published_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\seeds\\C1-v2-1.patch",
+      "path": "issue198-20261026-b/seeds/C1-v2-1.patch",
+      "source_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "published_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\seeds\\C2-legacy-1.patch",
+      "path": "issue198-20261026-b/seeds/C2-legacy-1.patch",
+      "source_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "published_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\seeds\\C2-v2-1.patch",
+      "path": "issue198-20261026-b/seeds/C2-v2-1.patch",
+      "source_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "published_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\seeds\\C3-legacy-1.patch",
+      "path": "issue198-20261026-b/seeds/C3-legacy-1.patch",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\seeds\\C3-v2-1.patch",
+      "path": "issue198-20261026-b/seeds/C3-v2-1.patch",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\setup\\readback-final\\C1-legacy-1.json",
+      "path": "issue198-20261026-b/setup/readback-final/C1-legacy-1.json",
+      "source_sha256": "922ce48f859fef2fc2a542b1b60163f1526dfc56d49e737eec193994c72e3ae0",
+      "published_sha256": "922ce48f859fef2fc2a542b1b60163f1526dfc56d49e737eec193994c72e3ae0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\setup\\readback-final\\C1-v2-1.json",
+      "path": "issue198-20261026-b/setup/readback-final/C1-v2-1.json",
+      "source_sha256": "31cca9b43c067adea1daa2c8a4a448f05768bf2b207b63b54b4d90df29fa26f3",
+      "published_sha256": "31cca9b43c067adea1daa2c8a4a448f05768bf2b207b63b54b4d90df29fa26f3",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\setup\\readback-final\\C2-legacy-1.json",
+      "path": "issue198-20261026-b/setup/readback-final/C2-legacy-1.json",
+      "source_sha256": "5a25cad527acd4a94b31ae6c2eb286e41145680b3076552e75912c9a3bee1823",
+      "published_sha256": "5a25cad527acd4a94b31ae6c2eb286e41145680b3076552e75912c9a3bee1823",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\setup\\readback-final\\C2-v2-1.json",
+      "path": "issue198-20261026-b/setup/readback-final/C2-v2-1.json",
+      "source_sha256": "3d5bf9389f16f45b0354fdb73d0ce89ccd78e3de93a961819145264e1642fe1f",
+      "published_sha256": "3d5bf9389f16f45b0354fdb73d0ce89ccd78e3de93a961819145264e1642fe1f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\setup\\readback-final\\C3-legacy-1.json",
+      "path": "issue198-20261026-b/setup/readback-final/C3-legacy-1.json",
+      "source_sha256": "5cd15504f2ce0c7188125aeec2571f92fd48dc7f8943d79ee94a2ee7b4f5db75",
+      "published_sha256": "5cd15504f2ce0c7188125aeec2571f92fd48dc7f8943d79ee94a2ee7b4f5db75",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\setup\\readback-final\\C3-v2-1.json",
+      "path": "issue198-20261026-b/setup/readback-final/C3-v2-1.json",
+      "source_sha256": "b8bb8162447550fa431af1a0c53116c6ca62dc907e956465c5fd7c9ca10288c0",
+      "published_sha256": "b8bb8162447550fa431af1a0c53116c6ca62dc907e956465c5fd7c9ca10288c0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\setup\\readback-final\\P-legacy.json",
+      "path": "issue198-20261026-b/setup/readback-final/P-legacy.json",
+      "source_sha256": "b167b82f4b744cfd5d718a503fafd8a16c466720d20c27456edaac0f2ae7c4bf",
+      "published_sha256": "b167b82f4b744cfd5d718a503fafd8a16c466720d20c27456edaac0f2ae7c4bf",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\setup\\readback-final\\P-v2.json",
+      "path": "issue198-20261026-b/setup/readback-final/P-v2.json",
+      "source_sha256": "9431ceeca51620ca0e8f17d3bb76b85de22fe63448a28eaf98d0afe70525392b",
+      "published_sha256": "9431ceeca51620ca0e8f17d3bb76b85de22fe63448a28eaf98d0afe70525392b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\runs\\C1-legacy-1-attempt0\\interruption.json",
+      "path": "issue198-20261026-b/runs/C1-legacy-1-attempt0/interruption.json",
+      "source_sha256": "b849270336207d00f10192102c64bbb0086f13f6c147cf8d7a387f06c571a0f8",
+      "published_sha256": "b849270336207d00f10192102c64bbb0086f13f6c147cf8d7a387f06c571a0f8",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\runs\\C1-legacy-1-attempt0\\recovered-evidence.json",
+      "path": "issue198-20261026-b/runs/C1-legacy-1-attempt0/recovered-evidence.json",
+      "source_sha256": "ded3be6540791b44d1f0d2acc231f67e7ae9a063e387e73c0a88f75df8af1d42",
+      "published_sha256": "ded3be6540791b44d1f0d2acc231f67e7ae9a063e387e73c0a88f75df8af1d42",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\runs\\C1-legacy-1-attempt0\\recovered-final.patch",
+      "path": "issue198-20261026-b/runs/C1-legacy-1-attempt0/recovered-final.patch",
+      "source_sha256": "62c4c229129ba4de427888193cbb667bc878a0f136e69cc6853ca0fe5ab86fe3",
+      "published_sha256": "62c4c229129ba4de427888193cbb667bc878a0f136e69cc6853ca0fe5ab86fe3",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\runs\\C1-legacy-1-attempt0\\terminal-timing.json",
+      "path": "issue198-20261026-b/runs/C1-legacy-1-attempt0/terminal-timing.json",
+      "source_sha256": "cb546a927a029837c01a331544d5208131159f8527a393b052f59b90d701044e",
+      "published_sha256": "cb546a927a029837c01a331544d5208131159f8527a393b052f59b90d701044e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\execution-manifest.json",
+      "path": "issue198-20261026-c/execution-manifest.json",
+      "source_sha256": "24b03b4d99de170be358abe9893754e074921432a0bc0908adeac46c836850dc",
+      "published_sha256": "24b03b4d99de170be358abe9893754e074921432a0bc0908adeac46c836850dc",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\ignored-input-attestation.json",
+      "path": "issue198-20261026-c/ignored-input-attestation.json",
+      "source_sha256": "bd2a63c7515802e39ab28bd1dfd38a01642bc14d90e1f5b2cc498d5c40cbc26e",
+      "published_sha256": "bd2a63c7515802e39ab28bd1dfd38a01642bc14d90e1f5b2cc498d5c40cbc26e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\manifest.json",
+      "path": "issue198-20261026-c/manifest.json",
+      "source_sha256": "1c1974287492217adf0ac33915067def8605e43f8648a025c323cbc14f427ce4",
+      "published_sha256": "1c1974287492217adf0ac33915067def8605e43f8648a025c323cbc14f427ce4",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\preflight.json",
+      "path": "issue198-20261026-c/preflight.json",
+      "source_sha256": "f9dbb3e422a4b29b0c8c8e6a5cc08ef9a2d1e268a3326e54630ac0b86121ebaf",
+      "published_sha256": "f9dbb3e422a4b29b0c8c8e6a5cc08ef9a2d1e268a3326e54630ac0b86121ebaf",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\protected-before.json",
+      "path": "issue198-20261026-c/protected-before.json",
+      "source_sha256": "941e8adb7c05fd615598397b62363f340c0bf6314ac3c92830b97edfea345697",
+      "published_sha256": "941e8adb7c05fd615598397b62363f340c0bf6314ac3c92830b97edfea345697",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\protected-final.json",
+      "path": "issue198-20261026-c/protected-final.json",
+      "source_sha256": "5505aa20d599c78cfcc86bebb702d255139d93605d8213f29e28e6cbf25d0b01",
+      "published_sha256": "5505aa20d599c78cfcc86bebb702d255139d93605d8213f29e28e6cbf25d0b01",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\ready.json",
+      "path": "issue198-20261026-c/ready.json",
+      "source_sha256": "2a669325c0ebf1fee011d006e8a3ca62521d14c5d184ea427e18de62fdd96302",
+      "published_sha256": "2a669325c0ebf1fee011d006e8a3ca62521d14c5d184ea427e18de62fdd96302",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\schedule.json",
+      "path": "issue198-20261026-c/schedule.json",
+      "source_sha256": "011c1380090197e5a206d83ac0263e610667375f07f7e77d2fdcefa192d8e24a",
+      "published_sha256": "011c1380090197e5a206d83ac0263e610667375f07f7e77d2fdcefa192d8e24a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\inputs\\C1.json",
+      "path": "issue198-20261026-c/inputs/C1.json",
+      "source_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "published_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\inputs\\C2.json",
+      "path": "issue198-20261026-c/inputs/C2.json",
+      "source_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "published_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\inputs\\C3.json",
+      "path": "issue198-20261026-c/inputs/C3.json",
+      "source_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "published_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\inputs\\probes-scoring.json",
+      "path": "issue198-20261026-c/inputs/probes-scoring.json",
+      "source_sha256": "7a28107cd839f312f5eb728188dcd7ee5dd4288e8068c0d3893b6a17e4542843",
+      "published_sha256": "7a28107cd839f312f5eb728188dcd7ee5dd4288e8068c0d3893b6a17e4542843",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\inputs\\probes.json",
+      "path": "issue198-20261026-c/inputs/probes.json",
+      "source_sha256": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+      "published_sha256": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\inputs\\prompt.txt",
+      "path": "issue198-20261026-c/inputs/prompt.txt",
+      "source_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "published_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\inputs\\requirements.md",
+      "path": "issue198-20261026-c/inputs/requirements.md",
+      "source_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "published_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trial-records\\C1-legacy-1.json",
+      "path": "issue198-20261026-c/trial-records/C1-legacy-1.json",
+      "source_sha256": "063be7e0e06188d6122367fcf313e14ff3304adca89ab7693331bfe21995d8bb",
+      "published_sha256": "063be7e0e06188d6122367fcf313e14ff3304adca89ab7693331bfe21995d8bb",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trial-records\\C1-v2-1.json",
+      "path": "issue198-20261026-c/trial-records/C1-v2-1.json",
+      "source_sha256": "07bc1dd8791f1aa350a6759cec784dbb587f6ab0c695e7bc88945a4437cb8759",
+      "published_sha256": "07bc1dd8791f1aa350a6759cec784dbb587f6ab0c695e7bc88945a4437cb8759",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trial-records\\C2-legacy-1.json",
+      "path": "issue198-20261026-c/trial-records/C2-legacy-1.json",
+      "source_sha256": "290af092a12d3f8ad842e32fd9d7d86c3af9d2db479900e41e653bef9f4f62f1",
+      "published_sha256": "290af092a12d3f8ad842e32fd9d7d86c3af9d2db479900e41e653bef9f4f62f1",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trial-records\\C2-v2-1.json",
+      "path": "issue198-20261026-c/trial-records/C2-v2-1.json",
+      "source_sha256": "fe757247d4bc68ff3edde6382fe007b7daa259b70336cb6b8a0e51074b9b482f",
+      "published_sha256": "fe757247d4bc68ff3edde6382fe007b7daa259b70336cb6b8a0e51074b9b482f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trial-records\\C3-legacy-1.json",
+      "path": "issue198-20261026-c/trial-records/C3-legacy-1.json",
+      "source_sha256": "7a49eccacdbfa14cc26c6fc16514d6f347b906f91126bd1d1a116bed79386488",
+      "published_sha256": "7a49eccacdbfa14cc26c6fc16514d6f347b906f91126bd1d1a116bed79386488",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trial-records\\C3-v2-1.json",
+      "path": "issue198-20261026-c/trial-records/C3-v2-1.json",
+      "source_sha256": "22cce87df5d33379fc27e74d30a31762caf8154638b7a75cf9a3589784ff80b0",
+      "published_sha256": "22cce87df5d33379fc27e74d30a31762caf8154638b7a75cf9a3589784ff80b0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trial-records\\P-legacy.json",
+      "path": "issue198-20261026-c/trial-records/P-legacy.json",
+      "source_sha256": "4121b97940691318e55c030a7f091f9d983cee2329c57ef68e547efc988aece3",
+      "published_sha256": "4121b97940691318e55c030a7f091f9d983cee2329c57ef68e547efc988aece3",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trial-records\\P-v2.json",
+      "path": "issue198-20261026-c/trial-records/P-v2.json",
+      "source_sha256": "09ee8fef20c924d0a5ba2443c2b9cfd8b4700ec5503acd744162a6f5f44e06ad",
+      "published_sha256": "09ee8fef20c924d0a5ba2443c2b9cfd8b4700ec5503acd744162a6f5f44e06ad",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\seeds\\C1-legacy-1.patch",
+      "path": "issue198-20261026-c/seeds/C1-legacy-1.patch",
+      "source_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "published_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\seeds\\C1-v2-1.patch",
+      "path": "issue198-20261026-c/seeds/C1-v2-1.patch",
+      "source_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "published_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\seeds\\C2-legacy-1.patch",
+      "path": "issue198-20261026-c/seeds/C2-legacy-1.patch",
+      "source_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "published_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\seeds\\C2-v2-1.patch",
+      "path": "issue198-20261026-c/seeds/C2-v2-1.patch",
+      "source_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "published_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\seeds\\C3-legacy-1.patch",
+      "path": "issue198-20261026-c/seeds/C3-legacy-1.patch",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\seeds\\C3-v2-1.patch",
+      "path": "issue198-20261026-c/seeds/C3-v2-1.patch",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\setup\\readback-final\\C1-legacy-1.json",
+      "path": "issue198-20261026-c/setup/readback-final/C1-legacy-1.json",
+      "source_sha256": "839ee7619f99f1b74de98999aecc1ef364334117701d8ee219e1ba20ea5e7806",
+      "published_sha256": "839ee7619f99f1b74de98999aecc1ef364334117701d8ee219e1ba20ea5e7806",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\setup\\readback-final\\C1-v2-1.json",
+      "path": "issue198-20261026-c/setup/readback-final/C1-v2-1.json",
+      "source_sha256": "51219328b4eea906e318aec87bd8b789dabd8e29c3ec78209dd8a47afe6819de",
+      "published_sha256": "51219328b4eea906e318aec87bd8b789dabd8e29c3ec78209dd8a47afe6819de",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\setup\\readback-final\\C2-legacy-1.json",
+      "path": "issue198-20261026-c/setup/readback-final/C2-legacy-1.json",
+      "source_sha256": "b37f4936021cfcafe4a85342f830f154cd2814167e5e53dd57f28e6041edb51c",
+      "published_sha256": "b37f4936021cfcafe4a85342f830f154cd2814167e5e53dd57f28e6041edb51c",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\setup\\readback-final\\C2-v2-1.json",
+      "path": "issue198-20261026-c/setup/readback-final/C2-v2-1.json",
+      "source_sha256": "533e29373b742a8f4a98ffc1e2e4fec28c202badd1c1d69841152f6eb994034e",
+      "published_sha256": "533e29373b742a8f4a98ffc1e2e4fec28c202badd1c1d69841152f6eb994034e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\setup\\readback-final\\C3-legacy-1.json",
+      "path": "issue198-20261026-c/setup/readback-final/C3-legacy-1.json",
+      "source_sha256": "276bbba3738a4d332da34bf9ec4b183a94ca7f556b027912f8bb66ec4e104209",
+      "published_sha256": "276bbba3738a4d332da34bf9ec4b183a94ca7f556b027912f8bb66ec4e104209",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\setup\\readback-final\\C3-v2-1.json",
+      "path": "issue198-20261026-c/setup/readback-final/C3-v2-1.json",
+      "source_sha256": "9d902355faf2f9611b165acf4ad87dcb2a927f09bfaea3ded9e3f809d25be517",
+      "published_sha256": "9d902355faf2f9611b165acf4ad87dcb2a927f09bfaea3ded9e3f809d25be517",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\setup\\readback-final\\P-legacy.json",
+      "path": "issue198-20261026-c/setup/readback-final/P-legacy.json",
+      "source_sha256": "2896fdf3a293c9a5fdc7adc1fc803c64f3a92e80ba2b2e52056af0f78fda292b",
+      "published_sha256": "2896fdf3a293c9a5fdc7adc1fc803c64f3a92e80ba2b2e52056af0f78fda292b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\setup\\readback-final\\P-v2.json",
+      "path": "issue198-20261026-c/setup/readback-final/P-v2.json",
+      "source_sha256": "f8aaf2860045a6df7a6a8e035b082ecd0176c7adaa3038f3dc27016caff21f88",
+      "published_sha256": "f8aaf2860045a6df7a6a8e035b082ecd0176c7adaa3038f3dc27016caff21f88",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\setup\\exact-profile-readback-C1-legacy.json",
+      "path": "issue198-20261026-c/setup/exact-profile-readback-C1-legacy.json",
+      "source_sha256": "070ed6806a233233a8df91ab737abd9e4c03c3d694bfd38f7b115f1fe6558428",
+      "published_sha256": "070ed6806a233233a8df91ab737abd9e4c03c3d694bfd38f7b115f1fe6558428",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\environment-retry-ledger\\C1-v2.json",
+      "path": "issue198-20261026-c/environment-retry-ledger/C1-v2.json",
+      "source_sha256": "ab952e5eda29948a488b0d6702b00cc189f20bf18ce52ea4c5b157e7ad46dc90",
+      "published_sha256": "ab952e5eda29948a488b0d6702b00cc189f20bf18ce52ea4c5b157e7ad46dc90",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\environment-retry-ledger\\C2-legacy.json",
+      "path": "issue198-20261026-c/environment-retry-ledger/C2-legacy.json",
+      "source_sha256": "6377cf2ba7cf2c2b752f88b115e6ed702bef8962c281f7704c9b9e1342718c06",
+      "published_sha256": "6377cf2ba7cf2c2b752f88b115e6ed702bef8962c281f7704c9b9e1342718c06",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C1-legacy-1\\evidence.json",
+      "path": "issue198-20261026-c/archives/C1-legacy-1/evidence.json",
+      "source_sha256": "c5d55a61e2dad6e41643fe361b37f46c0e8550acc05c5f5cb1be9fecd2b25e98",
+      "published_sha256": "c5d55a61e2dad6e41643fe361b37f46c0e8550acc05c5f5cb1be9fecd2b25e98",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C1-v2-1-interrupted\\evidence.json",
+      "path": "issue198-20261026-c/archives/C1-v2-1-interrupted/evidence.json",
+      "source_sha256": "009f276cde1a6968576e23e2d4a673b5a185599c8c9675593d73bd21d552a643",
+      "published_sha256": "009f276cde1a6968576e23e2d4a673b5a185599c8c9675593d73bd21d552a643",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C1-v2-1-interrupted-final-counter-policy\\evidence.json",
+      "path": "issue198-20261026-c/archives/C1-v2-1-interrupted-final-counter-policy/evidence.json",
+      "source_sha256": "bc6fa28dac9f5095f2852dfb380b648187fae86095a20f75a3e8d4188784a594",
+      "published_sha256": "bc6fa28dac9f5095f2852dfb380b648187fae86095a20f75a3e8d4188784a594",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C2-legacy-1-interrupted\\evidence.json",
+      "path": "issue198-20261026-c/archives/C2-legacy-1-interrupted/evidence.json",
+      "source_sha256": "f02b3971d5880ce78ab18952863a1b3d718b2fa56be0f938466ee6fd34b47133",
+      "published_sha256": "f02b3971d5880ce78ab18952863a1b3d718b2fa56be0f938466ee6fd34b47133",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C2-v2-1\\evidence.json",
+      "path": "issue198-20261026-c/archives/C2-v2-1/evidence.json",
+      "source_sha256": "1a693901a8d5ba4233f617eae23b3794ca238ebb22b0c5baee55257f7f2f87f0",
+      "published_sha256": "1a693901a8d5ba4233f617eae23b3794ca238ebb22b0c5baee55257f7f2f87f0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C2-v2-1\\execution-audit.json",
+      "path": "issue198-20261026-c/archives/C2-v2-1/execution-audit.json",
+      "source_sha256": "4261a035f7a54fbeebe60a791778367f4278423dfb9a07c226eb3faac1cd3fef",
+      "published_sha256": "4261a035f7a54fbeebe60a791778367f4278423dfb9a07c226eb3faac1cd3fef",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C2-v2-1\\internal-reviews.json",
+      "path": "issue198-20261026-c/archives/C2-v2-1/internal-reviews.json",
+      "source_sha256": "234832cc591f8f00071b98caecdcfceb495e30c658057418cce06b742d65d5d7",
+      "published_sha256": "234832cc591f8f00071b98caecdcfceb495e30c658057418cce06b742d65d5d7",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-legacy\\decisions.json",
+      "path": "issue198-20261026-c/archives/P-legacy/decisions.json",
+      "source_sha256": "89876431ff54af0a69243ecd2ed9e468d9324442a16b77f902b2a07e47074f44",
+      "published_sha256": "89876431ff54af0a69243ecd2ed9e468d9324442a16b77f902b2a07e47074f44",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-legacy\\evidence.json",
+      "path": "issue198-20261026-c/archives/P-legacy/evidence.json",
+      "source_sha256": "6b1b4dc2068d024b886e997be892378c73e1db686856fa66e11a1769e07d6b1a",
+      "published_sha256": "6b1b4dc2068d024b886e997be892378c73e1db686856fa66e11a1769e07d6b1a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-legacy\\execution-audit-v2.json",
+      "path": "issue198-20261026-c/archives/P-legacy/execution-audit-v2.json",
+      "source_sha256": "8ad38b5258cc6f60c23287a24ef055f108a10f299453352d38a073e606f25f2c",
+      "published_sha256": "8ad38b5258cc6f60c23287a24ef055f108a10f299453352d38a073e606f25f2c",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-legacy\\execution-audit.json",
+      "path": "issue198-20261026-c/archives/P-legacy/execution-audit.json",
+      "source_sha256": "d194e638b3729615782cfbb7e9b59aed3ff4ee805f316a8260663dd7e67c25d9",
+      "published_sha256": "d194e638b3729615782cfbb7e9b59aed3ff4ee805f316a8260663dd7e67c25d9",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-legacy\\scoring.json",
+      "path": "issue198-20261026-c/archives/P-legacy/scoring.json",
+      "source_sha256": "60d2f09d107db56655c3dc15b90c46d0fa402063b37500423bc2c02e56402288",
+      "published_sha256": "60d2f09d107db56655c3dc15b90c46d0fa402063b37500423bc2c02e56402288",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-legacy\\secret-fixture-scan.json",
+      "path": "issue198-20261026-c/archives/P-legacy/secret-fixture-scan.json",
+      "source_sha256": "90e1e75ed9bcb01f84b2d6602a1f973cfd6ce4a7b8bb20fd34bb26503f483cb8",
+      "published_sha256": "90e1e75ed9bcb01f84b2d6602a1f973cfd6ce4a7b8bb20fd34bb26503f483cb8",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-v2\\decisions.json",
+      "path": "issue198-20261026-c/archives/P-v2/decisions.json",
+      "source_sha256": "26ab5c8b17ed7c0242446acf7138b83864e36b013532636f7434e2ddf18d0f9c",
+      "published_sha256": "26ab5c8b17ed7c0242446acf7138b83864e36b013532636f7434e2ddf18d0f9c",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-v2\\evidence.json",
+      "path": "issue198-20261026-c/archives/P-v2/evidence.json",
+      "source_sha256": "dc4da6134c0a258c6f16ccfd7064fc024a7eac7e5cba97482c573badca706631",
+      "published_sha256": "dc4da6134c0a258c6f16ccfd7064fc024a7eac7e5cba97482c573badca706631",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-v2\\execution-audit-v2.json",
+      "path": "issue198-20261026-c/archives/P-v2/execution-audit-v2.json",
+      "source_sha256": "a0a87909e6e94365ac8c397d2ed2aaacf84b8422022be36da58cbaefea6cff25",
+      "published_sha256": "a0a87909e6e94365ac8c397d2ed2aaacf84b8422022be36da58cbaefea6cff25",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-v2\\execution-audit.json",
+      "path": "issue198-20261026-c/archives/P-v2/execution-audit.json",
+      "source_sha256": "b4ccb2bb7d93b444620cb7ad6ce64e492d0da52ad609f169ad71247041742187",
+      "published_sha256": "b4ccb2bb7d93b444620cb7ad6ce64e492d0da52ad609f169ad71247041742187",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-v2\\scoring.json",
+      "path": "issue198-20261026-c/archives/P-v2/scoring.json",
+      "source_sha256": "60d2f09d107db56655c3dc15b90c46d0fa402063b37500423bc2c02e56402288",
+      "published_sha256": "60d2f09d107db56655c3dc15b90c46d0fa402063b37500423bc2c02e56402288",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-v2\\secret-fixture-scan.json",
+      "path": "issue198-20261026-c/archives/P-v2/secret-fixture-scan.json",
+      "source_sha256": "02107ca11374c92ced709a002cc82fcb46103a33c7cc27edc02035b647f5d8c8",
+      "published_sha256": "02107ca11374c92ced709a002cc82fcb46103a33c7cc27edc02035b647f5d8c8",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C1-legacy-1\\tracked.patch",
+      "path": "issue198-20261026-c/archives/C1-legacy-1/tracked.patch",
+      "source_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "published_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C1-v2-1-interrupted\\tracked.patch",
+      "path": "issue198-20261026-c/archives/C1-v2-1-interrupted/tracked.patch",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C1-v2-1-interrupted-final-counter-policy\\tracked.patch",
+      "path": "issue198-20261026-c/archives/C1-v2-1-interrupted-final-counter-policy/tracked.patch",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C2-legacy-1-interrupted\\tracked.patch",
+      "path": "issue198-20261026-c/archives/C2-legacy-1-interrupted/tracked.patch",
+      "source_sha256": "28745c1cc4eff4dba5030a828c991a4ebac679af76d184c85f3e4805bb940c62",
+      "published_sha256": "28745c1cc4eff4dba5030a828c991a4ebac679af76d184c85f3e4805bb940c62",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\C2-v2-1\\tracked.patch",
+      "path": "issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "source_sha256": "3b35bf9ec141cc586a6982e6c741bdf42f8750b272c67c123702fe0d3f7e69d0",
+      "published_sha256": "3b35bf9ec141cc586a6982e6c741bdf42f8750b272c67c123702fe0d3f7e69d0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-legacy\\tracked.patch",
+      "path": "issue198-20261026-c/archives/P-legacy/tracked.patch",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\archives\\P-v2\\tracked.patch",
+      "path": "issue198-20261026-c/archives/P-v2/tracked.patch",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C2-legacy-1-attempt0\\profile-readback.json",
+      "path": "issue198-20261026-c/runs/C2-legacy-1-attempt0/profile-readback.json",
+      "source_sha256": "bfa4a49372f75e7722d015c752a6d3caf8ebf48c393f7f8b6eed92ca3a716725",
+      "published_sha256": "bfa4a49372f75e7722d015c752a6d3caf8ebf48c393f7f8b6eed92ca3a716725",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C2-v2-1-attempt0\\profile-readback.json",
+      "path": "issue198-20261026-c/runs/C2-v2-1-attempt0/profile-readback.json",
+      "source_sha256": "ac7ba875b0cadf6bb3cf20b5b89cbab500fb10b96a213bfd9f57fda0ac833933",
+      "published_sha256": "ac7ba875b0cadf6bb3cf20b5b89cbab500fb10b96a213bfd9f57fda0ac833933",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\P-legacy-attempt0\\profile-readback.json",
+      "path": "issue198-20261026-c/runs/P-legacy-attempt0/profile-readback.json",
+      "source_sha256": "1ce6f01f23a6e713e3860039035d1bd4740fbd46a8e6015a1671cd1fea5e0233",
+      "published_sha256": "1ce6f01f23a6e713e3860039035d1bd4740fbd46a8e6015a1671cd1fea5e0233",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\P-v2-attempt0\\profile-readback.json",
+      "path": "issue198-20261026-c/runs/P-v2-attempt0/profile-readback.json",
+      "source_sha256": "3f24b7fa4cec3ee5e153ffe6d33fb22bd5922a5679ec806bb0f7c6f3e51aea11",
+      "published_sha256": "3f24b7fa4cec3ee5e153ffe6d33fb22bd5922a5679ec806bb0f7c6f3e51aea11",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C1-legacy-1-attempt0\\input-check.json",
+      "path": "issue198-20261026-c/runs/C1-legacy-1-attempt0/input-check.json",
+      "source_sha256": "02653db389c5b35038e0e5cac926fadad3cb6f8a34d35d6fa6c4c47e84143476",
+      "published_sha256": "02653db389c5b35038e0e5cac926fadad3cb6f8a34d35d6fa6c4c47e84143476",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C1-v2-1-attempt0\\input-check.json",
+      "path": "issue198-20261026-c/runs/C1-v2-1-attempt0/input-check.json",
+      "source_sha256": "a5d95a6cf577c2d293a7fc4396790380fcf24fad428ac763540d35c0daf36a4f",
+      "published_sha256": "a5d95a6cf577c2d293a7fc4396790380fcf24fad428ac763540d35c0daf36a4f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C2-legacy-1-attempt0\\input-check.json",
+      "path": "issue198-20261026-c/runs/C2-legacy-1-attempt0/input-check.json",
+      "source_sha256": "01b5ab05a8722991fe11cacf5188464e95df2a6b36d549bcc8c1d34e1b6e7d37",
+      "published_sha256": "01b5ab05a8722991fe11cacf5188464e95df2a6b36d549bcc8c1d34e1b6e7d37",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C2-v2-1-attempt0\\input-check.json",
+      "path": "issue198-20261026-c/runs/C2-v2-1-attempt0/input-check.json",
+      "source_sha256": "f8822cf945f13e08ca90348d671e8c457f92e9176e8f481d38bf0611722a4a21",
+      "published_sha256": "f8822cf945f13e08ca90348d671e8c457f92e9176e8f481d38bf0611722a4a21",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\P-legacy-attempt0\\input-check.json",
+      "path": "issue198-20261026-c/runs/P-legacy-attempt0/input-check.json",
+      "source_sha256": "7e3168a73230f5db574a4f3beaf5b4fd2ceb2f56897ddee99550b490405552df",
+      "published_sha256": "7e3168a73230f5db574a4f3beaf5b4fd2ceb2f56897ddee99550b490405552df",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\P-v2-attempt0\\input-check.json",
+      "path": "issue198-20261026-c/runs/P-v2-attempt0/input-check.json",
+      "source_sha256": "d1be419627db84b960a470752af638c6543a5fbbf467679a3829c679b1ea2d29",
+      "published_sha256": "d1be419627db84b960a470752af638c6543a5fbbf467679a3829c679b1ea2d29",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1-key.json",
+      "path": "issue198-20261027-resume1/blind-c1-key.json",
+      "source_sha256": "92aa62f9faba686ff40dbcbf18d791ed2ec461fb3e6c8734ebbb6a0c3ba4ecd7",
+      "published_sha256": "92aa62f9faba686ff40dbcbf18d791ed2ec461fb3e6c8734ebbb6a0c3ba4ecd7",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\c1-blind-final-verdict.json",
+      "path": "issue198-20261027-resume1/c1-blind-final-verdict.json",
+      "source_sha256": "67c97beb5e2804097a4319db9324cc9ca4a38f4682b37c1b0f93ab2510cdff52",
+      "published_sha256": "67c97beb5e2804097a4319db9324cc9ca4a38f4682b37c1b0f93ab2510cdff52",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\c1-blind-initial-verdict.json",
+      "path": "issue198-20261027-resume1/c1-blind-initial-verdict.json",
+      "source_sha256": "0ca0368e28211673f278451492381f8cb3b852cbc7b723d34030844fa5c2537c",
+      "published_sha256": "0ca0368e28211673f278451492381f8cb3b852cbc7b723d34030844fa5c2537c",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\execution-manifest.json",
+      "path": "issue198-20261027-resume1/execution-manifest.json",
+      "source_sha256": "448d0a96b165cdcf8c63bebafdbba742f59fdab0a33e6079f68cf321a48ffb6c",
+      "published_sha256": "448d0a96b165cdcf8c63bebafdbba742f59fdab0a33e6079f68cf321a48ffb6c",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\ignored-input-attestation.json",
+      "path": "issue198-20261027-resume1/ignored-input-attestation.json",
+      "source_sha256": "de872d4ce381a10c7b362ab3958cb50811579bfb59a9c4fedaf7475776879295",
+      "published_sha256": "de872d4ce381a10c7b362ab3958cb50811579bfb59a9c4fedaf7475776879295",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\preflight.json",
+      "path": "issue198-20261027-resume1/preflight.json",
+      "source_sha256": "f9dbb3e422a4b29b0c8c8e6a5cc08ef9a2d1e268a3326e54630ac0b86121ebaf",
+      "published_sha256": "f9dbb3e422a4b29b0c8c8e6a5cc08ef9a2d1e268a3326e54630ac0b86121ebaf",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\ready.json",
+      "path": "issue198-20261027-resume1/ready.json",
+      "source_sha256": "6566dd7f4a84705120cdb85866bd6ed09fb7d9e28ff041203b23a3c319f83859",
+      "published_sha256": "6566dd7f4a84705120cdb85866bd6ed09fb7d9e28ff041203b23a3c319f83859",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\schedule.json",
+      "path": "issue198-20261027-resume1/schedule.json",
+      "source_sha256": "cb7682bc0470bde0341e76104acede85111c4ec86d72caa366b982a931ccc9b1",
+      "published_sha256": "cb7682bc0470bde0341e76104acede85111c4ec86d72caa366b982a931ccc9b1",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\inputs\\C1.json",
+      "path": "issue198-20261027-resume1/inputs/C1.json",
+      "source_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "published_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\inputs\\C2.json",
+      "path": "issue198-20261027-resume1/inputs/C2.json",
+      "source_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "published_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\inputs\\C3.json",
+      "path": "issue198-20261027-resume1/inputs/C3.json",
+      "source_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "published_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\inputs\\probes-scoring.json",
+      "path": "issue198-20261027-resume1/inputs/probes-scoring.json",
+      "source_sha256": "7a28107cd839f312f5eb728188dcd7ee5dd4288e8068c0d3893b6a17e4542843",
+      "published_sha256": "7a28107cd839f312f5eb728188dcd7ee5dd4288e8068c0d3893b6a17e4542843",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\inputs\\probes.json",
+      "path": "issue198-20261027-resume1/inputs/probes.json",
+      "source_sha256": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+      "published_sha256": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\inputs\\prompt.txt",
+      "path": "issue198-20261027-resume1/inputs/prompt.txt",
+      "source_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "published_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\inputs\\requirements.md",
+      "path": "issue198-20261027-resume1/inputs/requirements.md",
+      "source_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "published_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\trial-records\\C1-v2-1-environment-retry1.json",
+      "path": "issue198-20261027-resume1/trial-records/C1-v2-1-environment-retry1.json",
+      "source_sha256": "cacbeaa6136272e3e51a7ccafe749646fb657ba9d983cc5eb1386f10cb20b979",
+      "published_sha256": "cacbeaa6136272e3e51a7ccafe749646fb657ba9d983cc5eb1386f10cb20b979",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\seeds\\C1-v2-1-environment-retry1.patch",
+      "path": "issue198-20261027-resume1/seeds/C1-v2-1-environment-retry1.patch",
+      "source_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "published_sha256": "5094827c141ef0b51fca0e48cf8aef04cc0d8e4456acce6d1baa979f8f19b515",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\setup\\exact-profile-readback.json",
+      "path": "issue198-20261027-resume1/setup/exact-profile-readback.json",
+      "source_sha256": "098c9e28d000013f5034edd48a037925cf930aea6e366aca545eee492a81e262",
+      "published_sha256": "098c9e28d000013f5034edd48a037925cf930aea6e366aca545eee492a81e262",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\setup\\exact-profile-skills-readback.json",
+      "path": "issue198-20261027-resume1/setup/exact-profile-skills-readback.json",
+      "source_sha256": "fed5b238e36ea68c9c0363a33a14cf3fe71ebfef52992393b11c049f2140c155",
+      "published_sha256": "fed5b238e36ea68c9c0363a33a14cf3fe71ebfef52992393b11c049f2140c155",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\archives\\C1-v2-1-environment-retry1\\evidence.json",
+      "path": "issue198-20261027-resume1/archives/C1-v2-1-environment-retry1/evidence.json",
+      "source_sha256": "3558eec203e3490e9e193044fd83ce5187925d80284578d2a5e887c01f7c5b05",
+      "published_sha256": "3558eec203e3490e9e193044fd83ce5187925d80284578d2a5e887c01f7c5b05",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\archives\\C1-v2-1-environment-retry1\\tracked.patch",
+      "path": "issue198-20261027-resume1/archives/C1-v2-1-environment-retry1/tracked.patch",
+      "source_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "published_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\runs\\C1-v2-1-environment-retry1-attempt0\\input-check.json",
+      "path": "issue198-20261027-resume1/runs/C1-v2-1-environment-retry1-attempt0/input-check.json",
+      "source_sha256": "355432b1620535bb330e6986ff56109cfe8e1ed4741d7d71cedf032ce73dfee2",
+      "published_sha256": "355432b1620535bb330e6986ff56109cfe8e1ed4741d7d71cedf032ce73dfee2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\checks.json",
+      "path": "issue198-20261027-resume1/blind-c1/A/checks.json",
+      "source_sha256": "cd95cbd9172eaad5ccab9cf6f230d16346d7b59d41401ce098cd0a3090521a1c",
+      "published_sha256": "cd95cbd9172eaad5ccab9cf6f230d16346d7b59d41401ce098cd0a3090521a1c",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\claims.json",
+      "path": "issue198-20261027-resume1/blind-c1/A/claims.json",
+      "source_sha256": "487aa08a88daf3e60c8c240b37fb024ded6dcfae53de79420ff6791e42dbd7a3",
+      "published_sha256": "487aa08a88daf3e60c8c240b37fb024ded6dcfae53de79420ff6791e42dbd7a3",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\execution-audit.json",
+      "path": "issue198-20261027-resume1/blind-c1/A/execution-audit.json",
+      "source_sha256": "cf801b1babb0f61870ed999867efc668c75a82cdc59297fd4cd083235f766de2",
+      "published_sha256": "cf801b1babb0f61870ed999867efc668c75a82cdc59297fd4cd083235f766de2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-1.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-1.log",
+      "source_sha256": "34f377d47509afd122c635d05f1e42e6f9678d3d30b8436fc24a4f9c5f5c252e",
+      "published_sha256": "34f377d47509afd122c635d05f1e42e6f9678d3d30b8436fc24a4f9c5f5c252e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-10.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-10.log",
+      "source_sha256": "899088a88395a2f5bc97855ac6b3152df4bfffdd8c4187cc5faf3395d3485d7d",
+      "published_sha256": "899088a88395a2f5bc97855ac6b3152df4bfffdd8c4187cc5faf3395d3485d7d",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-11.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-11.log",
+      "source_sha256": "9f7293d42fb5037d64172f2b91577390084d8d00d47d4f01cccb0636e561999f",
+      "published_sha256": "9f7293d42fb5037d64172f2b91577390084d8d00d47d4f01cccb0636e561999f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-12.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-12.log",
+      "source_sha256": "fcb5f3d4f6f29824622abf2621132da8f13ba4249fd748a34e06b8467ecf65d2",
+      "published_sha256": "fcb5f3d4f6f29824622abf2621132da8f13ba4249fd748a34e06b8467ecf65d2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-13.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-13.log",
+      "source_sha256": "676df56526201a226783e357e3c29313d3f33de0e24ef433dbfca46cd70e386a",
+      "published_sha256": "676df56526201a226783e357e3c29313d3f33de0e24ef433dbfca46cd70e386a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-14.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-14.log",
+      "source_sha256": "bca7025727d5f639aae025c41e3ded54437defe108488b01bdfc54eb058563ad",
+      "published_sha256": "bca7025727d5f639aae025c41e3ded54437defe108488b01bdfc54eb058563ad",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-15.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-15.log",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-2.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-2.log",
+      "source_sha256": "c608bf3afc46132bc805151a86b871bd487fef4049f1f12555f7e835a34207c2",
+      "published_sha256": "c608bf3afc46132bc805151a86b871bd487fef4049f1f12555f7e835a34207c2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-3.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-3.log",
+      "source_sha256": "84479e3ab9fe9cf9f39b9f527897cb763d2ae06bee4a4294806bce29adbb84ca",
+      "published_sha256": "84479e3ab9fe9cf9f39b9f527897cb763d2ae06bee4a4294806bce29adbb84ca",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-4.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-4.log",
+      "source_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "published_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-5.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-5.log",
+      "source_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "published_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-6.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-6.log",
+      "source_sha256": "54f39e4054e477a04dccfc78e9bb84e0cc55ab151970c3ab3b91602bee3619d1",
+      "published_sha256": "54f39e4054e477a04dccfc78e9bb84e0cc55ab151970c3ab3b91602bee3619d1",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-7.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-7.log",
+      "source_sha256": "ddb8784fb939219bc05803683c43039d06be0c9d5a8ceee182a50e24f398b75e",
+      "published_sha256": "ddb8784fb939219bc05803683c43039d06be0c9d5a8ceee182a50e24f398b75e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-8.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-8.log",
+      "source_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "published_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\logs\\check-9.log",
+      "path": "issue198-20261027-resume1/blind-c1/A/logs/check-9.log",
+      "source_sha256": "e0dc0af95cfe087e6c788043f0d21b5e798c70926fbf06a1f0e8163f7776e2be",
+      "published_sha256": "e0dc0af95cfe087e6c788043f0d21b5e798c70926fbf06a1f0e8163f7776e2be",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\source\\apps\\client\\src\\components\\SongSearchModalView.tsx",
+      "path": "issue198-20261027-resume1/blind-c1/A/source/apps/client/src/components/SongSearchModalView.tsx",
+      "source_sha256": "2c00d443f3c934c53838eee3deac08f0b89659f9186f7cdc47393d089a4c67b0",
+      "published_sha256": "2c00d443f3c934c53838eee3deac08f0b89659f9186f7cdc47393d089a4c67b0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\source\\apps\\client\\src\\features\\room\\picking-countdown-values-display.test.tsx",
+      "path": "issue198-20261027-resume1/blind-c1/A/source/apps/client/src/features/room/picking-countdown-values-display.test.tsx",
+      "source_sha256": "ec5642a4aaa70c7e3641787177523ee0ef395507930772baac7900cbdc6e6cd4",
+      "published_sha256": "ec5642a4aaa70c7e3641787177523ee0ef395507930772baac7900cbdc6e6cd4",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\tracked.patch",
+      "path": "issue198-20261027-resume1/blind-c1/A/tracked.patch",
+      "source_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "published_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\untracked-files.json",
+      "path": "issue198-20261027-resume1/blind-c1/A/untracked-files.json",
+      "source_sha256": "fbba2e851ff7854373fde4bb02940edea3d39c19f69c8b91322ede6f9cbf947e",
+      "published_sha256": "fbba2e851ff7854373fde4bb02940edea3d39c19f69c8b91322ede6f9cbf947e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-guest-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-guest-0-room.png",
+      "source_sha256": "ddbe6be01767a63e40e94edc869a1eb39fe4fa984114e5aca89bd2ae042cec00",
+      "published_sha256": "ddbe6be01767a63e40e94edc869a1eb39fe4fa984114e5aca89bd2ae042cec00",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-guest-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-guest-0.png",
+      "source_sha256": "dbd424cbcc29d1fa5209d523de9e07ea74619fb1d063f3c33ce5f83429dc977a",
+      "published_sha256": "dbd424cbcc29d1fa5209d523de9e07ea74619fb1d063f3c33ce5f83429dc977a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-guest-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-guest-65-room.png",
+      "source_sha256": "165ae81f081f95377d021cb7800180e0a594380aab4b1fdb950647ee39c163ad",
+      "published_sha256": "165ae81f081f95377d021cb7800180e0a594380aab4b1fdb950647ee39c163ad",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-guest-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-guest-65.png",
+      "source_sha256": "3e53e76a065b1a8b7dc2b4d0d19fa16277dbe183ff6413a2983db482149b81be",
+      "published_sha256": "3e53e76a065b1a8b7dc2b4d0d19fa16277dbe183ff6413a2983db482149b81be",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-guest-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-guest-null-room.png",
+      "source_sha256": "fd47f2d5d91a1fb152668871456a177f109f560534d28ab08b14f0fe2e5b5cba",
+      "published_sha256": "fd47f2d5d91a1fb152668871456a177f109f560534d28ab08b14f0fe2e5b5cba",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-guest-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-guest-null.png",
+      "source_sha256": "177437529d8af3a4f61aec789cdc91c7ec160a1ce338798935571198b6139d8a",
+      "published_sha256": "177437529d8af3a4f61aec789cdc91c7ec160a1ce338798935571198b6139d8a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-host-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-host-0-room.png",
+      "source_sha256": "567185a11871ea3c0befa6d4352b0495ece3b4d14063925a46db2060825d11bf",
+      "published_sha256": "567185a11871ea3c0befa6d4352b0495ece3b4d14063925a46db2060825d11bf",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-host-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-host-0.png",
+      "source_sha256": "beeb789101398d6f1ec1eb5d27cf149bd75b6f38c41a3808c3cbbe90db784284",
+      "published_sha256": "beeb789101398d6f1ec1eb5d27cf149bd75b6f38c41a3808c3cbbe90db784284",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-host-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-host-65-room.png",
+      "source_sha256": "473638dd40b702e57bf2888c07f17bd863180457fc96825991e9ba8f57523f05",
+      "published_sha256": "473638dd40b702e57bf2888c07f17bd863180457fc96825991e9ba8f57523f05",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-host-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-host-65.png",
+      "source_sha256": "aea3faee7f3738b5598f6bf1613b1040ad584e5826b3ee3e772dcd255fd451a7",
+      "published_sha256": "aea3faee7f3738b5598f6bf1613b1040ad584e5826b3ee3e772dcd255fd451a7",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-host-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-host-null-room.png",
+      "source_sha256": "d8e3b0eb1379a78d813c6fea67cc99ec642cdf1a0ba2687714c5b92dba926651",
+      "published_sha256": "d8e3b0eb1379a78d813c6fea67cc99ec642cdf1a0ba2687714c5b92dba926651",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\1024-host-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/1024-host-null.png",
+      "source_sha256": "bfe6ec199b794519d2b7d7aae485cd74da23ba0bbdb466dc3bb1cebb8d30af87",
+      "published_sha256": "bfe6ec199b794519d2b7d7aae485cd74da23ba0bbdb466dc3bb1cebb8d30af87",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-guest-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-guest-0-room.png",
+      "source_sha256": "fe09688428ba09e510667411e30f8d3dfb58b9b64f634cb1f34d66190166e583",
+      "published_sha256": "fe09688428ba09e510667411e30f8d3dfb58b9b64f634cb1f34d66190166e583",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-guest-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-guest-0.png",
+      "source_sha256": "23bb8d3ea915175f8457ff924b9ecdc3f538656c5fc7589d533c393d22ae6920",
+      "published_sha256": "23bb8d3ea915175f8457ff924b9ecdc3f538656c5fc7589d533c393d22ae6920",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-guest-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-guest-65-room.png",
+      "source_sha256": "de0fb341d1cae2f9165135d474bc144815de8cbc5b5bce792b67d7196f79c2d0",
+      "published_sha256": "de0fb341d1cae2f9165135d474bc144815de8cbc5b5bce792b67d7196f79c2d0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-guest-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-guest-65.png",
+      "source_sha256": "487cf828d5f53ba1b0f69ba315fd7cc3f27091dedf8ebb9fc90fad99e4d51f04",
+      "published_sha256": "487cf828d5f53ba1b0f69ba315fd7cc3f27091dedf8ebb9fc90fad99e4d51f04",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-guest-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-guest-null-room.png",
+      "source_sha256": "433220eb7b6a5b76348ee94e28cfc186fd7220419e0a46d01214f740478e5692",
+      "published_sha256": "433220eb7b6a5b76348ee94e28cfc186fd7220419e0a46d01214f740478e5692",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-guest-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-guest-null.png",
+      "source_sha256": "d7f3c09a80f8e8fbc11313b24aaa568461d8fa556f075843f24a62cd801613c3",
+      "published_sha256": "d7f3c09a80f8e8fbc11313b24aaa568461d8fa556f075843f24a62cd801613c3",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-host-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-host-0-room.png",
+      "source_sha256": "292b039cdd550b2d9ff97ca3bf34fc975a79b8eecdc353bbf6e35ea27050e664",
+      "published_sha256": "292b039cdd550b2d9ff97ca3bf34fc975a79b8eecdc353bbf6e35ea27050e664",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-host-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-host-0.png",
+      "source_sha256": "0029ffbaa099e7eecdd80c311cc70889220ecfd6763026414c03c10ba3287abc",
+      "published_sha256": "0029ffbaa099e7eecdd80c311cc70889220ecfd6763026414c03c10ba3287abc",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-host-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-host-65-room.png",
+      "source_sha256": "4e46f29bad01f8d999ee9335261edaecac3416832a22967ff9432ee885f7eed8",
+      "published_sha256": "4e46f29bad01f8d999ee9335261edaecac3416832a22967ff9432ee885f7eed8",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-host-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-host-65.png",
+      "source_sha256": "554da8f9d69c9a08708191dbbe56e842108352911e8d3c5cac59ccc9e7418072",
+      "published_sha256": "554da8f9d69c9a08708191dbbe56e842108352911e8d3c5cac59ccc9e7418072",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-host-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-host-null-room.png",
+      "source_sha256": "50b2200bd65e37b650cc3eabfa13c0020117ab53c0c5d7a6ba55daa31c59100f",
+      "published_sha256": "50b2200bd65e37b650cc3eabfa13c0020117ab53c0c5d7a6ba55daa31c59100f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\320-host-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/320-host-null.png",
+      "source_sha256": "34303fb976f4a78f9442787acbb9bacb4a614015d7f16b17b6d99ea373f3571b",
+      "published_sha256": "34303fb976f4a78f9442787acbb9bacb4a614015d7f16b17b6d99ea373f3571b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\A\\visual\\visual.json",
+      "path": "issue198-20261027-resume1/blind-c1/A/visual/visual.json",
+      "source_sha256": "693ecc887853db89cb53a4f5dd526bc3785ac370daaed4ff24d0c448c8775252",
+      "published_sha256": "693ecc887853db89cb53a4f5dd526bc3785ac370daaed4ff24d0c448c8775252",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\checks.json",
+      "path": "issue198-20261027-resume1/blind-c1/B/checks.json",
+      "source_sha256": "cc30903138566432aead3d24c6d1110ddf3c5b1978b398be9ed00951108b6674",
+      "published_sha256": "cc30903138566432aead3d24c6d1110ddf3c5b1978b398be9ed00951108b6674",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\claims.json",
+      "path": "issue198-20261027-resume1/blind-c1/B/claims.json",
+      "source_sha256": "91d25029d006a13892c45aa523be3f9b1bf6d60eb12ee0fe4b54eabe1c714d41",
+      "published_sha256": "91d25029d006a13892c45aa523be3f9b1bf6d60eb12ee0fe4b54eabe1c714d41",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\execution-audit.json",
+      "path": "issue198-20261027-resume1/blind-c1/B/execution-audit.json",
+      "source_sha256": "9cf7f7681ebe72dd5687f3c65d4980272ac87af866c94a36a9712a9afea697ed",
+      "published_sha256": "9cf7f7681ebe72dd5687f3c65d4980272ac87af866c94a36a9712a9afea697ed",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\logs\\check-1.log",
+      "path": "issue198-20261027-resume1/blind-c1/B/logs/check-1.log",
+      "source_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "published_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\logs\\check-2.log",
+      "path": "issue198-20261027-resume1/blind-c1/B/logs/check-2.log",
+      "source_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "published_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\logs\\check-3.log",
+      "path": "issue198-20261027-resume1/blind-c1/B/logs/check-3.log",
+      "source_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "published_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\logs\\check-4.log",
+      "path": "issue198-20261027-resume1/blind-c1/B/logs/check-4.log",
+      "source_sha256": "7f8bab9ce3252c789e2fe50cb15952ae28166aa69813217afad960aecf1f7f06",
+      "published_sha256": "7f8bab9ce3252c789e2fe50cb15952ae28166aa69813217afad960aecf1f7f06",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\logs\\check-5.log",
+      "path": "issue198-20261027-resume1/blind-c1/B/logs/check-5.log",
+      "source_sha256": "33997313d13433e09049c9060a89fa6683ddfe24ea0aac3a7cecf08846ab8189",
+      "published_sha256": "33997313d13433e09049c9060a89fa6683ddfe24ea0aac3a7cecf08846ab8189",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\logs\\check-6.log",
+      "path": "issue198-20261027-resume1/blind-c1/B/logs/check-6.log",
+      "source_sha256": "90aa6afd9604fb5131f3649746a951d19feab5f9a9e77d0c4e9f008219dfbec6",
+      "published_sha256": "90aa6afd9604fb5131f3649746a951d19feab5f9a9e77d0c4e9f008219dfbec6",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\logs\\check-7.log",
+      "path": "issue198-20261027-resume1/blind-c1/B/logs/check-7.log",
+      "source_sha256": "b86c403232b3cbfca1774abacad3bbe47dbb8be268c35afff8d28be14d78a705",
+      "published_sha256": "b86c403232b3cbfca1774abacad3bbe47dbb8be268c35afff8d28be14d78a705",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\logs\\check-8.log",
+      "path": "issue198-20261027-resume1/blind-c1/B/logs/check-8.log",
+      "source_sha256": "39a0373b6b1af488afd2d200b04446916f8cde7810a3fefe449d197647ec9c25",
+      "published_sha256": "39a0373b6b1af488afd2d200b04446916f8cde7810a3fefe449d197647ec9c25",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\logs\\check-9.log",
+      "path": "issue198-20261027-resume1/blind-c1/B/logs/check-9.log",
+      "source_sha256": "088f6c7365b41c73b304af7874b65acb863d9a7eb6273f78b93326da80f99cee",
+      "published_sha256": "088f6c7365b41c73b304af7874b65acb863d9a7eb6273f78b93326da80f99cee",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\source\\apps\\client\\src\\components\\SongSearchModalView.tsx",
+      "path": "issue198-20261027-resume1/blind-c1/B/source/apps/client/src/components/SongSearchModalView.tsx",
+      "source_sha256": "2c00d443f3c934c53838eee3deac08f0b89659f9186f7cdc47393d089a4c67b0",
+      "published_sha256": "2c00d443f3c934c53838eee3deac08f0b89659f9186f7cdc47393d089a4c67b0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\tracked.patch",
+      "path": "issue198-20261027-resume1/blind-c1/B/tracked.patch",
+      "source_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "published_sha256": "f9dcb768ab9f8d7fe24852dd73e5ad2e68b216f2fe5fbe4160902011d6cbe753",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\untracked-files.json",
+      "path": "issue198-20261027-resume1/blind-c1/B/untracked-files.json",
+      "source_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "published_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-guest-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-guest-0-room.png",
+      "source_sha256": "980b5733ba2e410fa2de110adf4260dd830596f76806ea10b73382452b8290a5",
+      "published_sha256": "980b5733ba2e410fa2de110adf4260dd830596f76806ea10b73382452b8290a5",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-guest-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-guest-0.png",
+      "source_sha256": "96165aeebfb18333494400ebe914840e94beeca91788bd15285f8d13736182c7",
+      "published_sha256": "96165aeebfb18333494400ebe914840e94beeca91788bd15285f8d13736182c7",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-guest-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-guest-65-room.png",
+      "source_sha256": "44fa262f46beb08b226c60b4ca8590ce2a7c0589b1fcf0ecd8ce06eb38114267",
+      "published_sha256": "44fa262f46beb08b226c60b4ca8590ce2a7c0589b1fcf0ecd8ce06eb38114267",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-guest-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-guest-65.png",
+      "source_sha256": "3e53e76a065b1a8b7dc2b4d0d19fa16277dbe183ff6413a2983db482149b81be",
+      "published_sha256": "3e53e76a065b1a8b7dc2b4d0d19fa16277dbe183ff6413a2983db482149b81be",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-guest-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-guest-null-room.png",
+      "source_sha256": "fd47f2d5d91a1fb152668871456a177f109f560534d28ab08b14f0fe2e5b5cba",
+      "published_sha256": "fd47f2d5d91a1fb152668871456a177f109f560534d28ab08b14f0fe2e5b5cba",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-guest-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-guest-null.png",
+      "source_sha256": "177437529d8af3a4f61aec789cdc91c7ec160a1ce338798935571198b6139d8a",
+      "published_sha256": "177437529d8af3a4f61aec789cdc91c7ec160a1ce338798935571198b6139d8a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-host-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-host-0-room.png",
+      "source_sha256": "4cc5b51a1eef20fa1caf9fce41fe35bc6ae8bd7d3107f9abf782cc90315c9f31",
+      "published_sha256": "4cc5b51a1eef20fa1caf9fce41fe35bc6ae8bd7d3107f9abf782cc90315c9f31",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-host-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-host-0.png",
+      "source_sha256": "4233f9215c398973463df7945dcef430e72a58cb64c21f9b3782debf84b4a86e",
+      "published_sha256": "4233f9215c398973463df7945dcef430e72a58cb64c21f9b3782debf84b4a86e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-host-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-host-65-room.png",
+      "source_sha256": "4246a3aaad1c0bd23c02ade31aa40af1a64fa8600407a7d2ab29a07a723cda5c",
+      "published_sha256": "4246a3aaad1c0bd23c02ade31aa40af1a64fa8600407a7d2ab29a07a723cda5c",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-host-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-host-65.png",
+      "source_sha256": "aea3faee7f3738b5598f6bf1613b1040ad584e5826b3ee3e772dcd255fd451a7",
+      "published_sha256": "aea3faee7f3738b5598f6bf1613b1040ad584e5826b3ee3e772dcd255fd451a7",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-host-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-host-null-room.png",
+      "source_sha256": "f88f85f269d8ead94f15d3540928d62cad5cfbc261c179b9544c5cdf7bb99044",
+      "published_sha256": "f88f85f269d8ead94f15d3540928d62cad5cfbc261c179b9544c5cdf7bb99044",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\1024-host-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/1024-host-null.png",
+      "source_sha256": "bfe6ec199b794519d2b7d7aae485cd74da23ba0bbdb466dc3bb1cebb8d30af87",
+      "published_sha256": "bfe6ec199b794519d2b7d7aae485cd74da23ba0bbdb466dc3bb1cebb8d30af87",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-guest-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-guest-0-room.png",
+      "source_sha256": "d91923223a18ae91c7776c6df6784933b132ec45b31144ea77b75d491d6bf6a8",
+      "published_sha256": "d91923223a18ae91c7776c6df6784933b132ec45b31144ea77b75d491d6bf6a8",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-guest-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-guest-0.png",
+      "source_sha256": "23bb8d3ea915175f8457ff924b9ecdc3f538656c5fc7589d533c393d22ae6920",
+      "published_sha256": "23bb8d3ea915175f8457ff924b9ecdc3f538656c5fc7589d533c393d22ae6920",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-guest-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-guest-65-room.png",
+      "source_sha256": "d205f905ea6de23fddbe5cee223d8c2510d8c5dbdec2517c7ad3480055dae706",
+      "published_sha256": "d205f905ea6de23fddbe5cee223d8c2510d8c5dbdec2517c7ad3480055dae706",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-guest-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-guest-65.png",
+      "source_sha256": "487cf828d5f53ba1b0f69ba315fd7cc3f27091dedf8ebb9fc90fad99e4d51f04",
+      "published_sha256": "487cf828d5f53ba1b0f69ba315fd7cc3f27091dedf8ebb9fc90fad99e4d51f04",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-guest-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-guest-null-room.png",
+      "source_sha256": "1b06cd2d8915f8e410f06723227b72bf2507c45057bea10362ed04ca2bd3f3bc",
+      "published_sha256": "1b06cd2d8915f8e410f06723227b72bf2507c45057bea10362ed04ca2bd3f3bc",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-guest-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-guest-null.png",
+      "source_sha256": "d7f3c09a80f8e8fbc11313b24aaa568461d8fa556f075843f24a62cd801613c3",
+      "published_sha256": "d7f3c09a80f8e8fbc11313b24aaa568461d8fa556f075843f24a62cd801613c3",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-host-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-host-0-room.png",
+      "source_sha256": "02819e1d993df2c5f7922ce52eb9fb006c2e47e3fd2c5ddc8ec50fdc3b47243a",
+      "published_sha256": "02819e1d993df2c5f7922ce52eb9fb006c2e47e3fd2c5ddc8ec50fdc3b47243a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-host-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-host-0.png",
+      "source_sha256": "2f04de2bd3c0b7b229925d4e3eea004723e23d63b310a22cc3f0cf822737d3ac",
+      "published_sha256": "2f04de2bd3c0b7b229925d4e3eea004723e23d63b310a22cc3f0cf822737d3ac",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-host-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-host-65-room.png",
+      "source_sha256": "4b0a9b6942a6726660b2731a3034152f8134bcfb382d544d450858d0b6760468",
+      "published_sha256": "4b0a9b6942a6726660b2731a3034152f8134bcfb382d544d450858d0b6760468",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-host-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-host-65.png",
+      "source_sha256": "554da8f9d69c9a08708191dbbe56e842108352911e8d3c5cac59ccc9e7418072",
+      "published_sha256": "554da8f9d69c9a08708191dbbe56e842108352911e8d3c5cac59ccc9e7418072",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-host-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-host-null-room.png",
+      "source_sha256": "df855ac0199c5a7693e575ca7f2eedcf3f544fe9e570be5b065de0b47eb97b47",
+      "published_sha256": "df855ac0199c5a7693e575ca7f2eedcf3f544fe9e570be5b065de0b47eb97b47",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\320-host-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/320-host-null.png",
+      "source_sha256": "34303fb976f4a78f9442787acbb9bacb4a614015d7f16b17b6d99ea373f3571b",
+      "published_sha256": "34303fb976f4a78f9442787acbb9bacb4a614015d7f16b17b6d99ea373f3571b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\B\\visual\\visual.json",
+      "path": "issue198-20261027-resume1/blind-c1/B/visual/visual.json",
+      "source_sha256": "3ab10421691b8e01daacf11dc73e7ca70ba610c86a2b7543d13368f47884b7b3",
+      "published_sha256": "3ab10421691b8e01daacf11dc73e7ca70ba610c86a2b7543d13368f47884b7b3",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\input.json",
+      "path": "issue198-20261027-resume1/blind-c1/input.json",
+      "source_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "published_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\protected-observation.json",
+      "path": "issue198-20261027-resume1/blind-c1/protected-observation.json",
+      "source_sha256": "b0ddad6e3d668a4c6ff8f5b3fcf010ece9d6e355c7be7d84ec8f1d09a4af1403",
+      "published_sha256": "b0ddad6e3d668a4c6ff8f5b3fcf010ece9d6e355c7be7d84ec8f1d09a4af1403",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-guest-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-guest-0-room.png",
+      "source_sha256": "b17b32be49a72de4711871b43d9e8b24ee48312b39b0fc87b4e3d6fd791ef875",
+      "published_sha256": "b17b32be49a72de4711871b43d9e8b24ee48312b39b0fc87b4e3d6fd791ef875",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-guest-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-guest-0.png",
+      "source_sha256": "60f7ca036009a4c7acc9388670492a2eee04461f11ec9111f7df4b141e977d03",
+      "published_sha256": "60f7ca036009a4c7acc9388670492a2eee04461f11ec9111f7df4b141e977d03",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-guest-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-guest-65-room.png",
+      "source_sha256": "6800dd1aa66ab4a0fd658e4d1bb5b694d4646f9038f42fae838f8e21d48763d6",
+      "published_sha256": "6800dd1aa66ab4a0fd658e4d1bb5b694d4646f9038f42fae838f8e21d48763d6",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-guest-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-guest-65.png",
+      "source_sha256": "ce2c3e873abbebd627cf33ed3e4db9672a142d7465592418a97358b80d2f6c85",
+      "published_sha256": "ce2c3e873abbebd627cf33ed3e4db9672a142d7465592418a97358b80d2f6c85",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-guest-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-guest-null-room.png",
+      "source_sha256": "fd47f2d5d91a1fb152668871456a177f109f560534d28ab08b14f0fe2e5b5cba",
+      "published_sha256": "fd47f2d5d91a1fb152668871456a177f109f560534d28ab08b14f0fe2e5b5cba",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-guest-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-guest-null.png",
+      "source_sha256": "177437529d8af3a4f61aec789cdc91c7ec160a1ce338798935571198b6139d8a",
+      "published_sha256": "177437529d8af3a4f61aec789cdc91c7ec160a1ce338798935571198b6139d8a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-host-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-host-0-room.png",
+      "source_sha256": "4cc5b51a1eef20fa1caf9fce41fe35bc6ae8bd7d3107f9abf782cc90315c9f31",
+      "published_sha256": "4cc5b51a1eef20fa1caf9fce41fe35bc6ae8bd7d3107f9abf782cc90315c9f31",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-host-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-host-0.png",
+      "source_sha256": "8b30c19103dc01608c5f5214f2818d8e0c0c2d3561a7255807b459b9d3defd98",
+      "published_sha256": "8b30c19103dc01608c5f5214f2818d8e0c0c2d3561a7255807b459b9d3defd98",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-host-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-host-65-room.png",
+      "source_sha256": "fcf4ae00308687ba7a3641166a061ace36c8275388e91847ad5ee189b8eb5df5",
+      "published_sha256": "fcf4ae00308687ba7a3641166a061ace36c8275388e91847ad5ee189b8eb5df5",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-host-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-host-65.png",
+      "source_sha256": "38e7eb7f30b6ab4f2ddd7630d5caf882a9f7dd7a599c53ffa4eba62e185815ae",
+      "published_sha256": "38e7eb7f30b6ab4f2ddd7630d5caf882a9f7dd7a599c53ffa4eba62e185815ae",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-host-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-host-null-room.png",
+      "source_sha256": "d8e3b0eb1379a78d813c6fea67cc99ec642cdf1a0ba2687714c5b92dba926651",
+      "published_sha256": "d8e3b0eb1379a78d813c6fea67cc99ec642cdf1a0ba2687714c5b92dba926651",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\1024-host-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/1024-host-null.png",
+      "source_sha256": "bfe6ec199b794519d2b7d7aae485cd74da23ba0bbdb466dc3bb1cebb8d30af87",
+      "published_sha256": "bfe6ec199b794519d2b7d7aae485cd74da23ba0bbdb466dc3bb1cebb8d30af87",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-guest-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-guest-0-room.png",
+      "source_sha256": "d91923223a18ae91c7776c6df6784933b132ec45b31144ea77b75d491d6bf6a8",
+      "published_sha256": "d91923223a18ae91c7776c6df6784933b132ec45b31144ea77b75d491d6bf6a8",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-guest-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-guest-0.png",
+      "source_sha256": "cf9ed8b14a4e6f55f20488d05ef41f18aabb843a34fd29a293741fc91d3f9934",
+      "published_sha256": "cf9ed8b14a4e6f55f20488d05ef41f18aabb843a34fd29a293741fc91d3f9934",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-guest-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-guest-65-room.png",
+      "source_sha256": "de0fb341d1cae2f9165135d474bc144815de8cbc5b5bce792b67d7196f79c2d0",
+      "published_sha256": "de0fb341d1cae2f9165135d474bc144815de8cbc5b5bce792b67d7196f79c2d0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-guest-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-guest-65.png",
+      "source_sha256": "34bf3f32a6d85460fdba11ad5e2d419dff709344111d68cf47d1d70983df2d84",
+      "published_sha256": "34bf3f32a6d85460fdba11ad5e2d419dff709344111d68cf47d1d70983df2d84",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-guest-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-guest-null-room.png",
+      "source_sha256": "433220eb7b6a5b76348ee94e28cfc186fd7220419e0a46d01214f740478e5692",
+      "published_sha256": "433220eb7b6a5b76348ee94e28cfc186fd7220419e0a46d01214f740478e5692",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-guest-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-guest-null.png",
+      "source_sha256": "d7f3c09a80f8e8fbc11313b24aaa568461d8fa556f075843f24a62cd801613c3",
+      "published_sha256": "d7f3c09a80f8e8fbc11313b24aaa568461d8fa556f075843f24a62cd801613c3",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-host-0-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-host-0-room.png",
+      "source_sha256": "9e9a94f86ceaecc33a10bd8ca88450738d77b15f040c8cf49ce38f0f2016f4c5",
+      "published_sha256": "9e9a94f86ceaecc33a10bd8ca88450738d77b15f040c8cf49ce38f0f2016f4c5",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-host-0.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-host-0.png",
+      "source_sha256": "841f8c33d6651965c7ff34723d9cb772137cdcf640f000865a180f8512a48509",
+      "published_sha256": "841f8c33d6651965c7ff34723d9cb772137cdcf640f000865a180f8512a48509",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-host-65-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-host-65-room.png",
+      "source_sha256": "4e46f29bad01f8d999ee9335261edaecac3416832a22967ff9432ee885f7eed8",
+      "published_sha256": "4e46f29bad01f8d999ee9335261edaecac3416832a22967ff9432ee885f7eed8",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-host-65.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-host-65.png",
+      "source_sha256": "d1e95340ddc052e23dd3100906ab936468658dacf03d1d1989bfbdbfbbcd1f99",
+      "published_sha256": "d1e95340ddc052e23dd3100906ab936468658dacf03d1d1989bfbdbfbbcd1f99",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-host-null-room.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-host-null-room.png",
+      "source_sha256": "3aacd73e97ea603f5b628532aae7900450f4914beab3750eb9ee2d0a16ba00d4",
+      "published_sha256": "3aacd73e97ea603f5b628532aae7900450f4914beab3750eb9ee2d0a16ba00d4",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\320-host-null.png",
+      "path": "issue198-20261027-resume1/blind-c1/reference/320-host-null.png",
+      "source_sha256": "34303fb976f4a78f9442787acbb9bacb4a614015d7f16b17b6d99ea373f3571b",
+      "published_sha256": "34303fb976f4a78f9442787acbb9bacb4a614015d7f16b17b6d99ea373f3571b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume1\\blind-c1\\reference\\visual.json",
+      "path": "issue198-20261027-resume1/blind-c1/reference/visual.json",
+      "source_sha256": "6f166b86d70af139cee6b042444090227fa579fad9be11b171bb569dd3d2f46b",
+      "published_sha256": "6f166b86d70af139cee6b042444090227fa579fad9be11b171bb569dd3d2f46b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2-key.json",
+      "path": "issue198-20261027-resume2/blind-c2-key.json",
+      "source_sha256": "9d6389242a50945ca9da8cf115b3bb568f562184c0b8ae3273b3d65b0dbb770a",
+      "published_sha256": "9d6389242a50945ca9da8cf115b3bb568f562184c0b8ae3273b3d65b0dbb770a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\execution-manifest.json",
+      "path": "issue198-20261027-resume2/execution-manifest.json",
+      "source_sha256": "de5aff6f0d5f7700ffe73a59639cbed51e0d41bd99412f3e6a9a44ce95a6f316",
+      "published_sha256": "de5aff6f0d5f7700ffe73a59639cbed51e0d41bd99412f3e6a9a44ce95a6f316",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\ignored-input-attestation.json",
+      "path": "issue198-20261027-resume2/ignored-input-attestation.json",
+      "source_sha256": "f8744fb6c5941882902fe175a478f8d69f76795b247f82cbff2bed624adcfa36",
+      "published_sha256": "f8744fb6c5941882902fe175a478f8d69f76795b247f82cbff2bed624adcfa36",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\preflight.json",
+      "path": "issue198-20261027-resume2/preflight.json",
+      "source_sha256": "f9dbb3e422a4b29b0c8c8e6a5cc08ef9a2d1e268a3326e54630ac0b86121ebaf",
+      "published_sha256": "f9dbb3e422a4b29b0c8c8e6a5cc08ef9a2d1e268a3326e54630ac0b86121ebaf",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\ready.json",
+      "path": "issue198-20261027-resume2/ready.json",
+      "source_sha256": "c3697f13d271e6681e64f227f1e0fccc939bb2382537da570c46e596a284fc49",
+      "published_sha256": "c3697f13d271e6681e64f227f1e0fccc939bb2382537da570c46e596a284fc49",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\schedule.json",
+      "path": "issue198-20261027-resume2/schedule.json",
+      "source_sha256": "8de3a109cb48e3bae23de4c0b1ce521e1d5dd4be29dc395af26964b7c5f15e83",
+      "published_sha256": "8de3a109cb48e3bae23de4c0b1ce521e1d5dd4be29dc395af26964b7c5f15e83",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\inputs\\C1.json",
+      "path": "issue198-20261027-resume2/inputs/C1.json",
+      "source_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "published_sha256": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\inputs\\C2.json",
+      "path": "issue198-20261027-resume2/inputs/C2.json",
+      "source_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "published_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\inputs\\C3.json",
+      "path": "issue198-20261027-resume2/inputs/C3.json",
+      "source_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "published_sha256": "e189acd0dfff11ecba8f83ba9dede8dc11768d4c606fa1dab37df38fb000fac5",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\inputs\\probes-scoring.json",
+      "path": "issue198-20261027-resume2/inputs/probes-scoring.json",
+      "source_sha256": "7a28107cd839f312f5eb728188dcd7ee5dd4288e8068c0d3893b6a17e4542843",
+      "published_sha256": "7a28107cd839f312f5eb728188dcd7ee5dd4288e8068c0d3893b6a17e4542843",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\inputs\\probes.json",
+      "path": "issue198-20261027-resume2/inputs/probes.json",
+      "source_sha256": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+      "published_sha256": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\inputs\\prompt.txt",
+      "path": "issue198-20261027-resume2/inputs/prompt.txt",
+      "source_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "published_sha256": "366bbd3dfa114a95ee7df94b29332b575f5523293c8d7ef5efed13677a8474e2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\inputs\\requirements.md",
+      "path": "issue198-20261027-resume2/inputs/requirements.md",
+      "source_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "published_sha256": "83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trial-records\\C2-legacy-1-environment-retry1.json",
+      "path": "issue198-20261027-resume2/trial-records/C2-legacy-1-environment-retry1.json",
+      "source_sha256": "bacb19f7be237cc8e02c8a18e8c05928b75c4c4f7bab4ee652e39173324a466b",
+      "published_sha256": "bacb19f7be237cc8e02c8a18e8c05928b75c4c4f7bab4ee652e39173324a466b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\seeds\\C2-legacy-1-environment-retry1.patch",
+      "path": "issue198-20261027-resume2/seeds/C2-legacy-1-environment-retry1.patch",
+      "source_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "published_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\archives\\C2-legacy-1-environment-retry1\\evidence.json",
+      "path": "issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/evidence.json",
+      "source_sha256": "84837eb7a96fc0f79f6925a8de30693c5e26a9799292441fce6a7a6daacf787a",
+      "published_sha256": "84837eb7a96fc0f79f6925a8de30693c5e26a9799292441fce6a7a6daacf787a",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\archives\\C2-legacy-1-environment-retry1\\execution-audit.json",
+      "path": "issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/execution-audit.json",
+      "source_sha256": "b1abb86be79f6d7483ca939938dd464b76597efef507e276d66d75aac21b67c8",
+      "published_sha256": "b1abb86be79f6d7483ca939938dd464b76597efef507e276d66d75aac21b67c8",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\archives\\C2-legacy-1-environment-retry1\\family-safety-locations.json",
+      "path": "issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/family-safety-locations.json",
+      "source_sha256": "f48275efe920805d02a5c87224ba1b9f48fb3d55e55f26169df0638044627723",
+      "published_sha256": "f48275efe920805d02a5c87224ba1b9f48fb3d55e55f26169df0638044627723",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\archives\\C2-legacy-1-environment-retry1\\internal-reviews.json",
+      "path": "issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/internal-reviews.json",
+      "source_sha256": "4a40625dd7eba474466f5926a7e625b75e97fdb240e049c86d2145a8af33c995",
+      "published_sha256": "4a40625dd7eba474466f5926a7e625b75e97fdb240e049c86d2145a8af33c995",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\archives\\C2-legacy-1-environment-retry1\\safety-event.json",
+      "path": "issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/safety-event.json",
+      "source_sha256": "0592799d60aeaee3a6c29997f9a0dbbecc52946b5f8f81375ffd4aca68ff3aa2",
+      "published_sha256": "0592799d60aeaee3a6c29997f9a0dbbecc52946b5f8f81375ffd4aca68ff3aa2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\archives\\C2-legacy-1-environment-retry1\\tracked.patch",
+      "path": "issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/tracked.patch",
+      "source_sha256": "2ae2915717bf3da23cd46f634e0207de0232fd73ee7531caf015af3b33f40dda",
+      "published_sha256": "2ae2915717bf3da23cd46f634e0207de0232fd73ee7531caf015af3b33f40dda",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\runs\\C2-legacy-1-environment-retry1-attempt0\\profile-readback.json",
+      "path": "issue198-20261027-resume2/runs/C2-legacy-1-environment-retry1-attempt0/profile-readback.json",
+      "source_sha256": "7767870df967c16ee972472d64a31df0999fd962d7280cc76def42651c040197",
+      "published_sha256": "7767870df967c16ee972472d64a31df0999fd962d7280cc76def42651c040197",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\runs\\C2-legacy-1-environment-retry1-attempt0\\input-check.json",
+      "path": "issue198-20261027-resume2/runs/C2-legacy-1-environment-retry1-attempt0/input-check.json",
+      "source_sha256": "2d21af9fd0e3d5e75f2177f1a6aa0950f4f6e0e002233c624906adaf4164deac",
+      "published_sha256": "2d21af9fd0e3d5e75f2177f1a6aa0950f4f6e0e002233c624906adaf4164deac",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\checks.json",
+      "path": "issue198-20261027-resume2/blind-c2/A/checks.json",
+      "source_sha256": "0739ce2ad96a4dd2436c1e57c6478f0ac2a44b49bbb55e50bb8ac456a7ba9713",
+      "published_sha256": "0739ce2ad96a4dd2436c1e57c6478f0ac2a44b49bbb55e50bb8ac456a7ba9713",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\claims.json",
+      "path": "issue198-20261027-resume2/blind-c2/A/claims.json",
+      "source_sha256": "bb0c764bf7b7c537916aaf267d39b8a5a2699b9a0315babe532865ea1bb89e9f",
+      "published_sha256": "bb0c764bf7b7c537916aaf267d39b8a5a2699b9a0315babe532865ea1bb89e9f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-1.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-1.log",
+      "source_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "published_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-10.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-10.log",
+      "source_sha256": "3a134dfa7876bbc7d9c1fb4fc87956c81b13eeaa24f269e54d8e3cd41995d83f",
+      "published_sha256": "3a134dfa7876bbc7d9c1fb4fc87956c81b13eeaa24f269e54d8e3cd41995d83f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-11.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-11.log",
+      "source_sha256": "e67812120863cd1a151df7dc5536dbce1e14e42573823d648b38efb08dd7075b",
+      "published_sha256": "e67812120863cd1a151df7dc5536dbce1e14e42573823d648b38efb08dd7075b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-12.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-12.log",
+      "source_sha256": "15118735c2e54a5ecbfa8b9c6a26baccc274c46fe109cedc6debc3b6d526481d",
+      "published_sha256": "15118735c2e54a5ecbfa8b9c6a26baccc274c46fe109cedc6debc3b6d526481d",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-13.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-13.log",
+      "source_sha256": "3463a5127d22f2f6ba0df02e3dd94fb174eeee3e9c7dd785a9e8f1b00d44159b",
+      "published_sha256": "3463a5127d22f2f6ba0df02e3dd94fb174eeee3e9c7dd785a9e8f1b00d44159b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-14.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-14.log",
+      "source_sha256": "3463a5127d22f2f6ba0df02e3dd94fb174eeee3e9c7dd785a9e8f1b00d44159b",
+      "published_sha256": "3463a5127d22f2f6ba0df02e3dd94fb174eeee3e9c7dd785a9e8f1b00d44159b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-15.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-15.log",
+      "source_sha256": "3463a5127d22f2f6ba0df02e3dd94fb174eeee3e9c7dd785a9e8f1b00d44159b",
+      "published_sha256": "3463a5127d22f2f6ba0df02e3dd94fb174eeee3e9c7dd785a9e8f1b00d44159b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-16.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "source_sha256": "79f14dfd99fb9a055eff29ec313e5168322187153f2535c883fd1a72ea55ab00",
+      "published_sha256": "79f14dfd99fb9a055eff29ec313e5168322187153f2535c883fd1a72ea55ab00",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-17.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "source_sha256": "74df32d2369d9fec234339660d453577b5b19c327b025f4c3d18563078d21b60",
+      "published_sha256": "74df32d2369d9fec234339660d453577b5b19c327b025f4c3d18563078d21b60",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-18.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "source_sha256": "a509e96b600a96e8f25841180ab529274a01499c3a16f000d8f5d64cf41d62f1",
+      "published_sha256": "a509e96b600a96e8f25841180ab529274a01499c3a16f000d8f5d64cf41d62f1",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-2.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-2.log",
+      "source_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "published_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-3.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-3.log",
+      "source_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "published_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-4.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-4.log",
+      "source_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "published_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-5.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-5.log",
+      "source_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "published_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-6.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-6.log",
+      "source_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "published_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-7.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-7.log",
+      "source_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "published_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-8.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-8.log",
+      "source_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "published_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\logs\\check-9.log",
+      "path": "issue198-20261027-resume2/blind-c2/A/logs/check-9.log",
+      "source_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "published_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\source\\apps\\worker\\src\\durable\\lobby-directory-object.test.mjs",
+      "path": "issue198-20261027-resume2/blind-c2/A/source/apps/worker/src/durable/lobby-directory-object.test.mjs",
+      "source_sha256": "2ba64542272b5a00946e277b6a95199ec12e23d435d5e6bfaa10432eb77ff627",
+      "published_sha256": "2ba64542272b5a00946e277b6a95199ec12e23d435d5e6bfaa10432eb77ff627",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\source\\apps\\worker\\src\\durable\\lobby-directory-object.ts",
+      "path": "issue198-20261027-resume2/blind-c2/A/source/apps/worker/src/durable/lobby-directory-object.ts",
+      "source_sha256": "c87d9a0020b23ef56aff16fec5ffb614c1a8237547732fcc66ff57e5f57ea722",
+      "published_sha256": "c87d9a0020b23ef56aff16fec5ffb614c1a8237547732fcc66ff57e5f57ea722",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\source\\apps\\worker\\src\\routes\\lobby.test.mjs",
+      "path": "issue198-20261027-resume2/blind-c2/A/source/apps/worker/src/routes/lobby.test.mjs",
+      "source_sha256": "d3ee85bafc325412aff08ba7e249a17d6c77de861617690e88d7fa5d8ad0abab",
+      "published_sha256": "d3ee85bafc325412aff08ba7e249a17d6c77de861617690e88d7fa5d8ad0abab",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\supplement.json",
+      "path": "issue198-20261027-resume2/blind-c2/A/supplement.json",
+      "source_sha256": "45bc602b61111058f1c4dbb121cf2aec52b8f62d78f46cefe5b8380565a04b7b",
+      "published_sha256": "45bc602b61111058f1c4dbb121cf2aec52b8f62d78f46cefe5b8380565a04b7b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\tracked.patch",
+      "path": "issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "source_sha256": "3b35bf9ec141cc586a6982e6c741bdf42f8750b272c67c123702fe0d3f7e69d0",
+      "published_sha256": "3b35bf9ec141cc586a6982e6c741bdf42f8750b272c67c123702fe0d3f7e69d0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\A\\untracked-files.json",
+      "path": "issue198-20261027-resume2/blind-c2/A/untracked-files.json",
+      "source_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "published_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\checks.json",
+      "path": "issue198-20261027-resume2/blind-c2/B/checks.json",
+      "source_sha256": "3e8b371d913962faf6e547e82c23fad325ec17e60b61bff8b415e2322b954bfe",
+      "published_sha256": "3e8b371d913962faf6e547e82c23fad325ec17e60b61bff8b415e2322b954bfe",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\claims.json",
+      "path": "issue198-20261027-resume2/blind-c2/B/claims.json",
+      "source_sha256": "b0a3ea50e7407352647a4cd7fcdeac3ca5baa7905d4005496c8e1781881b1b4d",
+      "published_sha256": "b0a3ea50e7407352647a4cd7fcdeac3ca5baa7905d4005496c8e1781881b1b4d",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-1.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-1.log",
+      "source_sha256": "fcb5f3d4f6f29824622abf2621132da8f13ba4249fd748a34e06b8467ecf65d2",
+      "published_sha256": "fcb5f3d4f6f29824622abf2621132da8f13ba4249fd748a34e06b8467ecf65d2",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-10.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-10.log",
+      "source_sha256": "05017a6f9339c0b2e2df38917169406163e924f99213e6daaa2fdf4bd08c1aae",
+      "published_sha256": "05017a6f9339c0b2e2df38917169406163e924f99213e6daaa2fdf4bd08c1aae",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-11.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-11.log",
+      "source_sha256": "4fbe05c51c6a5c07445b19fc3a01d9924012411628110a78bdbe159c512ae01c",
+      "published_sha256": "4fbe05c51c6a5c07445b19fc3a01d9924012411628110a78bdbe159c512ae01c",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-12.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-12.log",
+      "source_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "published_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-13.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-13.log",
+      "source_sha256": "590735017e56f7f64ad6b3b6c0db2e7be300b1e57c245bbe73d0eb399bc749ed",
+      "published_sha256": "590735017e56f7f64ad6b3b6c0db2e7be300b1e57c245bbe73d0eb399bc749ed",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-14.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-14.log",
+      "source_sha256": "915dcbe4122f241668f70b7b57e1d297f9c10179c31b157ef859e2d615d0d3d3",
+      "published_sha256": "915dcbe4122f241668f70b7b57e1d297f9c10179c31b157ef859e2d615d0d3d3",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-15.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-15.log",
+      "source_sha256": "9a7eb9cdae5ab3eac62992e15697ce437071fb1eb2bfc37e11a21795dbec1995",
+      "published_sha256": "9a7eb9cdae5ab3eac62992e15697ce437071fb1eb2bfc37e11a21795dbec1995",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-16.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-16.log",
+      "source_sha256": "0cd1baf9945a8bea2c538ea5727a898f4786425b68e798a6c4f4fd21d945184b",
+      "published_sha256": "0cd1baf9945a8bea2c538ea5727a898f4786425b68e798a6c4f4fd21d945184b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-17.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-17.log",
+      "source_sha256": "d35350eaa3fa4204371c923e98ee383e3db6dac36a38c1a26b4fd8c6b2ab5772",
+      "published_sha256": "d35350eaa3fa4204371c923e98ee383e3db6dac36a38c1a26b4fd8c6b2ab5772",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-18.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-18.log",
+      "source_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "published_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-2.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-2.log",
+      "source_sha256": "a7b4967cf853b382f41d6ec177f37a0ae1dbba9d09de870f80c13df1c18f04f0",
+      "published_sha256": "a7b4967cf853b382f41d6ec177f37a0ae1dbba9d09de870f80c13df1c18f04f0",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-3.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "source_sha256": "ab44b29e3bcd5b488f5caeda57e56b0e9c4e9fa5191a2bac1ec37b50b1cca494",
+      "published_sha256": "ab44b29e3bcd5b488f5caeda57e56b0e9c4e9fa5191a2bac1ec37b50b1cca494",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-4.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-4.log",
+      "source_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "published_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-5.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-5.log",
+      "source_sha256": "e47fb1e9835c585c7461f4607d7b4d49f3d56a2101a343292c98bbbd6df26c7e",
+      "published_sha256": "e47fb1e9835c585c7461f4607d7b4d49f3d56a2101a343292c98bbbd6df26c7e",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-6.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-6.log",
+      "source_sha256": "41e2a8ae1d51a6cc0f48ca43bcbb3a0dbb3faaa659e2c85ee150970447c5de8f",
+      "published_sha256": "41e2a8ae1d51a6cc0f48ca43bcbb3a0dbb3faaa659e2c85ee150970447c5de8f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-7.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-7.log",
+      "source_sha256": "f985abdcb4de56a05a9210c90fb6175fbd5665ce9eebd2216c2f10f6cde697fa",
+      "published_sha256": "f985abdcb4de56a05a9210c90fb6175fbd5665ce9eebd2216c2f10f6cde697fa",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-8.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-8.log",
+      "source_sha256": "c4a1646d27d1644d69a17ec642eebcdf7c5ad44cab167de8125b30876d34b586",
+      "published_sha256": "c4a1646d27d1644d69a17ec642eebcdf7c5ad44cab167de8125b30876d34b586",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\logs\\check-9.log",
+      "path": "issue198-20261027-resume2/blind-c2/B/logs/check-9.log",
+      "source_sha256": "b2efb2daa55cb6173a57358cfe625a9e3e2a8ba24077e6eb0a7f43ab10e53711",
+      "published_sha256": "b2efb2daa55cb6173a57358cfe625a9e3e2a8ba24077e6eb0a7f43ab10e53711",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\source\\apps\\worker\\src\\durable\\lobby-directory-object.test.mjs",
+      "path": "issue198-20261027-resume2/blind-c2/B/source/apps/worker/src/durable/lobby-directory-object.test.mjs",
+      "source_sha256": "13a7b5733bb3ecf0eeb68c3bcfd6faec6bf1e6eb06f7da0ccf9e2f709ceda2c6",
+      "published_sha256": "13a7b5733bb3ecf0eeb68c3bcfd6faec6bf1e6eb06f7da0ccf9e2f709ceda2c6",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\source\\apps\\worker\\src\\durable\\lobby-directory-object.ts",
+      "path": "issue198-20261027-resume2/blind-c2/B/source/apps/worker/src/durable/lobby-directory-object.ts",
+      "source_sha256": "1f8c7ad026be9858e8bb43df5fad37f754cc0679236acfcac5d9d65772efee9f",
+      "published_sha256": "1f8c7ad026be9858e8bb43df5fad37f754cc0679236acfcac5d9d65772efee9f",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\supplement.json",
+      "path": "issue198-20261027-resume2/blind-c2/B/supplement.json",
+      "source_sha256": "136a23f6c9cb3e9384742ddd518a75240e770a61731dc8ed3aa72487265b8a71",
+      "published_sha256": "136a23f6c9cb3e9384742ddd518a75240e770a61731dc8ed3aa72487265b8a71",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\tracked.patch",
+      "path": "issue198-20261027-resume2/blind-c2/B/tracked.patch",
+      "source_sha256": "2ae2915717bf3da23cd46f634e0207de0232fd73ee7531caf015af3b33f40dda",
+      "published_sha256": "2ae2915717bf3da23cd46f634e0207de0232fd73ee7531caf015af3b33f40dda",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\B\\untracked-files.json",
+      "path": "issue198-20261027-resume2/blind-c2/B/untracked-files.json",
+      "source_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "published_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "redacted": false
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\c2-barrier.test.mjs",
+      "path": "issue198-20261027-resume2/blind-c2/c2-barrier.test.mjs",
+      "source_sha256": "80bdfa8eff4cf113f6ac827638e806d0137fc4d6536303fc6805949fcdff2fab",
+      "published_sha256": "b3df8f22f111ec27770db9873459c3242ad476f8496f6aa4fef92da4cae3fc91",
+      "redacted": true
+    },
+    {
+      "source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\blind-c2\\input.json",
+      "path": "issue198-20261027-resume2/blind-c2/input.json",
+      "source_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "published_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+      "redacted": false
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "runs": [
+    {
+      "run_id": "C2-legacy-1-environment-retry1",
+      "case": "C2",
+      "lane": "legacy",
+      "replaces_interrupted_attempt_only": "C2-legacy-1"
+    }
+  ]
+}

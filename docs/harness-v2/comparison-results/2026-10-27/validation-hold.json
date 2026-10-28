@@ -1,0 +1,23 @@
+{
+  "scope": "Added stop gate after all executed sessions ended; no fixture/condition/model run changed",
+  "command": {
+    "argv": [
+      "python",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/harness-comparison",
+      "-p",
+      "test_compare.py"
+    ],
+    "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+    "start": "2026-10-27T06:38:23.112962+00:00",
+    "end": "2026-10-27T06:38:23.332488+00:00",
+    "wall_seconds": 0.21953790000043227,
+    "exit_code": 0,
+    "log": ".tmp\\i198-final-validation\\comparison-hold.log"
+  },
+  "test_count": 19
+}

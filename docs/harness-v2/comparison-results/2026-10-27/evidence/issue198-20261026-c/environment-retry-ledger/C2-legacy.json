@@ -1,0 +1,9 @@
+{
+  "case_lane": "C2/legacy",
+  "retry_number": 1,
+  "previous_run": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C2-legacy-1-attempt0",
+  "fresh_run": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261027-resume2\\trials\\C2-legacy-1-environment-retry1",
+  "reason": "Provider usage-limit error; fresh context and input retained",
+  "at": "2026-10-27T05:52:09.541431+00:00",
+  "further_retry_allowed": false
+}

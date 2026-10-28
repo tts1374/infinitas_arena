@@ -1,0 +1,218 @@
+{
+  "status": "BLOCKED",
+  "AC": {
+    "AC1": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/barrier-final2.log"
+      ],
+      "detail": "same-ms tokens strictly increase; stale conditional remove preserves upsert and delete/recreate"
+    },
+    "AC2": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/runtime3/restart-result.json",
+        ".tmp/evidence/real-do-restart-final2.json"
+      ],
+      "detail": "legacy max2500 at clock2000; scalar cold instance, real four-phase workerd restart and SQLite read-back"
+    },
+    "AC3": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/barrier-final2.log",
+        ".tmp/evidence/runtime3/restart-result.json"
+      ],
+      "detail": "200-room churn, exact TTL/TTL+1, fixed schema/filter/order, only rooms plus scalar storage"
+    },
+    "AC4": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/barrier-final2.log",
+        ".tmp/evidence/worker-final2.log"
+      ],
+      "detail": "ineligible/lost x upsert/recreate; reverse probe completion; independent 5xx/network fail-open"
+    },
+    "AC5": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/test-membership.json",
+        ".tmp/evidence/lint-final2.json",
+        ".tmp/evidence/types-final2.json",
+        ".tmp/evidence/stats-final2.json",
+        ".tmp/evidence/worker-final2.json",
+        ".tmp/evidence/design-final2.json",
+        ".tmp/evidence/bundle-final2.json"
+      ],
+      "detail": "all six fixed commands passed at final fingerprint; worker110 and barrier7, workspace types; unrun environment surfaces separately unproven"
+    },
+    "AC6": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/review/report.json",
+        ".tmp/evidence/review/final-recheck.log"
+      ],
+      "detail": "nonimplementer independent contract+behavior review; all significant code findings fixed"
+    },
+    "AC7": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/environment.json",
+        ".tmp/evidence/reference-readback.json",
+        ".tmp/evidence/snapshot-before.json",
+        ".tmp/evidence/snapshot-after.json",
+        ".tmp/evidence/git-readback.json",
+        ".tmp/evidence/runtime3/restart-result.json"
+      ],
+      "detail": "only three permitted product files; HEAD/branch/index/stash unchanged; owned loopback runtime stopped; no external write"
+    },
+    "AC8": {
+      "status": "unproven",
+      "evidence": [
+        ".tmp/evidence/runtime3/restart-result.json"
+      ],
+      "reason": "No actual DO hibernation/eviction or websocket hibernation event was demonstrated. Real process restart and new-instance units prove separate guarantees."
+    }
+  },
+  "Q": {
+    "Q01": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/review/report.json"
+      ],
+      "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+    },
+    "Q02": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/review/report.json"
+      ],
+      "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+    },
+    "Q03": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/review/report.json"
+      ],
+      "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+    },
+    "Q04": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/review/report.json"
+      ],
+      "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+    },
+    "Q05": {
+      "status": "unproven",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/runtime3/restart-result.json",
+        ".tmp/evidence/review/report.json"
+      ],
+      "proven": [
+        "unit reconnect old socket delayed-close",
+        "ROOM_STATE_LOST guard",
+        "real persisted directory cold-process restart",
+        "corrupt restore refusal and storage preservation"
+      ],
+      "unproven": [
+        "real DO hibernation"
+      ],
+      "reason": "Mock/new instance/cold process restart cannot substitute for actual hibernation."
+    },
+    "Q06": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/barrier-final2.log",
+        ".tmp/evidence/runtime3/restart-result.json",
+        ".tmp/evidence/review/final-recheck.log"
+      ]
+    },
+    "Q07": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/review/report.json"
+      ],
+      "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+    },
+    "Q08": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/review/final-recheck.log",
+        ".tmp/evidence/runtime3/restart-result.json"
+      ],
+      "scope": "Directory valid absent/legacy map/scalar/live-room floor/sentinel, corrupt unsupported shapes fail without write. Versioned client archives untouched."
+    },
+    "Q10": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/review/report.json"
+      ],
+      "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+    },
+    "Q12": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/test-membership.json",
+        ".tmp/evidence/selector-final2.log",
+        ".tmp/evidence/review/report.json"
+      ],
+      "detail": "All attempts retained, old fingerprints not promoted; failures and unproven surfaces explicit."
+    },
+    "Q13": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/snapshot-before.json",
+        ".tmp/evidence/snapshot-after.json",
+        ".tmp/evidence/git-readback.json",
+        ".tmp/evidence/reference-readback.json",
+        ".tmp/evidence/runtime3/restart-result.json",
+        ".tmp/goal.json"
+      ],
+      "scope": "Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only."
+    },
+    "Q14": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/review/report.json",
+        ".tmp/evidence/review/final-recheck.log"
+      ]
+    },
+    "Q15": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/snapshot-before.json",
+        ".tmp/evidence/snapshot-after.json",
+        ".tmp/evidence/git-readback.json",
+        ".tmp/evidence/reference-readback.json",
+        ".tmp/evidence/runtime3/restart-result.json",
+        ".tmp/goal.json"
+      ],
+      "scope": "Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only."
+    },
+    "Q16": {
+      "status": "pass",
+      "evidence": [
+        ".tmp/evidence/snapshot-before.json",
+        ".tmp/evidence/snapshot-after.json",
+        ".tmp/evidence/git-readback.json",
+        ".tmp/evidence/reference-readback.json",
+        ".tmp/evidence/runtime3/restart-result.json",
+        ".tmp/goal.json"
+      ],
+      "scope": "Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only."
+    }
+  },
+  "remaining_risks": null
+}

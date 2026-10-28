@@ -1,0 +1,5 @@
+
+> infinitas-arena@1.4.0 check:design-contracts
+> node ./scripts/check-design-contracts.mjs
+
+Design contract check passed.

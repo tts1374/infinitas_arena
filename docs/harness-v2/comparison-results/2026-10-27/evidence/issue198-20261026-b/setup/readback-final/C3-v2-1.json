@@ -1,0 +1,173 @@
+{
+  "at": "2026-10-26T14:07:42.074813+00:00",
+  "root": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C3-v2-1",
+  "client": "Codex Desktop/0.164.0-alpha.11.1 (Windows 10.0.26300; x86_64) dumb (issue198-readback; 1)",
+  "effective": {
+    "model": "gpt-6.1-sol",
+    "model_reasoning_effort": "high",
+    "service_tier": null,
+    "approval_policy": "never",
+    "sandbox_mode": "workspace-write",
+    "agents": null,
+    "mcp_servers": {
+      "github": {
+        "enabled": false
+      },
+      "cloudflareObservability": {
+        "enabled": false
+      },
+      "node_repl": {
+        "enabled": false
+      },
+      "playwright": {
+        "enabled": false
+      }
+    },
+    "features": {
+      "apps": false,
+      "plugins": false,
+      "multi_agent": true,
+      "unbounded_connection_retries": false
+    }
+  },
+  "skills": [
+    {
+      "name": "submit-work",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C3-v2-1\\.agents\\skills\\submit-work\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "verify-change",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C3-v2-1\\.agents\\skills\\verify-change\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "2ten-note-interviewer",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\2ten-note-interviewer\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "2ten-note-writer",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\2ten-note-writer\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "commit-plan-enforcer",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\commit-plan-enforcer\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "ddrgp-update-reference-data",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\ddrgp-update-reference-data\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "decision-to-spec",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\decision-to-spec\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "empirical-prompt-tuning",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\empirical-prompt-tuning\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "windows-utf8-safe-write",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\windows-utf8-safe-write\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "worktree-branch-cleanup-guard",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\worktree-branch-cleanup-guard\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "imagegen",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\imagegen\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    },
+    {
+      "name": "openai-docs",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\openai-docs\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    },
+    {
+      "name": "review-agent",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\review-agent\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    },
+    {
+      "name": "skill-creator",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\skill-creator\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    },
+    {
+      "name": "skill-installer",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\skill-installer\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    }
+  ],
+  "skill_errors": [],
+  "agent_assets": [
+    {
+      "name": "independent-reviewer",
+      "effort": "high",
+      "model": "inherited gpt-6.1-sol",
+      "sha256": "7a8750cf60fcfa582cbe132fc712259cdf86d73e6b1216b2659d6ab679ff3f73"
+    }
+  ],
+  "stderr_line_hashes": [
+    "3e789414e0b4a95f8a604362cffb5dccd04cdb1241c83bd2d0f7a2422ee2c5ef",
+    "a9e8f412505d91522bf1c4082888390e96853b22ae259b1fbe0732e8820eadb1",
+    "430305de55283fcf47abfbe3d9b1220f7c2954dbb1cc32994164b4afb20c1a76",
+    "b930334a095573e34a9df2f31e5f7a1dc75f74551a832cd25b0e88f071bed3c6",
+    "828bbbe36dcc249b0f104d5a19ca8cd47102b14f6cb91f852e7313e279a781c3",
+    "a07bf76d267b599b2dbbd2c199f0621a4fa4ba84f76ea974f8bd2d4f3e625def"
+  ],
+  "layers": [
+    {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "disabledReason": null
+    },
+    {
+      "name": {
+        "type": "project",
+        "dotCodexFolder": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C3-v2-1\\.codex"
+      },
+      "disabledReason": "To load project-local config, hooks, and exec policies, add c:\\users\\tts13\\documents\\codex\\experiments\\issue198-20261026-b\\trials\\c3-v2-1 as a trusted project in C:\\Users\\tts13\\.codex\\config.toml."
+    },
+    {
+      "name": {
+        "type": "user",
+        "file": "C:\\Users\\tts13\\.codex\\config.toml",
+        "profile": null
+      },
+      "disabledReason": null
+    },
+    {
+      "name": {
+        "type": "system",
+        "file": "C:\\ProgramData\\OpenAI\\Codex\\config.toml"
+      },
+      "disabledReason": null
+    }
+  ],
+  "limitation": "app-server does not accept --profile; identical project trust supplied via invocation-local config override. Actual runtime/role invocation checked separately in model trace"
+}

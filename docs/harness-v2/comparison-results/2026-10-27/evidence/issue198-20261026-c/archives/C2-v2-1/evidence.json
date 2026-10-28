@@ -1,0 +1,2318 @@
+{
+  "archived_at": "2026-10-27T00:15:36.712200+00:00",
+  "experiment": "issue198-20261026-c",
+  "run_id": "C2-v2-1",
+  "case": "C2",
+  "lane": "v2",
+  "input_hash": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+  "initial_head": "72ed3f963d84ad866d9cb6ee6710485f6557e9ba",
+  "manifest_sha256": "24b03b4d99de170be358abe9893754e074921432a0bc0908adeac46c836850dc",
+  "executor_claim": {
+    "run_id": "C2-v2-1",
+    "case_id": "C2",
+    "verdict": "BLOCKED",
+    "status": "BLOCKED",
+    "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+    "publication_fingerprint": "e5df869e3a77735e621cbc924769aba570aa21a547e00f19969f8f63a0b8e942",
+    "base_revision": "72ed3f963d84ad866d9cb6ee6710485f6557e9ba",
+    "harness_commit": "59b0815dc95738c3e7a14d5505fb58d3df49c460",
+    "product_base": "4b600d3445edc71d0599058809c9a89b04591760",
+    "input_hash": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+    "model": {
+      "configured_parent": "gpt-6.1-sol",
+      "configured_effort": "high",
+      "source": ".codex/config.toml",
+      "provider_actual_parent_model": null,
+      "service_tier": null,
+      "children": [
+        {
+          "id": "/root/c2_independent_review",
+          "task": "independent contract and behavior audit",
+          "model": "gpt-6.1-sol",
+          "effort": "high",
+          "role_default": ".codex/agents/independent-reviewer.toml",
+          "reason": "C2/R04 mandatory independent review",
+          "write_scope": ".tmp/evidence/review",
+          "implementation_involved": false
+        }
+      ]
+    },
+    "timestamps": {
+      "environment_first_readback": "2026-10-27T00:01:53.9424368Z",
+      "goal_created": "2026-10-27T00:03:07.439274+00:00",
+      "evidence_finalized": "2026-10-27T00:12:20.857302+00:00"
+    },
+    "environment": {
+      "recorded_at": "2026-10-27T00:01:53.9424368Z",
+      "direct_node": "v22.23.4",
+      "direct_npm": "10.9.9",
+      "commands": [
+        {
+          "Name": "node.exe",
+          "CommandType": 32,
+          "Source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-v2-1\\.tmp\\toolchain\\node.exe",
+          "Path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-v2-1\\.tmp\\toolchain\\node.exe"
+        },
+        {
+          "Name": "npm.ps1",
+          "CommandType": 16,
+          "Source": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-v2-1\\.tmp\\toolchain\\npm.ps1",
+          "Path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-v2-1\\.tmp\\toolchain\\npm.ps1"
+        }
+      ],
+      "cli": {
+        "version": "v22.23.4",
+        "execPath": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-v2-1\\.tmp\\toolchain\\node.exe",
+        "platform": "win32",
+        "arch": "x64"
+      },
+      "cli_npm": "10.9.9",
+      "expected_node": "v22.23.4",
+      "expected_npm": "10.9.9",
+      "match": true
+    },
+    "acceptance": {
+      "AC1": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/barrier-final2.log"
+        ],
+        "detail": "same-ms tokens strictly increase; stale conditional remove preserves upsert and delete/recreate"
+      },
+      "AC2": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/evidence/real-do-restart-final2.json"
+        ],
+        "detail": "legacy max2500 at clock2000; scalar cold instance, real four-phase workerd restart and SQLite read-back"
+      },
+      "AC3": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/barrier-final2.log",
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "detail": "200-room churn, exact TTL/TTL+1, fixed schema/filter/order, only rooms plus scalar storage"
+      },
+      "AC4": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/barrier-final2.log",
+          ".tmp/evidence/worker-final2.log"
+        ],
+        "detail": "ineligible/lost x upsert/recreate; reverse probe completion; independent 5xx/network fail-open"
+      },
+      "AC5": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/test-membership.json",
+          ".tmp/evidence/lint-final2.json",
+          ".tmp/evidence/types-final2.json",
+          ".tmp/evidence/stats-final2.json",
+          ".tmp/evidence/worker-final2.json",
+          ".tmp/evidence/design-final2.json",
+          ".tmp/evidence/bundle-final2.json"
+        ],
+        "detail": "all six fixed commands passed at final fingerprint; worker110 and barrier7, workspace types; unrun environment surfaces separately unproven"
+      },
+      "AC6": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/review/report.json",
+          ".tmp/evidence/review/final-recheck.log"
+        ],
+        "detail": "nonimplementer independent contract+behavior review; all significant code findings fixed"
+      },
+      "AC7": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/environment.json",
+          ".tmp/evidence/reference-readback.json",
+          ".tmp/evidence/snapshot-before.json",
+          ".tmp/evidence/snapshot-after.json",
+          ".tmp/evidence/git-readback.json",
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "detail": "only three permitted product files; HEAD/branch/index/stash unchanged; owned loopback runtime stopped; no external write"
+      },
+      "AC8": {
+        "status": "unproven",
+        "evidence": [
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "reason": "No actual DO hibernation/eviction or websocket hibernation event was demonstrated. Real process restart and new-instance units prove separate guarantees."
+      }
+    },
+    "AC_results": {
+      "AC1": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/barrier-final2.log"
+        ],
+        "detail": "same-ms tokens strictly increase; stale conditional remove preserves upsert and delete/recreate"
+      },
+      "AC2": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/evidence/real-do-restart-final2.json"
+        ],
+        "detail": "legacy max2500 at clock2000; scalar cold instance, real four-phase workerd restart and SQLite read-back"
+      },
+      "AC3": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/barrier-final2.log",
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "detail": "200-room churn, exact TTL/TTL+1, fixed schema/filter/order, only rooms plus scalar storage"
+      },
+      "AC4": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/barrier-final2.log",
+          ".tmp/evidence/worker-final2.log"
+        ],
+        "detail": "ineligible/lost x upsert/recreate; reverse probe completion; independent 5xx/network fail-open"
+      },
+      "AC5": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/test-membership.json",
+          ".tmp/evidence/lint-final2.json",
+          ".tmp/evidence/types-final2.json",
+          ".tmp/evidence/stats-final2.json",
+          ".tmp/evidence/worker-final2.json",
+          ".tmp/evidence/design-final2.json",
+          ".tmp/evidence/bundle-final2.json"
+        ],
+        "detail": "all six fixed commands passed at final fingerprint; worker110 and barrier7, workspace types; unrun environment surfaces separately unproven"
+      },
+      "AC6": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/review/report.json",
+          ".tmp/evidence/review/final-recheck.log"
+        ],
+        "detail": "nonimplementer independent contract+behavior review; all significant code findings fixed"
+      },
+      "AC7": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/environment.json",
+          ".tmp/evidence/reference-readback.json",
+          ".tmp/evidence/snapshot-before.json",
+          ".tmp/evidence/snapshot-after.json",
+          ".tmp/evidence/git-readback.json",
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "detail": "only three permitted product files; HEAD/branch/index/stash unchanged; owned loopback runtime stopped; no external write"
+      },
+      "AC8": {
+        "status": "unproven",
+        "evidence": [
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "reason": "No actual DO hibernation/eviction or websocket hibernation event was demonstrated. Real process restart and new-instance units prove separate guarantees."
+      }
+    },
+    "quality": {
+      "Q01": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q02": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q03": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q04": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q05": {
+        "status": "unproven",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/evidence/review/report.json"
+        ],
+        "proven": [
+          "unit reconnect old socket delayed-close",
+          "ROOM_STATE_LOST guard",
+          "real persisted directory cold-process restart",
+          "corrupt restore refusal and storage preservation"
+        ],
+        "unproven": [
+          "real DO hibernation"
+        ],
+        "reason": "Mock/new instance/cold process restart cannot substitute for actual hibernation."
+      },
+      "Q06": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/barrier-final2.log",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/evidence/review/final-recheck.log"
+        ]
+      },
+      "Q07": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q08": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/final-recheck.log",
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "scope": "Directory valid absent/legacy map/scalar/live-room floor/sentinel, corrupt unsupported shapes fail without write. Versioned client archives untouched."
+      },
+      "Q10": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q12": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/test-membership.json",
+          ".tmp/evidence/selector-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "detail": "All attempts retained, old fingerprints not promoted; failures and unproven surfaces explicit."
+      },
+      "Q13": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/snapshot-before.json",
+          ".tmp/evidence/snapshot-after.json",
+          ".tmp/evidence/git-readback.json",
+          ".tmp/evidence/reference-readback.json",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/goal.json"
+        ],
+        "scope": "Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only."
+      },
+      "Q14": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/review/report.json",
+          ".tmp/evidence/review/final-recheck.log"
+        ]
+      },
+      "Q15": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/snapshot-before.json",
+          ".tmp/evidence/snapshot-after.json",
+          ".tmp/evidence/git-readback.json",
+          ".tmp/evidence/reference-readback.json",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/goal.json"
+        ],
+        "scope": "Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only."
+      },
+      "Q16": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/snapshot-before.json",
+          ".tmp/evidence/snapshot-after.json",
+          ".tmp/evidence/git-readback.json",
+          ".tmp/evidence/reference-readback.json",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/goal.json"
+        ],
+        "scope": "Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only."
+      }
+    },
+    "Q_results": {
+      "Q01": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q02": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q03": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q04": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q05": {
+        "status": "unproven",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/evidence/review/report.json"
+        ],
+        "proven": [
+          "unit reconnect old socket delayed-close",
+          "ROOM_STATE_LOST guard",
+          "real persisted directory cold-process restart",
+          "corrupt restore refusal and storage preservation"
+        ],
+        "unproven": [
+          "real DO hibernation"
+        ],
+        "reason": "Mock/new instance/cold process restart cannot substitute for actual hibernation."
+      },
+      "Q06": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/barrier-final2.log",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/evidence/review/final-recheck.log"
+        ]
+      },
+      "Q07": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q08": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/final-recheck.log",
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "scope": "Directory valid absent/legacy map/scalar/live-room floor/sentinel, corrupt unsupported shapes fail without write. Versioned client archives untouched."
+      },
+      "Q10": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "scope": "Only guarantees touched by C2; no claim of unrelated native/source/UI verification."
+      },
+      "Q12": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/test-membership.json",
+          ".tmp/evidence/selector-final2.log",
+          ".tmp/evidence/review/report.json"
+        ],
+        "detail": "All attempts retained, old fingerprints not promoted; failures and unproven surfaces explicit."
+      },
+      "Q13": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/snapshot-before.json",
+          ".tmp/evidence/snapshot-after.json",
+          ".tmp/evidence/git-readback.json",
+          ".tmp/evidence/reference-readback.json",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/goal.json"
+        ],
+        "scope": "Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only."
+      },
+      "Q14": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/review/report.json",
+          ".tmp/evidence/review/final-recheck.log"
+        ]
+      },
+      "Q15": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/snapshot-before.json",
+          ".tmp/evidence/snapshot-after.json",
+          ".tmp/evidence/git-readback.json",
+          ".tmp/evidence/reference-readback.json",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/goal.json"
+        ],
+        "scope": "Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only."
+      },
+      "Q16": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/snapshot-before.json",
+          ".tmp/evidence/snapshot-after.json",
+          ".tmp/evidence/git-readback.json",
+          ".tmp/evidence/reference-readback.json",
+          ".tmp/evidence/runtime3/restart-result.json",
+          ".tmp/goal.json"
+        ],
+        "scope": "Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only."
+      }
+    },
+    "commands": {
+      "lint": [
+        {
+          "name": "lint-1",
+          "command": [
+            "npm.cmd",
+            "run",
+            "lint"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/lint-1.log",
+          "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "started_at": "2026-10-27T00:05:12.418961+00:00",
+          "ended_at": "2026-10-27T00:05:21.798365+00:00",
+          "elapsed_seconds": 8.955322199999955,
+          "log_sha256": "9378074efd8f08c699c52fbd9165db2b3d831fa18fa472cda697d010675339ec"
+        },
+        {
+          "name": "lint-final",
+          "command": [
+            "npm.cmd",
+            "run",
+            "lint"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/lint-final.log",
+          "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "started_at": "2026-10-27T00:08:49.300518+00:00",
+          "ended_at": "2026-10-27T00:08:56.028180+00:00",
+          "elapsed_seconds": 6.2089436000001115,
+          "log_sha256": "9378074efd8f08c699c52fbd9165db2b3d831fa18fa472cda697d010675339ec"
+        },
+        {
+          "name": "lint-final2",
+          "command": [
+            "npm.cmd",
+            "run",
+            "lint"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/lint-final2.log",
+          "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "started_at": "2026-10-27T00:09:49.969156+00:00",
+          "ended_at": "2026-10-27T00:09:57.200051+00:00",
+          "elapsed_seconds": 6.557686099999955,
+          "log_sha256": "9378074efd8f08c699c52fbd9165db2b3d831fa18fa472cda697d010675339ec"
+        }
+      ],
+      "types": [
+        {
+          "name": "types-1",
+          "command": [
+            "npm.cmd",
+            "run",
+            "typecheck"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/types-1.log",
+          "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "started_at": "2026-10-27T00:05:12.423131+00:00",
+          "ended_at": "2026-10-27T00:05:21.378773+00:00",
+          "elapsed_seconds": 8.51378869999985,
+          "log_sha256": "17ed6322bf929fc3e2b8ed8a088a411133837e2e8b4102c6cc1efca4b2172534"
+        },
+        {
+          "name": "types-final",
+          "command": [
+            "npm.cmd",
+            "run",
+            "typecheck"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/types-final.log",
+          "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "started_at": "2026-10-27T00:08:49.318117+00:00",
+          "ended_at": "2026-10-27T00:08:59.082311+00:00",
+          "elapsed_seconds": 9.20848090000004,
+          "log_sha256": "17ed6322bf929fc3e2b8ed8a088a411133837e2e8b4102c6cc1efca4b2172534"
+        },
+        {
+          "name": "types-final2",
+          "command": [
+            "npm.cmd",
+            "run",
+            "typecheck"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/types-final2.log",
+          "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "started_at": "2026-10-27T00:09:50.008480+00:00",
+          "ended_at": "2026-10-27T00:10:00.199385+00:00",
+          "elapsed_seconds": 9.508281300000135,
+          "log_sha256": "17ed6322bf929fc3e2b8ed8a088a411133837e2e8b4102c6cc1efca4b2172534"
+        }
+      ],
+      "stats": [
+        {
+          "name": "stats-1",
+          "command": [
+            "npm.cmd",
+            "run",
+            "test:client-stats"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/stats-1.log",
+          "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "started_at": "2026-10-27T00:05:12.436442+00:00",
+          "ended_at": "2026-10-27T00:05:15.979451+00:00",
+          "elapsed_seconds": 3.1161328000000594,
+          "log_sha256": "b5f424dba335abb67aa004fc79342d4a1f73276338acf49fe78c4dadc2e12446"
+        },
+        {
+          "name": "stats-final",
+          "command": [
+            "npm.cmd",
+            "run",
+            "test:client-stats"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/stats-final.log",
+          "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "started_at": "2026-10-27T00:08:49.320049+00:00",
+          "ended_at": "2026-10-27T00:08:53.197578+00:00",
+          "elapsed_seconds": 3.3238017000001037,
+          "log_sha256": "b5f424dba335abb67aa004fc79342d4a1f73276338acf49fe78c4dadc2e12446"
+        },
+        {
+          "name": "stats-final2",
+          "command": [
+            "npm.cmd",
+            "run",
+            "test:client-stats"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/stats-final2.log",
+          "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "started_at": "2026-10-27T00:09:49.998036+00:00",
+          "ended_at": "2026-10-27T00:09:54.319665+00:00",
+          "elapsed_seconds": 3.632205200000044,
+          "log_sha256": "b5f424dba335abb67aa004fc79342d4a1f73276338acf49fe78c4dadc2e12446"
+        }
+      ],
+      "worker-test": [
+        {
+          "name": "worker-1",
+          "command": [
+            "npm.cmd",
+            "run",
+            "test:worker"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/worker-1.log",
+          "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "started_at": "2026-10-27T00:05:12.443434+00:00",
+          "ended_at": "2026-10-27T00:05:16.394327+00:00",
+          "elapsed_seconds": 3.5235523999999714,
+          "log_sha256": "7b919bb81475c11a833fe15e34bd0ce8cef35bfa4706785604d7a90ae7c1f0ce"
+        },
+        {
+          "name": "worker-final",
+          "command": [
+            "npm.cmd",
+            "run",
+            "test:worker"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/worker-final.log",
+          "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "started_at": "2026-10-27T00:08:49.318629+00:00",
+          "ended_at": "2026-10-27T00:08:53.277331+00:00",
+          "elapsed_seconds": 3.4004652999999507,
+          "log_sha256": "d1ff0f3d40b9c237b9bed5e386b51f10e10b0e7b175e1f759db2c637577d431a"
+        },
+        {
+          "name": "worker-final2",
+          "command": [
+            "npm.cmd",
+            "run",
+            "test:worker"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/worker-final2.log",
+          "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "started_at": "2026-10-27T00:09:50.039640+00:00",
+          "ended_at": "2026-10-27T00:09:54.438507+00:00",
+          "elapsed_seconds": 3.7212915000000066,
+          "log_sha256": "1d0d8a4ce510f54b5a8d924845ad6091fee7d3e1fd6f1ead736b80627b7bb931"
+        }
+      ],
+      "design": [
+        {
+          "name": "design-1",
+          "command": [
+            "npm.cmd",
+            "run",
+            "check:design-contracts"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/design-1.log",
+          "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "started_at": "2026-10-27T00:05:12.468181+00:00",
+          "ended_at": "2026-10-27T00:05:14.025085+00:00",
+          "elapsed_seconds": 1.1211123999999018,
+          "log_sha256": "83cd1e47c4d84d6fd54f12016e745a4af7b46441e786bc8d2ddf1bc3e988cb59"
+        },
+        {
+          "name": "design-final",
+          "command": [
+            "npm.cmd",
+            "run",
+            "check:design-contracts"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/design-final.log",
+          "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "started_at": "2026-10-27T00:08:49.345982+00:00",
+          "ended_at": "2026-10-27T00:08:51.167075+00:00",
+          "elapsed_seconds": 1.2733048000000053,
+          "log_sha256": "83cd1e47c4d84d6fd54f12016e745a4af7b46441e786bc8d2ddf1bc3e988cb59"
+        },
+        {
+          "name": "design-final2",
+          "command": [
+            "npm.cmd",
+            "run",
+            "check:design-contracts"
+          ],
+          "cwd": ".",
+          "exit_code": 0,
+          "log": ".tmp/evidence/design-final2.log",
+          "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "started_at": "2026-10-27T00:09:50.032169+00:00",
+          "ended_at": "2026-10-27T00:09:52.129564+00:00",
+          "elapsed_seconds": 1.4301828000000114,
+          "log_sha256": "83cd1e47c4d84d6fd54f12016e745a4af7b46441e786bc8d2ddf1bc3e988cb59"
+        }
+      ],
+      "worker-bundle": [
+        {
+          "name": "bundle-1",
+          "command": [
+            "npx.cmd",
+            "--no-install",
+            "wrangler",
+            "deploy",
+            "--dry-run"
+          ],
+          "cwd": "apps/worker",
+          "exit_code": 0,
+          "log": ".tmp/evidence/bundle-1.log",
+          "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+          "started_at": "2026-10-27T00:05:12.467982+00:00",
+          "ended_at": "2026-10-27T00:05:17.116952+00:00",
+          "elapsed_seconds": 4.197336799999903,
+          "log_sha256": "c639838af66f830facd7abfed4340047bbb714fb5119496bd7c6208883e42379"
+        },
+        {
+          "name": "bundle-final",
+          "command": [
+            "npx.cmd",
+            "--no-install",
+            "wrangler",
+            "deploy",
+            "--dry-run"
+          ],
+          "cwd": "apps/worker",
+          "exit_code": 0,
+          "log": ".tmp/evidence/bundle-final.log",
+          "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+          "started_at": "2026-10-27T00:08:49.344629+00:00",
+          "ended_at": "2026-10-27T00:08:53.979493+00:00",
+          "elapsed_seconds": 4.075981899999988,
+          "log_sha256": "b584e0606d88037ecc12fba4690777c93498dc4c9c9c93f48ead191c65d69855"
+        },
+        {
+          "name": "bundle-final2",
+          "command": [
+            "npx.cmd",
+            "--no-install",
+            "wrangler",
+            "deploy",
+            "--dry-run"
+          ],
+          "cwd": "apps/worker",
+          "exit_code": 0,
+          "log": ".tmp/evidence/bundle-final2.log",
+          "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+          "started_at": "2026-10-27T00:09:50.048245+00:00",
+          "ended_at": "2026-10-27T00:09:55.200269+00:00",
+          "elapsed_seconds": 4.44253260000005,
+          "log_sha256": "c0c4f4f1c3479b2908b2120644516b1c177e6456807e9f31cf8429a29742af99"
+        }
+      ]
+    },
+    "all_command_attempts": [
+      {
+        "name": "seed-directory",
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "apps/worker/src/durable/lobby-directory-object.test.mjs"
+        ],
+        "cwd": ".",
+        "exit_code": 1,
+        "log": ".tmp/evidence/seed-directory.log",
+        "fingerprint": "bdd6f585fd5f026aa4bc292e2deb75bfd254fa7e99c568499dfd9715b11ce877",
+        "after_fingerprint": "bdd6f585fd5f026aa4bc292e2deb75bfd254fa7e99c568499dfd9715b11ce877",
+        "started_at": "2026-10-27T00:03:15.638087+00:00",
+        "ended_at": "2026-10-27T00:03:16.983725+00:00",
+        "elapsed_seconds": 0.9559067999999797,
+        "log_sha256": "921bd48cf21bc266c4513efb4d177a154c542d8730ab0f6e5a0e0eeeccf3bb71"
+      },
+      {
+        "name": "seed-barrier",
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          ".tmp/comparison/c2-barrier.test.mjs"
+        ],
+        "cwd": ".",
+        "exit_code": 1,
+        "log": ".tmp/evidence/seed-barrier.log",
+        "fingerprint": "bdd6f585fd5f026aa4bc292e2deb75bfd254fa7e99c568499dfd9715b11ce877",
+        "after_fingerprint": "bdd6f585fd5f026aa4bc292e2deb75bfd254fa7e99c568499dfd9715b11ce877",
+        "started_at": "2026-10-27T00:03:15.639663+00:00",
+        "ended_at": "2026-10-27T00:03:16.983725+00:00",
+        "elapsed_seconds": 0.9558334999999261,
+        "log_sha256": "f3c584afe68edb20ae98ccf1fd3696b2c8f18edbb9e62c800684db6b1cc455bf"
+      },
+      {
+        "name": "focused-1",
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "apps/worker/src/durable/lobby-directory-object.test.mjs",
+          "apps/worker/src/routes/lobby.test.mjs",
+          ".tmp/comparison/c2-barrier.test.mjs"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/focused-1.log",
+        "fingerprint": "e2caa4830369ad45ba319c41c797301ddf8a5945dac1d4a618102c9861bfafa8",
+        "after_fingerprint": "e2caa4830369ad45ba319c41c797301ddf8a5945dac1d4a618102c9861bfafa8",
+        "started_at": "2026-10-27T00:03:59.661260+00:00",
+        "ended_at": "2026-10-27T00:04:00.965215+00:00",
+        "elapsed_seconds": 0.9250436999999465,
+        "log_sha256": "dee79c542a1694451174293d7c0bf1620c73f495ed05b6ea8ceec5c07b4e266d"
+      },
+      {
+        "name": "selector",
+        "command": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "select",
+          "--goal",
+          ".tmp/goal.json"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/selector.log",
+        "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "started_at": "2026-10-27T00:04:43.608089+00:00",
+        "ended_at": "2026-10-27T00:04:44.991916+00:00",
+        "elapsed_seconds": 1.0516952000000401,
+        "log_sha256": "0e7cd449d6ae272bfab08f92d69867516416e8f0b283e0995e184a1ce21e8b70"
+      },
+      {
+        "name": "wrangler-help",
+        "command": [
+          "node",
+          "node_modules/wrangler/bin/wrangler.js",
+          "dev",
+          "--help"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/wrangler-help.log",
+        "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "started_at": "2026-10-27T00:04:45.068517+00:00",
+        "ended_at": "2026-10-27T00:04:47.039011+00:00",
+        "elapsed_seconds": 1.6154693000000862,
+        "log_sha256": "0808851b16c41e0a4e52182cc2a392b4591ec1b4e1a8b306b61dd60222c7ad5e"
+      },
+      {
+        "name": "lint-1",
+        "command": [
+          "npm.cmd",
+          "run",
+          "lint"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/lint-1.log",
+        "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "started_at": "2026-10-27T00:05:12.418961+00:00",
+        "ended_at": "2026-10-27T00:05:21.798365+00:00",
+        "elapsed_seconds": 8.955322199999955,
+        "log_sha256": "9378074efd8f08c699c52fbd9165db2b3d831fa18fa472cda697d010675339ec"
+      },
+      {
+        "name": "types-1",
+        "command": [
+          "npm.cmd",
+          "run",
+          "typecheck"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/types-1.log",
+        "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "started_at": "2026-10-27T00:05:12.423131+00:00",
+        "ended_at": "2026-10-27T00:05:21.378773+00:00",
+        "elapsed_seconds": 8.51378869999985,
+        "log_sha256": "17ed6322bf929fc3e2b8ed8a088a411133837e2e8b4102c6cc1efca4b2172534"
+      },
+      {
+        "name": "stats-1",
+        "command": [
+          "npm.cmd",
+          "run",
+          "test:client-stats"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/stats-1.log",
+        "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "started_at": "2026-10-27T00:05:12.436442+00:00",
+        "ended_at": "2026-10-27T00:05:15.979451+00:00",
+        "elapsed_seconds": 3.1161328000000594,
+        "log_sha256": "b5f424dba335abb67aa004fc79342d4a1f73276338acf49fe78c4dadc2e12446"
+      },
+      {
+        "name": "worker-1",
+        "command": [
+          "npm.cmd",
+          "run",
+          "test:worker"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/worker-1.log",
+        "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "started_at": "2026-10-27T00:05:12.443434+00:00",
+        "ended_at": "2026-10-27T00:05:16.394327+00:00",
+        "elapsed_seconds": 3.5235523999999714,
+        "log_sha256": "7b919bb81475c11a833fe15e34bd0ce8cef35bfa4706785604d7a90ae7c1f0ce"
+      },
+      {
+        "name": "bundle-1",
+        "command": [
+          "npx.cmd",
+          "--no-install",
+          "wrangler",
+          "deploy",
+          "--dry-run"
+        ],
+        "cwd": "apps/worker",
+        "exit_code": 0,
+        "log": ".tmp/evidence/bundle-1.log",
+        "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "started_at": "2026-10-27T00:05:12.467982+00:00",
+        "ended_at": "2026-10-27T00:05:17.116952+00:00",
+        "elapsed_seconds": 4.197336799999903,
+        "log_sha256": "c639838af66f830facd7abfed4340047bbb714fb5119496bd7c6208883e42379"
+      },
+      {
+        "name": "design-1",
+        "command": [
+          "npm.cmd",
+          "run",
+          "check:design-contracts"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/design-1.log",
+        "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "started_at": "2026-10-27T00:05:12.468181+00:00",
+        "ended_at": "2026-10-27T00:05:14.025085+00:00",
+        "elapsed_seconds": 1.1211123999999018,
+        "log_sha256": "83cd1e47c4d84d6fd54f12016e745a4af7b46441e786bc8d2ddf1bc3e988cb59"
+      },
+      {
+        "name": "real-do-restart-1",
+        "command": [
+          "python",
+          ".tmp/evidence/runtime/restart.py"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/real-do-restart-1.log",
+        "fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "after_fingerprint": "48b1dee3b9f52d82126b5f29f38b3ea456b281d48fcbcc12d6b0c7f88df0788e",
+        "started_at": "2026-10-27T00:06:09.317481+00:00",
+        "ended_at": "2026-10-27T00:06:24.563960+00:00",
+        "elapsed_seconds": 14.918733099999827,
+        "log_sha256": "2f6f629dd55a74f06dcf328189603a3ab542944e3eb9b9c3e3d1c7d9eddac351"
+      },
+      {
+        "name": "focused-2",
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "apps/worker/src/durable/lobby-directory-object.test.mjs",
+          "apps/worker/src/routes/lobby.test.mjs",
+          ".tmp/comparison/c2-barrier.test.mjs"
+        ],
+        "cwd": ".",
+        "exit_code": 1,
+        "log": ".tmp/evidence/focused-2.log",
+        "fingerprint": "8c26c34dd06d9e08652924fc083efe228f702fc9c30a8a397e6e34c499c33ff0",
+        "after_fingerprint": "8c26c34dd06d9e08652924fc083efe228f702fc9c30a8a397e6e34c499c33ff0",
+        "started_at": "2026-10-27T00:07:16.843212+00:00",
+        "ended_at": "2026-10-27T00:07:18.123451+00:00",
+        "elapsed_seconds": 0.9218213999999989,
+        "log_sha256": "2589764f151c5cac2d90076be3b0848557bb390e66f3eaf27a8295a7afaeaf94"
+      },
+      {
+        "name": "focused-3",
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "apps/worker/src/durable/lobby-directory-object.test.mjs",
+          "apps/worker/src/routes/lobby.test.mjs",
+          ".tmp/comparison/c2-barrier.test.mjs"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/focused-3.log",
+        "fingerprint": "40bd43825e543cab37d020bb98ed8f3799dec968a20e164c9eadd6b13d7bf867",
+        "after_fingerprint": "40bd43825e543cab37d020bb98ed8f3799dec968a20e164c9eadd6b13d7bf867",
+        "started_at": "2026-10-27T00:07:39.501801+00:00",
+        "ended_at": "2026-10-27T00:07:40.769753+00:00",
+        "elapsed_seconds": 0.926072399999839,
+        "log_sha256": "c21477e036b36ded3f82bd757d15d536f4aa8e957e346da8f70e5466dab0ccb3"
+      },
+      {
+        "name": "selector-final",
+        "command": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "select",
+          "--goal",
+          ".tmp/goal.json"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/selector-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:32.505572+00:00",
+        "ended_at": "2026-10-27T00:08:33.959878+00:00",
+        "elapsed_seconds": 1.1083056999998462,
+        "log_sha256": "713d8a165099a6011cc5450b4493da43d118ccf85986722bb430224b9b40833b"
+      },
+      {
+        "name": "lint-final",
+        "command": [
+          "npm.cmd",
+          "run",
+          "lint"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/lint-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:49.300518+00:00",
+        "ended_at": "2026-10-27T00:08:56.028180+00:00",
+        "elapsed_seconds": 6.2089436000001115,
+        "log_sha256": "9378074efd8f08c699c52fbd9165db2b3d831fa18fa472cda697d010675339ec"
+      },
+      {
+        "name": "types-final",
+        "command": [
+          "npm.cmd",
+          "run",
+          "typecheck"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/types-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:49.318117+00:00",
+        "ended_at": "2026-10-27T00:08:59.082311+00:00",
+        "elapsed_seconds": 9.20848090000004,
+        "log_sha256": "17ed6322bf929fc3e2b8ed8a088a411133837e2e8b4102c6cc1efca4b2172534"
+      },
+      {
+        "name": "worker-final",
+        "command": [
+          "npm.cmd",
+          "run",
+          "test:worker"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/worker-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:49.318629+00:00",
+        "ended_at": "2026-10-27T00:08:53.277331+00:00",
+        "elapsed_seconds": 3.4004652999999507,
+        "log_sha256": "d1ff0f3d40b9c237b9bed5e386b51f10e10b0e7b175e1f759db2c637577d431a"
+      },
+      {
+        "name": "stats-final",
+        "command": [
+          "npm.cmd",
+          "run",
+          "test:client-stats"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/stats-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:49.320049+00:00",
+        "ended_at": "2026-10-27T00:08:53.197578+00:00",
+        "elapsed_seconds": 3.3238017000001037,
+        "log_sha256": "b5f424dba335abb67aa004fc79342d4a1f73276338acf49fe78c4dadc2e12446"
+      },
+      {
+        "name": "bundle-final",
+        "command": [
+          "npx.cmd",
+          "--no-install",
+          "wrangler",
+          "deploy",
+          "--dry-run"
+        ],
+        "cwd": "apps/worker",
+        "exit_code": 0,
+        "log": ".tmp/evidence/bundle-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:49.344629+00:00",
+        "ended_at": "2026-10-27T00:08:53.979493+00:00",
+        "elapsed_seconds": 4.075981899999988,
+        "log_sha256": "b584e0606d88037ecc12fba4690777c93498dc4c9c9c93f48ead191c65d69855"
+      },
+      {
+        "name": "design-final",
+        "command": [
+          "npm.cmd",
+          "run",
+          "check:design-contracts"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/design-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:49.345982+00:00",
+        "ended_at": "2026-10-27T00:08:51.167075+00:00",
+        "elapsed_seconds": 1.2733048000000053,
+        "log_sha256": "83cd1e47c4d84d6fd54f12016e745a4af7b46441e786bc8d2ddf1bc3e988cb59"
+      },
+      {
+        "name": "barrier-final",
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          ".tmp/comparison/c2-barrier.test.mjs"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/barrier-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:49.356551+00:00",
+        "ended_at": "2026-10-27T00:08:51.119362+00:00",
+        "elapsed_seconds": 1.2093528000000333,
+        "log_sha256": "210f6c525e75924907b8712db691893ff8f691b3e74aa73c8ceb0aae6ee3bb75"
+      },
+      {
+        "name": "worker-types-final",
+        "command": [
+          "npm.cmd",
+          "--workspace",
+          "@infinitas/worker",
+          "run",
+          "typecheck"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/worker-types-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:49.409848+00:00",
+        "ended_at": "2026-10-27T00:08:55.770525+00:00",
+        "elapsed_seconds": 5.815591300000051,
+        "log_sha256": "63e7be8ff54bd853595457871757cda33110b60d76523c3caa20a3e508d02118"
+      },
+      {
+        "name": "real-do-restart-final",
+        "command": [
+          "python",
+          ".tmp/evidence/runtime/restart.py",
+          ".tmp/evidence/runtime2"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/real-do-restart-final.log",
+        "fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "after_fingerprint": "5e22fc0e50f024dd042765b914bea6f53ada049502dec43e92ea499e662df9d2",
+        "started_at": "2026-10-27T00:08:49.422082+00:00",
+        "ended_at": "2026-10-27T00:09:06.843852+00:00",
+        "elapsed_seconds": 16.878549799999973,
+        "log_sha256": "74cdf9b85c10380f0d44d999add18c1948a798588e4480a453e46327109c1b02"
+      },
+      {
+        "name": "selector-final2",
+        "command": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "select",
+          "--goal",
+          ".tmp/goal.json"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/selector-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:17.540567+00:00",
+        "ended_at": "2026-10-27T00:09:19.160521+00:00",
+        "elapsed_seconds": 1.2155639000000065,
+        "log_sha256": "22f06d2ca27b19227227e985311a1f682e31bf3603a1f87c48a6d0a461a28963"
+      },
+      {
+        "name": "lint-final2",
+        "command": [
+          "npm.cmd",
+          "run",
+          "lint"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/lint-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:49.969156+00:00",
+        "ended_at": "2026-10-27T00:09:57.200051+00:00",
+        "elapsed_seconds": 6.557686099999955,
+        "log_sha256": "9378074efd8f08c699c52fbd9165db2b3d831fa18fa472cda697d010675339ec"
+      },
+      {
+        "name": "stats-final2",
+        "command": [
+          "npm.cmd",
+          "run",
+          "test:client-stats"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/stats-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:49.998036+00:00",
+        "ended_at": "2026-10-27T00:09:54.319665+00:00",
+        "elapsed_seconds": 3.632205200000044,
+        "log_sha256": "b5f424dba335abb67aa004fc79342d4a1f73276338acf49fe78c4dadc2e12446"
+      },
+      {
+        "name": "types-final2",
+        "command": [
+          "npm.cmd",
+          "run",
+          "typecheck"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/types-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:50.008480+00:00",
+        "ended_at": "2026-10-27T00:10:00.199385+00:00",
+        "elapsed_seconds": 9.508281300000135,
+        "log_sha256": "17ed6322bf929fc3e2b8ed8a088a411133837e2e8b4102c6cc1efca4b2172534"
+      },
+      {
+        "name": "design-final2",
+        "command": [
+          "npm.cmd",
+          "run",
+          "check:design-contracts"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/design-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:50.032169+00:00",
+        "ended_at": "2026-10-27T00:09:52.129564+00:00",
+        "elapsed_seconds": 1.4301828000000114,
+        "log_sha256": "83cd1e47c4d84d6fd54f12016e745a4af7b46441e786bc8d2ddf1bc3e988cb59"
+      },
+      {
+        "name": "worker-final2",
+        "command": [
+          "npm.cmd",
+          "run",
+          "test:worker"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/worker-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:50.039640+00:00",
+        "ended_at": "2026-10-27T00:09:54.438507+00:00",
+        "elapsed_seconds": 3.7212915000000066,
+        "log_sha256": "1d0d8a4ce510f54b5a8d924845ad6091fee7d3e1fd6f1ead736b80627b7bb931"
+      },
+      {
+        "name": "bundle-final2",
+        "command": [
+          "npx.cmd",
+          "--no-install",
+          "wrangler",
+          "deploy",
+          "--dry-run"
+        ],
+        "cwd": "apps/worker",
+        "exit_code": 0,
+        "log": ".tmp/evidence/bundle-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:50.048245+00:00",
+        "ended_at": "2026-10-27T00:09:55.200269+00:00",
+        "elapsed_seconds": 4.44253260000005,
+        "log_sha256": "c0c4f4f1c3479b2908b2120644516b1c177e6456807e9f31cf8429a29742af99"
+      },
+      {
+        "name": "worker-types-final2",
+        "command": [
+          "npm.cmd",
+          "--workspace",
+          "@infinitas/worker",
+          "run",
+          "typecheck"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/worker-types-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:50.063739+00:00",
+        "ended_at": "2026-10-27T00:09:56.838692+00:00",
+        "elapsed_seconds": 6.107119299999795,
+        "log_sha256": "63e7be8ff54bd853595457871757cda33110b60d76523c3caa20a3e508d02118"
+      },
+      {
+        "name": "barrier-final2",
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          ".tmp/comparison/c2-barrier.test.mjs"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/barrier-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:50.075512+00:00",
+        "ended_at": "2026-10-27T00:09:52.112998+00:00",
+        "elapsed_seconds": 1.361672100000078,
+        "log_sha256": "5858e917c6a20ceb463724cfa0763a9561f8cd5792a0225196b4fdcd8f3074c5"
+      },
+      {
+        "name": "real-do-restart-final2",
+        "command": [
+          "python",
+          ".tmp/evidence/runtime/restart.py",
+          ".tmp/evidence/runtime3"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/real-do-restart-final2.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:09:50.116480+00:00",
+        "ended_at": "2026-10-27T00:10:08.077937+00:00",
+        "elapsed_seconds": 17.28014959999996,
+        "log_sha256": "cf69d95dddb5751ad51867d867501b234851adc171662203a712a1175e549bf6"
+      },
+      {
+        "name": "diff-check-final",
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/diff-check-final.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:10:39.166388+00:00",
+        "ended_at": "2026-10-27T00:10:39.869961+00:00",
+        "elapsed_seconds": 0.3902354000001651,
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "environment-final",
+        "command": [
+          "node",
+          "-p",
+          "JSON.stringify({version:process.version,execPath:process.execPath})"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/environment-final.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:10:39.945143+00:00",
+        "ended_at": "2026-10-27T00:10:40.651538+00:00",
+        "elapsed_seconds": 0.3616636000001563,
+        "log_sha256": "c75b32d44d6d45a915a6f2c37a328999ba3df68afbfeda1f3e4756d93175c7b1"
+      },
+      {
+        "name": "root-membership",
+        "command": [
+          "node",
+          "node_modules/typescript/bin/tsc",
+          "--noEmit",
+          "-p",
+          "tsconfig.json",
+          "--listFilesOnly"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/root-membership.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:10:40.725993+00:00",
+        "ended_at": "2026-10-27T00:10:42.533420+00:00",
+        "elapsed_seconds": 1.4657068000001345,
+        "log_sha256": "bb1a2fccb90db9007b75c8d13f371eebdd62e06c6d05b940dab7071fc7905f69"
+      },
+      {
+        "name": "artifact-finalize",
+        "command": [
+          "python",
+          ".tmp/evidence/finalize.py"
+        ],
+        "cwd": ".",
+        "exit_code": 0,
+        "log": ".tmp/evidence/artifact-finalize.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:12:19.575270+00:00",
+        "ended_at": "2026-10-27T00:12:21.205884+00:00",
+        "elapsed_seconds": 1.2963402000000315,
+        "log_sha256": "ab575d5b4b0855f6da5568c19672fc829e73478a16acd04f4725be7978d245ca"
+      },
+      {
+        "name": "completion",
+        "command": [
+          "python",
+          "tools/harness-v2/harness.py",
+          "complete",
+          "--goal",
+          ".tmp/goal.json",
+          "--evidence",
+          ".tmp/evidence/executor.json"
+        ],
+        "cwd": ".",
+        "exit_code": 2,
+        "log": ".tmp/evidence/completion.log",
+        "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "after_fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+        "started_at": "2026-10-27T00:12:21.283932+00:00",
+        "ended_at": "2026-10-27T00:12:22.725644+00:00",
+        "elapsed_seconds": 1.0920223000000533,
+        "log_sha256": "3a27b2dc69a85008dc99a4a544f66473f0417fd01d8038ae5c5425d29253a780"
+      }
+    ],
+    "manual": {
+      "scope-and-meaning": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/git-readback.json",
+          ".tmp/evidence/review/report.json"
+        ]
+      },
+      "ci-surface-parity": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/test-membership.json",
+          ".tmp/evidence/selector-final2.log"
+        ],
+        "detail": "Fixed commands cover quick product CI and Worker bundle; no dependency install or old exact-role check: dependencies/CI/harness unchanged. Native/full-client build are not C2 product changes and were not run."
+      },
+      "secret-and-untrusted-input": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/goal.json",
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "detail": "No secret values collected, no MCP/apps/plugins/external writes. Runtime uses isolated config/no production bindings and explicit empty env file."
+      },
+      "contract-and-behavior-cases": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/barrier-final2.log",
+          ".tmp/evidence/review/report.json"
+        ]
+      },
+      "clock-barrier-restore-replay-growth-and-runtime": {
+        "status": "unproven",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/barrier-final2.log",
+          ".tmp/evidence/runtime3/restart-result.json"
+        ],
+        "reason": "Clock/barrier/replay/growth/real restart proven; actual hibernation unproven."
+      },
+      "old-new-writer-reader-corrupt-future-matrix": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/review/final-recheck.log"
+        ],
+        "scope": "Internal directory formats only: old map/deleted-room max -> scalar writer -> current reader; absent helper/live room max, invalid shapes, unsafe counters, sentinel; unsupported shapes rejected without write. No new format/version introduced."
+      },
+      "compatibility-and-rollout-decision": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/review/report.json"
+        ],
+        "detail": "No public DTO/constants/TTL/list contract or scalar writer format change. Read supported legacy map and scalar; no rollout/min-client change."
+      },
+      "real-client-worker-source-e2e": {
+        "status": "unproven",
+        "evidence": [
+          ".tmp/evidence/selector-final2.log"
+        ],
+        "reason": "Selector adds broad FSM/WS tag for every worker file. C2 directly changes directory only; no real native/source/client E2E was run or claimed, and this gate remains unproven."
+      },
+      "changed-test-runtime-and-type-membership": {
+        "status": "pass",
+        "evidence": [
+          ".tmp/evidence/test-membership.json",
+          ".tmp/evidence/worker-final2.log",
+          ".tmp/evidence/barrier-final2.log"
+        ]
+      }
+    },
+    "review": {
+      "status": "COMPLETE",
+      "reviewer": "/root/c2_independent_review",
+      "independent": true,
+      "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+      "coverage": [
+        "contract",
+        "behavior"
+      ],
+      "evidence": [
+        ".tmp/evidence/review/report.json",
+        ".tmp/evidence/review/final-recheck.log"
+      ]
+    },
+    "findings": [
+      {
+        "id": "R1-corrupt-helper",
+        "severity": "Must fix",
+        "disposition": "fixed",
+        "introduced_by_diff": false,
+        "reproduction": "Restore helper=\"corrupt-scalar-2500\" with empty rooms, upsert at 2000. Initial code returned 200 and rewrote helper to 2000; mixed legacy invalid members/null likewise normalized.",
+        "evidence": [
+          ".tmp/evidence/review/boundary.log",
+          ".tmp/evidence/review/seed-boundary.log",
+          ".tmp/evidence/review/final-recheck.log"
+        ],
+        "remaining_risk": "No automatic repair or recovery of already-corrupt persisted bytes is implemented; reads/writes fail observably and preserve bytes.",
+        "review_disposition": "FIXED_AND_INDEPENDENTLY_VERIFIED"
+      },
+      {
+        "id": "R2-corrupt-room",
+        "severity": "Must fix",
+        "disposition": "fixed",
+        "introduced_by_diff": false,
+        "reproduction": "Invalid ttlStartedAt silently dropped a stored room, and subsequent upsert overwrote original storage. Follow-up stored currentPlayers=NaN remained accepted and would serialize as null. Non-record/key-mismatch/unsafe numeric variants checked.",
+        "evidence": [
+          ".tmp/evidence/review/boundary.log",
+          ".tmp/evidence/review/seed-boundary.log",
+          ".tmp/evidence/review/recheck-2.log",
+          ".tmp/evidence/review/final-recheck.log"
+        ],
+        "remaining_risk": "This is tested corruption coverage, not exhaustive validation of every optional historical field. Existing parser defaults for optional legacy fields remain unchanged.",
+        "review_disposition": "FIXED_AND_INDEPENDENTLY_VERIFIED"
+      },
+      {
+        "id": "R3-unsafe-counter",
+        "severity": "Should fix",
+        "disposition": "fixed",
+        "introduced_by_diff": false,
+        "reproduction": "Helper and room updatedAt=2**53 caused +1 rounding to same token and stale remove deleted newer summary. Boundary MAX_SAFE_INTEGER exhaustion also checked.",
+        "evidence": [
+          ".tmp/evidence/review/boundary.log",
+          ".tmp/evidence/review/seed-boundary.log",
+          ".tmp/evidence/review/final-recheck.log"
+        ],
+        "remaining_risk": "Counter exhaustion now fails observably before modifying storage. No realistic wall clock exhaustion is expected; no token format expansion implemented.",
+        "review_disposition": "FIXED_AND_INDEPENDENTLY_VERIFIED"
+      }
+    ],
+    "checkpoint": {
+      "owner": "parent",
+      "owner_status": "stopped",
+      "status": "BLOCKED",
+      "stop_reason": "Actual hibernation and broad real-client-worker-source-e2e manual guarantee unproven; no unresolved significant product defect.",
+      "fingerprint": "bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e",
+      "publication_fingerprint": "e5df869e3a77735e621cbc924769aba570aa21a547e00f19969f8f63a0b8e942",
+      "decisions": [
+        {
+          "id": "D1-corrupt-storage",
+          "blocking": false,
+          "affects": [
+            "apps/worker/src/durable/lobby-directory-object.ts"
+          ],
+          "deadline": "before final validation",
+          "interim": "Resolved: reject corrupt storage without writes; preserve undefined helper/valid legacy map/scalar and known empty sentinel compatibility. Independent finding confirmed pre-existing but within explicit C2 prohibition."
+        },
+        {
+          "id": "D2-real-hibernation",
+          "blocking": false,
+          "affects": [],
+          "deadline": "final evidence",
+          "interim": "Real local workerd process restart is demonstrable. No actual DO hibernation/eviction control here; report Q05/AC8 unproven and final BLOCKED, not substitute new-instance tests."
+        }
+      ],
+      "verification_logs": [
+        ".tmp/evidence/seed-directory.log",
+        ".tmp/evidence/seed-barrier.log",
+        ".tmp/evidence/focused-1.log",
+        ".tmp/evidence/selector.log",
+        ".tmp/evidence/wrangler-help.log",
+        ".tmp/evidence/lint-1.log",
+        ".tmp/evidence/types-1.log",
+        ".tmp/evidence/stats-1.log",
+        ".tmp/evidence/worker-1.log",
+        ".tmp/evidence/bundle-1.log",
+        ".tmp/evidence/design-1.log",
+        ".tmp/evidence/real-do-restart-1.log",
+        ".tmp/evidence/focused-2.log",
+        ".tmp/evidence/focused-3.log",
+        ".tmp/evidence/selector-final.log",
+        ".tmp/evidence/lint-final.log",
+        ".tmp/evidence/types-final.log",
+        ".tmp/evidence/worker-final.log",
+        ".tmp/evidence/stats-final.log",
+        ".tmp/evidence/bundle-final.log",
+        ".tmp/evidence/design-final.log",
+        ".tmp/evidence/barrier-final.log",
+        ".tmp/evidence/worker-types-final.log",
+        ".tmp/evidence/real-do-restart-final.log",
+        ".tmp/evidence/selector-final2.log",
+        ".tmp/evidence/lint-final2.log",
+        ".tmp/evidence/stats-final2.log",
+        ".tmp/evidence/types-final2.log",
+        ".tmp/evidence/design-final2.log",
+        ".tmp/evidence/worker-final2.log",
+        ".tmp/evidence/bundle-final2.log",
+        ".tmp/evidence/worker-types-final2.log",
+        ".tmp/evidence/barrier-final2.log",
+        ".tmp/evidence/real-do-restart-final2.log",
+        ".tmp/evidence/diff-check-final.log",
+        ".tmp/evidence/environment-final.log",
+        ".tmp/evidence/root-membership.log"
+      ],
+      "unfinished": [
+        "AC8",
+        "Q05",
+        "manual:clock-barrier-restore-replay-growth-and-runtime",
+        "manual:real-client-worker-source-e2e"
+      ],
+      "integration_complete": false,
+      "implementation_integrated": true,
+      "next": "Resume only in an authorized environment that can demonstrate actual DO hibernation and any required native/source E2E. Keep patch, isolated persistence and failed-attempt evidence; no cleanup performed.",
+      "goal_checkpoint_note": "Goal contains checkpoint at contract freeze and points here; this external final checkpoint supplies the current fingerprint without self-reference."
+    },
+    "spawn_ids": [
+      {
+        "id": "/root/c2_independent_review",
+        "task": "independent contract and behavior audit",
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "role_default": ".codex/agents/independent-reviewer.toml",
+        "reason": "C2/R04 mandatory independent review",
+        "write_scope": ".tmp/evidence/review",
+        "implementation_involved": false
+      }
+    ],
+    "retries": {
+      "seed_directory": "3 failed expected regression assertions before fix",
+      "seed_barrier": "5 failed expected regression assertions before fix",
+      "focused_2": "1 fail: array accepted by shared isRecord; fixed via internal plain-record validation",
+      "review_boundary": "corrupt helper/room and unsafe integer negative cases initially failed; fixed and independently retested",
+      "review_nan": "NaN stored currentPlayers initially accepted; fixed and independently retested",
+      "validation_repeats": "Every final required check rerun after product change; older fingerprints retained, not reused.",
+      "artifact_generation": "First finalize invocation failed because reviewer disposition enum differed from harness fixed enum; normalized in aggregate while preserving original independent report; next artifact-finalize exited 0. Product evidence was unchanged."
+    },
+    "runtime_evidence": {
+      "latest": ".tmp/evidence/runtime3/restart-result.json",
+      "attempts": [
+        ".tmp/evidence/runtime/restart-result.json",
+        ".tmp/evidence/runtime2/restart-result.json",
+        ".tmp/evidence/runtime3/restart-result.json"
+      ],
+      "process_stop_readback": true,
+      "actual_hibernation": "unproven"
+    },
+    "unexecuted_surfaces": {
+      "native": {
+        "status": "unproven",
+        "reason": "C2 does not modify native app; no native run claimed"
+      },
+      "source": {
+        "status": "unproven",
+        "reason": "No actual watcher/parser E2E executed"
+      },
+      "browser": {
+        "status": "unproven",
+        "reason": "C2 has no UI change; common C1 browser helper not run and no visual PASS claimed"
+      },
+      "hibernation": {
+        "status": "unproven",
+        "reason": "Real process restart is distinct from runtime hibernation"
+      }
+    },
+    "remaining_risk": [
+      "Actual DO hibernation behavior is not demonstrated.",
+      "No actual native/source/browser run was performed.",
+      "Corrupt persisted directory state now fails visibly and remains stored; operational repair policy is outside C2.",
+      "Process-stop exit code 1 is intentional owned runtime termination; runtime validation command exit is 0."
+    ],
+    "usage": {
+      "input_tokens": null,
+      "cached_input_tokens": null,
+      "output_tokens": null,
+      "reasoning_tokens": null,
+      "parent": null,
+      "children": null,
+      "coverage": "unmeasured; no provider usage telemetry exposed; no estimates from text/agent counts"
+    },
+    "raw_log_links": {
+      "parent_commands": ".tmp/evidence/*.log with matching *.json command/exit/fingerprint/timestamps",
+      "child_commands": ".tmp/evidence/review/report.json and review/*.log",
+      "conversation_provider_log": null
+    },
+    "final_snapshot": ".tmp/evidence/snapshot-after.json",
+    "purpose_external_operations": [],
+    "completion_gate": {
+      "command": "python tools/harness-v2/harness.py complete --goal .tmp/goal.json --evidence .tmp/evidence/executor.json",
+      "metadata": ".tmp/evidence/completion.json",
+      "exit_code": 2,
+      "result": {
+        "status": "BLOCKED",
+        "reasons": [
+          "unproven AC: AC8",
+          "unproven quality: Q05",
+          "unproven manual gate: clock-barrier-restore-replay-growth-and-runtime",
+          "unproven manual gate: real-client-worker-source-e2e"
+        ]
+      }
+    }
+  },
+  "independent_comparison_verdict": "pending; this collector makes no quality decision",
+  "runtime_result": {
+    "run_id": "C2-v2-1",
+    "attempt": 0,
+    "case_id": "C2",
+    "lane": "v2",
+    "product_base": "4b600d3445edc71d0599058809c9a89b04591760",
+    "harness_commit": "59b0815dc95738c3e7a14d5505fb58d3df49c460",
+    "input_hash": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "started_at": "2026-10-27T00:01:31.975295+00:00",
+    "ended_at": "2026-10-27T00:13:01.281282+00:00",
+    "wall_seconds": 689.3059974999999,
+    "exit_code": 0,
+    "timeout": false,
+    "before": {
+      "head": "72ed3f963d84ad866d9cb6ee6710485f6557e9ba",
+      "branch": "codex/harness-v2-trial",
+      "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {},
+      "fingerprint": "a592ba43b4c749033bdb504e44d2fc79a8e8a400100dbd608284330da077fc3b"
+    },
+    "after": {
+      "head": "72ed3f963d84ad866d9cb6ee6710485f6557e9ba",
+      "branch": "codex/harness-v2-trial",
+      "status_hash": "f2dd117d12d4f7edab30cafa8f9f83a72615608cc92bd1071878b4ebe8bff7ec",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "3b35bf9ec141cc586a6982e6c741bdf42f8750b272c67c123702fe0d3f7e69d0",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {
+        "apps/worker/src/durable/lobby-directory-object.test.mjs": "2ba64542272b5a00946e277b6a95199ec12e23d435d5e6bfaa10432eb77ff627",
+        "apps/worker/src/durable/lobby-directory-object.ts": "c87d9a0020b23ef56aff16fec5ffb614c1a8237547732fcc66ff57e5f57ea722",
+        "apps/worker/src/routes/lobby.test.mjs": "d3ee85bafc325412aff08ba7e249a17d6c77de861617690e88d7fa5d8ad0abab"
+      },
+      "fingerprint": "6090d54960f1d70e8062a2b6655b36f2c9e29856db067d47eda2230f7bf8e774"
+    },
+    "all_agents_total_tokens": null,
+    "active_seconds": null,
+    "spawn_ids": null,
+    "review": null,
+    "verdict": "unproven; independent evaluation pending",
+    "usage": [
+      {
+        "input_tokens": 3376243,
+        "cached_input_tokens": 3260288,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 29713,
+        "reasoning_output_tokens": 7610
+      }
+    ]
+  },
+  "events": {
+    "thread_id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+    "events": 146,
+    "usage": [
+      {
+        "input_tokens": 3376243,
+        "cached_input_tokens": 3260288,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 29713,
+        "reasoning_output_tokens": 7610
+      }
+    ],
+    "terminal": [
+      {
+        "type": "turn.completed",
+        "usage": {
+          "input_tokens": 3376243,
+          "cached_input_tokens": 3260288,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 29713,
+          "reasoning_output_tokens": 7610
+        }
+      }
+    ],
+    "latest_message": "**BLOCKED**。実装・検証・独立監査は完了しましたが、実hibernationと実client/source E2Eは未実証です。\n\n- 同ms token再利用、旧storage復元、破損stateの上書きを修正。\n- 固定6コマンド、Worker110件、barrier7件、独立検証38件が成功。\n- 実ローカルDO再起動も成功。重大findingは全件修正済み。\n- 自分が起動したruntimeは停止済み。外部操作なし。\n\nAC/Q別判定・全試行・監査結果は [executor.json](C:/Users/tts13/Documents/Codex/experiments/issue198-20261026-c/trials/C2-v2-1/.tmp/evidence/executor.json) に保存しました。",
+    "commands": [
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Location\nGet-Content -LiteralPath AGENTS.md -Encoding UTF8\nGet-Content -LiteralPath .tmp/comparison/input.json -Encoding UTF8\n& ./.tmp/toolchain/node.exe --version\n& ./.tmp/toolchain/npm.cmd --version\nGet-Command node,npm | Select-Object Name,CommandType,Source,Path | ConvertTo-Json -Depth 4\nnode -p '\"'JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch})'\nnpm --version\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -LiteralPath C:/Users/tts13/.codex/skills/windows-utf8-safe-write/SKILL.md -Encoding UTF8\nGet-Content -LiteralPath .agents/skills/verify-change/SKILL.md -Encoding UTF8'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'New-Item -ItemType Directory -Force -Path .tmp/evidence | Out-Null\n$nodeVersion = & ./.tmp/toolchain/node.exe --version\n$npmVersion = & ./.tmp/toolchain/npm.cmd --version\n$cliEnvironment = node -p '\"'JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch})' | ConvertFrom-Json\n\"'$envEvidence = [ordered]@{ recorded_at = [DateTime]::UtcNow.ToString('\"'o'); direct_node = \"'$nodeVersion; direct_npm = $npmVersion; commands = @(Get-Command node,npm | Select-Object Name,CommandType,Source,Path); cli = $cliEnvironment; cli_npm = (npm --version); expected_node = '\"'v22.23.4'; expected_npm = '10.9.9'; match = (\"'$nodeVersion -eq '\"'v22.23.4' -and \"'$npmVersion -eq '\"'10.9.9' -and \"'$cliEnvironment.version -eq '\"'v22.23.4') }\n[IO.File]::WriteAllText((Join-Path (Get-Location) '.tmp/evidence/environment.json'), (\"'$envEvidence | ConvertTo-Json -Depth 8), [Text.UTF8Encoding]::new($false))\nGet-Content .tmp/evidence/environment.json -Encoding UTF8\nif (-not $envEvidence.match) { throw '\"'Environment mismatch' }\nGet-Content tools/harness-v2/goal.example.json -Encoding UTF8\nGet-Content .harness-v2.json -Encoding UTF8\nGet-Content .tmp/comparison/runtime.json -Encoding UTF8\nGet-Content .tmp/comparison/reference/visual.json -Encoding UTF8\npython tools/harness-v2/harness.py --help\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"git status --porcelain=v2 --branch\n git rev-parse HEAD\n git diff --stat\n git diff --cached --stat\n git stash list\n git branch --format='%(refname:short) %(objectname)'\n rg --files -g AGENTS.md -g package.json -g '*lobby*' -g '*harness*' -g '*wrangler*' -g '*tsconfig*' -g '*requirements*'\nGet-Content apps/worker/src/durable/lobby-directory-object.ts -Encoding UTF8\nGet-Content apps/worker/src/routes/lobby.ts -Encoding UTF8\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content apps/worker/AGENTS.md -Encoding UTF8\nGet-Content package.json -Encoding UTF8\nGet-Content apps/worker/package.json -Encoding UTF8\nGet-Content apps/worker/tsconfig.json -Encoding UTF8\nGet-Content apps/worker/wrangler.toml -Encoding UTF8\nGet-Content apps/worker/src/durable/lobby-directory-object.test.mjs -Encoding UTF8\nGet-Content .tmp/comparison/c2-barrier.test.mjs -Encoding UTF8'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content tools/harness-v2/harness.py -Encoding UTF8\nGet-Content docs/harness-v2/requirements.md -Encoding UTF8\nGet-Content docs/harness-v2/comparison-plan.md -Encoding UTF8'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content apps/worker/src/services/lobby-directory.ts -Encoding UTF8\nGet-Content apps/worker/src/routes/lobby.test.mjs -Encoding UTF8\nGet-Content docs/testing/local-e2e.md -Encoding UTF8\nrg --files .tmp/comparison\nrg -n 'LobbyDirectory|lobby|hibern|restart' docs/design apps/worker/src/index.ts tools/run-local-e2e.ps1\"",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"rg -n 'Q05|Q06|Q12|Q13|Q14|Q15|Q16|R04|effort|reasoning|independent-reviewer|snapshot|def completion|def validate_goal|semantics|COMMANDS|test_membership|manual|argparse|add_argument' docs/harness-v2/requirements.md tools/harness-v2/policy.py tools/harness-v2/harness.py .codex .agents docs/harness-v2/comparison-plan.md\nGet-Content tools/harness-v2/policy.py -Encoding UTF8 -TotalCount 240\nGet-Content docs/harness-v2/requirements.md -Encoding UTF8\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content tools/harness-v2/policy.py -Encoding UTF8 | Select-Object -First 205\nGet-Content tools/harness-v2/policy.py -Encoding UTF8 | Select-Object -Skip 301 -First 80\nGet-Content tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 250 -First 72\nGet-Content tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 375 -First 58\nGet-Content .codex/agents/independent-reviewer.toml -Encoding UTF8\nGet-Content tsconfig.json -Encoding UTF8\nGet-Content docs/design/01_fsm.md -Encoding UTF8 | Select-Object -Skip 81 -First 22\nGet-Content docs/design/03_data_model.md -Encoding UTF8 | Select-Object -Skip 140 -First 48'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/setup.py\npython tools/harness-v2/harness.py select --goal .tmp/goal.json --paths apps/worker/src/durable/lobby-directory-object.ts apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content docs/design/10_regression_guard_addendum.md -Encoding UTF8 -TotalCount 180\nGet-Content tsconfig.base.json -Encoding UTF8\nrg -n 'test:worker|test:client-stats|typecheck|lint|wrangler|design' .github\nGet-Content .tmp/comparison/browser_fixture.mjs -Encoding UTF8 -TotalCount 65\nGet-Content apps/worker/src/durable/room-object.test.mjs -Encoding UTF8 | Select-String -Pattern 'test\\\\('\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py seed-barrier . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py seed-directory . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"git show 4b600d3445edc71d0599058809c9a89b04591760:apps/worker/src/durable/lobby-directory-object.ts | Select-String -Pattern 'if \\\\(isFiniteNumber\\\\(input\\\\)\\\\)' -Context 0,16\npython -c \\\"from pathlib import Path; import json; ps=['apps/worker/src/durable/lobby-directory-object.ts','apps/worker/src/durable/lobby-directory-object.test.mjs','apps/worker/src/routes/lobby.test.mjs']; print(json.dumps({p:{'bom':Path(p).read_bytes().startswith(bytes([239,187,191])),'crlf':Path(p).read_bytes().count(b'\\\\r\\\\n'),'lf':Path(p).read_bytes().count(b'\\\\n')} for p in ps}))\\\"\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'git diff --check\n git diff --stat\npython .tmp/evidence/run.py focused-1 . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs .tmp/comparison/c2-barrier.test.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"python -c \\\"import json; from pathlib import Path; p=Path('.tmp/goal.json'); g=json.loads(p.read_text(encoding='utf-8')); g['spawn_ids']=[{'id':'/root/c2_independent_review','task':'independent contract and behavior audit','model':'gpt-6.1-sol','effort':'high','role_default':'.codex/agents/independent-reviewer.toml','reason':'C2/R04 mandatory independent review','write_scope':'.tmp/evidence/review','implementation_involved':False}]; g['owners'][0]['paths'].remove('.tmp/evidence'); g['owners'][0]['paths'].extend(['.tmp/evidence/runtime','.tmp/evidence/parent']); g['owners'].append({'owner':'/root/c2_independent_review','paths':['.tmp/evidence/review'],'status':'active'}); g['checkpoint'].update({'status':'NOT_READY','next':'Fixed checks and isolated runtime restart; independent review pending','decisions':['Minimal producer-only repair; public DTO/TTL/list filters unchanged.','Parent owns all product/shared scope; shared writes forbidden. Reviewer owns review artifacts only.'],'verification_logs':['.tmp/evidence/seed-directory.json','.tmp/evidence/seed-barrier.json','.tmp/evidence/focused-1.json']}); p.write_text(json.dumps(g,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\\"\npython .tmp/evidence/run.py selector . python tools/harness-v2/harness.py select --goal .tmp/goal.json\npython .tmp/evidence/run.py wrangler-help . node node_modules/wrangler/bin/wrangler.js dev --help\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py design-1 . npm run check:design-contracts'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py stats-1 . npm run test:client-stats'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-1 . npm run test:worker'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py bundle-1 apps/worker npx --no-install wrangler deploy --dry-run'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py types-1 . npm run typecheck'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py lint-1 . npm run lint'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py real-do-restart-1 . python .tmp/evidence/runtime/restart.py'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content .tmp/evidence/review/boundary.test.mjs -Encoding UTF8\nGet-Content .tmp/evidence/runtime/restart-result.json -Encoding UTF8 | Select-Object -First 24'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py focused-2 . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs .tmp/comparison/c2-barrier.test.mjs'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content apps/worker/src/utils/validation.ts -Encoding UTF8 -TotalCount 22'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py focused-3 . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs .tmp/comparison/c2-barrier.test.mjs\n git diff --check'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"New-Item -ItemType Directory -Force -Path .tmp/evidence/runtime2 | Out-Null\nCopy-Item -LiteralPath .tmp/evidence/runtime/entry.ts -Destination .tmp/evidence/runtime2/entry.ts\npython -c \\\"import json,sys; from pathlib import Path; sys.path.insert(0,'tools/harness-v2'); import harness; p=Path('.tmp/goal.json'); g=json.loads(p.read_text(encoding='utf-8')); g['owners'][0]['paths'].append('.tmp/evidence/runtime2'); g['artifact_ownership']={'parent':'.tmp/evidence except .tmp/evidence/review','reviewer':'.tmp/evidence/review','shared_writer':'parent (writes forbidden)'}; g['decisions']=[{'id':'D1-corrupt-storage','blocking':False,'affects':['apps/worker/src/durable/lobby-directory-object.ts'],'deadline':'before final validation','interim':'Resolved: reject corrupt storage without writes; preserve undefined helper/valid legacy map/scalar and known empty sentinel compatibility. Independent finding confirmed pre-existing but within explicit C2 prohibition.'},{'id':'D2-real-hibernation','blocking':False,'affects':[],'deadline':'final evidence','interim':'Real local workerd process restart is demonstrable. No actual DO hibernation/eviction control here; report Q05/AC8 unproven and final BLOCKED, not substitute new-instance tests.'}]; g['acceptance'].append({'id':'AC8','text':'Real DO hibernation/recovery guarantee must have direct runtime evidence; if unavailable mark unproven and do not claim full acceptance.'}); g['checkpoint'].update({'status':'BLOCKED','owner':'parent','owner_status':'active','stop_reason':'Actual DO hibernation evidence unavailable in isolated local environment; continue independent AC validation.','unfinished':['AC8'],'integration_complete':False,'fingerprint_kind':'publication diff hash (full Goal evidence fingerprint in executor.json avoids self-reference)','fingerprint':harness.publication_fingerprint(Path.cwd(),g['base_revision']),'next':'Finalize fixed checks, fresh runtime restart and independent review, then save executor/checkpoint and run complete gate.','evidence_path':'.tmp/evidence/executor.json','checkpoint_path':'.tmp/evidence/checkpoint.json','finding_disposition':[{'id':'R1-corrupt-helper','severity':'Must fix','disposition':'fixed; fresh independent verification pending'},{'id':'R2-corrupt-room','severity':'Must fix','disposition':'fixed; fresh independent verification pending'},{'id':'R3-unsafe-counter','severity':'Should fix','disposition':'fixed; fresh independent verification pending'}]}); p.write_text(json.dumps(g,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\\"\npython .tmp/evidence/run.py selector-final . python tools/harness-v2/harness.py select --goal .tmp/goal.json\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py barrier-final . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py design-final . npm run check:design-contracts'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py stats-final . npm run test:client-stats'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-final . npm run test:worker'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py bundle-final apps/worker npx --no-install wrangler deploy --dry-run'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-types-final . npm --workspace @infinitas/worker run typecheck'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py lint-final . npm run lint'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py types-final . npm run typecheck'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py real-do-restart-final . python .tmp/evidence/runtime/restart.py .tmp/evidence/runtime2'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py selector-final2 . python tools/harness-v2/harness.py select --goal .tmp/goal.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'New-Item -ItemType Directory -Force -Path .tmp/evidence/runtime3 | Out-Null\nCopy-Item -LiteralPath .tmp/evidence/runtime/entry.ts -Destination .tmp/evidence/runtime3/entry.ts\nGet-Content .codex/config.toml -Encoding UTF8\n git diff -- apps/worker/src/durable/lobby-directory-object.ts\nGet-Content .github/workflows/validate-reusable.yml -Encoding UTF8 | Select-Object -Skip 30 -First 52'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py design-final2 . npm run check:design-contracts'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py barrier-final2 . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py stats-final2 . npm run test:client-stats'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-final2 . npm run test:worker'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py bundle-final2 apps/worker npx --no-install wrangler deploy --dry-run'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-types-final2 . npm --workspace @infinitas/worker run typecheck'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py lint-final2 . npm run lint'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py types-final2 . npm run typecheck'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py real-do-restart-final2 . python .tmp/evidence/runtime/restart.py .tmp/evidence/runtime3'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content .tmp/evidence/snapshot-before.json -Encoding UTF8\nGet-Content apps/worker/src/durable/lobby-directory-object.ts -Encoding UTF8 | Select-Object -Skip 130 -First 78\nGet-Content .tmp/evidence/review/final-recheck.json -Encoding UTF8'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"rg --files .tmp/evidence/review\npython .tmp/evidence/run.py diff-check-final . git diff --check\npython .tmp/evidence/run.py environment-final . node -p 'JSON.stringify({version:process.version,execPath:process.execPath})'\npython .tmp/evidence/run.py root-membership . node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json --listFilesOnly\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content .tmp/evidence/review/report.json -Encoding UTF8\npython .tmp/evidence/finalize.py'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py artifact-finalize . python .tmp/evidence/finalize.py\npython .tmp/evidence/run.py completion . python tools/harness-v2/harness.py complete --goal .tmp/goal.json --evidence .tmp/evidence/executor.json'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"python -c \\\"import json; from pathlib import Path; p=Path('.tmp/evidence/executor.json'); e=json.loads(p.read_text(encoding='utf-8')); e['completion_gate']={'command':'python tools/harness-v2/harness.py complete --goal .tmp/goal.json --evidence .tmp/evidence/executor.json','metadata':'.tmp/evidence/completion.json','exit_code':2,'result':json.loads(Path('.tmp/evidence/completion.log').read_text(encoding='utf-8'))}; e['all_command_attempts'].extend(json.loads(Path('.tmp/evidence/'+n+'.json').read_text(encoding='utf-8')) for n in ['artifact-finalize','completion']); e['retries']['artifact_generation']='First finalize invocation failed because reviewer disposition enum differed from harness fixed enum; normalized in aggregate while preserving original independent report; next artifact-finalize exited 0. Product evidence was unchanged.'; p.write_text(json.dumps(e,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8'); print(json.dumps({'status':e['status'],'fingerprint':e['fingerprint'],'completion_gate':e['completion_gate']['result'],'review':e['review']['status'],'findings':[{k:f[k] for k in ['id','severity','disposition']} for f in e['findings']],'unproven_ac':[k for k,v in e['acceptance'].items() if v['status']=='unproven'],'all_attempts':len(e['all_command_attempts'])},ensure_ascii=True))\\\"\n git status --porcelain=v2 --branch\n git diff --stat\n git diff --check\"",
+        "exit_code": 0,
+        "status": "completed"
+      }
+    ],
+    "unparsed_tail_bytes": 0,
+    "events_sha256": "3804b48d55bd263920c3241642bf3f8db9d34317a1feee44cad5c9e75c9b3395"
+  },
+  "family_telemetry": {
+    "status": "linked trace observations; terminal states still require inspection",
+    "thread_id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+    "spawn_ids": [
+      "01a17aac-0fdb-7ed2-9dc2-b302ea9e8aea"
+    ],
+    "spawn_attempt_count": 1,
+    "traces": [
+      {
+        "thread_id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+        "trace_found": true,
+        "trace_sha256": "370c4fbf49b699ba5a56710e4615ccae202238f7546efd2b80928af17a898eb5",
+        "metadata": {
+          "id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+          "parent_thread_id": null,
+          "agent_role": null,
+          "agent_path": null,
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-v2-1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": "exec"
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 3376243,
+          "cached_input_tokens": 3260288,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 29713,
+          "reasoning_output_tokens": 7610,
+          "total_tokens": 3405956
+        },
+        "spawn_calls": [
+          {
+            "call_id": "call_8c9fa14c72854333be3ad26b67ae0e18",
+            "agent_type": "independent-reviewer",
+            "task_name": "c2_independent_review",
+            "model": "gpt-6.1-sol",
+            "effort": "high"
+          }
+        ],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T00:13:00.521Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      },
+      {
+        "thread_id": "01a17aac-0fdb-7ed2-9dc2-b302ea9e8aea",
+        "trace_found": true,
+        "trace_sha256": "dfaf90744b17d5914fad28e80eb459c333f94ec28d7c050241f68aed6984bc25",
+        "metadata": {
+          "id": "01a17aac-0fdb-7ed2-9dc2-b302ea9e8aea",
+          "parent_thread_id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+          "agent_role": "independent-reviewer",
+          "agent_path": "/root/c2_independent_review",
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-v2-1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": {
+            "subagent": {
+              "thread_spawn": {
+                "parent_thread_id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+                "depth": 1,
+                "agent_path": "/root/c2_independent_review",
+                "agent_nickname": "Sartre",
+                "agent_role": "independent-reviewer"
+              }
+            }
+          }
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 2266725,
+          "cached_input_tokens": 2170752,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 16010,
+          "reasoning_output_tokens": 4398,
+          "total_tokens": 2282735
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T00:11:46.462Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      }
+    ],
+    "coverage_complete": true,
+    "all_agents_total_tokens": 5688691,
+    "limitation": "No token inference; missing child telemetry or unmatched spawn makes total null. Provider counters retained verbatim."
+  },
+  "timing": {
+    "started_at": "2026-10-27T00:01:31.975295+00:00",
+    "model_terminal_at": "2026-10-27T00:13:00.521Z",
+    "wall_to_model_terminal_seconds": 688.545705,
+    "cli_wall_seconds": 689.3059974999999,
+    "active_seconds": null
+  },
+  "after": {
+    "head": "72ed3f963d84ad866d9cb6ee6710485f6557e9ba",
+    "branch": "codex/harness-v2-trial",
+    "status_hash": "f2dd117d12d4f7edab30cafa8f9f83a72615608cc92bd1071878b4ebe8bff7ec",
+    "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_diff_hash": "3b35bf9ec141cc586a6982e6c741bdf42f8750b272c67c123702fe0d3f7e69d0",
+    "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "files": {
+      "apps/worker/src/durable/lobby-directory-object.test.mjs": "2ba64542272b5a00946e277b6a95199ec12e23d435d5e6bfaa10432eb77ff627",
+      "apps/worker/src/durable/lobby-directory-object.ts": "c87d9a0020b23ef56aff16fec5ffb614c1a8237547732fcc66ff57e5f57ea722",
+      "apps/worker/src/routes/lobby.test.mjs": "d3ee85bafc325412aff08ba7e249a17d6c77de861617690e88d7fa5d8ad0abab"
+    },
+    "fingerprint": "6090d54960f1d70e8062a2b6655b36f2c9e29856db067d47eda2230f7bf8e774"
+  },
+  "untracked_files": {},
+  "tracked_patch_sha256": "3b35bf9ec141cc586a6982e6c741bdf42f8750b272c67c123702fe0d3f7e69d0",
+  "raw_capture": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C2-v2-1-attempt0\\events.jsonl",
+  "raw_capture_sha256": "3804b48d55bd263920c3241642bf3f8db9d34317a1feee44cad5c9e75c9b3395",
+  "cost_scope": "CLI parent and linked children only. Shared preparation/comparison adjudication costs are separate and not fully measured."
+}

@@ -1,0 +1,10 @@
+{
+  "case": "C2",
+  "lane": "v2",
+  "repeat": 1,
+  "run_id": "C2-v2-1",
+  "root": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C2-v2-1",
+  "head": "16cc0f6c4b34e64beaa83f5e5959fd90d93c4407",
+  "input_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+  "seed_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13"
+}

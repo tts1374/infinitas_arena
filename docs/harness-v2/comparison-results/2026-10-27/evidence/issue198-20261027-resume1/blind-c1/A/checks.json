@@ -1,0 +1,164 @@
+[
+  {
+    "id": "check-1",
+    "argv": [
+      ".tmp/toolchain/node.exe --version",
+      ".tmp/toolchain/npm.cmd --version",
+      "Get-Command node/npm",
+      "node -p JSON.stringify(process runtime)",
+      "npm --version"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-1.log"
+  },
+  {
+    "id": "check-2",
+    "argv": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "apps/client/src/features/room/picking-countdown-values-display.test.tsx"
+    ],
+    "exit_code": 1,
+    "log": "logs/check-2.log"
+  },
+  {
+    "id": "check-3",
+    "argv": [
+      "node",
+      ".tmp/evidence/repair.mjs"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-3.log"
+  },
+  {
+    "id": "check-4",
+    "argv": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-4.log"
+  },
+  {
+    "id": "check-5",
+    "argv": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-5.log"
+  },
+  {
+    "id": "check-6",
+    "argv": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "apps/client/src/features/room/picking-countdown-values-display.test.tsx"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-6.log"
+  },
+  {
+    "id": "check-7",
+    "argv": [
+      "node",
+      ".tmp/comparison/browser_fixture.mjs",
+      "--root",
+      ".",
+      "--output",
+      ".tmp/evidence/visual",
+      "--playwright",
+      "C:/Users/tts13/AppData/Local/npm-cache/_npx/9833c18b2d85bc59/node_modules/playwright/index.mjs",
+      "--browser-executable",
+      "C:/Users/tts13/AppData/Local/ms-playwright/chromium-1208/chrome-win64/chrome.exe"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-7.log"
+  },
+  {
+    "id": "check-8",
+    "argv": [
+      "npm",
+      "run",
+      "test:client-stats"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-8.log"
+  },
+  {
+    "id": "check-9",
+    "argv": [
+      "npm",
+      "--workspace",
+      "@infinitas/client",
+      "run",
+      "test"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-9.log"
+  },
+  {
+    "id": "check-10",
+    "argv": [
+      "npm",
+      "run",
+      "build:client"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-10.log"
+  },
+  {
+    "id": "check-11",
+    "argv": [
+      "npm",
+      "run",
+      "test:worker"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-11.log"
+  },
+  {
+    "id": "check-12",
+    "argv": [
+      "npm",
+      "run",
+      "check:agents"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-12.log"
+  },
+  {
+    "id": "check-13",
+    "argv": [
+      "node",
+      ".tmp/evidence/verify-evidence.mjs"
+    ],
+    "exit_code": 1,
+    "log": "logs/check-13.log"
+  },
+  {
+    "id": "check-14",
+    "argv": [
+      "node",
+      ".tmp/evidence/verify-evidence.mjs"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-14.log"
+  },
+  {
+    "id": "check-15",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "log": "logs/check-15.log"
+  }
+]

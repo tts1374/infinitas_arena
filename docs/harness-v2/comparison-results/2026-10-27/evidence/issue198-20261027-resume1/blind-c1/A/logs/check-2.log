@@ -1,0 +1,140 @@
+TAP version 13
+# Subtest: SongSearchModalView displays null as --:-- with text-cyan-400
+not ok 1 - SongSearchModalView displays null as --:-- with text-cyan-400
+  ---
+  duration_ms: 11.0916
+  type: 'test'
+  location: '<trial>\\apps\\client\\src\\features\\room\\picking-countdown-values-display.test.tsx:1:933'
+  failureType: 'testCodeFailure'
+  error: 'exact countdown text'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (<trial>\apps\client\src\features\room\picking-countdown-values-display.test.tsx:42:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: SongSearchModalView displays 0 as 00:00 with text-red-500
+not ok 2 - SongSearchModalView displays 0 as 00:00 with text-red-500
+  ---
+  duration_ms: 2.2769
+  type: 'test'
+  location: '<trial>\\apps\\client\\src\\features\\room\\picking-countdown-values-display.test.tsx:1:933'
+  failureType: 'testCodeFailure'
+  error: 'exact countdown text'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (<trial>\apps\client\src\features\room\picking-countdown-values-display.test.tsx:42:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: SongSearchModalView displays 10 as 00:10 with text-red-500
+not ok 3 - SongSearchModalView displays 10 as 00:10 with text-red-500
+  ---
+  duration_ms: 1.8787
+  type: 'test'
+  location: '<trial>\\apps\\client\\src\\features\\room\\picking-countdown-values-display.test.tsx:1:933'
+  failureType: 'testCodeFailure'
+  error: 'exact countdown text'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (<trial>\apps\client\src\features\room\picking-countdown-values-display.test.tsx:42:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SongSearchModalView displays 30 as 00:30 with text-amber-500
+not ok 4 - SongSearchModalView displays 30 as 00:30 with text-amber-500
+  ---
+  duration_ms: 1.7167
+  type: 'test'
+  location: '<trial>\\apps\\client\\src\\features\\room\\picking-countdown-values-display.test.tsx:1:933'
+  failureType: 'testCodeFailure'
+  error: 'exact countdown text'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (<trial>\apps\client\src\features\room\picking-countdown-values-display.test.tsx:42:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SongSearchModalView displays 31 as 00:31 with text-cyan-400
+not ok 5 - SongSearchModalView displays 31 as 00:31 with text-cyan-400
+  ---
+  duration_ms: 1.9737
+  type: 'test'
+  location: '<trial>\\apps\\client\\src\\features\\room\\picking-countdown-values-display.test.tsx:1:933'
+  failureType: 'testCodeFailure'
+  error: 'exact countdown text'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (<trial>\apps\client\src\features\room\picking-countdown-values-display.test.tsx:42:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SongSearchModalView displays 65 as 01:05 with text-cyan-400
+not ok 6 - SongSearchModalView displays 65 as 01:05 with text-cyan-400
+  ---
+  duration_ms: 2.3183
+  type: 'test'
+  location: '<trial>\\apps\\client\\src\\features\\room\\picking-countdown-values-display.test.tsx:1:933'
+  failureType: 'testCodeFailure'
+  error: 'exact countdown text'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (<trial>\apps\client\src\features\room\picking-countdown-values-display.test.tsx:42:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 815.0097

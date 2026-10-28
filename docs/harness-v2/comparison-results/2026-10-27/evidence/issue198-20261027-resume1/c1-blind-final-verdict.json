@@ -1,0 +1,25 @@
+{
+  "source_agent": "/root/c1_blind_acceptance",
+  "at": "2026-10-27T00:15:46.696060+00:00",
+  "blind_quality_scoring_completed_before_cost_unblinding": true,
+  "A": {
+    "AC": "pass",
+    "Q11-Q16": "pass",
+    "verdict": "pass",
+    "status": "COMPLETE"
+  },
+  "B": {
+    "AC": "pass",
+    "Q11-Q16": "pass",
+    "verdict": "pass",
+    "status": "COMPLETE"
+  },
+  "unresolved_blocker_or_must_fix": 0,
+  "scope": "C1 fixed validation and trace only; full native/real page close not certified",
+  "notes": [
+    "B parallel command manifest race supplemented by raw root executions and logs",
+    "baseline null wrap",
+    "two digit header reflow",
+    "A extra test outside standard list explicitly executed"
+  ]
+}

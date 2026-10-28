@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "root": "<trial>",
+  "node": "v22.23.4",
+  "execPath": "<trial>\\.tmp\\toolchain\\node.exe",
+  "standard_test_membership": true,
+  "standard_script": "tsx --test src/dev/visual-scenarios.test.ts src/features/room/picking-countdown-display.test.tsx src/features/room/picking-countdown.test.ts src/features/room/presentation-shared.test.ts src/features/room/quick-chat.test.ts src/features/room/round-phase.test.ts src/pages/auto-match-waiting-count-polling.test.ts src/services/match-history-overlay.test.ts src/services/spectator-client.test.ts src/services/worker-api-client.test.ts",
+  "surfaces": [
+    {
+      "config": "tsconfig.json",
+      "sha256": "b3f9cb522983e0f10c4b9eb06a635fbb9f7bcfdeb346c32c99ef8cd2baccb0b5",
+      "membership": {
+        "apps/client/src/components/SongSearchModalView.tsx": true,
+        "apps/client/src/features/room/picking-countdown-display.test.tsx": true
+      }
+    },
+    {
+      "config": "apps/client/tsconfig.json",
+      "sha256": "f267165368631bfde5c43364d0b950d6a98171d5c1586a263b9ed7d2925ba4a3",
+      "membership": {
+        "apps/client/src/components/SongSearchModalView.tsx": true,
+        "apps/client/src/features/room/picking-countdown-display.test.tsx": true
+      }
+    }
+  ],
+  "note": "No new or changed test files; existing test is reached by standard client test and both type surfaces. Root client .tsx test inclusion differs from .test.ts exclusion."
+}

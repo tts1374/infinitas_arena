@@ -1,0 +1,4 @@
+
+> infinitas-arena@1.4.0 typecheck
+> tsc --noEmit -p tsconfig.json
+

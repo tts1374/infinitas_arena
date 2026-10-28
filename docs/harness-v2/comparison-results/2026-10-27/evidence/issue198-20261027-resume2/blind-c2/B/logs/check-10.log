@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: conditional remove does not delete a newer lobby summary from the same millisecond
+not ok 1 - conditional remove does not delete a newer lobby summary from the same millisecond
+  ---
+  duration_ms: 20.0308
+  type: 'test'
+  location: '<trial>\\apps\\worker\\src\\durable\\lobby-directory-object.test.mjs:95:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///<trial>/apps/worker/src/durable/lobby-directory-object.test.mjs:108:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: conditional remove deletes the matching lobby summary
+ok 2 - conditional remove deletes the matching lobby summary
+  ---
+  duration_ms: 1.5669
+  type: 'test'
+  ...
+# Subtest: conditional remove does not delete a recreated summary from the same millisecond
+not ok 3 - conditional remove does not delete a recreated summary from the same millisecond
+  ---
+  duration_ms: 1.8601
+  type: 'test'
+  location: '<trial>\\apps\\worker\\src\\durable\\lobby-directory-object.test.mjs:136:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///<trial>/apps/worker/src/durable/lobby-directory-object.test.mjs:155:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: restores the monotonic updatedAt counter from legacy per-room storage
+not ok 4 - restores the monotonic updatedAt counter from legacy per-room storage
+  ---
+  duration_ms: 9.2697
+  type: 'test'
+  location: '<trial>\\apps\\worker\\src\\durable\\lobby-directory-object.test.mjs:164:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2000 !== 2501
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2501
+  actual: 2000
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///<trial>/apps/worker/src/durable/lobby-directory-object.test.mjs:180:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: persisted monotonic counter does not retain per-room tombstones after remove and expiry cleanup
+ok 5 - persisted monotonic counter does not retain per-room tombstones after remove and expiry cleanup
+  ---
+  duration_ms: 1.0576
+  type: 'test'
+  ...
+# Subtest: handleGetLobby removes stale eligibility failures but keeps response schema intact
+ok 6 - handleGetLobby removes stale eligibility failures but keeps response schema intact
+  ---
+  duration_ms: 30.1153
+  type: 'test'
+  ...
+# Subtest: handleGetLobby fail-open keeps lobby response when eligibility probes reject
+ok 7 - handleGetLobby fail-open keeps lobby response when eligibility probes reject
+  ---
+  duration_ms: 1.6391
+  type: 'test'
+  ...
+# Subtest: handleGetLobby excludes rooms that probe as stale on the same response
+ok 8 - handleGetLobby excludes rooms that probe as stale on the same response
+  ---
+  duration_ms: 1.264
+  type: 'test'
+  ...
+# Subtest: handleGetLobby keeps stale rooms excluded when cleanup removal fails
+ok 9 - handleGetLobby keeps stale rooms excluded when cleanup removal fails
+  ---
+  duration_ms: 1.7322
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 6
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 782.0707

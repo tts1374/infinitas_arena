@@ -1,0 +1,166 @@
+{
+  "scope": "Report/tool workspace only; not comparison run validation",
+  "recorded_commands": [
+    {
+      "name": "agents",
+      "argv": [
+        "npm",
+        "run",
+        "check:agents"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:03.906535+00:00",
+      "end": "2026-10-27T06:29:04.504958+00:00",
+      "wall_seconds": 0.5984353000021656,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\agents.log"
+    },
+    {
+      "name": "design",
+      "argv": [
+        "npm",
+        "run",
+        "check:design-contracts"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:03.906749+00:00",
+      "end": "2026-10-27T06:29:04.454236+00:00",
+      "wall_seconds": 0.547499100001005,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\design.log"
+    },
+    {
+      "name": "lint",
+      "argv": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:04.454292+00:00",
+      "end": "2026-10-27T06:29:11.107537+00:00",
+      "wall_seconds": 6.653255399996851,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\lint.log"
+    },
+    {
+      "name": "types",
+      "argv": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:04.505016+00:00",
+      "end": "2026-10-27T06:29:11.085703+00:00",
+      "wall_seconds": 6.580698800000391,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\types.log"
+    },
+    {
+      "name": "stats",
+      "argv": [
+        "npm",
+        "run",
+        "test:client-stats"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:11.085787+00:00",
+      "end": "2026-10-27T06:29:12.884589+00:00",
+      "wall_seconds": 1.798822900000232,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\stats.log"
+    },
+    {
+      "name": "worker",
+      "argv": [
+        "npm",
+        "run",
+        "test:worker"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:11.107595+00:00",
+      "end": "2026-10-27T06:29:13.076312+00:00",
+      "wall_seconds": 1.9687276000004204,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\worker.log"
+    },
+    {
+      "name": "comparison",
+      "argv": [
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/harness-comparison",
+        "-p",
+        "test_compare.py"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:12.884710+00:00",
+      "end": "2026-10-27T06:29:13.154371+00:00",
+      "wall_seconds": 0.26967440000225906,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\comparison.log"
+    },
+    {
+      "name": "fixture-types",
+      "argv": [
+        "npx",
+        "--no-install",
+        "tsc",
+        "--noEmit",
+        "--jsx",
+        "react-jsx",
+        "--module",
+        "esnext",
+        "--moduleResolution",
+        "bundler",
+        "--target",
+        "es2022",
+        "--skipLibCheck",
+        "--allowSyntheticDefaultImports",
+        "tools/harness-comparison/visual-fixture.tsx"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:13.076367+00:00",
+      "end": "2026-10-27T06:29:16.033980+00:00",
+      "wall_seconds": 2.9576263000017207,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\fixture-types.log"
+    },
+    {
+      "name": "browser-syntax",
+      "argv": [
+        "node",
+        "--check",
+        "tools/harness-comparison/browser_fixture.mjs"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:13.154433+00:00",
+      "end": "2026-10-27T06:29:13.238817+00:00",
+      "wall_seconds": 0.08439350000116974,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\browser-syntax.log"
+    },
+    {
+      "name": "barrier-syntax",
+      "argv": [
+        "node",
+        "--check",
+        "tools/harness-comparison/c2-barrier.test.mjs"
+      ],
+      "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+      "start": "2026-10-27T06:29:13.238866+00:00",
+      "end": "2026-10-27T06:29:13.321059+00:00",
+      "wall_seconds": 0.08220450000226265,
+      "exit_code": 0,
+      "log": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena\\.tmp\\i198-final-validation\\barrier-syntax.log"
+    }
+  ],
+  "standard_surface": "CI quick plus explicit Python tests, JS syntax, helper TS types; full native/Worker deployment checks not applicable to report/tool-only changes",
+  "python_tests_at_this_checkpoint": 17,
+  "later_python_18_test_followup": "new boundary test after this record; see validation-followup.json"
+}

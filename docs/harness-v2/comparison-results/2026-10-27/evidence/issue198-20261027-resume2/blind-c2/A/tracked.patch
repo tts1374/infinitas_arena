@@ -1,0 +1,326 @@
+diff --git a/apps/worker/src/durable/lobby-directory-object.test.mjs b/apps/worker/src/durable/lobby-directory-object.test.mjs
+index 76b34d2..8abd6bb 100644
+--- a/apps/worker/src/durable/lobby-directory-object.test.mjs
++++ b/apps/worker/src/durable/lobby-directory-object.test.mjs
+@@ -199,3 +199,155 @@ test("persisted monotonic counter does not retain per-room tombstones after remo
+   assert.equal(storage.rooms["room-expire"], undefined);
+   assert.equal(typeof storage.lastUpdatedAtByRoomId, "number");
+ });
++
++test("scalar counter survives cold restore after every room has been removed", async () => {
++  const state = new TestDurableObjectState();
++  const first = new LobbyDirectoryDO(state);
++  await upsertRoom(first, 1_000);
++  await upsertRoom(first, 1_000);
++  await removeRoom(first, 1_000, { roomId: "room-1" });
++  assert.deepEqual(state.storage.snapshot().rooms, {});
++  assert.equal(state.storage.snapshot().lastUpdatedAtByRoomId, 1_001);
++
++  const restored = new LobbyDirectoryDO(state);
++  await upsertRoom(restored, 1_000);
++  const staleRemoval = await removeRoom(restored, 1_000, {
++    roomId: "room-1",
++    expectedUpdatedAt: 1_001,
++  });
++  assert.equal((await staleRemoval.json()).removed, false);
++  const payload = await (await listRooms(restored, 1_000)).json();
++  assert.equal(payload.rooms[0].updatedAt, 1_002);
++});
++
++test("restored summaries set a counter floor even when helper storage is missing or behind", async () => {
++  for (const helper of [undefined, 500, { deleted: 500 }]) {
++    const state = new TestDurableObjectState();
++    await state.storage.put("rooms", {
++      existing: { ...createSummary("existing"), updatedAt: 2_500 },
++    });
++    if (helper !== undefined) {
++      await state.storage.put("lastUpdatedAtByRoomId", helper);
++    }
++    const restored = new LobbyDirectoryDO(state);
++    await upsertRoom(restored, 2_000, "new");
++    const payload = await (await listRooms(restored, 2_000)).json();
++    assert.equal(payload.rooms.find((room) => room.roomId === "new").updatedAt, 2_501);
++    assert.equal(state.storage.snapshot().lastUpdatedAtByRoomId, 2_501);
++  }
++});
++
++test("legacy migration and repeated remove/TTL churn keep only live rooms and a scalar", async () => {
++  const state = new TestDurableObjectState();
++  await state.storage.put("lastUpdatedAtByRoomId", { deleted: 2_500 });
++  const directory = new LobbyDirectoryDO(state);
++  for (let index = 0; index < 200; index += 1) {
++    const roomId = `churn-${index}`;
++    await upsertRoom(directory, 2_000, roomId);
++    await removeRoom(directory, 2_000, { roomId });
++  }
++  await upsertRoom(directory, 2_000, "expires");
++  const atDeadline = await (await listRooms(directory, 1_000 + READY_CHECK_TTL_MS)).json();
++  assert.equal(atDeadline.rooms.length, 1);
++  const afterDeadline = await (await listRooms(directory, 1_000 + READY_CHECK_TTL_MS + 1)).json();
++  assert.equal(afterDeadline.rooms.length, 0);
++  const storage = state.storage.snapshot();
++  assert.deepEqual(Object.keys(storage).sort(), ["lastUpdatedAtByRoomId", "rooms"]);
++  assert.deepEqual(storage.rooms, {});
++  assert.equal(storage.lastUpdatedAtByRoomId, 2_701);
++});
++
++test("counter advancement preserves public fields, TTL origin, filters and ordering", async () => {
++  const directory = new LobbyDirectoryDO(new TestDurableObjectState());
++  const summaries = [
++    { ...createSummary("older"), createdAt: 900 },
++    createSummary("visible"),
++    { ...createSummary("private"), isPublic: false },
++    { ...createSummary("full"), currentPlayers: 2 },
++    { ...createSummary("playing"), status: "PLAYING" },
++  ];
++  await withMockedNow(1_000, async () => {
++    for (const summary of summaries) {
++      await directory.fetch(new Request("https://lobby-directory.internal/internal/upsert", {
++        method: "POST", body: JSON.stringify(summary),
++      }));
++    }
++  });
++  const payload = await (await listRooms(directory, 1_000 + READY_CHECK_TTL_MS)).json();
++  assert.deepEqual(Object.keys(payload).sort(), ["rooms", "serverTime"]);
++  assert.deepEqual(payload.rooms.map((room) => room.roomId), ["visible", "older"]);
++  for (const room of payload.rooms) {
++    assert.deepEqual(Object.keys(room).sort(), Object.keys(createSummary(room.roomId)).sort());
++    assert.equal(room.ttlStartedAt, 1_000);
++  }
++  assert.equal((await (await listRooms(directory, 1_000 + READY_CHECK_TTL_MS + 1)).json()).rooms.length, 0);
++});
++
++test("storage restore failure is observable and does not overwrite the stored state", async () => {
++  const failure = new Error("synthetic storage read failure");
++  const writes = [];
++  const directory = new LobbyDirectoryDO({
++    storage: {
++      async get() { throw failure; },
++      async put(...args) { writes.push(args); },
++    },
++    async blockConcurrencyWhile(callback) { return callback(); },
++  });
++  await assert.rejects(listRooms(directory, 1_000), failure);
++  assert.deepEqual(writes, []);
++});
++
++test("corrupt stored rooms or counters fail restoration without overwriting evidence", async () => {
++  const fixtures = [
++    { rooms: null, lastUpdatedAtByRoomId: 2_500 },
++    { rooms: [], lastUpdatedAtByRoomId: 2_500 },
++    { rooms: new Map(), lastUpdatedAtByRoomId: 2_500 },
++    { rooms: { bad: null }, lastUpdatedAtByRoomId: 2_500 },
++    { rooms: { "room-1": { ...createSummary("room-1"), ttlStartedAt: "corrupt" } }, lastUpdatedAtByRoomId: 2_500 },
++    { rooms: { "room-1": { ...createSummary("room-1"), currentPlayers: Number.NaN } }, lastUpdatedAtByRoomId: 2_500 },
++    { rooms: { "room-1": { ...createSummary("room-1"), currentPlayers: Number.POSITIVE_INFINITY } }, lastUpdatedAtByRoomId: 2_500 },
++    { rooms: { "room-1": { ...createSummary("room-1"), currentPlayers: -1 } }, lastUpdatedAtByRoomId: 2_500 },
++    { rooms: { mismatch: createSummary("room-1") }, lastUpdatedAtByRoomId: 2_500 },
++    { rooms: {}, lastUpdatedAtByRoomId: "corrupt" },
++    { rooms: {}, lastUpdatedAtByRoomId: null },
++    { rooms: {}, lastUpdatedAtByRoomId: [] },
++    { rooms: {}, lastUpdatedAtByRoomId: new Map() },
++    { rooms: {}, lastUpdatedAtByRoomId: { deleted: "corrupt" } },
++    { rooms: {}, lastUpdatedAtByRoomId: Number.POSITIVE_INFINITY },
++    { rooms: {}, lastUpdatedAtByRoomId: 2 ** 53 },
++    { rooms: { "room-1": { ...createSummary("room-1"), updatedAt: 2 ** 53 } } },
++    { rooms: {}, lastUpdatedAtByRoomId: 2_500.5 },
++  ];
++  for (const fixture of fixtures) {
++    const state = new TestDurableObjectState();
++    for (const [key, value] of Object.entries(fixture)) {
++      await state.storage.put(key, value);
++    }
++    const before = structuredClone(state.storage.snapshot());
++    const directory = new LobbyDirectoryDO(state);
++    await assert.rejects(upsertRoom(directory, 2_000), /Invalid stored lobby/);
++    await assert.rejects(listRooms(directory, 2_000), /Invalid stored lobby/);
++    assert.deepEqual(state.storage.snapshot(), before);
++  }
++});
++
++test("counter exhaustion cannot reuse the last exact integer or modify storage", async () => {
++  const state = new TestDurableObjectState();
++  await state.storage.put("lastUpdatedAtByRoomId", Number.MAX_SAFE_INTEGER - 1);
++  const directory = new LobbyDirectoryDO(state);
++  await upsertRoom(directory, 1_000);
++  const before = structuredClone(state.storage.snapshot());
++  assert.equal(before.rooms["room-1"].updatedAt, Number.MAX_SAFE_INTEGER);
++  await assert.rejects(upsertRoom(directory, 1_000), /counter exhausted/);
++  assert.deepEqual(state.storage.snapshot(), before);
++});
++
++test("empty-directory sentinel persisted by an absent remove remains readable", async () => {
++  const state = new TestDurableObjectState();
++  const first = new LobbyDirectoryDO(state);
++  await removeRoom(first, 1_000, { roomId: "absent" });
++  assert.equal(state.storage.snapshot().lastUpdatedAtByRoomId, Number.NEGATIVE_INFINITY);
++  const restored = new LobbyDirectoryDO(state);
++  await upsertRoom(restored, 1_000);
++  assert.equal((await (await listRooms(restored, 1_000)).json()).rooms[0].updatedAt, 1_000);
++});
+diff --git a/apps/worker/src/durable/lobby-directory-object.ts b/apps/worker/src/durable/lobby-directory-object.ts
+index bb357bc..6f5a265 100644
+--- a/apps/worker/src/durable/lobby-directory-object.ts
++++ b/apps/worker/src/durable/lobby-directory-object.ts
+@@ -131,21 +131,31 @@ function isListVisible(room: LobbyRoomSummary, now: number): boolean {
+   return room.status === "LOBBY";
+ }
+ 
++function isStoredRecord(value: unknown): value is Record<string, unknown> {
++  return isRecord(value) &&
++    (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
++}
++
+ function buildStoredRooms(input: unknown): Map<string, LobbyRoomSummary> {
+-  if (!isRecord(input)) {
++  if (input === undefined) {
+     return new Map<string, LobbyRoomSummary>();
+   }
++  if (!isStoredRecord(input)) {
++    throw new Error("Invalid stored lobby rooms.");
++  }
+ 
+   const entries = Object.entries(input);
+   const rooms = new Map<string, LobbyRoomSummary>();
+   for (const [roomId, rawRoom] of entries) {
+-    if (!isRecord(rawRoom)) {
+-      continue;
+-    }
+-
+     const parsed = parseLobbyRoomSummary(rawRoom);
+-    if (parsed === null) {
+-      continue;
++    if (
++      parsed === null ||
++      parsed.roomId !== roomId ||
++      !Number.isSafeInteger(parsed.updatedAt) ||
++      !Number.isSafeInteger(parsed.currentPlayers) ||
++      parsed.currentPlayers < 0
++    ) {
++      throw new Error("Invalid stored lobby room summary.");
+     }
+ 
+     rooms.set(roomId, parsed);
+@@ -160,9 +170,21 @@ function restoreLastIssuedUpdatedAt(
+ ): number {
+   let lastIssuedUpdatedAt = Number.NEGATIVE_INFINITY;
+ 
+-  if (isFiniteNumber(input)) {
++  // An empty directory could previously persist this initial sentinel on remove.
++  if (input === undefined || input === Number.NEGATIVE_INFINITY) {
++    // Valid empty/legacy storage: derive the floor from the surviving summaries.
++  } else if (isFiniteNumber(input) && Number.isSafeInteger(input)) {
+     lastIssuedUpdatedAt = input;
++  } else if (isStoredRecord(input)) {
++    for (const value of Object.values(input)) {
++      if (!isFiniteNumber(value) || !Number.isSafeInteger(value)) {
++        throw new Error("Invalid stored lobby update counter.");
++      }
+ 
++      lastIssuedUpdatedAt = Math.max(lastIssuedUpdatedAt, value);
++    }
++  } else {
++    throw new Error("Invalid stored lobby update counter.");
+   }
+ 
+   for (const room of rooms.values()) {
+@@ -273,8 +295,11 @@ export class LobbyDirectoryDO {
+     }
+ 
+     const now = Date.now();
++    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt + 1);
++    if (!Number.isSafeInteger(nextUpdatedAt) || nextUpdatedAt <= this.lastIssuedUpdatedAt) {
++      throw new Error("Lobby update counter exhausted.");
++    }
+     this.cleanupExpired(now);
+-    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt);
+     this.lastIssuedUpdatedAt = nextUpdatedAt;
+ 
+     const normalized: LobbyRoomSummary = {
+diff --git a/apps/worker/src/routes/lobby.test.mjs b/apps/worker/src/routes/lobby.test.mjs
+index 6852715..d7f89ec 100644
+--- a/apps/worker/src/routes/lobby.test.mjs
++++ b/apps/worker/src/routes/lobby.test.mjs
+@@ -1,6 +1,7 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { handleGetLobby } from "./lobby.ts";
++import { LobbyDirectoryDO } from "../durable/lobby-directory-object.ts";
+ 
+ function createJsonResponse(body, status = 200) {
+   return new Response(JSON.stringify(body), {
+@@ -195,3 +196,74 @@ test("handleGetLobby keeps stale rooms excluded when cleanup removal fails", asy
+   assert.deepEqual(payload.rooms.map((room) => room.roomId), ["room-500", "room-transport"]);
+   assert.deepEqual(removeCalls, [{ roomId: "room-lost", expectedUpdatedAt: 102 }]);
+ });
++
++function createProbeBarrier() {
++  let enter;
++  let release;
++  const started = new Promise((resolve) => { enter = resolve; });
++  const response = new Promise((resolve) => { release = resolve; });
++  return {
++    started,
++    release,
++    async fetch() {
++      enter();
++      return response;
++    },
++  };
++}
++
++for (const lost of [false, true]) {
++  for (const recreate of [false, true]) {
++    test(`delayed lobby probe preserves same-ms newer summary (lost=${lost}, recreate=${recreate})`, async () => {
++      const originalNow = Date.now;
++      Date.now = () => 1_000;
++      try {
++        const records = new Map();
++        const directory = new LobbyDirectoryDO({
++          storage: {
++            async get(key) { return structuredClone(records.get(key)); },
++            async put(key, value) { records.set(key, structuredClone(value)); },
++          },
++          async blockConcurrencyWhile(callback) { return callback(); },
++        });
++        const callDirectory = (path, body) => directory.fetch(new Request(
++          `https://lobby-directory.internal/internal/${path}`,
++          body === undefined ? {} : { method: "POST", body: JSON.stringify(body) },
++        ));
++        const summary = buildRoom("race-room", "before", 1_000);
++        const list = async () => (await (await callDirectory("list")).json()).rooms;
++        await callDirectory("upsert", summary);
++        const first = (await list())[0].updatedAt;
++        const createRaceEnv = (probe) => ({
++          LOBBY_DIRECTORY_DO: { idFromName: (name) => name, get: () => directory },
++          ROOM_DO: { idFromName: (name) => name, get: () => probe },
++        });
++        const olderProbe = createProbeBarrier();
++        const laterProbe = createProbeBarrier();
++        const oldResponse = handleGetLobby(new Request("https://worker.test/api/lobby"), createRaceEnv(olderProbe));
++        await olderProbe.started;
++        const laterResponse = handleGetLobby(new Request("https://worker.test/api/lobby"), createRaceEnv(laterProbe));
++        await laterProbe.started;
++        if (recreate) {
++          assert.equal((await (await callDirectory("remove", { roomId: summary.roomId })).json()).removed, true);
++        }
++        await callDirectory("upsert", { ...summary, roomName: "after" });
++        const fresh = (await list())[0];
++        assert.ok(fresh.updatedAt > first);
++
++        // Complete the later request first; both probes still refer to the old summary.
++        laterProbe.release(createJsonResponse({ eligible: false }));
++        assert.deepEqual((await (await laterResponse).json()).rooms, []);
++        assert.deepEqual(await list(), [fresh]);
++        olderProbe.release(lost
++          ? createJsonResponse({ error: "ROOM_STATE_LOST" }, 404)
++          : createJsonResponse({ eligible: false }));
++        assert.deepEqual((await (await oldResponse).json()).rooms, []);
++        assert.deepEqual(await list(), [fresh]);
++        assert.equal(fresh.roomName, "after");
++      } finally {
++        Date.now = originalNow;
++      }
++    });
++  }
++}
