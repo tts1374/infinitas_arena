@@ -1,0 +1,27 @@
+model = "gpt-6.1-sol"
+
+[agents]
+max_concurrent_threads_per_session = 6
+default_subagent_model = "gpt-6.1-sol"
+
+################################################################################
+# MCP servers (minimal set for infinitas_arena)
+################################################################################
+
+[mcp_servers]
+
+# GitHub MCP is intentionally user-local.
+# Configure it in ~/.codex/config.toml (or via `codex mcp add`) so PAT wiring stays out of repo config.
+
+# Cloudflare MCP is intentionally plugin-first / user-local.
+# Do not commit product-specific Cloudflare MCP entries here:
+# shared repo config + mcp-remote OAuth callback state can trigger localhost auth loops.
+# Prefer the Cloudflare Skills plugin, or configure any required server in ~/.codex/config.toml.
+# For Observability, prefer bearer-token auth in ~/.codex/config.toml.
+
+# Playwright MCP (UI regression support)
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest", "--isolated"]
+startup_timeout_sec = 30.0
+tool_timeout_sec = 60.0
