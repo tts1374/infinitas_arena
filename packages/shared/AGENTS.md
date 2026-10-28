@@ -12,8 +12,8 @@
 
 共通ガバナンス:
 - root `AGENTS.md`
-- `WORKFLOW.md`
-- `QUALITY.md`
+- root `AGENTS.md` の進め方
+- `QUALITY.md` の製品検証
 
 ---
 
@@ -49,4 +49,4 @@ shared 変更時は最低限次を確認:
 - affected client/worker usage の整合
 - exhaustive switch / parser / serializer 破綻なし
 - additive/breaking 分類の明示
-- `QUALITY.md` の契約検証要件を満たす
+- `QUALITY.md` の製品検証 の契約検証要件を満たす
