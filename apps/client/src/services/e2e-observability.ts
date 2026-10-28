@@ -13,6 +13,11 @@ interface E2EFilePaths {
 
 let writeQueue: Promise<void> = Promise.resolve();
 let initialized = false;
+const devControlObservers = new Set<(event: string, detail: Record<string, unknown>) => void>();
+export function observeSourceForDevControl(observer: (event: string, detail: Record<string, unknown>) => void): () => void {
+  devControlObservers.add(observer);
+  return () => { devControlObservers.delete(observer); };
+}
 
 function isE2EEnabled(): boolean {
   return runtimeConfig.e2e.enabled && isTauriRuntime();
@@ -88,6 +93,11 @@ export async function logE2EEvent(
   event: string,
   payload: Record<string, unknown> = {},
 ): Promise<void> {
+  if (import.meta.env?.MODE === "dev-control" && ["file_parsed", "normalize_succeeded", "normalize_failed", "watcher_started", "reconnect_started"].includes(event)) {
+    // Counts and source identity only. Never forward original source paths/settings or whole-day payloads.
+    const detail = Object.fromEntries(["source", "observationCount", "unresolvedCount", "hasPendingUnresolvedAlias"].filter(key => key in payload).map(key => [key, payload[key]]));
+    for (const observer of devControlObservers) observer(event, detail);
+  }
   const filePaths = resolveFilePaths();
   if (!filePaths) {
     return;

@@ -4,8 +4,9 @@ import type { DebugInjectionTemplate, DebugResultTemplate } from "../debug/types
 import { roomStore } from "../stores/room-store";
 import { eventRoomStore } from "../stores/event-room-store";
 import { settingsStore } from "../stores/settings-store";
-import { observationMatchesExpected } from "./source-observation";
+import { dakenCounterV3ObservationFingerprint, observationMatchesExpected } from "./source-observation";
 import { buildEventNotebookFingerprint, eventNotebookReplayGuard } from "./event-notebook-replay";
+import { isDevControlObservationCurrent } from "../dev-control/adapter-source-gate";
 
 export interface SourceSubmitOutcome {
   ok: boolean;
@@ -348,6 +349,11 @@ export function submitParsedSourceChange(
   parsedChange: ParsedSourceChangePayload,
   originLabel: string,
 ): SourceSubmitOutcome {
+  if (import.meta.env?.MODE === "dev-control") {
+    parsedChange = { ...parsedChange, observations: parsedChange.observations.filter(observation =>
+      isDevControlObservationCurrent({ source: parsedChange.source, timestamp: observation.timestamp,
+        ...(parsedChange.source === "daken_counter_v3" ? { sourceFingerprint: dakenCounterV3ObservationFingerprint(observation) } : {}) })) };
+  }
   if (parsedChange.observations.length === 0) {
     return {
       ok: false,
@@ -560,6 +566,9 @@ export function submitNotebookForcedRegistration(
   payload: NotebookForcedRegistrationPayload,
   originLabel: string,
 ): SourceSubmitOutcome {
+  if (import.meta.env?.MODE === "dev-control" && !isDevControlObservationCurrent({ source: payload.source, timestamp: payload.sourceMeta.timestamp })) {
+    return { ok: false, message: "Source input context expired before confirmation." };
+  }
   const activeRoundContext = getActiveRoundContext();
   if (!activeRoundContext.ok) {
     return activeRoundContext;

@@ -1,4 +1,4 @@
-import type { ChartDifficulty, EventRoomSnapshot, RoomStateSnapshot, SourceType } from "@infinitas/shared";
+import type { ChartDifficulty, EventRoomSnapshot, ExpectedKey, RoomStateSnapshot, SourceType } from "@infinitas/shared";
 import {
   getSourceWatcherState,
   isTauriRuntime,
@@ -20,8 +20,9 @@ import {
   type NotebookDialogChartInfo,
   type NotebookForcedRegistrationPayload,
 } from "../services/source-submission";
-import { resolveChartAlias } from "../services/worker-api-client";
+import { listCharts, resolveChartAlias } from "../services/worker-api-client";
 import { runtimeConfig } from "../runtime/runtime-config";
+import { isDevControlObservationCurrent } from "../dev-control/adapter-source-gate";
 import { roomStore } from "./room-store";
 import { eventRoomStore } from "./event-room-store";
 import { createExternalStore, useExternalStore } from "./create-store";
@@ -471,7 +472,12 @@ function parseDakenCounterV3Item(
     return null;
   }
 
-  const chartId = parseNonNegativeInteger(rawItem.chart_id);
+  const parsedChartId = parseNonNegativeInteger(rawItem.chart_id);
+  const chartId = parsedChartId !== null && Number.isSafeInteger(parsedChartId) &&
+    (typeof rawItem.chart_id !== "number" || Number.isSafeInteger(rawItem.chart_id)) ? parsedChartId : null;
+  // v3 also emits opaque source IDs, which belong to a different namespace.
+  const externalChartId = typeof rawItem.chart_id === "string" && chartId === null && Number.isNaN(Number(rawItem.chart_id))
+    ? rawItem.chart_id.trim() : "";
 
   const rawBp = parseNonNegativeInteger(rawItem.bp);
   const rawPreScore = parseNonNegativeInteger(rawItem.pre_score);
@@ -512,6 +518,7 @@ function parseDakenCounterV3Item(
       misscount: bp,
       sourceMetaExtras: {
         chart_id: chartId,
+        ...(externalChartId ? { external_chart_id: externalChartId } : {}),
         best_score: bestScore,
         best_bp: bestBp,
         pre_score: rawPreScore ?? score,
@@ -637,23 +644,67 @@ function getExpectedDisplayTitleForCurrentRound(snapshot: RoomStateSnapshot): st
   return null;
 }
 
+interface DakenCounterV3RoundContext {
+  expectedKey: ExpectedKey;
+  displayTitle: string | null;
+  identity: string;
+}
+
+function currentDakenCounterV3RoundContext(): DakenCounterV3RoundContext | null {
+  const event = eventRoomStore.getState();
+  const snapshot = event.snapshot;
+  if (snapshot !== null) {
+    if (event.connectionStatus !== "CONNECTED" || snapshot.phase !== "PLAYING" || snapshot.round_phase !== "ACTIVE" ||
+      !snapshot.event_id || !snapshot.current_round_id || !snapshot.selected_chart || !event.playerId ||
+      !snapshot.current_playing_player_ids.includes(event.playerId) ||
+      snapshot.participants.find(player => player.player_id === event.playerId)?.round_status !== "PENDING") return null;
+    return { expectedKey: snapshot.selected_chart.expected_key, displayTitle: snapshot.selected_chart.display.title,
+      identity: JSON.stringify([snapshot.room_id, snapshot.generation, snapshot.event_id, snapshot.current_round_id,
+        snapshot.selection_revision, event.playerId, snapshot.selected_chart.expected_key]) };
+  }
+  const normal = roomStore.getState();
+  const room = normal.snapshot;
+  if (normal.connectionStatus !== "CONNECTED" || room?.room_state !== "PLAYING" || !room.current_round) return null;
+  return { expectedKey: room.current_round.expected_key, displayTitle: getExpectedDisplayTitleForCurrentRound(room),
+    identity: JSON.stringify([room.room_id, room.generation, room.current_match_id, room.current_round.round_index, room.current_round.expected_key]) };
+}
+
 async function resolveDakenCounterV3ObservationAgainstCurrentRound(
   observation: ParsedSourceObservationPayload,
-  snapshot: RoomStateSnapshot,
+  context: DakenCounterV3RoundContext,
 ): Promise<{
   observation: ParsedSourceObservationPayload;
   unresolvedCase: ParsedSourceUnresolvedCasePayload | null;
 }> {
-  const currentRound = snapshot.current_round;
-  if (currentRound === null) {
-    return { observation, unresolvedCase: null };
-  }
-
-  const expectedKey = currentRound.expected_key;
+  const expectedKey = context.expectedKey;
   const observedPlayStyle = observation.playStyle ?? expectedKey.play_style;
   const playStyleMatches = observedPlayStyle === expectedKey.play_style;
   const difficultyMatches = observation.difficulty === expectedKey.difficulty;
-  const expectedDisplayTitle = getExpectedDisplayTitleForCurrentRound(snapshot);
+  let externalIdUnresolved = false;
+  if (playStyleMatches && difficultyMatches && observation.chartId === null &&
+    typeof observation.sourceMetaExtras?.external_chart_id === "string" && isChartDifficulty(observation.difficulty)) {
+    externalIdUnresolved = true;
+    // Never copy the round's expected ID into an observation. Resolve an opaque
+    // source ID against an independent, unambiguous catalog entry instead.
+    try {
+      const response = await listCharts(latestSettings?.apiBaseUrl ?? "", {
+        play_style: observedPlayStyle, difficulty: observation.difficulty,
+        level_filter: "ANY", keyword: observation.title.trim(), limit: 100,
+      });
+      const candidates = response.charts.filter(chart => chart.play_style === observedPlayStyle &&
+        chart.difficulty === observation.difficulty && normalizeExactTitle(chart.title) === normalizeExactTitle(observation.title));
+      const candidate = candidates.length === 1 && response.next_cursor === null ? candidates[0] : undefined;
+      const chartId = candidate?.chart_id;
+      if (candidate && typeof chartId === "number" && Number.isSafeInteger(chartId) && chartId > 0) {
+        observation = { ...observation, chartId, titleSearchKey: candidate.title_search_key,
+          sourceMetaExtras: { ...observation.sourceMetaExtras, chart_id: chartId } };
+        externalIdUnresolved = false;
+      }
+    } catch {
+      // Catalog failure cannot weaken the observed-key check below.
+    }
+  }
+  const expectedDisplayTitle = context.displayTitle;
   const titleMatches =
     expectedDisplayTitle !== null && normalizeExactTitle(observation.title) === normalizeExactTitle(expectedDisplayTitle);
 
@@ -668,7 +719,7 @@ async function resolveDakenCounterV3ObservationAgainstCurrentRound(
   const chartIdMatches =
     expectedChartId !== null && observedChartId !== null && observedChartId === expectedChartId;
   const aliasMatches =
-    playStyleMatches && difficultyMatches && !chartIdMatches && !titleMatches
+    !externalIdUnresolved && playStyleMatches && difficultyMatches && !chartIdMatches && !titleMatches
       ? (await resolveDakenCounterV3AliasCandidates(
           observation.title,
           observedPlayStyle,
@@ -676,19 +727,14 @@ async function resolveDakenCounterV3ObservationAgainstCurrentRound(
         )).includes(expectedKey.title_search_key)
       : false;
 
-  if (playStyleMatches && difficultyMatches && (chartIdMatches || titleMatches || aliasMatches)) {
-    const mergedSourceMetaExtras = {
-      ...(observation.sourceMetaExtras ?? {}),
-      ...(expectedChartId === null ? {} : { chart_id: expectedChartId }),
-    };
+  if (!externalIdUnresolved && playStyleMatches && difficultyMatches && (chartIdMatches || titleMatches || aliasMatches)) {
     return {
       observation: {
         ...observation,
         playStyle: expectedKey.play_style,
         difficulty: expectedKey.difficulty,
         titleSearchKey: expectedKey.title_search_key,
-        chartId: expectedChartId,
-        sourceMetaExtras: mergedSourceMetaExtras,
+        // Alias/title resolution must never fabricate the observed chart ID.
       },
       unresolvedCase: null,
     };
@@ -770,7 +816,13 @@ function scheduleDakenCounterV3Reconnect(snapshot: RoomStateSnapshot | null): vo
   }, DAKEN_COUNTER_V3_RECONNECT_DELAY_MS);
 }
 
-async function handleDakenCounterV3SocketMessage(rawMessage: string): Promise<void> {
+async function handleDakenCounterV3SocketMessage(
+  rawMessage: string,
+  socket: WebSocket,
+  receivedContext: DakenCounterV3RoundContext | null,
+  receiptIsCurrent: () => boolean,
+): Promise<void> {
+  if (dakenCounterV3Socket !== socket) return;
   const parsedSnapshot = parseDakenCounterV3Message(rawMessage);
   if (parsedSnapshot === null) {
     return;
@@ -801,13 +853,16 @@ async function handleDakenCounterV3SocketMessage(rawMessage: string): Promise<vo
     dakenCounterV3HasSnapshotBaseline = true;
   }
 
-  const roomSnapshot = roomStore.getState().snapshot;
+  const roundContext = receivedContext;
   if (
-    roomSnapshot === null ||
-    roomSnapshot.room_state !== "PLAYING" ||
+    roundContext === null ||
+    !receiptIsCurrent() ||
     !dakenCounterV3MonitoringEnabled
   ) {
     dakenCounterV3SnapshotFingerprintCounts = parsedSnapshot.fingerprintCounts;
+    if (roundContext !== null) {
+      for (const staleEntry of deltaEntries) rememberProcessedFingerprint(staleEntry.fingerprint);
+    }
     return;
   }
 
@@ -821,10 +876,31 @@ async function handleDakenCounterV3SocketMessage(rawMessage: string): Promise<vo
 
   let hasRetryableFailure = false;
   for (const entry of uniqueEntries) {
-    const resolvedEntry = await resolveDakenCounterV3ObservationAgainstCurrentRound(
-      entry.observation,
-      roomSnapshot,
-    );
+    // Remember transient disconnect/context changes too, even if reconnect restores
+    // the same snapshot before an alias request finishes.
+    let contextChanged = false;
+    const checkContext = () => { contextChanged ||= currentDakenCounterV3RoundContext()?.identity !== roundContext.identity; };
+    const stopRoomCheck = roomStore.subscribe(checkContext);
+    const stopEventCheck = eventRoomStore.subscribe(checkContext);
+    let resolvedEntry: Awaited<ReturnType<typeof resolveDakenCounterV3ObservationAgainstCurrentRound>>;
+    try {
+      resolvedEntry = await resolveDakenCounterV3ObservationAgainstCurrentRound(entry.observation, roundContext);
+    } finally { stopRoomCheck(); stopEventCheck(); }
+    if (contextChanged || !receiptIsCurrent() || dakenCounterV3Socket !== socket || !dakenCounterV3MonitoringEnabled ||
+      currentDakenCounterV3RoundContext()?.identity !== roundContext.identity) {
+      // These entries were observed in the old context. Consume them without
+      // submitting, so latest replay cannot turn them into a new-round play.
+      // An old connection must never overwrite the new connection's baseline.
+      if (dakenCounterV3Socket === socket) {
+        if (dakenCounterV3SnapshotFingerprintCounts === previousCounts) {
+          dakenCounterV3SnapshotFingerprintCounts = parsedSnapshot.fingerprintCounts;
+        }
+        for (const staleEntry of uniqueEntries) rememberProcessedFingerprint(staleEntry.fingerprint);
+      }
+      return;
+    }
+    if (import.meta.env?.MODE === "dev-control" && !isDevControlObservationCurrent({ source: DAKEN_COUNTER_V3_SOURCE,
+      timestamp: entry.observation.timestamp, sourceFingerprint: entry.fingerprint })) continue;
     const parsedChange: ParsedSourceChangePayload = {
       source: DAKEN_COUNTER_V3_SOURCE,
       filePath: buildDakenCounterV3Endpoint(currentDakenCounterV3Port()),
@@ -925,6 +1001,9 @@ function connectDakenCounterV3Socket(snapshot: RoomStateSnapshot | null): void {
   try {
     const socket = createDakenCounterV3WebSocket(endpoint);
     dakenCounterV3Socket = socket;
+    // The first snapshot of each connection is replay/baseline, never a new play.
+    dakenCounterV3HasSnapshotBaseline = false;
+    dakenCounterV3SnapshotFingerprintCounts = new Map<string, number>();
     dakenCounterV3SocketPort = port;
     updateDakenCounterV3WatcherState("IDLE", `${DAKEN_COUNTER_V3_ORIGIN_LABEL}: connecting...`, [endpoint]);
 
@@ -958,11 +1037,21 @@ function connectDakenCounterV3Socket(snapshot: RoomStateSnapshot | null): void {
         return;
       }
 
+      // Bind context at receipt, including transient disconnects while queued.
+      // A slow alias lookup must not relabel later queued input as a new round.
+      const receivedContext = currentDakenCounterV3RoundContext();
+      let receiptChanged = false;
+      const checkReceipt = () => { receiptChanged ||= currentDakenCounterV3RoundContext()?.identity !== receivedContext?.identity; };
+      const stopRoomReceiptCheck = roomStore.subscribe(checkReceipt);
+      const stopEventReceiptCheck = eventRoomStore.subscribe(checkReceipt);
+      const receiptIsCurrent = () => !receiptChanged && dakenCounterV3Socket === socket &&
+        currentDakenCounterV3RoundContext()?.identity === receivedContext?.identity;
       dakenCounterV3SocketMessageQueue = dakenCounterV3SocketMessageQueue
-        .then(() => handleDakenCounterV3SocketMessage(event.data))
+        .then(() => handleDakenCounterV3SocketMessage(event.data, socket, receivedContext, receiptIsCurrent))
         .catch((error) => {
           console.error(`${DAKEN_COUNTER_V3_ORIGIN_LABEL}: failed to process WebSocket payload.`, error);
-        });
+        })
+        .finally(() => { stopRoomReceiptCheck(); stopEventReceiptCheck(); });
     };
 
     socket.onerror = (event) => {
