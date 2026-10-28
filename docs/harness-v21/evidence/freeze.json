@@ -1,0 +1,9 @@
+{
+  "implementation_commit": "4eca1f2b4fecd9919caa9c87a92b7774b06d730e",
+  "source_base": "e89ea1fde22d830d61cf48dacb1ff3f154550e82",
+  "source_manifest": "manifest-final.json",
+  "validation": "validation-final-2.json",
+  "audits": "audit-final-2.json",
+  "execution_status": "held; no model launch",
+  "warning": "code commit is a stopped prototype, not adoption"
+}

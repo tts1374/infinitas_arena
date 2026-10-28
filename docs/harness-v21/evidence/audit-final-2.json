@@ -1,0 +1,22 @@
+{
+  "status": "COMPLETE",
+  "reviewer_ids": [
+    "/root/contract_review",
+    "/root/behavior_review"
+  ],
+  "submission_verdict": "pass-with-followups; stopped prototype draft only",
+  "issue_verdict": "BLOCKED",
+  "source_files": 31,
+  "source_aggregate_sha256": "fe1e746c83e3d0211a349e0c45005069d370be15131718059fc468721df287ea",
+  "validation_receipt_sha256": "33641334097c06e16227ea493384f00ec1da7d0c73fb28367b5e21febb422ed6",
+  "delta_from_prior_audit": "Only new .gitignore: __pycache__/ and *.pyc; prior 30 source files unchanged",
+  "source_filemap_match": true,
+  "source_unchanged": true,
+  "checks_complete": 12,
+  "generated_bytecode_staged": false,
+  "limits": [
+    "Real local DO restore unproven",
+    "Screening sessions zero",
+    "No runtime/model started for supplemental audit"
+  ]
+}

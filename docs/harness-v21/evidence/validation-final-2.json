@@ -1,0 +1,159 @@
+{
+  "status": "COMPLETE",
+  "source_hashes": {
+    ".gitignore": "862263fa1f46c20f0d1e4dac5ffcc75abd55c08211b2c3864c5f8764b9d87793",
+    "fixtures/barrier.test.mjs": "d8123452e4fd207c5d5efa84774fee220b5485a46c225aeab2110899d7039e52",
+    "fixtures/discard-runtime-log.cjs": "0f24f0db10f815d438215373c7912e480a1a36063882c24136ff7d3405040c20",
+    "fixtures/lobby-directory.ts": "5b2eb8934c125b16edd52b54b6e2a54db07ef2730bd197ed4c436a071bb70df5",
+    "fixtures/local-worker.ts": "6a8e43b9aba1b95b1e7779e00f0bcdbc076261f51d38fe329ed47c7075d46824",
+    "fixtures/local_probe.py": "f7735e58f85640288f030bfb6781218cf0beeca40e089f3a9d3eba0881ffa081",
+    "fixtures/package.json": "609158e6c5fbc237939fa3ddf7faab80ab690bdc0c8d584414a885130103c4e8",
+    "fixtures/README.md": "41e0179983eecdadf04119bacc48c737ce16e20476770b421868b2c744a9f0c3",
+    "fixtures/restore.test.mjs": "dabf782f5f4e547656f1120c0d1d90080e2249858aa0e4f54ee44af81415801d",
+    "fixtures/tsconfig.json": "d9e5c63ca6fbeb4348eb17cb2e8efe1f2e7b80d9dfd132927afd0653696aeae6",
+    "fixtures/wrangler.jsonc": "d3f0bf819b47f7fa6785ca8c10dd78f127d1ca59f28f4e03b69a53976d787644",
+    "fixtures-client.mjs": "7f1a43b7b49d2589bcaeca7c7f3f865f93f3d67d0454a4610ce2ef0b56faf31e",
+    "harness.py": "58eb2800f7149e46f64a6cebf649b53886e6b4f6e5049f3f34ec125f4a43e85e",
+    "policy.py": "cc4d9884ab0908f7935884926d091237ef97be002c347e41b96bdcbce279e3c2",
+    "runtime/.agents/skills/submit-work/SKILL.md": "5b1a09cfd71fd0638b8597d19bb0c9e2ad46e4945f39a42371c793a755df9791",
+    "runtime/.agents/skills/verify-change/SKILL.md": "a2be272594dfc6ffa983040e40f21dc6cd5d9a231a8633ffc2d37ee8ce3efb2d",
+    "runtime/.codex/agents/independent-reviewer.toml": "7a8750cf60fcfa582cbe132fc712259cdf86d73e6b1216b2659d6ab679ff3f73",
+    "runtime/.codex/config.toml": "4730451f38cf0cf673fae13f8b8fa0ec5cf7f1c6e67fd9c221625b78ecf81207",
+    "runtime/AGENTS.md": "a79da666fe25fe79908cae8ca4fad4b6538fb3169216780eacb136edefe26d76",
+    "runtime/apps/client/AGENTS.md": "fe2ed478fc59576126ceb45f6fe54e07e267e6a72c7330f667a8d39d883157e9",
+    "runtime/apps/worker/AGENTS.md": "b1ae986c54c8630e7cbdb360cae68568b7b9ffc0751ba5f97eb4db0b067d1f4d",
+    "runtime/packages/shared/AGENTS.md": "bc8c877cf4f72b31b1713f394d3fd42eba10c9f7fbd1ef22b8212637d26dfc91",
+    "runtime/scripts/check-design-contracts.mjs": "b4fc160079051802962996ac4e4960b38151abe67e2cd50733a2c389fbf98110",
+    "safety.py": "9579c5dbe73832479c2b03dfcd728c342bed85f5d211877d69cc327e9a96b1fd",
+    "screen.py": "13aaf520e18601b405d50477e56b8942315e318b28768991dca3426152ba48d8",
+    "test_assets.py": "6ec9d8ed3558ce4c952e40fe9d29b08c32d39ab29c435bfc99881e4164f86965",
+    "test_policy.py": "40a722f8aacb3062f22fe1b1da3945b0708225a338154bea83d4cbf42bb23da5",
+    "test_safety.py": "2e2876e9e44227c354627300fd1d853f8df06e262e2c36e9b79cc447e76a08a8",
+    "test_screen.py": "bfc55033df9152d932406f594105bce30a83df9809d62da59c9b0daeaa6c515b",
+    "test_validate.py": "8874d4f7d35d2ac7384afb3a4b6b06e101c170fc018a6134f15e8b4b866a5d61",
+    "validate.py": "fa56e4d98dd21c326477090fbba147e8b379b50dc79a87d98f96b03e86450dda"
+  },
+  "source_unchanged": true,
+  "results": [
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 126,
+      "output_sha256": "fcb5f3d4f6f29824622abf2621132da8f13ba4249fd748a34e06b8467ecf65d2",
+      "test_count": null,
+      "wall_seconds": 0.647,
+      "raw_retained": false,
+      "check": "agents"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 123,
+      "output_sha256": "e47fb1e9835c585c7461f4607d7b4d49f3d56a2101a343292c98bbbd6df26c7e",
+      "test_count": null,
+      "wall_seconds": 0.578,
+      "raw_retained": false,
+      "check": "design"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 103,
+      "output_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "test_count": null,
+      "wall_seconds": 4.07,
+      "raw_retained": false,
+      "check": "lint"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 68,
+      "output_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "test_count": null,
+      "wall_seconds": 7.629,
+      "raw_retained": false,
+      "check": "types"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 1659,
+      "output_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "test_count": null,
+      "wall_seconds": 1.672,
+      "raw_retained": false,
+      "check": "stats"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 48934,
+      "output_sha256": "caaab8d5d020d8b5a13c703ce686502ac48eb10acf1a12af5fa63e6ebb3d406a",
+      "test_count": 98,
+      "wall_seconds": 1.99,
+      "raw_retained": false,
+      "check": "worker-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 1237,
+      "output_sha256": "d64b912a1208496a941541437a1ebe0556ee021d5008610ce77c3c442a58e60f",
+      "test_count": null,
+      "wall_seconds": 5.405,
+      "raw_retained": false,
+      "check": "client-build"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 141,
+      "output_sha256": "786b5d3b04222f642087504ac454bed38d595a1a4fc01803755239574ab3f607",
+      "test_count": 36,
+      "wall_seconds": 10.743,
+      "raw_retained": false,
+      "check": "v2-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 123,
+      "output_sha256": "07150a3dcca9de0be462a18f022ed4b849ef46c35304e116ac59bd3d6d10ae33",
+      "test_count": 19,
+      "wall_seconds": 0.273,
+      "raw_retained": false,
+      "check": "comparison-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 130,
+      "output_sha256": "e84d6c575075b925682a709ca0d767505d7a95f04e917b6cdff47f3ad116baaf",
+      "test_count": 26,
+      "wall_seconds": 0.403,
+      "raw_retained": false,
+      "check": "v21-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 12176,
+      "output_sha256": "0e2004c4cb321d06045cac1e631821615fd580f3860ac091bc50df750311fd92",
+      "test_count": 81,
+      "wall_seconds": 0.652,
+      "raw_retained": false,
+      "check": "fixture-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "test_count": null,
+      "wall_seconds": 1.044,
+      "raw_retained": false,
+      "check": "fixture-types"
+    }
+  ]
+}

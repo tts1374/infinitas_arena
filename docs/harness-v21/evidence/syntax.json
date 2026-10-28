@@ -1,0 +1,55 @@
+{
+  "status": "COMPLETE",
+  "results": [
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "test_count": null,
+      "wall_seconds": 0.099,
+      "raw_retained": false,
+      "file": "tools/harness-v21/fixtures/barrier.test.mjs"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "test_count": null,
+      "wall_seconds": 0.096,
+      "raw_retained": false,
+      "file": "tools/harness-v21/fixtures/discard-runtime-log.cjs"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "test_count": null,
+      "wall_seconds": 0.085,
+      "raw_retained": false,
+      "file": "tools/harness-v21/fixtures/restore.test.mjs"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "test_count": null,
+      "wall_seconds": 0.085,
+      "raw_retained": false,
+      "file": "tools/harness-v21/fixtures-client.mjs"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "test_count": null,
+      "wall_seconds": 0.083,
+      "raw_retained": false,
+      "file": "tools/harness-v21/runtime/scripts/check-design-contracts.mjs"
+    }
+  ]
+}

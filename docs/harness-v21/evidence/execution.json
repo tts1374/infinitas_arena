@@ -1,0 +1,52 @@
+{
+  "issue_status": "BLOCKED",
+  "recommendation": "さらなる改善",
+  "local_runtime": {
+    "status": "BLOCKED",
+    "reason": "RUNTIME_START_FAILED",
+    "starts": 1,
+    "checks": 0,
+    "elapsed_seconds": 2.332,
+    "runtime_exit_code": null,
+    "processes_stopped": true,
+    "raw_retained": false,
+    "log_files_observed": 0,
+    "preflight_failures": 2,
+    "preflight_runtime_starts": 0,
+    "retries_after_runtime_failure": 0,
+    "source_at_execution_sha256": null,
+    "source_at_execution_limitation": "probe source changed after failure; final source statically checked only",
+    "observer": "/root/c2_fixture; typed tool result and independent source review",
+    "local_do_restore": "unproven",
+    "hibernation": "unproven"
+  },
+  "sessions": [
+    {
+      "case": "client",
+      "status": "not_started",
+      "reason": "required-local-do-evidence-missing",
+      "wall_seconds": null,
+      "parent_children_tokens": null,
+      "actual_child_count": 0,
+      "rework": null,
+      "validation_scope": null,
+      "authorized_scope": "isolated local synthetic edits/test; external operations stub only"
+    },
+    {
+      "case": "worker",
+      "status": "not_started",
+      "reason": "required-local-do-evidence-missing",
+      "wall_seconds": null,
+      "parent_children_tokens": null,
+      "actual_child_count": 0,
+      "rework": null,
+      "validation_scope": null,
+      "authorized_scope": "isolated local synthetic edits/test; external operations stub only"
+    }
+  ],
+  "screening_session_count": 0,
+  "maintenance_agent_count": 4,
+  "engineering_parent_children_tokens": null,
+  "cost_conclusion": "No measured screening efficiency result; no causal or percentage comparison to #198",
+  "authority_probes": "frozen P1-P8 test suite and gate identity; no new actual external operations"
+}

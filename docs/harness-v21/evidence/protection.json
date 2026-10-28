@@ -1,0 +1,27 @@
+{
+  "all_equal": true,
+  "worktrees": [
+    {
+      "path": "C:/Users/tts13/.codex/worktrees/issue-188-design-plan/infinitas_arena",
+      "equal": true,
+      "before_fingerprint": "5f11d207e3093980dc9a0fb2de039bb17e8eff146b1df227fdcd29684ff803b3",
+      "after_fingerprint": "5f11d207e3093980dc9a0fb2de039bb17e8eff146b1df227fdcd29684ff803b3",
+      "dirty_files": 0
+    },
+    {
+      "path": "C:/Users/tts13/.codex/worktrees/issue-188-phase-c-host-led/infinitas_arena",
+      "equal": true,
+      "before_fingerprint": "1566537b1473568e2880ba3feb9778911cdaa54661645fc3d402bbf55db430ac",
+      "after_fingerprint": "1566537b1473568e2880ba3feb9778911cdaa54661645fc3d402bbf55db430ac",
+      "dirty_files": 81
+    },
+    {
+      "path": "C:/work/infinitas_arena/infinitas_arena",
+      "equal": true,
+      "before_fingerprint": "3f9ade5f1c5203af681215cfc73fbe7ed56575f5b0d49940ebbbdb54320270f7",
+      "after_fingerprint": "3f9ade5f1c5203af681215cfc73fbe7ed56575f5b0d49940ebbbdb54320270f7",
+      "dirty_files": 21
+    }
+  ],
+  "stash_unchanged": true
+}

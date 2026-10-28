@@ -1,0 +1,136 @@
+{
+  "status": "COMPLETE",
+  "source_hashes": {
+    "fixtures/barrier.test.mjs": "d8123452e4fd207c5d5efa84774fee220b5485a46c225aeab2110899d7039e52",
+    "fixtures/lobby-directory.ts": "5b2eb8934c125b16edd52b54b6e2a54db07ef2730bd197ed4c436a071bb70df5",
+    "fixtures/package.json": "609158e6c5fbc237939fa3ddf7faab80ab690bdc0c8d584414a885130103c4e8",
+    "fixtures/README.md": "ab52aa227747bc963756b125f1a5abdaf13b92f3daf831782400f7556ae410c3",
+    "fixtures/restore.test.mjs": "dabf782f5f4e547656f1120c0d1d90080e2249858aa0e4f54ee44af81415801d",
+    "fixtures/tsconfig.json": "0feaea9de080e1f227761624fca665f8c49a3bf5a91ccaaee24ff9a86b109f3d",
+    "harness.py": "58eb2800f7149e46f64a6cebf649b53886e6b4f6e5049f3f34ec125f4a43e85e",
+    "policy.py": "d6824f1fdbf143883721cb324b0357381b76f2030977cb1ee3cd35b78d8fd97e",
+    "runtime/.agents/skills/submit-work/SKILL.md": "5b1a09cfd71fd0638b8597d19bb0c9e2ad46e4945f39a42371c793a755df9791",
+    "runtime/.agents/skills/verify-change/SKILL.md": "c66ba04d7a8eddc1ee2eab0d1508d058a9fae137f9075f5f26988d405eb67298",
+    "runtime/.codex/agents/independent-reviewer.toml": "7a8750cf60fcfa582cbe132fc712259cdf86d73e6b1216b2659d6ab679ff3f73",
+    "runtime/.codex/config.toml": "4730451f38cf0cf673fae13f8b8fa0ec5cf7f1c6e67fd9c221625b78ecf81207",
+    "runtime/AGENTS.md": "a79da666fe25fe79908cae8ca4fad4b6538fb3169216780eacb136edefe26d76",
+    "runtime/apps/client/AGENTS.md": "fe2ed478fc59576126ceb45f6fe54e07e267e6a72c7330f667a8d39d883157e9",
+    "runtime/apps/worker/AGENTS.md": "b1ae986c54c8630e7cbdb360cae68568b7b9ffc0751ba5f97eb4db0b067d1f4d",
+    "runtime/packages/shared/AGENTS.md": "bc8c877cf4f72b31b1713f394d3fd42eba10c9f7fbd1ef22b8212637d26dfc91",
+    "runtime/scripts/check-design-contracts.mjs": "0250720a411d1c0c9c506cfc6dd56ab14234b51a4666917a63ea8333430bf112",
+    "safety.py": "029ffbb36fdc4877dc93a41abb1b7c62f773a5f1e77de9008fb8b04bf47da979",
+    "test_policy.py": "6a707e83cf34b517aa8c37c1c1a14269223af183c493ffb0730a8bce477926ac",
+    "test_safety.py": "5396a1c88c84ba0e537255cc5810ea1b2adefed2acc96c07e1929aba3f970b6d",
+    "validate.py": "ec4dfca80e189d0e2978dae1ddf06c0462224cc0059d16a31395d24b4e0f3ca6"
+  },
+  "results": [
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 126,
+      "output_sha256": "fcb5f3d4f6f29824622abf2621132da8f13ba4249fd748a34e06b8467ecf65d2",
+      "wall_seconds": 0.643,
+      "raw_retained": false,
+      "check": "agents"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 123,
+      "output_sha256": "e47fb1e9835c585c7461f4607d7b4d49f3d56a2101a343292c98bbbd6df26c7e",
+      "wall_seconds": 0.583,
+      "raw_retained": false,
+      "check": "design"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 103,
+      "output_sha256": "898fa2dddce3e2627245ef45c35327e0e8e440c098458e8ad826545d30f9baae",
+      "wall_seconds": 8.002,
+      "raw_retained": false,
+      "check": "lint"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 68,
+      "output_sha256": "60ccad7ae2f2e4aa5ba92da73b47b412cc4f2027106f87dc321deadd3f64a316",
+      "wall_seconds": 7.476,
+      "raw_retained": false,
+      "check": "types"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 1659,
+      "output_sha256": "b987fa25e0cd483e22a0e97cbd83dcbdddaa5ad117015b8d99a337b5647e0d6b",
+      "wall_seconds": 1.728,
+      "raw_retained": false,
+      "check": "stats"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 48938,
+      "output_sha256": "5d2f244b54bdf4eb04878d1ceeef4039dfcf9859ec10694ffe552001414da564",
+      "wall_seconds": 2.891,
+      "raw_retained": false,
+      "check": "worker-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 1237,
+      "output_sha256": "a92a0059f7f6c14f9f3c9c7f5a45692fb591976eb19a678ac3a39090ac84405c",
+      "wall_seconds": 9.945,
+      "raw_retained": false,
+      "check": "client-build"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 141,
+      "output_sha256": "b1dab58cb0ab469a1f0905c858c117672accc30c50a5c21cc728437af24b90fd",
+      "wall_seconds": 12.038,
+      "raw_retained": false,
+      "check": "v2-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 123,
+      "output_sha256": "82f4d24c4c70633aee07667a3f8f1d8c882b88250760945ad2a6f2c83b1cb39b",
+      "wall_seconds": 0.292,
+      "raw_retained": false,
+      "check": "comparison-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 118,
+      "output_sha256": "78ab20adc877b3841dd6b1a4248210ea9d0ff8f58d8161ff349e09bf64775e03",
+      "wall_seconds": 0.252,
+      "raw_retained": false,
+      "check": "v21-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 12179,
+      "output_sha256": "3fd225c411010d406f96f698b70f4adfd80010933fce5315a26bc3bf4d064618",
+      "wall_seconds": 0.653,
+      "raw_retained": false,
+      "check": "fixture-test"
+    },
+    {
+      "status": "COMPLETE",
+      "exit_code": 0,
+      "output_bytes": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 1.083,
+      "raw_retained": false,
+      "check": "fixture-types"
+    }
+  ]
+}

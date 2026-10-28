@@ -1,0 +1,69 @@
+{
+  "status": "COMPLETE",
+  "submission_verdict": "pass-with-followups; stopped prototype draft only",
+  "issue_verdict": "BLOCKED",
+  "coverage": [
+    "contract",
+    "behavior"
+  ],
+  "reviewer_ids": [
+    "/root/contract_review",
+    "/root/behavior_review"
+  ],
+  "contract": {
+    "status": "COMPLETE",
+    "source_aggregate_sha256": "5032056b5dd2edac8aa67a6c5cbf0e9a711b6c081c1f91f76bc54e529df0df9c",
+    "findings_fixed": [
+      "C203-01",
+      "C203-02",
+      "C203-03",
+      "C203-04"
+    ]
+  },
+  "behavior": {
+    "status": "COMPLETE",
+    "validation_receipt_sha256": "4a0d326cd9315f791e6c2c4fc66800debcd300404443b30b310d4d2ba2ac8fb5",
+    "source_filemap_match": true,
+    "findings_fixed": [
+      "B203-01",
+      "B203-02",
+      "B203-03",
+      "B203-04",
+      "B203-05"
+    ]
+  },
+  "open": [
+    "R203-01 evaluation/adoption Blocker: real local DO evidence missing",
+    "R203-02 before-runtime-restart Must fix: private log sink unproven"
+  ],
+  "actual_delegation": [
+    {
+      "handle": "/root/planning",
+      "role": "execution-coordinator",
+      "status": "COMPLETE",
+      "ownership": "read-only planning"
+    },
+    {
+      "handle": "/root/c2_fixture",
+      "role": "server-implementer",
+      "status": "BLOCKED",
+      "ownership": "fixtures/**; implementation complete, local runtime failed"
+    },
+    {
+      "handle": "/root/contract_review",
+      "role": "contract-auditor",
+      "status": "COMPLETE",
+      "ownership": "read-only"
+    },
+    {
+      "handle": "/root/behavior_review",
+      "role": "implementation-auditor",
+      "status": "COMPLETE",
+      "ownership": "read-only"
+    }
+  ],
+  "limits": [
+    "Canonical task handles are actual tool-returned identities; opaque UUID unavailable",
+    "No real screening/profile or arbitrary-shell security certification"
+  ]
+}
