@@ -30,7 +30,7 @@ prototypeは `codex/issue-205-zero-flow`、基点 `origin/v1 = e89ea1fde22d830d6
 元の作業場所は `C:/Users/tts13/.codex/worktrees/issue-188-phase-c-host-led/infinitas_arena`。
 実branchは `codex/issue-192-dev-control`、HEADは指定#188基点 `0dac1b02d3b23d9449d1e63d7ca3f822f98f9e50`。
 2026-10-28T05:56:53Zにdirty81ファイル（tracked12/untracked69）とstash2件をread-only記録した。10/26の停止handoff、凍結UX README、操作/責務計画の必要部分、brokerと受付照合moduleを読んだ。
-UXは10/18合意のv3を保持。今回UIには手を入れず、wireframe準拠の新たな完了判定も行わない。
+UXは10/18合意のv3を保持。`docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-default.png` も実画像として確認した。参加者選択と操作記録を持つ別窓の意図を保ち、今回UIには手を入れず、wireframe準拠の新たな完了判定も行わない。
 
 最小単位は **送信前・別世代のsnapshotによる操作成功の誤表示を防ぐ受付照合**。
 停止handoffに残るT5の未確認事項に対応する。UI/storeを書き換えて受付成功を捏造せず、実送信・raw受信・snapshotの相関だけを修正する。
@@ -51,15 +51,38 @@ trial: #188から継承したquick全8面（agents/contracts/lint/root typecheck
 最初のfresh CLI実行はread-only/policy拒否として停止、変更0、製品test未実施。取得したfinal/JSONLをローカル `.tmp/issue-205/` に保持し、成功扱いしない。CLI制約を解除して再試行せず、アプリ標準の別コンテキスト `/root/receipt_trial` に同じbounded taskを渡した。
 trialは新rootを参照し、旧archiveや旧project Skillを読まないよう指定した。project定義0はファイルと検査で確認する。global/bundled toolsの説明まで0であることや、読み込み済み親コンテキストの消去は主張しない。
 
-受付のred→green、独立レビュー、最終保護照合と公開URLは確定後に追記する。
+受付はbaseline5/5 PASS → 負試験追加後43件中26 FAIL/17 PASS → 修正後44/44 PASS。Nodeの親test失敗も集計に含む。独立reviewer `/root/independent_review` も44件と3mjs構文を再実行し成功した。
+prototype `32269ea` とmodule `75443bc` を同reviewerがread-only監査し、未解決Blocker/Must fix/Should fixなし。protocol同byte、archive53件と旧root/config同byte、製品/CIの差分なしを独立確認した。指摘Note（呼出し側の単調sequence/raw/derived契約と未統合）は文書に残し、後続#192で確認する。実装の再修正を要するreview指摘は0件。
+
+2026-10-28T06:07:23Zの保護照合で元WIP81/81のSHA256、Git status、HEAD/branch、stash2件が開始時と一致した。元WIPは明示保護対象であり、copyした3件も元のまま保持する。source residueとしてrestore/clean/stashしない。元の親worktreeも開始時の `.playwright-mcp/` だけがuntrackedで、tracked変更はない。
+
+公開先は [Draft PR #206](https://github.com/tts1374/infinitas_arena/pull/206)（prototype、base v1）と [Draft PR #207](https://github.com/tts1374/infinitas_arena/pull/207)（module、base `codex/issue-205-receipts-base`）。read-back authorは両方 `tts1374 / is_bot:false` でtask-owned/user-authored lane。自己Approve/mergeは行わない。
+レビュー処置は上記独立監査で完了。GitHubのレビュー/未解決threadは確認時0件。CIの最終状態は各PRのChecksを参照する。
 
 ## 計測と暫定判断
 
 - 取得できたCLI失敗session: input100573（うちcached75264）、output816、reasoning output156。CLIが返したusageであり、この作業全体のtoken数ではない。
 - 親/アプリsubagentのtoken数、請求額、方式差に起因する削減率は欠測。
 - 利用枠の共有account表示は開始時weekly79%/5h4%、途中weekly80%/5h14%。丸めと他sessionの利用が含まれ、このtaskだけの消費や強制quotaではない。
-- 初期設計は1案、CLI環境失敗1回、代替試行1回。大規模比較や18回反復は行わない。実子数・所要時間は完了時に確定する。
-- 暫定採否: 独立moduleの実装・検証に使える場合のみ、隔離した次の小単位へ継続候補とする。全面移行や#188/#192完成は認定しない。
+- 初期設計は1案、CLI環境失敗1回、代替試行1回。実subagentは3名（設計、代替実装、独立review）、別CLI sessionは失敗1件。Custom Agent定義を追加した数ではない。大規模比較や18回反復は行わない。
+- 時間は最初に読んだ時計05:55:49 UTC以降を観測区間とし、06:07:23 UTCの保護照合まで11分34秒。入口のIssue取得等、最終レビューと公開後の記録/CI待ちはこの区間外であり、全作業時間・方式間比較には使わない。
+- 採否: **限定継続の候補、正式採用は保留**。ゼロ定義のまま意味のある回帰修正とPR化には到達した。一方でCLI環境失敗、子/親のtoken欠測、broker実統合の未実証があり、効率優位や次の大きな作業の成功は保証しない。次の#192も独立した小単位で判断し、#199へ自動で進まない。
 
 設計後に旧結果を必要部分だけ照合した。#198はC2両方式FAIL/C3未実施、#203はruntime起動失敗でBLOCKEDのまま保持する。今回の成功でそれらを合格に変更しない。
 今回の短い振り返りで修正すべき点は、利用不能なCLI起動経路に試行を重ねないこと。新しいCustom Agent/Skillや比較基盤の必要性は現時点で実証されていない。
+
+## #205受入条件への対応
+
+| AC | 成果・証拠と制限 |
+| --- | --- |
+| 最小フローと人間/Codexの境界 | root AGENTSと本書。重要仕様・UX・互換方針・権限・mergeは人間に残す |
+| Custom Agent0 / project Skill0の隔離試作 | 独立worktree2件、zero検査/負試験、旧資産archive。元環境非削除 |
+| 製品契約・検証・必要時review | 設計/CI/契約検査保持、両基点quick PASS、標準別contextでの独立review実施 |
+| #192の実WIP/基点/UX/依存確認 | 0dac1b0と81files、停止handoff/v3画像、#188派生の専用review基点を確認 |
+| 製品への小さな貢献 | #207の受付照合実装/44tests/PR。broker統合と実機は未確認 |
+| 実測と欠測・採否 | CLI usage/共有枠/観測時間/実子数を区別。優位性・削減率は未実証 |
+| 復帰可能/WIP保護 | archive同byte、元81files/status/HEAD/branch/stash不変。元環境で継続可能 |
+| 過去FAIL維持/正式移行非実行 | #198/#203の評価を変更せず、#199/merge/close/deploy非実行 |
+
+**#205の今回依頼スコープはCOMPLETE。#192全体と正式移行は未完。**
+設定探索の確認には [公式AGENTSガイド](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[公式Skillガイド](https://learn.chatgpt.com/docs/build-skills)、[公式subagentガイド](https://learn.chatgpt.com/docs/agent-configuration/subagents) を使用した。prototype自体の動作確認と、global/plugin contextまでの非混在証明は区別する。
