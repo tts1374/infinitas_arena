@@ -1,0 +1,13 @@
+model = "gpt-6.1-sol"
+model_reasoning_effort = "high"
+
+[agents]
+default_subagent_model = "gpt-6.1-sol"
+max_concurrent_threads_per_session = 3
+
+[shell_environment_policy.set]
+PYTHONUTF8 = "1"
+PYTHONIOENCODING = "utf-8"
+
+# Authentication, connectors and trust remain user-local. No invented Harness
+# configuration keys: Goal/policy metadata live outside Codex config.

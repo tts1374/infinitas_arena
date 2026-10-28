@@ -1,0 +1,10 @@
+{
+  "$schema": "../../../node_modules/wrangler/config-schema.json",
+  "name": "harness-v21-local-fixture",
+  "main": "local-worker.ts",
+  "compatibility_date": "2026-10-28",
+  "tsconfig": "tsconfig.json",
+  "durable_objects": { "bindings": [{ "name": "FIXTURE", "class_name": "LocalFixtureDO" }] },
+  "migrations": [{ "tag": "synthetic-v1", "new_sqlite_classes": ["LocalFixtureDO"] }],
+  "send_metrics": false
+}
