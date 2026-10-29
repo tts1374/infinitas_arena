@@ -1,4 +1,5 @@
 mod directory_dialog;
+mod dev_control;
 mod event_result;
 mod e2e_file;
 mod local_result;
@@ -7,6 +8,7 @@ mod source_directory_validation;
 mod source_watcher;
 
 pub use directory_dialog::pick_directory;
+pub use dev_control::*;
 pub use event_result::save_event_result_json;
 pub use e2e_file::{write_e2e_binary_file, write_e2e_text_file};
 pub use local_result::save_local_result_json;

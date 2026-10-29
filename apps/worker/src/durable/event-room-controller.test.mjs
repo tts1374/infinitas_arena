@@ -172,6 +172,35 @@ test("terminal event record is retained for 1800 seconds and then deleted", asyn
   assert.equal(late.sent.at(-1).payload.code, "EVENT_CLEANED_UP");
 });
 
+for (const outcome of ["saved", "put-failure", "cleanup-alarm-failure"]) test(`overdue restore notifies hibernated sockets only after durable expiry: ${outcome}`, async () => {
+  const original = setup(); await init(original.controller);
+  const guest = new Socket(); original.controller.registerSocket(guest);
+  await original.controller.message(guest, envelope("EVENT_JOIN", "guest", joinPayload("Guest", "inf-notebook")));
+  const record = structuredClone(original.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY));
+  const created = new Date(Date.now() - 600_000);
+  record.created_at = created.toISOString(); record.host_initial_connect_deadline = new Date(created.getTime() + 300_000).toISOString();
+  const restored = setup(); restored.state.sockets = [guest];
+  restored.storage.values.set(EVENT_ROOM_RECORD_STORAGE_KEY, structuredClone(record));
+  restored.storage.failPut = outcome === "put-failure"; restored.storage.failAlarm = outcome === "cleanup-alarm-failure";
+  guest.sent = [];
+  const send = guest.send.bind(guest);
+  guest.send = value => {
+    if (JSON.parse(value).type === "EVENT_STATE") assert.equal(restored.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY).phase, "RESULT", "never announce an unpersisted terminal state");
+    send(value);
+  };
+  await restored.controller.restore(record);
+  if (outcome === "put-failure") {
+    assert.equal(guest.sent.length, 0); assert.equal(restored.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY).phase, "LOBBY");
+  } else {
+    assert.equal(guest.sent.length, 1, "expiry must arrive without STATE_GET or another client message");
+    assert.equal(guest.sent[0].type, "EVENT_STATE");
+    assert.equal(guest.sent[0].payload.event_room_snapshot.phase, "RESULT");
+    assert.equal(guest.sent[0].payload.event_room_snapshot.end_reason, "HOST_DISCONNECTED");
+    assert.ok(guest.sent[0].payload.event_room_snapshot.ended_at);
+    await restored.controller.alarm(); assert.equal(guest.sent.length, 1, "the waking alarm must not announce a second expiry");
+  }
+});
+
 test("restore expires an overdue absolute Host deadline before serving state", async () => {
   const original = setup(); await init(original.controller); const record = original.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY);
   const created = new Date(Date.now() - 600_000); record.created_at = created.toISOString(); record.host_initial_connect_deadline = new Date(created.getTime() + 300_000).toISOString();

@@ -450,6 +450,17 @@ export function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (import.meta.env.MODE !== "dev-control") return;
+    let disposed = false;
+    let stop: (() => void) | undefined;
+    void import("../dev-control/adapter").then(async ({ startDevControlAdapter }) => {
+      const cleanup = await startDevControlAdapter();
+      if (disposed) cleanup(); else stop = cleanup;
+    }).catch((error: unknown) => { roomStore.noteLocalEvent(error instanceof Error ? error.message : "Development adapter unavailable."); });
+    return () => { disposed = true; stop?.(); };
+  }, []);
+
   function navigate(view: AppView): void {
     startTransition(() => {
       setActiveView(view);

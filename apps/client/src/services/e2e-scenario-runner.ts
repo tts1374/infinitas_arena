@@ -731,6 +731,7 @@ function clearRunnerState(): void {
 }
 
 export function startE2EScenarioRunner(getView: GetView): () => void {
+  if (import.meta.env?.MODE === "dev-control") return () => {};
   if (!runtimeConfig.e2e.enabled || !runtimeConfig.e2e.roomId || runnerStarted) {
     return () => {
       clearRunnerState();
