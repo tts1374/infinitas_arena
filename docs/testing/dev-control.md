@@ -12,8 +12,8 @@
 
 | 検証 | 結果・限界 |
 | --- | --- |
-| client標準unit | 178/178 PASS。v3通常/合同/大会、文字列ID、一意性/失敗/旧context、画像の一時private→safeを含む |
-| 開発control標準unit | 114/114 PASS。停止前native保存の成功/partial/失敗/期限切れ・古い受付拒否を含む。`test:dev-control` を既存Windows CIへ登録 |
+| client標準unit | 179/179 PASS。v3通常/合同/大会、文字列ID、一意性/失敗/旧context、画像の一時private→safe、Host断中の新しいguest観測による進行表示を含む |
+| 開発control標準unit | 117/117 PASS。停止前native保存の成功/partial/失敗/期限切れ、古い受付拒否、再戦復帰、停止要求自身の追跡を含む。`test:dev-control` を既存Windows CIへ登録 |
 | native Rust | 33/33 PASS。停止前bundle相関・read-back、停止との競合・409拒否時の状態/証拠保全、Reflux空baselineの非観測/重複排除、メモリ画像の安全確認/破棄/期限/再利用拒否を含む |
 | CI面 | root typecheck/lint、check:agents/check:design-contracts、client build PASS。Worker187、Host Event integration6、stats17は同再開作業でPASS、Worker dry-run成功（deployなし） |
 | script構文 | mjs全件node --check、PS4件ParseFile PASS |
@@ -62,6 +62,16 @@ PR #208 の初回CIは追加broker試験の一時directory親が存在せずENOE
 ARENA停止は約12秒、要求ID一致の新native bundle `bundle-1793268581537080500` を停止前にflush/read-backしてからprocess/port完全停止、errors[]。選曲入力画面の画像拒否をpartialと表示し、前の最終結果画像bundleは保持した。旧controllerからnative restartし、大会/Reflux `s20261029101123-30ce7fff` の起動を確認した（以後の修正を反映したnative保存writer）。
 
 停止そのものが成功しても操作記録で停止要求自身をcancelledとする表示不整合を発見。stop.operationIdで自要求だけ未投入予約の分類から除外し、nativeのprocess/port両方の照合後に同session/controller/操作IDだけconfirmedへ確定する。残存時はunknown、別操作/別session/拒否済みは保持。delivery/evidence25/25、root typecheck、独立レビューPASS。実GUIは次sessionで確認する。
+
+大会/Reflux `30ce7fff` はB実clientとC headless、A未入室でN=2固定。`.59 SPH` を同値650/MISS10で2曲連続、実watcher/parser→正規SUBMIT→accepted ACK→同曲SUBMITTED/confirmedと照合し、実mainで両者同率1位2ptを確認。初期化・曲切替後の架空alias dialogなし。Bは第1曲に通常画面にいたまま背景提出し、開催へ戻って結果を表示した。Aの代理操作・本人実プレー成功とは扱わない。
+
+開催終了後、手動保存を挟まず全体停止。修正版native writerが要求ID一致の新bundle `bundle-1793268971173649300`（flushing状態を収録、全file readBack=true）を10:16:11Zに保存し、その後のshutdown記録は10:16:16Z、停止完了10:16:19Z・process/port確認済み・errors[]。B最終2曲のPNGを開いて確認。A入室前の入力画面はprivacy拒否をpartialとして明示。停止後の保存再試行で別bundle `bundle-1793268998164251300` を作成、旧bundle/画像/受付記録を保持。次の大会/inf-notebookは同じcontrollerのnative restartから起動する。
+
+大会/inf-notebook `s20261029101658-600c3388` はB実client/C headless、A未入室・N=2。3曲のB500/MISS12を実watcher/parser→SUBMIT/ACK/同曲SUBMITTEDと照合。第2曲ではHost Bの提出後にBを切断し、Cをhold→確認付きautoへ変更して提出。Host断中に両SUBMITTEDでもACTIVEを維持し、復帰後に結果公開。第3曲はC holdを残してHost締切、C ABSENT/DEADLINE/0pt・B2pt、固定N2を確認した。
+
+同試験でHost Bのrev12と接続中Cのrev14が異なるのにヘッダが古いBを使う表示不整合を発見。同session/room/event/generation内の最大revisionを進行表示に使い、Host本人の操作context/権限は維持。終了時は再接続待ち案内を消す。client179/179、root typecheck/lint、独立レビューPASS。最新UIの実Host断表示は次sessionで確認する。
+
+同sessionの未使用exports先へ検証専用の遮断fileを作り、native保存失敗を実発生。保存failed/os error183を表示しつつ約14秒でruntime停止・process/port確認、停止要求自身もnative確認後confirmedとなった。spool/画像/受付を保持。自分で作った遮断fileだけを同じroot内の記録fileへrename後、停止済みcontrollerの「保存」で新bundleへ再試行した。
 
 2026-10-24。作業基点は `codex/issue-192-dev-control` / `0dac1b02d3b23d9449d1e63d7ca3f822f98f9e50`。Phase C の責務別checkpoint記録であり、製品全体の受入完了ではない。正本は `tasks/issue-192-dev-control-{window,tasks,validation}.md`、`tasks/issue-192-design-source-manifest.md` と `docs/ux/issue-192-dev-control/control-boundary.md`。
 

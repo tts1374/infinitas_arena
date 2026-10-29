@@ -7,6 +7,18 @@ export const operationStatusNames: Record<DevControlResultStatus, string> = {
 };
 const phaseNames: Record<string, string> = { N0: "準備待ち", N1: "アプリで曲を選ぶ", N2: "ゲーム内選曲・開始カウント", N3: "結果の提出待ち", N4: "この曲の結果", N5: "対戦の最終結果", N6: "部屋が終了しました", E0: "参加者待ち", E1: "主催者の選曲", E2: "プレー開始待ち", E3: "結果の提出待ち", E4: "この曲の結果", E5: "開催の最終結果", E6: "部屋が終了しました" };
 export function phaseName(client: DevControlClientState | undefined): string { return phaseNames[client?.displayPhase ?? ""] ?? "最新の部屋情報を待っています"; }
+export function latestProgressClient(state: DevControlState, clients = state.clients): DevControlClientState | undefined {
+  const people = clients.filter(client => client.manifest.role !== "controller");
+  const host = people.find(client => client.manifest.clientId === state.hostClientId);
+  const anchor = host?.eventSnapshot ?? people.find(client => client.eventSnapshot?.room_id === state.roomId)?.eventSnapshot;
+  // A disconnected host retains an older snapshot. Event revisions are ordered
+  // within one room/generation/event; normal snapshots have no such revision.
+  return people.reduce<DevControlClientState | undefined>((latest, client) => {
+    const snapshot = client.eventSnapshot;
+    if (!anchor || !snapshot || client.context.sessionId !== state.sessionId || snapshot.room_id !== state.roomId || snapshot.event_id !== anchor.event_id || snapshot.generation !== anchor.generation) return latest;
+    return !latest || snapshot.revision > (latest.eventSnapshot?.revision ?? -1) ? client : latest;
+  }, undefined) ?? (host?.displayPhase ? host : people.find(client => client.displayPhase) ?? host ?? people[0]);
+}
 export function personName(client: DevControlClientState, state: DevControlState): string {
   if (client.manifest.role === "self") return "自分";
   const id = client.manifest.playerId;

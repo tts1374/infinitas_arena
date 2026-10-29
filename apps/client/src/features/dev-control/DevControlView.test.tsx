@@ -41,6 +41,30 @@ test("stop observations distinguish progress, failure and verified completion", 
   assert.match(render(state), /停止確認が完了しました/);
 });
 
+test("progress uses a guest's newer event revision while the host is disconnected", () => {
+  const state = makeUiState("E3", "TOURNAMENT");
+  const host = state.clients.find(client => client.manifest.clientId === "B")!;
+  const guest = state.clients.find(client => client.manifest.clientId === "C")!;
+  host.connection = "DISCONNECTED";
+  const snapshot = structuredClone(guest.eventSnapshot!);
+  guest.eventSnapshot = snapshot;
+  snapshot.revision = 2;
+  snapshot.host.connected = false;
+  snapshot.host_disconnect_deadline = "2026-10-29T10:24:58Z";
+  snapshot.participants.forEach(member => { member.round_status = "SUBMITTED"; });
+  const markup = render(state);
+  assert.match(markup, /提出・欠場確定 4 \/ 4人/);
+  assert.match(markup, /主催者の再接続を待っています。期限：2026-10-29T10:24:58Z/);
+  for (const patch of [{ room_id: "foreign" }, { event_id: "foreign" }, { generation: 2 }]) {
+    guest.eventSnapshot = { ...snapshot, ...patch };
+    assert.doesNotMatch(render(state), /提出・欠場確定 4 \/ 4人|主催者の再接続を待っています/);
+    guest.eventSnapshot = snapshot;
+  }
+  snapshot.phase = "CLOSED"; guest.displayPhase = "E6";
+  assert.match(render(state), /<h1>部屋が終了しました<\/h1>/);
+  assert.doesNotMatch(render(state), /主催者の再接続を待っています/);
+});
+
 test("terminal sessions permit explicit shutdown readback while product actions stay disabled", () => {
   for (const lifecycle of ["failed", "stopped"] as const) {
     const state = makeUiState("E3");
