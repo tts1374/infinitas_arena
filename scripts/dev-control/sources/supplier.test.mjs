@@ -24,6 +24,7 @@ for(const source of ['inf-notebook','reflux','daken_counter_v3']) {
       const supplier=await createSourceSupplier({manifest:f.manifest,clientId:'B',verifyContext:value=>value.round===context.round});
       assert.equal(existsSync(join(f.b,'supplier-state.json')),false,'constructor must not reset a running source');
       await supplier.initializeBaseline();
+      if(source==='reflux')assert.deepEqual(JSON.parse(readFileSync(join(f.b,'latest.json'),'utf8')),{},'baseline is not a fabricated play');
       const input=await supplier.prepareInput(request(context));
       assert.equal((await supplier.supply(input)).status,'input-written');
       const file=source==='inf-notebook'?'records/summary.json':source==='reflux'?'latest.json':'today-updates.json';
@@ -33,6 +34,7 @@ for(const source of ['inf-notebook','reflux','daken_counter_v3']) {
       else {assert.match(payload.data.items[0].chart_id,/^[0-9a-f]{64}$/);assert.equal(payload.data.items[0].score,2000);}
       await assert.rejects(supplier.supply(input),/expired/,'one arm must not supply twice');
       context={round:2};await supplier.invalidate(context);
+      if(source==='reflux')assert.deepEqual(JSON.parse(readFileSync(join(f.b,'latest.json'),'utf8')),{},'round invalidation must not emit a fake alias');
       await assert.rejects(supplier.supply(input),/expired/);
       await supplier.stop();await assert.rejects(supplier.prepareInput(request(context)),/expired/);
       assert.equal(existsSync(join(f.a,file)),false);assert.equal(existsSync(join(f.c,file)),false);

@@ -47,7 +47,9 @@ export async function createSourceSupplier({manifest,clientId,verifyContext}) {
       write('export/recent.json',{list:[]});write('records/summary.json',{musics:{}});
     } else if (client.source === 'reflux') {
       write('tracker.tsv','title\tSPA Lamp\tSPA EX Score\tSPA Miss Count\n');
-      write('latest.json',{timestamp:timestamp(Date.now()),title:'__DEV_CONTROL_BASELINE__',title2:'__DEV_CONTROL_BASELINE__',diff:'SPA',exscore:'0',bad:'0',poor:'0',assist:'OFF',lamp:'AC',playtype:'SP'});
+      // No play is present. The product parser ignores this incomplete record;
+      // a synthetic song would instead produce an unresolved-alias dialog.
+      write('latest.json',{});
     } else write('today-updates.json',emptyV3);
   }
   function check(input) {

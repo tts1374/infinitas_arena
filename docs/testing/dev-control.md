@@ -53,6 +53,8 @@ PR #208 の初回CIは追加broker試験の一時directory親が存在せずENOE
 
 停止前bundle不足を補正。quiesce/収集後、停止ID・期限付きでnativeの新bundle flush/read-back受付を待つ。保存失敗/期限切れでも停止を続け、spool/旧bundleを保持する。独立レビューの外部collect再開・古い失敗上書き・nativeとbrokerの全state置換競合を修正し、稼働中の保存結果はbrokerのみが確定する。再レビューで未解決Must fixなし。停止後の保存・再試行は従来のnative経路を維持。実nativeの最新修正版での停止確認は継続中。
 
+夕方のARENA `s20261029094734-d7fdfe8c` で、B/Refluxの曲切替時に架空baseline曲によるNB-UNRESOLVED-ALIAS dialogを実確認。供給側のbaselineをプレーでない空objectへ補正し、製品parserは変更していない。supplier7/7と既存Rust parserを通る空入力→実結果→空入力→旧結果再配信の試験がPASS。初期化/失効で架空aliasを作らず、古い結果を新規扱いしない。独立レビューPASS。次の起動で実GUIのダイアログ不在と2曲連続受付を確認する。
+
 2026-10-24。作業基点は `codex/issue-192-dev-control` / `0dac1b02d3b23d9449d1e63d7ca3f822f98f9e50`。Phase C の責務別checkpoint記録であり、製品全体の受入完了ではない。正本は `tasks/issue-192-dev-control-{window,tasks,validation}.md`、`tasks/issue-192-design-source-manifest.md` と `docs/ux/issue-192-dev-control/control-boundary.md`。
 
 ## T2 interface

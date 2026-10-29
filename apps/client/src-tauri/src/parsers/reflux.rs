@@ -861,6 +861,23 @@ mod tests {
     };
 
     #[test]
+    fn reflux_empty_control_baseline_emits_no_alias_error_or_replayed_observation() {
+        let temp_dir=create_temp_dir("reflux-empty-baseline");
+        let latest_path=temp_dir.join("latest.json");let tracker_path=temp_dir.join("tracker.tsv");
+        write_file(&tracker_path,"title\tSPA Lamp\tSPA EX Score\tSPA Miss Count\n");
+        let mut parser=RefluxParser::new_with_catalog(&SourcePathsConfig {
+            reflux_latest_json:latest_path.to_string_lossy().into_owned(),reflux_tracker_tsv:tracker_path.to_string_lossy().into_owned(),..SourcePathsConfig::default()
+        },build_catalog(&[("Song A","Song A","SP","ANOTHER")]));
+        let input=ParserInput{changed_path:latest_path.clone()};
+        let play=r#"{"timestamp":"20261029-190000","title":"Song A","diff":"SPA","exscore":"700","bad":"4","poor":"6","assist":"OFF","lamp":"AC","playtype":"SP"}"#;
+        write_file(&latest_path,"{}");assert!(parser.parse(&input).unwrap().is_none());
+        write_file(&latest_path,play);let change=parser.parse(&input).unwrap().unwrap();
+        assert!(change.unresolved_cases.is_empty());assert_eq!(change.observations.len(),1);assert_eq!(change.observations[0].score,700);
+        write_file(&latest_path,"{}");assert!(parser.parse(&input).unwrap().is_none());
+        write_file(&latest_path,play);assert!(parser.parse(&input).unwrap().is_none(),"empty reset must not make the last play new again");
+        let _=fs::remove_dir_all(temp_dir);
+    }
+    #[test]
     fn reflux_parser_emits_observation_with_tracker_best_values() {
         let temp_dir = create_temp_dir("reflux-observation");
         let latest_path = temp_dir.join("latest.json");
