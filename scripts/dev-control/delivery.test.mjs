@@ -98,6 +98,53 @@ test('stop shares one promise and still terminates runtime when spool persistenc
   }finally{await f.close();}
 });
 
+test('stop exports a new correlated native bundle before runtime termination and preserves every export outcome',async t=>{
+  for(const status of ['saved','partial','failed'])await t.test(status,async()=>{
+    let stopped=0;
+    const f=await fixture({requireStopExport:true,onStop:async()=>{stopped++;}});
+    try{
+      const spool=join(f.runtimeRoot,'controller-spool');
+      const original=readFileSync(join(spool,'observations.jsonl'),'utf8');
+      const first=f.broker.stop();assert.equal(first,f.broker.stop());
+      await new Promise(resolve=>setImmediate(resolve));
+      assert.equal(f.broker.state.stop.phase,'flushing');assert.equal(f.broker.state.save.status,'exporting');assert.equal(stopped,0);
+      const exportId=f.broker.state.stop.exportRequestId;
+      assert.equal(JSON.parse(readFileSync(join(spool,'state.json'),'utf8')).stop.exportRequestId,exportId);
+      const captures=f.broker.state.evidence.captures.length;
+      assert.equal((await f.request('collect',{})).status,400,'external collection cannot resume during stop');
+      assert.equal(f.broker.state.evidence.captures.length,captures);assert.equal(f.broker.state.save.status,'exporting');
+      const saved={status,path:status==='failed'?null:join(f.runtimeRoot,'exports','bundle-123'),bundleId:status==='failed'?null:'bundle-123',attempt:2,error:status==='failed'?'injected export failure':null,missing:status==='partial'?['A: unavailable']:[]};
+      for(const stopExportRequestId of [undefined,'previous-stop']){
+        assert.equal((await f.request('export-result',{...saved,...(stopExportRequestId?{stopExportRequestId}:{})})).status,400);
+        assert.equal(stopped,0);assert.equal(f.broker.state.save.status,'exporting');
+      }
+      assert.equal((await f.request('export-result',{...saved,stopExportRequestId:exportId})).status,200);
+      await first;assert.equal(stopped,1);assert.equal(f.broker.state.stop.phase,'verifying');assert.equal(f.broker.state.save.status,status);
+      assert.equal((await f.request('collect',{})).status,400);assert.equal(f.broker.state.save.status,status);
+      assert.equal(readFileSync(join(spool,'observations.jsonl'),'utf8'),original);
+      assert.equal((await f.request('export-result',{...saved,stopExportRequestId:exportId})).status,400,'a late acknowledgement cannot rewrite the outcome');
+    }finally{await f.close();}
+  });
+});
+
+test('missing native stop export times out, retains prior evidence and still terminates the runtime',async()=>{
+  let stopped=0;
+  const f=await fixture({requireStopExport:true,stopExportTimeoutMs:1234,onStop:async()=>{stopped++;}});
+  try{
+    const oldBundle=join(f.runtimeRoot,'exports','bundle-100');mkdirSync(oldBundle,{recursive:true});
+    const prior={status:'saved',path:oldBundle,bundleId:'bundle-100',attempt:1,error:null,missing:[]};
+    assert.equal((await f.request('export-result',prior)).status,200);
+    const stopping=f.broker.stop();await new Promise(resolve=>setImmediate(resolve));
+    const marker=f.broker.state.stop.exportRequestId;
+    assert.equal(stopped,0);
+    const timeout=[...f.callbacks.values()].find(timer=>timer.ms===1234);assert.ok(timeout);timeout.callback();
+    await stopping;assert.equal(stopped,1);assert.equal(f.broker.state.save.status,'failed');assert.equal(f.broker.state.save.bundleId,'bundle-100');
+    assert.ok(f.broker.state.stop.errors.includes('Native stop export timed out'));
+    assert.ok(readFileSync(join(f.runtimeRoot,'controller-spool/state.json'),'utf8').includes('Native stop export timed out'));
+    assert.equal((await f.request('export-result',{...prior,stopExportRequestId:marker})).status,400);
+  }finally{await f.close();}
+});
+
 test('collection reports missing images and a later attempt can retry without reviving product work',async()=>{
   const f=await fixture();
   try{

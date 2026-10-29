@@ -9,7 +9,7 @@ import { deriveActions, roundSignature } from './action-policy.mjs';
 import { createEvidenceWriter, evidenceManifest } from './evidence.mjs';
 import { ReceiptLedger } from './receipts.mjs';
 
-export async function createBroker({ manifest, keys, onStop = async () => {}, createSupplier = async options => (await import('./sources/supplier.mjs')).createSourceSupplier(options), clock = { setTimeout, clearTimeout }, captureTimeoutMs=15000 }) {
+export async function createBroker({ manifest, keys, onStop = async () => {}, createSupplier = async options => (await import('./sources/supplier.mjs')).createSourceSupplier(options), clock = { setTimeout, clearTimeout }, captureTimeoutMs=15000, requireStopExport=false, stopExportTimeoutMs=15000 }) {
   const spool = ensureOwnedDirectory(manifest.runtimeRoot, join(manifest.runtimeRoot, 'controller-spool'));
   const evidence=createEvidenceWriter(manifest.runtimeRoot,Object.values(keys));
   const clients = manifest.clients.map(spec => ({manifest:spec,context:emptyContext(manifest.sessionId,spec.clientId),connection:'DISCONNECTED',normalSnapshot:null,eventSnapshot:null,displayPhase:null,draft:{exScore:null,missCount:null},policy:'manual',actions:[],lastError:null}));
@@ -20,7 +20,7 @@ export async function createBroker({ manifest, keys, onStop = async () => {}, cr
   const commands = new Map(), queues = new Map(), timers = new Map();
   const exitedClients=new Set();
   const captureQueues=new Map(),capturePending=new Map();
-  let stopPromise=null,collectionPromise=null;
+  let stopPromise=null,collectionPromise=null,stopExport=null;
   const peers=new Map(), suppliers=new Map(), armedInputs=new Map(), autoRounds=new Map();
   const eventMode=['CASUAL','TOURNAMENT'].includes(manifest.mode);
   const scheduler=new ReservationScheduler({clock,readContext:id=>clients.find(client=>client.manifest.clientId===id)?.context,onDispatch:dispatch,onCancel:(command,reason)=>{const operation=commands.get(command.operationId);if(operation&&operation.result.status==='reserved'){operation.result.status='cancelled';operation.result.reason=reason;try{flush();}catch(error){if(state.lifecycle!=='stopping')throw error;state.stop.errors.push(error.message);}}}});
@@ -198,6 +198,22 @@ export async function createBroker({ manifest, keys, onStop = async () => {}, cr
     for(const peer of peers.values())try{peer.disconnect();}catch(error){state.stop.errors.push(error.message);}
     for(const supplier of suppliers.values())try{await supplier.stop();}catch(error){state.stop.errors.push(error.message);}
     state.stop.phase='flushing';
+    if(requireStopExport){
+      state.stop.exportRequestId=crypto.randomUUID();
+      state.stop.exportDeadlineMs=Date.now()+stopExportTimeoutMs;
+      state.stop.exportDeadlineAt=new Date(state.stop.exportDeadlineMs).toISOString();
+      state.save={...state.save,status:'exporting'};
+      const completed=new Promise(resolve=>{
+        const timer=clock.setTimeout(()=>{
+          state.save={...state.save,status:'failed',error:'停止前のnative保存を確認できませんでした。停止後に保存を再試行してください。'};
+          state.stop.errors.push('Native stop export timed out');
+          stopExport=null;resolve();
+        },stopExportTimeoutMs);
+        stopExport={finish:()=>{clock.clearTimeout(timer);stopExport=null;resolve();}};
+      });
+      safeFlush();
+      await completed;
+    }
     safeFlush();
     state.stop.phase='terminating';
     safeFlush();
@@ -262,9 +278,12 @@ export async function createBroker({ manifest, keys, onStop = async () => {}, cr
     try{
       const client=authenticate(request);let value;
       if(request.method==='GET'&&request.url==='/state'){requireController(client);value={...evidence.redact(state),joinCode:state.joinCode};}
-      else if(request.method==='POST'&&request.url==='/collect'){requireController(client);await collectEvidence();value=state.save;}
+      else if(request.method==='POST'&&request.url==='/collect'){requireController(client);if(state.lifecycle!=='running')throw new Error('Collection is only allowed while running');await collectEvidence();value=state.save;}
       else if(request.method==='POST'&&request.url==='/export-result'){
         requireController(client);const saved=await body(request);
+        if(state.lifecycle==='stopping'){
+          if(state.stop.phase!=='flushing'||!stopExport||saved.stopExportRequestId!==state.stop.exportRequestId||!Number.isFinite(state.stop.exportDeadlineMs)||Date.now()>=state.stop.exportDeadlineMs)throw new Error('Stale or missing stop export identity');
+        }else if(saved.stopExportRequestId!==undefined)throw new Error('Unexpected stop export identity');
         if(!['saved','partial','failed'].includes(saved.status)||!Array.isArray(saved.missing))throw new Error('Invalid export result');
         if(saved.status!=='failed'||saved.bundleId!==null){
           if(typeof saved.bundleId!=='string'||!/^bundle-\d+$/.test(saved.bundleId)||typeof saved.path!=='string')throw new Error('Invalid export bundle');
@@ -272,7 +291,9 @@ export async function createBroker({ manifest, keys, onStop = async () => {}, cr
           const supplied=canonicalWritePath(manifest.runtimeRoot,saved.path.replace(/^\\\\\?\\/,''));
           if(supplied.toLowerCase()!==expected.toLowerCase())throw new Error('Export destination mismatch');
         }
-        state.save={status:saved.status,path:saved.path,bundleId:saved.bundleId,attempt:saved.attempt,error:saved.error??null,missing:saved.missing};flush();value={};
+        state.save={status:saved.status,path:saved.path,bundleId:saved.bundleId,attempt:saved.attempt,error:saved.error??null,missing:saved.missing};flush();
+        if(stopExport){if(saved.status==='failed')state.stop.errors.push('Native stop export failed');stopExport.finish();}
+        value={};
       }
       else if(request.method==='GET'&&request.url==='/adapter-state'){
         if(client.manifest.role==='controller')throw new Error('Product adapter required');

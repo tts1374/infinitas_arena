@@ -267,6 +267,8 @@ restart応答`{status:"launch-requested",requestId,oldSessionId}`はhidden launc
 
 停止は新mutation/予約禁止→未送信予約失効→source/participant供給停止→in-flightをconfirmed/rejected/unknownへ分類→取得可能な画面/ログをcontroller専用spoolへ回収→bundle flush/read-back→所有検証runtimeを停止→process/port照合。controller shellだけ存続し、room/source接続・poll/timerは持たない。保存失敗でもspoolを保持し、停止を取り消して再接続しない。
 
+停止前のflushingにはprivateなexportRequestIdとexportDeadlineAt/exportDeadlineMsを付け、nativeが同じ要求の新bundleをflush/read-backしてから受付を返す。稼働中のstate更新はbrokerだけが行い、古い要求・期限後・確定後の受付と外部collectは拒否する。保存失敗または15秒以内に確認できない場合もspool/旧bundleを保持して停止を続行し、停止後に再試行できる。
+
 停止後の閲覧/保存再試行は同梱dev-control assetと限定native writerを使用し、停止済みbroker/frontendへ依存しない。終了済み窓の画像は欠損を表示する。controller終了時もactive runtimeを停止し、専用launcherから既存記録をread-onlyで再表示できる。新sessionは限定native hidden launcherで新ID/token/process台帳を作り、旧予約/古いpayloadを引き継がない。
 
 ## T0検証・handoff

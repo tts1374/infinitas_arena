@@ -13,8 +13,8 @@
 | 検証 | 結果・限界 |
 | --- | --- |
 | client標準unit | 178/178 PASS。v3通常/合同/大会、文字列ID、一意性/失敗/旧context、画像の一時private→safeを含む |
-| 開発control標準unit | 108/108 PASS。新 `test:dev-control` を既存Windows CIへ登録 |
-| native Rust | 28/28 PASS。メモリ画像の安全確認/破棄/期限/再利用拒否を含む |
+| 開発control標準unit | 114/114 PASS。停止前native保存の成功/partial/失敗/期限切れ・古い受付拒否を含む。`test:dev-control` を既存Windows CIへ登録 |
+| native Rust | 32/32 PASS。停止前bundle相関・read-back、停止との競合・409拒否時の状態/証拠保全、メモリ画像の安全確認/破棄/期限/再利用拒否を含む |
 | CI面 | root typecheck/lint、check:agents/check:design-contracts、client build PASS。Worker187、Host Event integration6、stats17は同再開作業でPASS、Worker dry-run成功（deployなし） |
 | script構文 | mjs全件node --check、PS4件ParseFile PASS |
 | rendered UI | 既存試験用seamとPlaywrightで初回/稼働中read失敗の再試行、terminal後poll停止、孤立runtime停止dialogを確認。凍結corrected画像/操作表を維持。mock成功をnative受理とは扱わない |
@@ -27,7 +27,7 @@
 | `s20261028115543-e052f72c` | 合同/A実v3の `.59 SPA` EX1086/MISS2は読み取り済み・数値ID不成立で未提出。B模擬v3はSUBMIT/ACK/同曲SUBMITTEDを確認。保存は画像欠損をpartial表示。停止時PID再利用を拒否し、offline再列挙で元process/port完全停止を確認 |
 | `s20261028122911-91eb9842` | 修正後のA実プレー `.59 SPA` EX1094/MISS1を実v3から提出、normalize成功/SUBMIT/accepted ACK/同曲SUBMITTEDを確認。文字列IDのBも実parser→SUBMIT→ACK→SUBMITTED、両者提出後にround RESULT。A mainの公開結果でA1094/1位、B400/2位を実画像で確認。native保存のA画像も開いて同結果を確認。Bは旧privacy判定で欠損を表示しpartial保存。このsessionのbinaryはメモリ画像確定変更前 |
 
-未完: 3source×通常/合同/大会のnative全経路、ARENA/BPL/BPL4と大会の実操作、全異常/再接続の実GUI確認、撮影途中の機密切替のnative実証。メモリ画像確定保存とrelease実行時拒否/通常起動は10/29に実証（下記）。単体/モック成功だけで #192 全体を完成扱いしない。
+未完: 3source×通常/合同/大会のnative全経路、ARENA/BPL/BPL4の全進行、全異常/再接続の実GUI確認、停止前bundleの自動flush/read-back（独立確認でMust fix、修正中）。大会の実プレー2曲、メモリ画像確定保存/撮影途中の機密切替、release実行時拒否/通常起動は10/29に実証（下記）。単体/モック成功だけで #192 全体を完成扱いしない。
 
 再開時はこの最新欄と現在の `AGENTS.md` / `QUALITY.md` を読む。元のWIPやstashをreset/上書きせず、対象sessionの `launch-state.json` / `manifest.json` / `controller-spool/state.json` を照合する。停止済み記録は `scripts/start-dev-control.ps1 -ReopenFrom <sessionのmanifest.json>`、新sessionはUIの確認付きrestartを使う。元A sourceはread-onlyを維持し、過去全日入力を証拠へ収集しない。PR merge/Issue close/deploy/releaseは未許可。
 
@@ -45,7 +45,13 @@ PR #208 の初回CIは追加broker試験の一時directory親が存在せずENOE
 
 配布相当のrelease build（production assets、専用identifier `com.infinitas.arena.verify.issue192`、通常profileから隔離、bundle公開なし）を実起動し、通常ロビーが表示されることを確認。WebView2のlocal CDPから実IPCで開発command12種を呼び、すべて `Development control is unavailable in release builds` を返すことを確認。restartは正しいversion/options DTOでも同じ拒否。無効なrestart DTOの引数拒否だけをrelease guard成功の根拠にはしていない。テスト用APIはloopbackの未使用先で、製品roomへ接続していない。probe process/子processは所有identityを照合して終了し、debug port消失を確認。既存 `match_history_window.rs` のrelease警告2件は目的外のため変更していない。
 
-その後本人が参加可能となり、曲は固定せずこちらで変えて選ぶ方針を確認。`s20261029001325-3b68e611`（大会、A実v3/B実clientの模擬v3/C headless）でAを開催前に入室、名簿とN=3を固定。第1曲5.1.1. SPAのA実結果244/MISS647をaccepted ACK/同曲SUBMITTEDと照合、実mainでB600/3pt、C450/2pt、A244/1ptを確認。Cを切断→同じ人として再接続し、epoch更新後も確定450・SUBMITTEDを保持。第2曲24th Century BOY SPHへの進行でB/Cのauto方針が新曲だけへ適用され、新しい同曲受付まで確認した（Aの第2曲は進行中）。
+その後本人が参加可能となり、曲は固定せずこちらで変えて選ぶ方針を確認。`s20261029001325-3b68e611`（大会、A実v3/B実clientの模擬v3/C headless）でAを開催前に入室、名簿とN=3を固定。第1曲5.1.1. SPAのA実結果244/MISS647をaccepted ACK/同曲SUBMITTEDと照合、実mainでB600/3pt、C450/2pt、A244/1ptを確認。Cを切断→同じ人として再接続し、epoch更新後も確定450・SUBMITTEDを保持。第2曲24th Century BOY SPHではA1811/MISS2とB/Cのautoを新曲として受付。A mainの最終結果は2曲完全記録、専用profileの保存documentもschema2/COMPLETE/ended/N3/名簿3/2曲、総合B5pt・A4pt・C3ptを確認した。
+
+同sessionでnative `dev_control_capture` の実request開始を既存Playwrightから観測後、Bを設定画面へ切替→すぐ開催画面へ戻した。B capture `fe5efa80-ebd9-45fe-b335-70ffb29f5113` は「画像取得中に画面が変化」でmissingとなりPNG不存在。安全画面へ戻しても復活しないことを実native経路で確認。両窓が安全な状態で再保存するとmissing[]/savedとなり、最終結果bundle `bundle-1793233753153950000` を作成。runtime停止は約11秒、errors[]・process/port消失を確認。native画像/IPC試験ではBrowser plugin不在のため既存Playwrightで実WebView2へlocal CDP接続した。新しいharnessや依存は追加していない。
+
+`s20261029002846-23896aa8` のBPLは3ステージ完走。A実v3でMENTAL MELTDOWN SPA 2289/MISS102、24h Endurance Race SPH 1949/MISS16、GALGALIM SPA 1954/MISS31を各曲の実送信/受付と照合。Bはinf-notebookの実watcher/parser経路から毎曲500/MISS10。最終RESULTは3/3曲、A3勝・B0勝で、実mainと公開結果が一致した。10/29夕方の再開時はアプリ終了済み、停止途中のspoolと全結果を保持している。
+
+停止前bundle不足を補正。quiesce/収集後、停止ID・期限付きでnativeの新bundle flush/read-back受付を待つ。保存失敗/期限切れでも停止を続け、spool/旧bundleを保持する。独立レビューの外部collect再開・古い失敗上書き・nativeとbrokerの全state置換競合を修正し、稼働中の保存結果はbrokerのみが確定する。再レビューで未解決Must fixなし。停止後の保存・再試行は従来のnative経路を維持。実nativeの最新修正版での停止確認は継続中。
 
 2026-10-24。作業基点は `codex/issue-192-dev-control` / `0dac1b02d3b23d9449d1e63d7ca3f822f98f9e50`。Phase C の責務別checkpoint記録であり、製品全体の受入完了ではない。正本は `tasks/issue-192-dev-control-{window,tasks,validation}.md`、`tasks/issue-192-design-source-manifest.md` と `docs/ux/issue-192-dev-control/control-boundary.md`。
 

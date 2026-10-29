@@ -240,7 +240,15 @@ pub fn dev_control_state(window: tauri::WebviewWindow) -> Result<Value, String> 
     let auth = authority(&window)?;
     controller(&auth)?;
     match request_broker(&auth, "state", None) {
-        Ok(value) => Ok(value),
+        Ok(value) => {
+            if stop_export_id(&value).is_some() && value["save"]["status"] == "exporting" {
+                // Collection is complete; this native writer acknowledges its durable
+                // bundle before the broker is allowed to terminate the runtime.
+                let _ = export_for_authority(&auth)?;
+                return request_broker(&auth, "state", None).or_else(|_| offline_state(&auth));
+            }
+            Ok(value)
+        },
         Err(_) => offline_state(&auth),
     }
 }
@@ -384,25 +392,85 @@ pub fn dev_control_export(window: tauri::WebviewWindow) -> Result<Value, String>
 }
 
 fn export_for_authority(auth: &Authority) -> Result<Value, String> {
-    match export_evidence(auth) {
+    let before=read_json(&auth.root.join("controller-spool/state.json"))?;
+    let mut context=ExportContext::from_state(&before)?;
+    export_for_context(auth,&mut context)
+}
+
+fn export_for_context(auth: &Authority, context: &mut ExportContext) -> Result<Value, String> {
+    match export_evidence(auth,context) {
         Ok(save) => Ok(save),
         Err(error) => {
             let state_path = auth.root.join("controller-spool/state.json");
             let mut state = read_json(&state_path)?;
+            if !context.is_current(&state) { return Err("Export context changed; retained evidence was not overwritten".into()); }
             let save = json!({"status":"failed","path":null,"bundleId":null,"attempt":state["save"]["attempt"].as_u64().unwrap_or(0)+1,"error":error,"missing":state["save"]["missing"]});
-            state["save"] = save.clone();
-            let _ = durable_json(auth,&state_path,&state);
-            if state["lifecycle"] == "running" { let _ = request_broker(auth,"export-result",Some(save.clone())); }
+            persist_export_result(auth, &mut state, &save)?;
             Ok(save)
         }
     }
 }
 
-fn export_evidence(auth: &Authority) -> Result<Value, String> {
+struct ExportContext {
+    lifecycle: String,
+    stop_requested_at: Value,
+    stop_id: Option<String>,
+    save_attempt: Option<u64>,
+}
+
+impl ExportContext {
+    fn from_state(state: &Value) -> Result<Self,String> {
+        let lifecycle=required(state,"lifecycle")?.to_owned();
+        let context=Self { lifecycle:lifecycle.clone(),stop_requested_at:state["stop"]["requestedAt"].clone(),stop_id:stop_export_id(state).map(str::to_owned),save_attempt:if lifecycle=="running" { None } else { Some(state["save"]["attempt"].as_u64().unwrap_or(0)) } };
+        if !context.is_current(state) { return Err("Stop collection is not ready for export".into()); }
+        Ok(context)
+    }
+    fn is_current(&self,state: &Value) -> bool {
+        if state["lifecycle"].as_str()!=Some(self.lifecycle.as_str()) || state["stop"]["requestedAt"]!=self.stop_requested_at || self.save_attempt.is_some_and(|attempt|state["save"]["attempt"].as_u64().unwrap_or(0)!=attempt) { return false; }
+        if self.lifecycle=="stopping" {
+            let now=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|time|time.as_millis()).unwrap_or(u128::MAX);
+            self.stop_id.as_deref().is_some_and(|id|stop_export_id(state)==Some(id)) && state["save"]["status"]=="exporting" && state["stop"]["exportDeadlineMs"].as_u64().is_some_and(|deadline|now<u128::from(deadline))
+        } else { matches!(self.lifecycle.as_str(),"running"|"stopped"|"failed") }
+    }
+}
+
+fn stop_export_id(state: &Value) -> Option<&str> {
+    if state["lifecycle"] == "stopping" && state["stop"]["phase"] == "flushing" {
+        state["stop"]["exportRequestId"].as_str().filter(|id| !id.is_empty())
+    } else { None }
+}
+
+fn notify_export_result(auth: &Authority, state: &Value, save: &Value) -> Result<(), String> {
+    let mut report = save.clone();
+    if let Some(id) = stop_export_id(state) { report["stopExportRequestId"] = json!(id); }
+    else if state["lifecycle"] != "running" { return Ok(()); }
+    request_broker(auth,"export-result",Some(report)).map(|_| ())
+}
+
+fn persist_export_result(auth: &Authority, state: &mut Value, save: &Value) -> Result<(), String> {
+    if matches!(state["lifecycle"].as_str(), Some("running" | "stopping")) {
+        // The broker owns live state. A native read/check/rename cannot atomically
+        // exclude its timeout or shutdown transitions, so only its receipt may commit.
+        notify_export_result(auth, state, save)
+    } else {
+        state["save"] = save.clone();
+        durable_json(auth, &auth.root.join("controller-spool/state.json"), state)
+    }
+}
+
+fn export_evidence(auth: &Authority, context: &mut ExportContext) -> Result<Value, String> {
     // Online collection is bounded. Loss of broker never prevents exporting the retained spool.
-    let collection_error = request_broker(&auth, "collect", Some(json!({}))).err();
     let spool = confined(&auth.root, &auth.root.join("controller-spool"))?.canonicalize().map_err(|e| e.to_string())?;
     if !spool.starts_with(&auth.root) { return Err("Spool outside session".into()); }
+    let state_path = spool.join("state.json");
+    let before = read_json(&state_path)?;
+    if !context.is_current(&before) { return Err("Export context changed before collection".into()); }
+    // Stop has already quiesced, collected and flushed. Re-collecting here would
+    // restart capture work while shutdown is waiting for this exact export.
+    let collection_error = if before["lifecycle"] == "running" { request_broker(&auth, "collect", Some(json!({}))).err() } else { None };
+    let state = read_json(&state_path)?;
+    if !context.is_current(&state) { return Err("Export context changed during collection".into()); }
+    context.save_attempt=Some(state["save"]["attempt"].as_u64().unwrap_or(0));
     let exports_root = confined(&auth.root, &auth.root.join("exports"))?;
     fs::create_dir_all(&exports_root).map_err(|e| e.to_string())?;
     let nonce = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_err(|e| e.to_string())?.as_nanos();
@@ -410,15 +478,14 @@ fn export_evidence(auth: &Authority) -> Result<Value, String> {
     let exports = confined(&auth.root, &exports_root.join(&bundle_id))?;
     fs::create_dir(&exports).map_err(|e| e.to_string())?;
     if !exports.starts_with(&auth.root) { return Err("Export outside session".into()); }
-    let state_path = spool.join("state.json");
-    let mut state = read_json(&state_path)?;
+    let stop_request_id = stop_export_id(&state).map(str::to_owned);
     let mut missing: Vec<String> = state["save"]["missing"].as_array().map(|items| items.iter().filter_map(Value::as_str).map(str::to_owned).collect()).unwrap_or_default();
     if collection_error.is_some() && !["stopped", "failed"].contains(&state["lifecycle"].as_str().unwrap_or("")) { missing.push("最新の実窓画像・観測を収集できません。保存済みspoolを使用しました。".into()); }
     let mut files = Vec::<Value>::new();
     let mut write_bundle = || -> Result<(), String> {
     for name in ["state.json", "operations.jsonl", "observations.jsonl", "inputs.jsonl", "manifest.json", "shutdown.json"] {
         let source = spool.join(name);
-        if name == "shutdown.json" && state["stop"]["phase"] == "idle" { continue; }
+        if name == "shutdown.json" && (state["lifecycle"] == "running" || stop_export_id(&state).is_some()) { continue; }
         if !source.exists() { missing.push(name.to_string()); continue; }
         let source = confined(&auth.root, &source)?.canonicalize().map_err(|e| e.to_string())?;
         if !source.starts_with(&spool) { return Err("Spool escape".into()); }
@@ -463,16 +530,16 @@ fn export_evidence(auth: &Authority) -> Result<Value, String> {
         if fs::read(&destination).map_err(|e|e.to_string())?!=data { return Err("Image export read-back mismatch".into()); }
         files.push(json!({"path":destination.file_name().unwrap().to_string_lossy(),"bytes":data.len(),"readBack":true}));
     }
-    durable_json(&auth,&exports.join("bundle.json"),&json!({"protocolVersion":1,"sessionId":auth.manifest["sessionId"],"bundleId":bundle_id,"files":files,"missing":missing}))?;
+    durable_json(&auth,&exports.join("bundle.json"),&json!({"protocolVersion":1,"sessionId":auth.manifest["sessionId"],"bundleId":bundle_id,"stopExportRequestId":stop_request_id,"files":files,"missing":missing}))?;
     Ok(())
     };
     let outcome = write_bundle();
     let export_path = exports.to_string_lossy();
     let display_path = export_path.strip_prefix(r"\\?\").unwrap_or(&export_path);
     let save = json!({"status":if outcome.is_err(){"failed"}else if missing.is_empty(){"saved"}else{"partial"},"path":display_path,"bundleId":bundle_id,"attempt":state["save"]["attempt"].as_u64().unwrap_or(0)+1,"error":outcome.err(),"missing":missing});
-    state["save"] = save.clone();
-    durable_json(&auth,&state_path,&state)?;
-    if state["lifecycle"] == "running" { request_broker(&auth,"export-result",Some(save.clone()))?; }
+    let mut latest = read_json(&state_path)?;
+    if !context.is_current(&latest) { return Err("Stop export is no longer current; bundle retained for inspection".into()); }
+    persist_export_result(auth, &mut latest, &save)?;
     Ok(save)
 }
 
@@ -536,6 +603,113 @@ mod tests {
         assert_eq!(commit_capture(&auth,json!({"captureId":id,"accept":true})).unwrap()["status"],"saved");
         assert_eq!(fs::read(spool.join("captures").join(format!("{id}.png"))).unwrap(),bytes);
         assert!(commit_capture(&auth,json!({"captureId":id,"accept":true})).is_err());
+    }
+    #[test]
+    fn running_export_racing_with_stop_does_not_export_uncollected_state_or_overwrite_stop() {
+        for phase in ["collecting","flushing","complete"] {
+            let mut auth=export_fixture();let path=auth.root.join("controller-spool/state.json");
+            let mut running=read_json(&path).unwrap();running["lifecycle"]=json!("running");running["stop"]=json!({"phase":"idle","requestedAt":null});durable_json(&auth,&path,&running).unwrap();
+            let mut stopped=running;stopped["lifecycle"]=json!(if phase=="complete" { "stopped" } else { "stopping" });stopped["stop"]=json!({"phase":phase,"requestedAt":"new-stop","exportRequestId":"new-stop-id"});stopped["save"]["status"]=json!("saved");
+            let expected=serde_json::to_vec(&stopped).unwrap();let written=expected.clone();let target=path.clone();
+            let listener=std::net::TcpListener::bind("127.0.0.1:0").unwrap();auth.manifest["broker"]["port"]=json!(listener.local_addr().unwrap().port());
+            let server=std::thread::spawn(move || {
+                let (mut stream,_)=listener.accept().unwrap();stream.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+                let mut bytes=Vec::new();let mut chunk=[0u8;4096];
+                while !bytes.windows(4).any(|part|part==b"\r\n\r\n") { let count=stream.read(&mut chunk).unwrap();assert!(count>0);bytes.extend_from_slice(&chunk[..count]); }
+                assert!(String::from_utf8_lossy(&bytes).starts_with("POST /collect "));
+                fs::write(target,written).unwrap();
+                let body=b"{\"error\":\"stop\"}";
+                write!(stream,"HTTP/1.1 409 Conflict\r\nContent-Length: {}\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n",body.len()).unwrap();stream.write_all(body).unwrap();
+            });
+            assert!(export_for_authority(&auth).is_err());server.join().unwrap();
+            assert_eq!(fs::read(path).unwrap(),expected);
+            assert!(!auth.root.join("exports").exists(),"a stale running save must not export the stop spool");
+        }
+    }
+    #[test]
+    fn stale_stop_export_failure_never_overwrites_a_newer_outcome_or_context() {
+        let auth=export_fixture();
+        let path=auth.root.join("controller-spool/state.json");
+        let mut initial=read_json(&path).unwrap();
+        let deadline=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis()+15000;
+        initial["lifecycle"]=json!("stopping");initial["stop"]=json!({"phase":"flushing","requestedAt":"old-stop","exportRequestId":"old-id","exportDeadlineMs":deadline});initial["save"]["status"]=json!("exporting");
+        let mut changes=Vec::new();
+        let mut changed=initial.clone();changed["stop"]["exportRequestId"]=json!("new-id");changes.push(changed);
+        let mut changed=initial.clone();changed["stop"]["phase"]=json!("terminating");changed["save"]["status"]=json!("failed");changes.push(changed);
+        let mut changed=initial.clone();changed["lifecycle"]=json!("stopped");changed["save"]["status"]=json!("saved");changes.push(changed);
+        let mut changed=initial.clone();changed["save"]["status"]=json!("saved");changed["save"]["bundleId"]=json!("bundle-999");changes.push(changed);
+        let mut changed=initial.clone();changed["stop"]["exportDeadlineMs"]=json!(0);changes.push(changed);
+        let mut changed=initial.clone();changed["save"]["attempt"]=json!(99);changes.push(changed);
+        for changed in changes {
+            let mut context=ExportContext::from_state(&initial).unwrap();
+            durable_json(&auth,&path,&changed).unwrap();let before=fs::read(&path).unwrap();
+            assert!(export_for_context(&auth,&mut context).is_err());
+            assert_eq!(fs::read(&path).unwrap(),before,"stale export must not rewrite retained outcome");
+        }
+    }
+    #[test]
+    fn live_export_never_replaces_broker_state_when_its_receipt_is_rejected() {
+        let mut auth=export_fixture();
+        let path=auth.root.join("controller-spool/state.json");
+        let mut state=read_json(&path).unwrap();
+        let deadline=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis()+15000;
+        state["lifecycle"]=json!("stopping");state["stop"]=json!({"phase":"flushing","exportRequestId":"stop-late","exportDeadlineMs":deadline});state["save"]["status"]=json!("exporting");
+        durable_json(&auth,&path,&state).unwrap();let initial=fs::read(&path).unwrap();
+        let mut terminal=state;terminal["stop"]["phase"]=json!("terminating");terminal["save"]["status"]=json!("failed");terminal["save"]["error"]=json!("timeout");
+        let expected=serde_json::to_vec(&terminal).unwrap();let written=expected.clone();let target=path.clone();
+        let listener=std::net::TcpListener::bind("127.0.0.1:0").unwrap();auth.manifest["broker"]["port"]=json!(listener.local_addr().unwrap().port());
+        let server=std::thread::spawn(move || {
+            let (mut stream,_)=listener.accept().unwrap();stream.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+            let mut bytes=Vec::new();let mut chunk=[0u8;4096];
+            while !bytes.windows(4).any(|part|part==b"\r\n\r\n") { let count=stream.read(&mut chunk).unwrap();assert!(count>0);bytes.extend_from_slice(&chunk[..count]); }
+            assert!(String::from_utf8_lossy(&bytes).starts_with("POST /export-result "));
+            assert_eq!(fs::read(&target).unwrap(),initial,"only the broker may commit a live save result");
+            fs::write(target,written).unwrap();
+            let body=b"{\"error\":\"stale stop\"}";
+            write!(stream,"HTTP/1.1 409 Conflict\r\nContent-Length: {}\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n",body.len()).unwrap();stream.write_all(body).unwrap();
+        });
+        assert!(export_for_authority(&auth).is_err());server.join().unwrap();
+        assert_eq!(fs::read(path).unwrap(),expected);
+        assert!(fs::read_dir(auth.root.join("exports")).unwrap().any(|entry|entry.unwrap().path().join("bundle.json").exists()),"the read-back bundle remains available");
+    }
+    #[test]
+    fn stop_export_uses_collected_spool_and_acknowledges_only_its_new_read_back_bundle() {
+        let mut auth=export_fixture();
+        let old=export_for_authority(&auth).unwrap();
+        let old_path=Path::new(old["path"].as_str().unwrap()).join("bundle.json");
+        let old_bytes=fs::read(&old_path).unwrap();
+        let state_path=auth.root.join("controller-spool/state.json");
+        let mut state=read_json(&state_path).unwrap();
+        let deadline=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis()+15000;
+        state["lifecycle"]=json!("stopping");state["stop"]=json!({"phase":"flushing","exportRequestId":"stop-123","exportDeadlineMs":deadline});state["save"]["status"]=json!("exporting");
+        durable_json(&auth,&state_path,&state).unwrap();
+        fs::remove_file(auth.root.join("controller-spool/shutdown.json")).unwrap();
+        let listener=std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        auth.manifest["broker"]["port"]=json!(listener.local_addr().unwrap().port());
+        let server=std::thread::spawn(move || {
+            let (mut stream,_)=listener.accept().unwrap();stream.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+            let mut bytes=Vec::new();let mut chunk=[0u8;4096];
+            let body=loop {
+                let length=stream.read(&mut chunk).unwrap();assert!(length>0);bytes.extend_from_slice(&chunk[..length]);
+                if let Some(end)=bytes.windows(4).position(|part|part==b"\r\n\r\n") {
+                    let headers=String::from_utf8_lossy(&bytes[..end]);
+                    assert!(headers.starts_with("POST /export-result "),"stop export must not re-collect");
+                    let length:usize=headers.lines().find_map(|line|line.to_lowercase().strip_prefix("content-length:").map(|value|value.trim().parse().unwrap())).unwrap();
+                    if bytes.len()>=end+4+length { break serde_json::from_slice::<Value>(&bytes[end+4..end+4+length]).unwrap(); }
+                }
+            };
+            stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{}").unwrap();
+            body
+        });
+        let saved=export_for_authority(&auth).unwrap();
+        assert_eq!(saved["status"],"saved");assert_ne!(saved["bundleId"],old["bundleId"]);
+        let report=server.join().unwrap();assert_eq!(report["stopExportRequestId"],"stop-123");assert_eq!(report["bundleId"],saved["bundleId"]);
+        assert_eq!(fs::read(old_path).unwrap(),old_bytes);
+        let bundle=read_json(&Path::new(saved["path"].as_str().unwrap()).join("bundle.json")).unwrap();
+        assert_eq!(bundle["stopExportRequestId"],"stop-123");assert!(bundle["missing"].as_array().unwrap().is_empty());
+        assert!(bundle["files"].as_array().unwrap().iter().all(|file|file["readBack"]==true));
+        let mut changed=state.clone();changed["stop"]["phase"]=json!("collecting");assert!(stop_export_id(&changed).is_none());
+        changed=state;changed["lifecycle"]=json!("stopped");assert!(stop_export_id(&changed).is_none());
     }
     #[test]
     fn offline_export_flushes_readbacks_and_retry_preserves_previous_bundle() {

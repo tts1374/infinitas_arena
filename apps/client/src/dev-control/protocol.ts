@@ -116,7 +116,7 @@ export interface DevControlState {
   availableParticipants?: string[];
   operations: DevControlResult[];
   observations: DevControlObservation[];
-  stop?: { phase: "idle" | "quiescing" | "collecting" | "flushing" | "terminating" | "verifying" | "complete" | "failed"; requestedAt: string | null; completedAt: string | null; errors: string[]; processesVerified: boolean; portsVerified: boolean };
+  stop?: { phase: "idle" | "quiescing" | "collecting" | "flushing" | "terminating" | "verifying" | "complete" | "failed"; requestedAt: string | null; completedAt: string | null; errors: string[]; processesVerified: boolean; portsVerified: boolean; exportRequestId?: string; exportDeadlineAt?: string; exportDeadlineMs?: number };
   evidence?: { captures: DevControlCaptureReceipt[] };
   save: { status: "idle" | "collecting" | "exporting" | "saved" | "partial" | "failed"; path: string | null; error: string | null; missing: string[]; bundleId?: string | null; attempt?: number };
 }

@@ -230,7 +230,7 @@ try {
   // A synchronous build blocks the broker event loop. Open windows only once every
   // binary is ready, so their first native request cannot time out during a build.
   const { createBroker }=await import('./broker.mjs');
-  broker=await createBroker({manifest,keys,onStop:async()=>{try{await stopRuntime();}finally{await broker.close();setTimeout(()=>process.exit(0),100);}}});
+  broker=await createBroker({manifest,keys,requireStopExport:true,onStop:async()=>{try{await stopRuntime();}finally{await broker.close();setTimeout(()=>process.exit(0),100);}}});
   await broker.listen();
   await broker.startSession();
   // Adapter ticks can retry startup reads; show the controller after all product
