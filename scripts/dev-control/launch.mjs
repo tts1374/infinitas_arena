@@ -8,7 +8,7 @@ import { SOURCES, ensureOwnedDirectory, canonicalWritePath, readManifest } from 
 import { applyRestartOptions, readRestartOptions } from './restart.mjs';
 import { inventory, descendants, identifiedDescendants, stopOwned, listeners, shutdownProcessState } from './processes.mjs';
 import { createEvidenceWriter, evidenceManifest, writeSessionFile } from './evidence.mjs';
-import { validateClientBuild, copyClientBinary } from './build-client.mjs';
+import { validateClientBuild, copyClientBinary, probeClientReadiness } from './build-client.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const cli = Object.fromEntries(Array.from({ length: Math.floor((process.argv.length - 2) / 2) }, (_, i) => [process.argv[i * 2 + 2], process.argv[i * 2 + 3]]));
@@ -140,22 +140,18 @@ async function waitPort(port, child, readiness, timeout=60000) {
   const until = Date.now()+timeout;
   while (Date.now()<until) {
     if (child.exitCode !== null) throw new Error(`Owned process exited before readiness (${port})`);
-    const ready = await new Promise(res => { const socket=net.connect(port,'127.0.0.1'); socket.once('connect',()=>{socket.destroy();res(true);});socket.once('error',()=>res(false));socket.setTimeout(500,()=>{socket.destroy();res(false);}); });
+    const ready = await new Promise(res => { const socket=net.connect(port,'127.0.0.1'); socket.once('connect',()=>{socket.destroy();res(true);});socket.once('error',()=>res(false));socket.setTimeout(Math.min(500,Math.max(1,until-Date.now())),()=>{socket.destroy();res(false);}); });
     if (ready) {
       refreshOwnership();
       const expected=descendants(inventory(),child.pid);
       const bound=listeners().filter(listener=>listener.port===port);
       if(bound.length===0||bound.some(listener=>!expected.some(process=>process.pid===listener.pid&&owned.get(process.pid)?.createdAt===process.createdAt&&owned.get(process.pid)?.executablePath===process.executablePath)))throw new Error(`Port ${port} is not owned by the launched process`);
-      const response=await fetch(`http://127.0.0.1:${port}${readiness==='worker'?'/api/capabilities':'/@vite/client'}`,{redirect:'error',signal:AbortSignal.timeout(5000)});
-      if(!response.ok)throw new Error(`Owned ${readiness} readiness HTTP failed`);
-      if(readiness==='worker'){
-        const capabilities=await response.json();if(capabilities.host_event_protocol!==2)throw new Error('Worker capability mismatch');
-      }else if(!(await response.text()).includes('WebSocket'))throw new Error('Frontend readiness content mismatch');
-      return;
+      const remainingMs=until-Date.now();if(remainingMs<=0)break;
+      if(await probeClientReadiness(`http://127.0.0.1:${port}${readiness==='worker'?'/api/capabilities':'/@vite/client'}`,readiness,fetch,Math.min(5000,remainingMs))&&Date.now()<until)return;
     }
     await new Promise(res=>setTimeout(res,300));
   }
-  throw new Error(`Readiness timeout (${port})`);
+  throw new Error(`Owned ${readiness} HTTP readiness timeout (${port})`);
 }
 function stopRuntime() {
   if(stopPromise)return stopPromise;

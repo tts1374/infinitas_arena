@@ -2,6 +2,25 @@ import { copyFileSync, readFileSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { canonicalWritePath } from './guards.mjs';
 
+/** A listening dev server may still be compiling; only verified content is ready. */
+export async function probeClientReadiness(url,kind,request=fetch,timeoutMs=5000) {
+  const deadline=Date.now()+timeoutMs;
+  let response,content;
+  try {
+    response=await request(url,{redirect:'error',signal:AbortSignal.timeout(timeoutMs)});
+    if(response.status>=500)return false;
+    if(!response.ok)throw new Error(`Owned ${kind} readiness HTTP failed`);
+    content=kind==='worker'?await response.json():await response.text();
+  } catch(error) {
+    if(['TimeoutError','AbortError'].includes(error.name)||['ECONNREFUSED','ECONNRESET'].includes(error.cause?.code))return false;
+    throw error;
+  }
+  if(Date.now()>=deadline)return false;
+  if(kind==='worker') { if(content.host_event_protocol!==2)throw new Error('Worker capability mismatch'); }
+  else if(!content.includes('WebSocket'))throw new Error('Frontend readiness content mismatch');
+  return true;
+}
+
 export function validateClientBuild(manifest,spec,config){
   if(config.identifier!==`com.infinitas.arena.dev.${manifest.sessionId}.${spec.clientId.toLowerCase()}`||config.identifier!==spec.identifier)throw new Error('Build identifier mismatch');
   const windows=config.app?.windows;

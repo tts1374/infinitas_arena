@@ -2,9 +2,30 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdirSync,mkdtempSync,readFileSync,writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { validateClientBuild,copyClientBinary } from './build-client.mjs';
+import { validateClientBuild,copyClientBinary,probeClientReadiness } from './build-client.mjs';
+
+test('owned HTTP readiness retries startup timeouts and server warmup without accepting incorrect content',async()=>{
+  for(const kind of ['worker','frontend']) {
+    let calls=0;
+    const request=async(_url,options)=>{
+      assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);
+      if(++calls===1)throw new DOMException('cold server timeout','TimeoutError');
+      if(calls===2)return new Response('warming up',{status:503});
+      return kind==='worker'?Response.json({host_event_protocol:2}):new Response('WebSocket client');
+    };
+    assert.equal(await probeClientReadiness('http://127.0.0.1:1',kind,request),false);
+    assert.equal(await probeClientReadiness('http://127.0.0.1:1',kind,request),false);
+    assert.equal(await probeClientReadiness('http://127.0.0.1:1',kind,request),true);
+  }
+  await assert.rejects(probeClientReadiness('http://127.0.0.1:1','worker',async()=>Response.json({host_event_protocol:1})),/capability mismatch/);
+  await assert.rejects(probeClientReadiness('http://127.0.0.1:1','frontend',async()=>new Response('unrelated server')),/content mismatch/);
+  await assert.rejects(probeClientReadiness('http://127.0.0.1:1','worker',async()=>new Response('not JSON')),SyntaxError);
+  await assert.rejects(probeClientReadiness('http://127.0.0.1:1','worker',async()=>new Response('',{status:401})),/HTTP failed/);
+  assert.equal(await probeClientReadiness('http://127.0.0.1:1','worker',async()=>{await new Promise(resolve=>setTimeout(resolve,10));return Response.json({host_event_protocol:2});},1),false,'a valid response after the remaining deadline is not ready');
+});
 
 test('shared build cache never changes the session/client identifier, profile, route or copied executable',()=>{
+  mkdirSync('testdata/runtime/dev-control',{recursive:true});
   const root=mkdtempSync(join(process.cwd(),'testdata/runtime/dev-control/build-profile-'));
   mkdirSync(join(root,'controller-assets'));
   const manifest={runtimeRoot:root,repoRoot:root,sessionId:'session'};

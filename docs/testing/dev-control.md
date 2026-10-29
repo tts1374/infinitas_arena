@@ -27,7 +27,7 @@
 | `s20261028115543-e052f72c` | 合同/A実v3の `.59 SPA` EX1086/MISS2は読み取り済み・数値ID不成立で未提出。B模擬v3はSUBMIT/ACK/同曲SUBMITTEDを確認。保存は画像欠損をpartial表示。停止時PID再利用を拒否し、offline再列挙で元process/port完全停止を確認 |
 | `s20261028122911-91eb9842` | 修正後のA実プレー `.59 SPA` EX1094/MISS1を実v3から提出、normalize成功/SUBMIT/accepted ACK/同曲SUBMITTEDを確認。文字列IDのBも実parser→SUBMIT→ACK→SUBMITTED、両者提出後にround RESULT。A mainの公開結果でA1094/1位、B400/2位を実画像で確認。native保存のA画像も開いて同結果を確認。Bは旧privacy判定で欠損を表示しpartial保存。このsessionのbinaryはメモリ画像確定変更前 |
 
-未完: 3source×通常/合同/大会のnative全経路、ARENA/BPL/BPL4と大会の実操作、全異常/再接続の実GUI確認、メモリ画像確定保存と撮影途中の機密切替のnative実証、release配布版の直呼び拒否/通常起動確認。単体/モック成功だけで #192 全体を完成扱いしない。
+未完: 3source×通常/合同/大会のnative全経路、ARENA/BPL/BPL4と大会の実操作、全異常/再接続の実GUI確認、撮影途中の機密切替のnative実証。メモリ画像確定保存とrelease実行時拒否/通常起動は10/29に実証（下記）。単体/モック成功だけで #192 全体を完成扱いしない。
 
 再開時はこの最新欄と現在の `AGENTS.md` / `QUALITY.md` を読む。元のWIPやstashをreset/上書きせず、対象sessionの `launch-state.json` / `manifest.json` / `controller-spool/state.json` を照合する。停止済み記録は `scripts/start-dev-control.ps1 -ReopenFrom <sessionのmanifest.json>`、新sessionはUIの確認付きrestartを使う。元A sourceはread-onlyを維持し、過去全日入力を証拠へ収集しない。PR merge/Issue close/deploy/releaseは未許可。
 
@@ -36,6 +36,16 @@
 本人Aは現在参加不可。本人操作/実プレーを代行した成功記録は作らず、自動確認可能な範囲を進める。`91eb9842` のruntime/portは全終了していたがspoolはquiescingで途切れていた。専用ReopenFromで旧controllerを独立起動し、native readbackがstopped/complete・processesVerified/portsVerified trueを確認。停止後も前日のA実画像・受付ログを保持して新bundleへ再保存できた。旧shutdown.jsonは欠落としてpartialを維持した。
 
 PR #208 の初回CIは追加broker試験の一時directory親が存在せずENOENTとなった。試験側に明示mkdirを追加し、空の作業directoryから既存broker testを実行して25/25 PASS。製品検査の削除・緩和なし。
+
+`265d027` のPR CIは成功（run `40791136947`、check `123176357024`）。`s20261029000125-62374cff` は本人Aを未入室のまま保持し、B実client/Refluxで開催開始→選曲→入力→parser→SUBMIT→accepted ACK→同曲RESULT/500→開催終了を確認した。Aの代理操作や実プレー成功とは扱わない。B mainの「開催へ戻る」で実結果を開き、メモリ画像の確定保存とPNGの内容一致を確認。Aの入力画面はprivacy拒否のためpartialを正しく表示。最新capture B `3ce07624-9141-4f19-9841-d33ef4d2609b`、bundle `bundle-1793232474097421600`。
+
+同sessionを実UIの確認から停止し、約9秒後にstopped/complete、process/port確認済み、errorsなしを確認。shutdown.jsonのincomplete/remaining/remainingPortsはいずれも空。元sourceプロセスは起動も停止もしていない。
+
+`s20261029001104-47d06cd5` の起動で、owned frontendのTCPはlisten済みでも最初のHTTPが5秒内に準備できず失敗する事象を確認。終了後のowned process/port残存なし。HTTP timeout/abort/接続一時失敗/5xxだけを既存60秒期限内で再probeし、4xx・不正JSON・capability/content不一致は即拒否する修正を追加。各probeで所有PID/path/作成時刻を再照合し、TCP/HTTPを残時間で制限、応答後も期限を照合する。期限後の正しい応答も採用しない負例を含む2/2 PASS、独立レビューの期限指摘を修正・再確認済み。script全体109/109 PASS。
+
+配布相当のrelease build（production assets、専用identifier `com.infinitas.arena.verify.issue192`、通常profileから隔離、bundle公開なし）を実起動し、通常ロビーが表示されることを確認。WebView2のlocal CDPから実IPCで開発command12種を呼び、すべて `Development control is unavailable in release builds` を返すことを確認。restartは正しいversion/options DTOでも同じ拒否。無効なrestart DTOの引数拒否だけをrelease guard成功の根拠にはしていない。テスト用APIはloopbackの未使用先で、製品roomへ接続していない。probe process/子processは所有identityを照合して終了し、debug port消失を確認。既存 `match_history_window.rs` のrelease警告2件は目的外のため変更していない。
+
+その後本人が参加可能となり、曲は固定せずこちらで変えて選ぶ方針を確認。`s20261029001325-3b68e611`（大会、A実v3/B実clientの模擬v3/C headless）でAを開催前に入室、名簿とN=3を固定。第1曲5.1.1. SPAのA実結果244/MISS647をaccepted ACK/同曲SUBMITTEDと照合、実mainでB600/3pt、C450/2pt、A244/1ptを確認。Cを切断→同じ人として再接続し、epoch更新後も確定450・SUBMITTEDを保持。第2曲24th Century BOY SPHへの進行でB/Cのauto方針が新曲だけへ適用され、新しい同曲受付まで確認した（Aの第2曲は進行中）。
 
 2026-10-24。作業基点は `codex/issue-192-dev-control` / `0dac1b02d3b23d9449d1e63d7ca3f822f98f9e50`。Phase C の責務別checkpoint記録であり、製品全体の受入完了ではない。正本は `tasks/issue-192-dev-control-{window,tasks,validation}.md`、`tasks/issue-192-design-source-manifest.md` と `docs/ux/issue-192-dev-control/control-boundary.md`。
 
