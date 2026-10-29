@@ -15,7 +15,7 @@
 | client標準unit | 179/179 PASS。v3通常/合同/大会、文字列ID、一意性/失敗/旧context、画像の一時private→safe、Host断中の新しいguest観測による進行表示を含む |
 | 開発control標準unit | 117/117 PASS。停止前native保存の成功/partial/失敗/期限切れ、古い受付拒否、再戦復帰、停止要求自身の追跡を含む。`test:dev-control` を既存Windows CIへ登録 |
 | native Rust | 33/33 PASS。停止前bundle相関・read-back、停止との競合・409拒否時の状態/証拠保全、Reflux空baselineの非観測/重複排除、メモリ画像の安全確認/破棄/期限/再利用拒否を含む |
-| CI面 | root typecheck/lint、check:agents/check:design-contracts、client build PASS。Worker187、Host Event integration6、stats17は同再開作業でPASS、Worker dry-run成功（deployなし） |
+| CI面 | root typecheck/lint、check:agents/check:design-contracts、client production build PASS。Worker190、Host Event integration6、stats17 PASS。Worker dry-run、cargo check --release成功（deployなし、既存警告2件） |
 | script構文 | mjs全件node --check、PS4件ParseFile PASS |
 | rendered UI | 既存試験用seamとPlaywrightで初回/稼働中read失敗の再試行、terminal後poll停止、孤立runtime停止dialogを確認。凍結corrected画像/操作表を維持。mock成功をnative受理とは扱わない |
 | 独立レビュー | receipt/atomic保存/復元/所有権/source/focus/画像privacyを別contextでread-only確認。重要な指摘は修正・再検証し、実証が残る部分を下記へ分離 |
@@ -72,6 +72,12 @@ ARENA停止は約12秒、要求ID一致の新native bundle `bundle-1793268581537
 同試験でHost Bのrev12と接続中Cのrev14が異なるのにヘッダが古いBを使う表示不整合を発見。同session/room/event/generation内の最大revisionを進行表示に使い、Host本人の操作context/権限は維持。終了時は再接続待ち案内を消す。client179/179、root typecheck/lint、独立レビューPASS。最新UIの実Host断表示は次sessionで確認する。
 
 同sessionの未使用exports先へ検証専用の遮断fileを作り、native保存失敗を実発生。保存failed/os error183を表示しつつ約14秒でruntime停止・process/port確認、停止要求自身もnative確認後confirmedとなった。spool/画像/受付を保持。自分で作った遮断fileだけを同じroot内の記録fileへrename後、停止済みcontrollerの「保存」で新bundleへ再試行した。
+
+再保存bundle `bundle-1793269523550552500` は全file readBack=true。spoolとexportのobservations.jsonlは、保存失敗前・再試行後とも同じSHA256（39e1…3a18）。Aの画像欠損をpartialのまま表示し、保存失敗とruntime停止成功を混同しない。
+
+最新UIの大会 `s20261029102646-5b3a6443` でHost断中のC両提出を確認。B rev8に対しCの新revisionからヘッダ2/2人・Host復帰期限を表示し、実WebView画像も確認。実時計300秒の期限でサーバーは10:33:57.029ZにHOST_DISCONNECTEDを保存したが、Cへ自動EVENT_STATEが届かずPONGのみが続いた。10:35:36の明示STATE_GETで初めてRESULTを受信。終了後のヘッダと再接続待ち案内消失は表示修正版で確認した。これは期限自動通知の成功とは扱わない。
+
+独立調査で、DOのalarm起床時にrestoreが先に期限を確定し、その後のalarmは終了済みなのでbroadcastしない通知漏れを確認。restoreで新たな期限終了が永続化されたときだけ、hibernated socket復元後に既存EVENT_STATEを送る最小修正を追加。保存失敗rollbackでは通知せず、保存後cleanup alarm設定失敗でも通知する。保存schema/期限/権限/秘匿/WS型は変更しない。controller28/28、Worker全190/190、Host Event integration6/6、bundle dry-run、独立再レビューPASS。修正版の実時計300秒自動通知は再確認が必要。
 
 2026-10-24。作業基点は `codex/issue-192-dev-control` / `0dac1b02d3b23d9449d1e63d7ca3f822f98f9e50`。Phase C の責務別checkpoint記録であり、製品全体の受入完了ではない。正本は `tasks/issue-192-dev-control-{window,tasks,validation}.md`、`tasks/issue-192-design-source-manifest.md` と `docs/ux/issue-192-dev-control/control-boundary.md`。
 

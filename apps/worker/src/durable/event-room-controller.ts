@@ -113,18 +113,23 @@ export class EventRoomController {
   roomId(): string { return this.isInitialized() ? this.stateMachine.toSnapshot().room_id : this.routedRoomId; }
 
   async restore(record: unknown): Promise<void> {
+    let notifyExpiredDeadline = false;
     try {
       this.stateMachine.hydrate(record);
       this.routedRoomId = this.stateMachine.toSnapshot().room_id;
       const before = this.stateMachine.toPersistenceRecord();
       if (this.stateMachine.expireHostDeadline(new Date())) {
         try { await this.commit(before, false); } catch { await this.ensureRestoredAlarm(); }
+        notifyExpiredDeadline = this.stateMachine.toSnapshot().ended_at !== null;
       } else await this.ensureRestoredAlarm();
     } catch {
       this.restoreLost = true;
       if (isRecord(record) && typeof record.room_id === "string") this.routedRoomId = record.room_id;
     }
     this.rebuildSessions();
+    // A waking alarm may find the deadline already settled by restore. Notify
+    // after rebuilding hibernated sockets, and only if persistence did not roll back.
+    if (notifyExpiredDeadline && !this.restoreLost) this.broadcastState();
   }
 
   async initialize(input: EventRoomInitializationInput): Promise<void> {
