@@ -9,6 +9,7 @@ import { applyRestartOptions, readRestartOptions } from './restart.mjs';
 import { inventory, descendants, identifiedDescendants, stopOwned, listeners, shutdownProcessState } from './processes.mjs';
 import { createEvidenceWriter, evidenceManifest, writeSessionFile } from './evidence.mjs';
 import { validateClientBuild, copyClientBinary, probeClientReadiness } from './build-client.mjs';
+import { prepareWorkerRuntime } from './build-worker.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const cli = Object.fromEntries(Array.from({ length: Math.floor((process.argv.length - 2) / 2) }, (_, i) => [process.argv[i * 2 + 2], process.argv[i * 2 + 3]]));
@@ -173,8 +174,10 @@ function stopRuntime() {
 }
 const ownershipTimer=setInterval(()=>{try{refreshOwnership();}catch(error){write(join(root,'ownership-error.json'),{error:error.message});void (broker?broker.stop():stopRuntime());}},1500);
 try {
+  const workerBuild=prepareWorkerRuntime(manifest);
+  write(join(root,'logs','worker-build.log'),{sourceHead:manifest.sourceHead,bundleSha256:workerBuild.bundleSha256,configSha256:workerBuild.configSha256});
   // SQLite also creates -journal/-wal sidecars; keep paths below Windows MAX_PATH.
-  const worker=start('worker',[join(repo,'node_modules/wrangler/bin/wrangler.js'),'dev','--local','--ip','127.0.0.1','--port',String(workerPort),'--inspector-port',String(inspectorPort),'--persist-to',join(root,'w'),'--var','HOST_EVENT_ACCEPT_NEW:true'],join(repo,'apps/worker'),{},null,process.execPath,[workerPort,inspectorPort]);
+  const worker=start('worker',[...workerBuild.args,'--ip','127.0.0.1','--port',String(workerPort),'--inspector-port',String(inspectorPort),'--persist-to',join(root,'w'),'--var','HOST_EVENT_ACCEPT_NEW:true'],root,{},null,process.execPath,[workerPort,inspectorPort]);
   await waitPort(workerPort,worker,'worker');
   const frontend=start('frontend',[join(repo,'node_modules/vite/bin/vite.js'),'--mode','dev-control','--host','127.0.0.1','--port',String(frontendPort),'--strictPort'],join(repo,'apps/client'),{},null,process.execPath,[frontendPort]);
   await waitPort(frontendPort,frontend,'frontend');

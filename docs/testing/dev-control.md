@@ -1,5 +1,16 @@
 # #192 開発コントロール基盤・検証記録
 
+## 次回の再開入口（2026-10-29、対戦を停止して引き継ぎ）
+
+ユーザーの残り使用量に合わせ、この作業では追加の対戦・実プレーを行わない。branch `codex/issue-192-dev-control`、Draft PR #208。軽量規約を維持し、旧Phase記録は履歴として扱う。今回の全sessionはstopped/complete、process/port確認済み。元のIIDX/打鍵カウンタは停止対象に含めていない。既存WIP・2 stash・他worktreeを保持し、以下の検証を最初から繰り返さない。
+
+- 実機済み: BPL全3曲、ARENA全4曲と再戦開始、合同/大会の本人A実v3、相手3source×通常/合同/大会の実client/parser/受付（隔離した模擬入力）、保存成功/失敗/停止後再試行/native restart、画像privacy、release IPC拒否。詳細は本書のsession別記録。
+- 未完: BPL4 `s20261029102914-07b6c706` はAのColorful Cookie SPA 2782/MISS64、雪月花SPA 2142/MISS27まで受理。第3曲24h Endurance Race SPAは実プレー/読取後、開発中Workerの自動reloadでA/Bが切断しPLAYER_ALREADY_CONNECTED→RECONNECT_TIMEOUT、未提出。第4曲未実施。失敗記録と両窓画像はsaved bundle `bundle-1793270828009925900` に保全。完走成功と扱わず、新sessionで再確認する。過去結果を新matchへ移し替えない。
+- 修正済み・実機未確認: 起動時にWorkerを既存Wranglerのdry-runでsession専用bundleへ固定し、設定もcopyして `--no-bundle --local` で実行する。元source/configの編集で進行中対戦をreloadさせない。実Wranglerでbundle作成・hash取得は成功。実起動と元file編集時のWS保持は次回に確認する（プレー不要）。通常対戦のstale connected状態を強制変更する復旧は追加していない。
+- 修正済み・再実証待ち: Host300秒のalarm起床時restoreが先に期限終了を保存して通知しないWorker不具合。永続化後/socket復元後の通知に補正し、独立レビューと失敗例を含む回帰PASS。次回は追加STATE_GETなしの実時計300秒自動通知を確認する。旧 `5b3a6443` は修正前の失敗証拠。
+- 次回順序: 固定Workerの起動/編集耐性 → 300秒通知 → 新BPL4完走・復帰/手動再戦 → `tasks/issue-192-dev-control-validation.md` の残AC（Host A/本人の背景提出等）の証拠照合。本人の参加可否を確認し、本人操作は代行しない。BPLの手動再戦など、共通経路の単体/既存証拠で足りる部分と実機未確認を区別する。
+- 最終判定: #192は未完、PRはDraftを維持。merge/Issue close/deploy/releaseは未許可。現在のローカルsessionへ再入室せず、新しいIDで起動する。起動コマンドは `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev-control.ps1 -Mode BPL4 -HostClient B -SelfSource daken_counter_v3 -SelfPort 8767 -OpponentSource daken_counter_v3 -VisibleOpponents 1 -PlayerCount 2`。
+
 ## 最新状況（2026-10-28、軽量フローで再開）
 
 以下を最新記録とし、後段のPhase/T2記録は履歴とする。branchは `codex/issue-192-dev-control`、製品基点は #188 の `0dac1b0`。`c1e6950` で #206 を暫定適用した。旧定義46ファイルはbyte一致のarchiveへ退避し、通常参照するCustom Agent/project Skillは0。Playwright・製品CI・製品/UX資料を保持。#206のmerge・正式移行は行っていない。
