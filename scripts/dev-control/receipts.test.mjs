@@ -42,6 +42,21 @@ test('normal last-player and final-round transitions remain confirmable without 
   }
 });
 
+test('manual rematch confirms the room-id lobby fallback only from a post-send same-room snapshot',()=>{
+  for(const matchId of [null,'room']){
+    const f=fixture(false,'match.returnToLobby');
+    f.client.normalSnapshot={...f.normal,room_state:'LOBBY',current_match_id:matchId,current_round:null,result_ready:false};
+    f.client.context={...f.context,matchId,roundIndex:null,expectedKey:null};
+    f.ledger.snapshot(f.client,1);assert.equal(f.operation.result.status,'sent','a pre-send lobby is not a receipt');
+    f.ledger.sent(f.client,{...f.sent,type:'RETURN_TO_LOBBY',payload:{}},'op',f.context,2);
+    for(const patch of [{current_match_id:'unrelated-match'},{generation:2},{room_id:'other'},{room_state:'RESULT'},{result_ready:true},{current_round:{round_index:0}}]){
+      const original=f.client.normalSnapshot;f.client.normalSnapshot={...original,...patch};
+      f.ledger.snapshot(f.client,3);assert.equal(f.operation.result.status,'sent');f.client.normalSnapshot=original;
+    }
+    f.ledger.snapshot(f.client,4);assert.equal(f.operation.result.status,'confirmed');
+  }
+});
+
 test('event ACK and same-round status resolve timeout uncertainty in either order without another send',()=>{
   for(const snapshotFirst of [false,true]){
     const f=fixture(true);f.client.eventSnapshot=f.eventSnapshot;

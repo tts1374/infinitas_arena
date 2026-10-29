@@ -78,7 +78,7 @@ export class ReceiptLedger {
           case 'ready.set':return normal&&n.players?.some(player=>player.player_id===client.manifest.playerId&&player.ready===p.ready);
           case 'pick.submit':return normal&&n.picks?.some(pick=>pick.player_id===client.manifest.playerId&&pick.pick_chart_key===p.chartKey);
           case 'match.start':return n&&n.generation===c.roomGeneration&&n.room_state==='PICKING'&&n.current_match_id!==c.matchId;
-          case 'match.returnToLobby':return n&&n.generation===c.roomGeneration&&n.room_state==='LOBBY'&&!n.current_match_id;
+          case 'match.returnToLobby':return n&&n.generation===c.roomGeneration&&n.room_state==='LOBBY'&&(!n.current_match_id||n.current_match_id===c.roomId)&&!n.current_round&&n.result_ready===false;
           case 'match.forceAdvance':return normal&&(n.current_round?.round_index>c.roundIndex||n.room_state==='RESULT');
           case 'event.start':return event&&['PICKING','PLAYING'].includes(e.phase);
           case 'event.confirmPick':return event&&e.phase==='PICKING'&&e.selected_chart?.chart_key===p.chartKey&&e.selection_revision>c.selectionRevision;
