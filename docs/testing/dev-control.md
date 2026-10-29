@@ -24,7 +24,7 @@
 | 検証 | 結果・限界 |
 | --- | --- |
 | client標準unit | 179/179 PASS。v3通常/合同/大会、文字列ID、一意性/失敗/旧context、画像の一時private→safe、Host断中の新しいguest観測による進行表示を含む |
-| 開発control標準unit | 117/117 PASS。停止前native保存の成功/partial/失敗/期限切れ、古い受付拒否、再戦復帰、停止要求自身の追跡を含む。`test:dev-control` を既存Windows CIへ登録 |
+| 開発control標準unit | 118/118 PASS。停止前native保存の成功/partial/失敗/期限切れ、古い受付拒否、再戦復帰、停止要求自身の追跡、Worker bundle/config固定を含む。`test:dev-control` を既存Windows CIへ登録 |
 | native Rust | 33/33 PASS。停止前bundle相関・read-back、停止との競合・409拒否時の状態/証拠保全、Reflux空baselineの非観測/重複排除、メモリ画像の安全確認/破棄/期限/再利用拒否を含む |
 | CI面 | root typecheck/lint、check:agents/check:design-contracts、client production build PASS。Worker190、Host Event integration6、stats17 PASS。Worker dry-run、cargo check --release成功（deployなし、既存警告2件） |
 | script構文 | mjs全件node --check、PS4件ParseFile PASS |
