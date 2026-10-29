@@ -22,7 +22,9 @@ export function verifyStopped(manifest,state,processes,ports){
   const complete=processesVerified&&portsVerified;
   const brokerPresent=processes.some(p=>p.pid===manifest.runtimeOwner.pid);
   if(!complete&&brokerPresent&&['starting','running'].includes(state.lifecycle)&&state.stop?.phase==='idle')throw new Error('Runtime is still present and shutdown was not requested. Retry the broker state read.');
-  return {...state,lifecycle:complete?'stopped':'failed',recoveryRequired:!complete&&!brokerPresent,stop:{...state.stop,phase:complete?'complete':'failed',completedAt:complete?new Date().toISOString():null,errors:[...new Set([...(state.stop?.errors??[]),...errors])],processesVerified,portsVerified}};
+  const controllerId=manifest.clients?.find(client=>client.role==='controller')?.clientId;
+  const operations=state.operations?.map(operation=>operation.operationId===state.stop?.operationId&&controllerId&&operation.sessionId===manifest.sessionId&&operation.context?.sessionId===manifest.sessionId&&operation.context?.targetClientId===controllerId&&['pending','sent','unknown'].includes(operation.status)?{...operation,status:complete?'confirmed':'unknown',reason:complete?'所有runtimeとポートの停止をnative経路で確認しました。製品WS受付ではありません。':'所有runtimeまたはポートの停止を確認できません。最新の状態を再確認してください。'}:operation);
+  return {...state,...(operations?{operations}:{}),lifecycle:complete?'stopped':'failed',recoveryRequired:!complete&&!brokerPresent,stop:{...state.stop,phase:complete?'complete':'failed',completedAt:complete?new Date().toISOString():null,errors:[...new Set([...(state.stop?.errors??[]),...errors])],processesVerified,portsVerified}};
 }
 
 /** Explicit orphan recovery only; never kill a live or reused broker identity. */

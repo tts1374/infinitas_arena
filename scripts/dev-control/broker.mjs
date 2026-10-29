@@ -180,14 +180,15 @@ export async function createBroker({ manifest, keys, onStop = async () => {}, cr
     })().finally(()=>{collectionPromise=null;});
     return collectionPromise;
   }
-  function stop(){
+  function stop(operationId=null){
     if(stopPromise)return stopPromise;
     stopPromise=(async()=>{
-    state.lifecycle='stopping';state.stop.phase='quiescing';state.stop.requestedAt=new Date().toISOString();
+    state.lifecycle='stopping';state.stop.phase='quiescing';state.stop.requestedAt=new Date().toISOString();state.stop.operationId=operationId;
     const safeFlush=()=>{try{flush();}catch(error){state.stop.errors.push(error.message);}};
     try{scheduler.stop();}catch(error){state.stop.errors.push(error.message);}
     for(const timer of timers.values())clock.clearTimeout(timer);timers.clear();
     for(const {result:operation,claimed} of commands.values()){
+      if(operation.operationId===operationId)continue;
       if(operation.status==='reserved'||operation.status==='pending'&&!claimed)operation.status='cancelled';
       else if(['pending','sent','input-written','parsed'].includes(operation.status))operation.status='unknown';
     }
@@ -244,7 +245,7 @@ export async function createBroker({ manifest, keys, onStop = async () => {}, cr
     const entry=result(command,'pending');commands.set(command.operationId,{command:structuredClone(command),result:entry,claimed:false});
     entry.evidenceSequences.push(observe(target,'operation',{action:command.action},command.operationId));
     if(command.action==='state.refresh'&&target.manifest.role==='controller'){entry.status='confirmed';entry.reason='制御記録を読み直しました。製品状態の受付を示すものではありません。';}
-    else if(command.action==='session.stop'){entry.status='pending';entry.reason='検証runtime停止要求を受け付けました。停止完了は未確認です。';setImmediate(()=>void stop());}
+    else if(command.action==='session.stop'){entry.status='pending';entry.reason='検証runtime停止要求を受け付けました。停止完了は未確認です。';setImmediate(()=>void stop(command.operationId));}
     else if(command.action==='draft.update'){
       target.draft={exScore:command.payload.exScore,missCount:command.payload.missCount};target.context.valueRevision++;
       scheduler.invalidate(target.manifest.clientId);recalculateActions(target);

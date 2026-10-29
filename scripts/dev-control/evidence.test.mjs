@@ -59,6 +59,18 @@ test('stopped requires immutable broker plus every owned runtime process and all
   assert.equal(verifyStopped(manifest,running,[participant,controller],[]).recoveryRequired,true);
 });
 
+test('only the correlated local stop operation completes after both process and port read-back',()=>{
+  const owner={pid:100,createdAt:'created',executablePath:'node.exe',ports:[19000]};
+  const manifest={sessionId:'session',clients:[{clientId:'controller',role:'controller'}],broker:{port:19000},runtimeOwner:owner,ownedProcesses:[]};
+  const operation={operationId:'stop-op',sessionId:'session',context:emptyContext('session','controller'),status:'pending'};
+  const state={lifecycle:'stopping',stop:{phase:'verifying',operationId:'stop-op',errors:[]},operations:[operation]};
+  for(const [processes,ports] of [[[owner],[]],[[],[{port:19000,pid:100}]]])assert.equal(verifyStopped(manifest,state,processes,ports).operations[0].status,'unknown');
+  assert.equal(verifyStopped(manifest,state,[],[]).operations[0].status,'confirmed');assert.equal(state.operations[0].status,'pending');
+  for(const patch of [{operationId:'other'},{sessionId:'other'},{context:emptyContext('session','B')},{context:emptyContext('other','controller')},{status:'rejected'}]){
+    const altered={...operation,...patch};assert.deepEqual(verifyStopped(manifest,{...state,operations:[altered]},[],[]).operations[0],altered);
+  }
+});
+
 test('explicit offline stop recovers orphaned owned runtime, refuses a live/reused broker and preserves controllers',()=>{
   const owner={pid:100,createdAt:'created',executablePath:'node.exe',ports:[19000]};
   const participant={pid:200,createdAt:'created',executablePath:'client.exe',kind:'client',ports:[]};

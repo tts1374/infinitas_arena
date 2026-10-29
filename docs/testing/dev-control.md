@@ -59,6 +59,10 @@ PR #208 の初回CIは追加broker試験の一時directory親が存在せずENOE
 
 復帰時の操作結果だけunknownになる不整合を発見。製品snapshotがLOBBYで `current_match_id = room_id` にfallbackするのに、ledgerがnullのみ要求していた。既存契約に合わせ、同室/世代・送信後・LOBBY・current_roundなし・result_ready=falseのときだけ同roomId fallbackも確認する。送信前/別室/別世代/別match/RESULT残存は拒否。broker+receipt70/70 PASS、独立レビューPASS。次の通常モード最終結果で実GUI再確認する。
 
+ARENA停止は約12秒、要求ID一致の新native bundle `bundle-1793268581537080500` を停止前にflush/read-backしてからprocess/port完全停止、errors[]。選曲入力画面の画像拒否をpartialと表示し、前の最終結果画像bundleは保持した。旧controllerからnative restartし、大会/Reflux `s20261029101123-30ce7fff` の起動を確認した（以後の修正を反映したnative保存writer）。
+
+停止そのものが成功しても操作記録で停止要求自身をcancelledとする表示不整合を発見。stop.operationIdで自要求だけ未投入予約の分類から除外し、nativeのprocess/port両方の照合後に同session/controller/操作IDだけconfirmedへ確定する。残存時はunknown、別操作/別session/拒否済みは保持。delivery/evidence25/25、root typecheck、独立レビューPASS。実GUIは次sessionで確認する。
+
 2026-10-24。作業基点は `codex/issue-192-dev-control` / `0dac1b02d3b23d9449d1e63d7ca3f822f98f9e50`。Phase C の責務別checkpoint記録であり、製品全体の受入完了ではない。正本は `tasks/issue-192-dev-control-{window,tasks,validation}.md`、`tasks/issue-192-design-source-manifest.md` と `docs/ux/issue-192-dev-control/control-boundary.md`。
 
 ## T2 interface

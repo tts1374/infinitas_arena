@@ -98,6 +98,19 @@ test('stop shares one promise and still terminates runtime when spool persistenc
   }finally{await f.close();}
 });
 
+test('the accepted local stop request is not cancelled or confirmed before native shutdown verification',async()=>{
+  const f=await fixture();
+  try{
+    const controller=f.broker.state.clients.find(client=>client.manifest.role==='controller');
+    const command={...f.command('session.stop'),targetClientId:'controller',context:structuredClone(controller.context),payload:{confirmationToken:canonicalJson({context:controller.context,draft:controller.draft,action:'session.stop'})}};
+    assert.equal((await f.request('command',command)).status,200);
+    await new Promise(resolve=>setImmediate(resolve));await f.broker.stop();
+    assert.equal(f.broker.state.stop.operationId,command.operationId);
+    assert.equal(f.broker.state.operations.find(operation=>operation.operationId===command.operationId).status,'pending');
+    assert.equal(f.broker.state.stop.processesVerified,false);
+  }finally{await f.close();}
+});
+
 test('stop exports a new correlated native bundle before runtime termination and preserves every export outcome',async t=>{
   for(const status of ['saved','partial','failed'])await t.test(status,async()=>{
     let stopped=0;
