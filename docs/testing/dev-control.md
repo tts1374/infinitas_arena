@@ -31,6 +31,12 @@
 
 再開時はこの最新欄と現在の `AGENTS.md` / `QUALITY.md` を読む。元のWIPやstashをreset/上書きせず、対象sessionの `launch-state.json` / `manifest.json` / `controller-spool/state.json` を照合する。停止済み記録は `scripts/start-dev-control.ps1 -ReopenFrom <sessionのmanifest.json>`、新sessionはUIの確認付きrestartを使う。元A sourceはread-onlyを維持し、過去全日入力を証拠へ収集しない。PR merge/Issue close/deploy/releaseは未許可。
 
+### 2026-10-29 再開
+
+本人Aは現在参加不可。本人操作/実プレーを代行した成功記録は作らず、自動確認可能な範囲を進める。`91eb9842` のruntime/portは全終了していたがspoolはquiescingで途切れていた。専用ReopenFromで旧controllerを独立起動し、native readbackがstopped/complete・processesVerified/portsVerified trueを確認。停止後も前日のA実画像・受付ログを保持して新bundleへ再保存できた。旧shutdown.jsonは欠落としてpartialを維持した。
+
+PR #208 の初回CIは追加broker試験の一時directory親が存在せずENOENTとなった。試験側に明示mkdirを追加し、空の作業directoryから既存broker testを実行して25/25 PASS。製品検査の削除・緩和なし。
+
 2026-10-24。作業基点は `codex/issue-192-dev-control` / `0dac1b02d3b23d9449d1e63d7ca3f822f98f9e50`。Phase C の責務別checkpoint記録であり、製品全体の受入完了ではない。正本は `tasks/issue-192-dev-control-{window,tasks,validation}.md`、`tasks/issue-192-design-source-manifest.md` と `docs/ux/issue-192-dev-control/control-boundary.md`。
 
 ## T2 interface

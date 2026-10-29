@@ -6,6 +6,7 @@ import net from 'node:net';
 import { createBroker } from './broker.mjs';
 
 test('all five modes request a product-generated join code and keep the returned live code',async t=>{
+  mkdirSync('testdata/runtime/dev-control',{recursive:true});
   t.mock.method(globalThis,'fetch',async(_url,options)=>{
     const payload=JSON.parse(options.body);
     assert.equal((payload.settings??payload).join_code,null);
