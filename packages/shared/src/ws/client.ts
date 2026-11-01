@@ -5,6 +5,7 @@ import type { QuickChatPhraseId } from "../constants/quick-chat";
 import type { WsEmptyPayload } from "./common";
 import type { ClientEnvelope } from "./envelope";
 import type { ClientMessageType } from "./message-types";
+import type { EventJoinPayload, EventRoomAction } from "./host-event";
 
 export interface RequestIdPayload {
   request_id: string;
@@ -85,6 +86,8 @@ export interface ClientMessagePayloadMap {
   FORCE_ADVANCE: RequestIdPayload;
   STATE_GET: WsEmptyPayload;
   PING: WsEmptyPayload;
+  EVENT_JOIN: EventJoinPayload;
+  EVENT_ACTION: EventRoomAction;
 }
 
 export type ClientMessage<

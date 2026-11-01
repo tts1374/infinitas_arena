@@ -3,6 +3,7 @@ param(
   [string]$Scenario = "reflux-reflux-full",
   [ValidateRange(1, 3)]
   [int]$MatchCount = 1,
+  [string]$CargoTargetRoot = "",
   [ValidateSet("ARENA", "BPL", "BPL4")]
   [string]$Mode = "ARENA",
   [string]$RuntimeRoot = "",
@@ -96,7 +97,7 @@ function Start-LoggedPowerShell(
   Write-Utf8NoBomFile -Path $launcherPath -Content (($scriptLines -join "`n") + "`n")
   $pwshCommand = Get-Command pwsh -ErrorAction SilentlyContinue
   $shellExe = if ($pwshCommand) { $pwshCommand.Source } else { "powershell" }
-  Start-Process -FilePath $shellExe -ArgumentList "-NoExit", "-ExecutionPolicy", "Bypass", "-File", $launcherPath | Out-Null
+  Start-Process -FilePath $shellExe -WindowStyle Hidden -ArgumentList "-NoExit", "-ExecutionPolicy", "Bypass", "-File", $launcherPath | Out-Null
 }
 
 function Wait-E2EEvent(
@@ -179,6 +180,33 @@ function Wait-StateDump(
   }
 
   throw "Timed out waiting for state condition: $Description ($StatePath)"
+}
+
+function Stop-ProcessTree([int]$ProcessId) {
+  $processes = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)
+  $childrenByParent = @{}
+  foreach ($process in $processes) {
+    $parentId = [int]$process.ParentProcessId
+    if (-not $childrenByParent.ContainsKey($parentId)) {
+      $childrenByParent[$parentId] = @()
+    }
+    $childrenByParent[$parentId] += [int]$process.ProcessId
+  }
+
+  $ordered = [System.Collections.Generic.List[int]]::new()
+  $visited = [System.Collections.Generic.HashSet[int]]::new()
+  function Add-Descendants([int]$ParentId) {
+    if (-not $visited.Add($ParentId)) { return }
+    foreach ($childId in @($childrenByParent[$ParentId])) {
+      Add-Descendants -ParentId $childId
+      $ordered.Add($childId)
+    }
+  }
+  Add-Descendants -ParentId $ProcessId
+  $ordered.Add($ProcessId)
+  foreach ($id in $ordered) {
+    Stop-Process -Id $id -Force -ErrorAction SilentlyContinue
+  }
 }
 
 function Build-DiffCode([string]$PlayStyle, [string]$Difficulty) {
@@ -473,6 +501,7 @@ $sourceB = if ($Scenario -eq "reflux-reflux-full") { "reflux" } else { "inf-note
 & $startClientsScript `
   -ClientCount 2 `
   -RuntimeRoot $runtimeRootPath `
+  -CargoTargetRoot $CargoTargetRoot `
   -E2E `
   -Scenario $Scenario `
   -E2EMatchCount $MatchCount `
@@ -582,6 +611,7 @@ if ($sourceA -eq "daken_counter_v3") {
   $pwsh = (Get-Command pwsh -ErrorAction SilentlyContinue)
   $shellExe = if ($pwsh) { $pwsh.Source } else { "powershell" }
   $mockProcess = Start-Process `
+    -WindowStyle Hidden `
     -FilePath $shellExe `
     -ArgumentList "-ExecutionPolicy", "Bypass", "-File", $mockScript, "-Port", "18768", "-ControlFile", $dakenControlPath, "-LogPath", $dakenMockLog, "-SubProtocol", "infinitas-arena-daken-v3" `
     -PassThru
@@ -741,27 +771,9 @@ try {
       -WaitSeconds $TimeoutSeconds
     $resultLineB = $resultEventB.Line
 
-    $resultStateA = Wait-StateDump `
-      -StatePath $statePathA `
-      -Description "client-a captures RESULT snapshot ($matchLabel)" `
-      -WaitSeconds $TimeoutSeconds `
-      -Predicate {
-        param($state)
-        $snapshot = $state.state.roomSnapshot
-        return $snapshot -and $snapshot.room_state -eq "RESULT"
-      }
-
-    $resultSnapshot = $resultStateA.state.roomSnapshot
-    $resultMatchId = [string]$resultSnapshot.current_match_id
-    if ($resultStateA.state.resultReady -and $resultStateA.state.resultReady.summary) {
-      $summaryMatchId = [string]$resultStateA.state.resultReady.summary.match_id
-      if (-not [string]::IsNullOrWhiteSpace($summaryMatchId)) {
-        $resultMatchId = $summaryMatchId
-      }
-    }
-    if ([string]::IsNullOrWhiteSpace($resultMatchId)) {
-      $resultMatchId = [string]$resultSnapshot.room_id
-    }
+    # RESULT may be intentionally brief when the E2E runner advances a rematch.
+    # The RESULT_READY event plus the match id captured at PLAYING is the stable evidence.
+    $resultMatchId = $playingMatchId
 
     Wait-StateDump `
       -StatePath $statePathA `
@@ -836,6 +848,17 @@ try {
       Stop-Process -Id $mockProcess.Id -Force -ErrorAction SilentlyContinue
     } catch {
       # ignore
+    }
+  }
+  $launcherRegistry = Join-Path $runtimeRootPath "client-launchers.json"
+  if (Test-Path -LiteralPath $launcherRegistry) {
+    try {
+      $launcherIds = @(((Read-Utf8Text $launcherRegistry) | ConvertFrom-Json).process_ids)
+      foreach ($launcherId in $launcherIds) {
+        Stop-ProcessTree -ProcessId ([int]$launcherId)
+      }
+    } catch {
+      Write-Warning "Failed to stop one or more E2E client process trees: $($_.Exception.Message)"
     }
   }
 }

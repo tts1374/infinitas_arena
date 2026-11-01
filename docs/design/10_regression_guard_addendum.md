@@ -86,3 +86,26 @@
 - spectator 向け `RoomStateSnapshot` は redacted 形で返す（最低限 `settings.join_code=null`）。
 - spectator からの操作系メッセージは `INVALID_STATE` で拒否する。
 
+## 7. Host開催の分離契約（Issue #188）
+
+| 境界 | 通常ARENA/BPL/BPL4 | `HOST_EVENT` |
+| --- | --- | --- |
+| 人数 | 既存2〜4人 | participant最大20人。専任Hostは別枠 |
+| protocol | `ROOM_* / RESULT_*` | `EVENT_*`。通常snapshot/resultを送らない |
+| 進行 | 既存TTL、自動次round/再戦 | Host主導。通常TTL/自動進行なし |
+| score公開 | 既存契約 | 曲確定後のみ一斉公開。進行中はHostにも非送信 |
+| 保存 | 通常room record/archive/stats | 別keyのevent record、別event history schema |
+| lobby | 既存条件で公開 | PRIVATE固定、LobbyDirectory/auto-match/share非掲載 |
+
+- `PLAYING`中の開催message、snapshot、再接続、ACK、ERROR、debug、RESULTS取得には未確定metric/source/rankを含めない。内部提出型と公開結果型を分離する。
+- 旧clientの通常対戦は新serverで維持する。旧clientの開催入室はsnapshot前に拒否する。新clientは旧server/未知capabilitiesで開催だけを無効にする。
+- 開催のReady撤去・START_ROUNDの意味変更はbreaking。protocol2/live snapshot2/DO record2/history2を同一変更で固定し、通常protocol/最低client版/通常Readyを維持する。capabilities/HTTP create/WS join/client支持判定はprotocol2に厳格一致し、未知snapshotを新方式でrenderしない。開催SET_READY/readyを残して自動trueにする代替は採らない。
+- `room_kind`欠落recordは通常として従来hydrateする。event recordを通常roomへhydrateせず、不正event recordは`ROOM_STATE_LOST`とする。ローカルpartial履歴は受信済み表示用であり、server確定結果や再開の代用にしない。
+- 開催は既存`ROOM_DO` bindingを使い、新binding/migrationを追加しない。通常recordと開催recordのstorage keyを分ける。
+- Hostの300秒期限は絶対時刻で保持し、再接続試行、alarm、再起動で延長しない。保存成功前にACK/公開しない。
+- event historyは通常archive/statistics/personal bestへ流さず、未知schemaの原本を保持する。
+- DO schema1はLOBBYを含む全phaseで自動hydrate/migrationしない。旧合同の対象集合、round/名簿/N、絶対期限、private submission、revision、冪等記録を再解釈せず、未対応/不正recordは既存ROOM_STATE_LOST境界でfail-closed・原本保持とする。空開催生成/silent reset/手動record削除を復元の代替にしない。隔離/cleanup仕様の拡張やlegacy DO read adapterはReplanを要する。
+- 公開切替は旧runtimeで新規受付停止→既存開催終了/最終履歴回収→生存terminalの既存1800秒retention満了と既存cleanup→復元可能schema1 record/旧接続なし（activeとterminal双方）の証拠→新server/client切替→検証後新規受付の順とする。activeゼロ、PR未merge、default flag=falseだけでは不存在証拠にしない。TTL短縮/新しい5分強制終了へ置換しない。確認不能なら公開を停止する。この公開gateはCコード作成gateとは別である。
+- history2はlive participant型と分離したDTOで新保存し、直前history1を専用validator/メモリ内読取adapterで支持する。v1のreadyを表示/計算/参加意思へ再解釈せず、保存済み対象・順位/pt・無効・complete/partialを保持する。v1 key/JSON原本は上書きせず、v2専用key/`.v2.json`へ保存、同IDの読めるv2を一覧で優先する。未知/破損原本は保持し、表示不能を明示する。Tauri履歴一覧はv1/v2 localStorage読取、Rust JSON保存のみ、ディレクトリ自動走査なし。受信/保存成功/完全同期を区別する。
+- rollbackも新規受付停止→既存v2終了/結果保存回収→生存terminalの既存1800秒retention満了/cleanup→復元可能schema2 record/接続なしの証明を必要とする。activeゼロだけでは不十分、証明不能なら停止する。schema2が残る間はschema2を読めるruntimeで回収し、v1-only serverへ無条件に戻さない。history1/2原本を削除しない。旧clientがhistory2を読めなければ未知schema表示で保持する。
+- Host開催contractを変更する場合は`01/02/03/05/06/07/10`、shared型、worker/client consumer、契約testを同一変更で同期する。

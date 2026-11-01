@@ -15,6 +15,7 @@ import {
 import { recreateRoom } from "../services/worker-api-client";
 import { logE2EEvent } from "../services/e2e-observability";
 import { RoomSocketClient, type SocketConnectionState } from "../services/ws-client";
+import { getActiveParticipationMode } from "../services/participation-mode";
 import { createExternalStore, useExternalStore } from "./create-store";
 
 export type RoomConnectionStatus =
@@ -1044,6 +1045,10 @@ export const roomStore = {
     connection: { roomId: string; joinCode?: string | null },
     settings: RoomConnectionSettings,
   ): boolean {
+    if (getActiveParticipationMode() === "HOST_EVENT") {
+      setErrorDialog("開催に参加中", "開催から退出してから通常対戦へ参加してください。", "PARTICIPATION_CONFLICT");
+      return false;
+    }
     if (settings.source === "inf_daken_counter") {
       setErrorDialog(
         "Source deprecated",
