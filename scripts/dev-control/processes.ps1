@@ -1,7 +1,12 @@
 param([ValidateSet('List','Listeners','Stop')][string]$Action = 'List')
 $ErrorActionPreference = 'Stop'
 if ($Action -eq 'Listeners') {
-  $items = @(Get-NetTCPConnection -State Listen | Select-Object @{n='port';e={[int]$_.LocalPort}}, @{n='address';e={$_.LocalAddress}}, @{n='pid';e={[int]$_.OwningProcess}})
+  # Some Windows builds report responding listeners with unstable/unknown states.
+  # Include every bound endpoint conservatively; readiness still verifies PID
+  # identity and HTTP content, and shutdown must not overlook an occupied port.
+  $items = @(Get-NetTCPConnection | Where-Object {
+    $_.State -eq 'Listen' -or ($_.LocalPort -gt 0 -and $_.RemotePort -eq 0)
+  } | Select-Object @{n='port';e={[int]$_.LocalPort}}, @{n='address';e={$_.LocalAddress}}, @{n='pid';e={[int]$_.OwningProcess}})
   ConvertTo-Json -InputObject $items -Compress
   exit
 }

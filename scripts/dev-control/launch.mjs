@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import net from 'node:net';
 import { SOURCES, ensureOwnedDirectory, canonicalWritePath, readManifest } from './guards.mjs';
 import { applyRestartOptions, readRestartOptions } from './restart.mjs';
-import { inventory, descendants, identifiedDescendants, stopOwned, listeners, shutdownProcessState } from './processes.mjs';
+import { inventory, descendants, identifiedDescendants, stopOwned, listeners, shutdownProcessState, ownsReadyListeners } from './processes.mjs';
 import { createEvidenceWriter, evidenceManifest, writeSessionFile } from './evidence.mjs';
 import { validateClientBuild, copyClientBinary, probeClientReadiness } from './build-client.mjs';
 import { prepareWorkerRuntime } from './build-worker.mjs';
@@ -146,9 +146,8 @@ async function waitPort(port, child, readiness, timeout=60000) {
       refreshOwnership();
       const expected=descendants(inventory(),child.pid);
       const bound=listeners().filter(listener=>listener.port===port);
-      if(bound.length===0||bound.some(listener=>!expected.some(process=>process.pid===listener.pid&&owned.get(process.pid)?.createdAt===process.createdAt&&owned.get(process.pid)?.executablePath===process.executablePath)))throw new Error(`Port ${port} is not owned by the launched process`);
       const remainingMs=until-Date.now();if(remainingMs<=0)break;
-      if(await probeClientReadiness(`http://127.0.0.1:${port}${readiness==='worker'?'/api/capabilities':'/@vite/client'}`,readiness,fetch,Math.min(5000,remainingMs))&&Date.now()<until)return;
+      if(ownsReadyListeners(bound,expected,owned)&&await probeClientReadiness(`http://127.0.0.1:${port}${readiness==='worker'?'/api/capabilities':'/@vite/client'}`,readiness,fetch,Math.min(5000,remainingMs))&&Date.now()<until)return;
     }
     await new Promise(res=>setTimeout(res,300));
   }

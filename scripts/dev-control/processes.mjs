@@ -8,6 +8,12 @@ function run(action, input) {
 }
 export function inventory() { return run('List'); }
 export function listeners() { return run('Listeners'); }
+/** A socket may disappear during startup; a foreign live listener is never ready. */
+export function ownsReadyListeners(bound,expected,owned) {
+  if(bound.length===0)return false;
+  if(bound.some(listener=>!expected.some(process=>process.pid===listener.pid&&owned.get(process.pid)?.createdAt===process.createdAt&&owned.get(process.pid)?.executablePath===process.executablePath)))throw new Error('Readiness listener ownership mismatch');
+  return true;
+}
 export function descendants(all, rootPid) {
   const found = new Set([rootPid]);
   let changed = true;
