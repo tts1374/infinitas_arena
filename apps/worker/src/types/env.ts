@@ -40,6 +40,8 @@ export interface WorkerEnv {
   REPO_NAME_GITHUB: string;
   APP_ENV: string;
   MIN_SUPPORTED_CLIENT_VERSION: string;
+  /** Rollout gate. Missing and every value other than "true" disable new event rooms/participants. */
+  HOST_EVENT_ACCEPT_NEW?: string;
   ISSUE_TOKEN: string;
   DISCORD_WEBHOOK_URL: string;
 }

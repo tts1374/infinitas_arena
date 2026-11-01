@@ -1,4 +1,6 @@
 import { handleGetCharts } from "./routes/charts";
+import { handleGetCapabilities } from "./routes/capabilities";
+import { handlePostEventRooms } from "./routes/event-rooms";
 import { handleGetChartAliasResolve } from "./routes/chart-aliases";
 import { handlePostFeedback } from "./routes/feedback";
 import { handleGetJoin } from "./routes/join";
@@ -21,6 +23,8 @@ import { methodNotAllowed, noContent, notFound, withCors } from "./utils/http";
 const CHARTS_ALLOWED_METHODS = ["GET"];
 const CHART_ALIAS_RESOLVE_ALLOWED_METHODS = ["GET"];
 const ROOMS_ALLOWED_METHODS = ["POST"];
+const EVENT_ROOMS_ALLOWED_METHODS = ["POST"];
+const CAPABILITIES_ALLOWED_METHODS = ["GET"];
 const JOIN_ALLOWED_METHODS = ["GET"];
 const LOBBY_ALLOWED_METHODS = ["GET"];
 const FEEDBACK_ALLOWED_METHODS = ["POST"];
@@ -119,6 +123,18 @@ export default {
       }
 
       return withCors(methodNotAllowed([...ROOMS_ALLOWED_METHODS, "OPTIONS"]), request, ROOMS_ALLOWED_METHODS);
+    }
+
+    if (url.pathname === "/api/event-rooms") {
+      if (request.method === "OPTIONS") return withCors(noContent(), request, EVENT_ROOMS_ALLOWED_METHODS);
+      if (request.method === "POST") return withCors(await handlePostEventRooms(request, env), request, EVENT_ROOMS_ALLOWED_METHODS);
+      return withCors(methodNotAllowed([...EVENT_ROOMS_ALLOWED_METHODS, "OPTIONS"]), request, EVENT_ROOMS_ALLOWED_METHODS);
+    }
+
+    if (url.pathname === "/api/capabilities") {
+      if (request.method === "OPTIONS") return withCors(noContent(), request, CAPABILITIES_ALLOWED_METHODS);
+      if (request.method === "GET") return withCors(handleGetCapabilities(env), request, CAPABILITIES_ALLOWED_METHODS);
+      return withCors(methodNotAllowed([...CAPABILITIES_ALLOWED_METHODS, "OPTIONS"]), request, CAPABILITIES_ALLOWED_METHODS);
     }
 
     if (url.pathname === "/api/join") {

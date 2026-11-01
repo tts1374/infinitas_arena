@@ -2,6 +2,7 @@ export * from "./chart-search";
 export * from "./common";
 export * from "./expected-key";
 export * from "./frozen-round";
+export * from "./host-event";
 export * from "./player";
 export * from "./quick-chat";
 export * from "./lobby-room-summary";

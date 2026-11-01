@@ -441,7 +441,7 @@ export function LobbyPage({
       {!roomEntryReady ? (
         <div className="mb-6 flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm font-bold text-amber-200">
           <AlertCircle size={16} />
-          <span>{roomEntryRequiredMessage}</span>
+          <span>DJ NAMEとDATA SOURCEを設定してから通常対戦へ参加してください。</span>
         </div>
       ) : null}
 

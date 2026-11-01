@@ -266,3 +266,38 @@
 - `cancel` SE は `close_reason != ALL_ROUNDS_COMPLETED` のときのみ1回だけ鳴らす
 - `close_reason = ROOM_STATE_LOST` の場合、クライアントはブロッキングエラーを表示する
 - `settings.auto_match=true` の部屋は `REMAKE ROOM`（再作成）不可
+
+---
+
+## 12. Host開催モード（Issue #188）
+
+本節は `room_kind=HOST_EVENT` 専用であり、前節までの通常ARENA/BPL/BPL4の人数、FSM、TTL、自動進行、成績を変更しない。開催は `event_type=CASUAL|TOURNAMENT`、`event_name`、`host_plays:boolean` を作成時に固定し、`PRIVATE` のみとする。`event_name`の入力契約は通常`room_comment`と同じく空欄可・最大80文字・改行不可で、保存時に自動trimしない。表示時はtrim後が空なら開催タイプとプレースタイルから規定名を生成する。プレー参加者は最大20人で、兼任Hostは人数に含み、専任Hostは別枠とする。開催は `LobbyDirectoryDO`、自動マッチ、公開募集、spectatorへ登録しない。
+
+### 12.1 状態と集合
+
+- `EventRoomPhase = LOBBY | PICKING | PLAYING | RESULT | CLOSED`。`PLAYING`は`round_phase=ACTIVE|RESULT`を持ち、曲別結果は独立RoomStateではなくHostが進めるまで保持する内部/UI phaseである。
+- 未開始`LOBBY`では`event_id=null`。`START_EVENT`成功時に、同じ保存境界で`event_id`と`started_at`を発行して`LOBBY -> PICKING`へ進む。1人以上のプレー参加者を必須とし、大会はこの時点の名簿と配点母数`N`を固定する。
+- `PICKING`は選曲確定と曲開始を扱う。開催への参加をHost進行に合わせてプレーする意思として扱い、毎曲のReady・準備解除・別の連続参加設定を設けない。Hostは通話・配信等で譜面と開始を共有し、ゲーム内の準備を確認して開始する。参加資格はゲーム内準備完了の保証ではない。選び直しは確定譜面を取り消して共通条件を再計算し、新しい譜面を再共有する。
+- 選曲確定時にeligible集合を凍結する。当該曲の開始対象はeligibleのうちLEFT/KICKED/次曲待ちを除いた在室プレー参加者で、CONNECTEDとDISCONNECTEDをともに含む。専任Hostは含めない。公開snapshotの`current_eligible_player_ids`は、この開始可能対象をserverが投影し、確定前/現在曲なしでは`[]`とする。接続人数・全participants数・大会名簿/Nから開始対象を推測しない。
+- `START_ROUND`はHost接続中、PICKING、確定譜面、正しい`round_id / selection_revision`、当該曲対象1人以上を必要とする。対象0人を拒否する。合同・大会ともReadyによるgate/対象除外を行わない。合同は当該曲対象全員をplayingへ含め、大会は固定名簿/Nと名簿上のLEFT/KICKED/復帰待ちの既存NOT_PRESENT欠場規則を維持する。固定名簿が残っていても当該曲の在室対象0人なら開始不可。
+- 休憩は通話等で申告し、製品の休憩状態/ボタン・自動検知・自動除外を追加しない。参加者の休憩/切断でも席と対象を保ち、Hostが待つか開始するか判断する。一時切断だけで次曲待ちへ変更しない。
+- `PLAYING`は開始時対象集合を凍結する。全対象者の提出/スキップ/退出/Kick確定で、Host接続中のみ自動確定する。Hostは途中締切できる。
+- 休憩/切断を理由に未提出を自動欠場にしない。15人中14人の有効提出では残り1人を未提出として待ち、Hostの締切時だけDEADLINE欠場にする。席と大会の固定Nは変えない。個人指定の欠場操作は追加しない。未確定・初回有効提出前なら締切前の一時復帰で同曲へ提出でき、締切後は遡及提出できない。次曲も枠を保持する。
+- 曲別確定後は `PLAYING/RESULT` に留まり、時間では遷移しない。Hostの`NEXT_PICK`受理時だけ`PICKING`へ進み、`LOBBY`へ戻らない。Hostは曲別結果で次曲選択または開催終了を行う。
+- 合同プレーは選曲確定前の新規参加者を当該曲へ含め、確定後は次曲待ちとする。大会は開催開始後の新規参加を拒否する。明示退出からの復帰は両種とも次曲から、一時切断からの復帰は開始時対象かつ未確定・未提出の場合だけ当該曲へ戻せる。
+- 選曲可能譜面は当該選曲集合全員の通常配信・所持pack・BIT/DJP解禁の積集合。専任Host、退出者、Kick済み参加者は除外し、切断中の枠は含める。確定前の集合変更では再計算し、不適合になった選択を解除する。確定後は凍結する。
+
+### 12.2 結果、無効化、終了
+
+- 最初の有効な提出だけを採用する。欠場は `ABSENT` 状態と理由を実測`SUBMITTED`から分離し、SCORE=0 / MISSCOUNT=9999、大会0pt、順位なしとする。
+- 有効提出者はSCORE降順/MISSCOUNT昇順。同値は同順位で後続順位を飛ばす。大会ptは固定`N - rank + 1`、合同プレーは総合pt/順位を生成しない。
+- 開始済み曲は次曲開始前かつ開催終了前までHostが無効化できる。無効曲は履歴に残し、総合は有効な確定曲から再集計して差分加点を残さない。
+- participantが0人の`LOBBY/PICKING`では空round/空結果を作らず、Hostは待機または`END_EVENT`を選べる。`END_EVENT` はLOBBY/PICKING/曲別結果、または確認済みPLAYING/ACTIVEで受理する。ACTIVE中の未確定曲は無効化し、確定済み曲だけを残す。0曲/全曲無効は優勝者を生成しない。
+- `EventEndReason = HOST_ENDED | HOST_DISCONNECTED | ROOM_STATE_LOST`。
+
+### 12.3 Host切断とtimer
+
+- 開催には通常の `ready_check_ttl`、`picking_ttl`、`round_soft_ttl`、`match_ttl`、自動再戦を適用しない。
+- Host切断時は元phaseを保持し、新規mutationは開始済み曲の有効な`SUBMIT`だけを受理する。`SKIP`、新曲開始、結果確定、締切、無効化、終了、Kickは停止する。`EVENT_JOIN`/再接続、`STATE_GET`、`RESULTS_GET`、`PING/PONG`等のread-only同期は許可し、未確定score非送信を維持する。
+- 切断検知時の絶対時刻 `host_disconnect_deadline = now + 300s` を保存する。再接続試行、alarm、DO再起動で延長しない。`now >= deadline`では復帰より期限到達を優先し、未確定曲を無効化して終了する。
+- 作成後Hostが一度も接続しない場合も `created_at + 300s` を初回接続期限とする。終了済み開催は進行不能とし、終了から1800秒後に接続、record、曲記録、冪等記録を回収する。
