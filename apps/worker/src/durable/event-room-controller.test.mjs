@@ -172,6 +172,42 @@ test("terminal event record is retained for 1800 seconds and then deleted", asyn
   assert.equal(late.sent.at(-1).payload.code, "EVENT_CLEANED_UP");
 });
 
+for (const outcome of ["saved", "put-failure", "cleanup-alarm-failure"]) test(`overdue restore notifies hibernated sockets only after durable expiry: ${outcome}`, async () => {
+  const original = setup(); await init(original.controller);
+  const guest = new Socket(); original.controller.registerSocket(guest);
+  await original.controller.message(guest, envelope("EVENT_JOIN", "guest", joinPayload("Guest", "inf-notebook")));
+  const record = structuredClone(original.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY));
+  const created = new Date(Date.now() - 600_000);
+  record.created_at = created.toISOString(); record.host_initial_connect_deadline = new Date(created.getTime() + 300_000).toISOString();
+  const restored = setup(); restored.state.sockets = [guest];
+  restored.storage.values.set(EVENT_ROOM_RECORD_STORAGE_KEY, structuredClone(record));
+  restored.storage.failPut = outcome === "put-failure"; restored.storage.failAlarm = outcome === "cleanup-alarm-failure";
+  guest.sent = [];
+  const send = guest.send.bind(guest);
+  guest.send = value => {
+    if (JSON.parse(value).type === "EVENT_STATE") assert.equal(restored.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY).phase, "RESULT", "never announce an unpersisted terminal state");
+    send(value);
+  };
+  await restored.controller.restore(record);
+  if (outcome === "put-failure") {
+    assert.equal(guest.sent.length, 0); assert.equal(restored.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY).phase, "LOBBY");
+  } else {
+    assert.equal(guest.sent.length, 1, "expiry must arrive without STATE_GET or another client message");
+    assert.equal(guest.sent[0].type, "EVENT_STATE");
+    assert.equal(guest.sent[0].payload.event_room_snapshot.phase, "RESULT");
+    assert.equal(guest.sent[0].payload.event_room_snapshot.end_reason, "HOST_DISCONNECTED");
+    assert.ok(guest.sent[0].payload.event_room_snapshot.ended_at);
+    if (outcome === "cleanup-alarm-failure") {
+      await assert.rejects(restored.controller.alarm());
+      assert.equal(guest.sent.length, 1);
+      restored.storage.failAlarm = false;
+    }
+    await restored.controller.alarm();
+    assert.equal(restored.storage.alarms.at(-1), Date.parse(guest.sent[0].payload.event_room_snapshot.ended_at) + 1_800_000);
+    assert.equal(guest.sent.length, 1, "the waking alarm must not announce a second expiry");
+  }
+});
+
 test("restore expires an overdue absolute Host deadline before serving state", async () => {
   const original = setup(); await init(original.controller); const record = original.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY);
   const created = new Date(Date.now() - 600_000); record.created_at = created.toISOString(); record.host_initial_connect_deadline = new Date(created.getTime() + 300_000).toISOString();
@@ -320,6 +356,48 @@ async function playingHarness() {
   snapshot = host.sent.filter((e) => e.type === "EVENT_STATE").at(-1).payload.event_room_snapshot;
   return { ...harness, host, guests, snapshot, act };
 }
+
+test("invalid metric submissions never ACK or persist and the same request can submit zero", async () => {
+  const h = await playingHarness();
+  const context = { generation: 1, event_id: h.snapshot.event_id, round_id: h.snapshot.current_round_id };
+  const before = structuredClone(h.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY));
+  const action = { ...context, action: "SUBMIT", request_id: "metric-retry", observed_key: h.snapshot.selected_chart.expected_key };
+  for (const value of [-1, -0.5, 0.5]) {
+    const start = h.guests[0].sent.length;
+    await h.act(h.guests[0], "p1", { ...action, metric_value: value });
+    assert.equal(h.guests[0].sent.at(-1).type, "EVENT_ERROR");
+    assert.equal(h.guests[0].sent.slice(start).some(e => e.type === "EVENT_ACTION_ACK"), false);
+    assert.deepEqual(h.storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY), before);
+  }
+  await h.act(h.guests[0], "p1", { ...action, metric_value: 0 });
+  assert.equal(h.guests[0].sent.at(-2).type, "EVENT_ACTION_ACK");
+  await h.act(h.guests[1], "p2", { ...action, request_id: "other-zero", metric_value: 0 });
+  const final = h.host.sent.filter(e => e.type === "EVENT_STATE").at(-1).payload.event_room_snapshot;
+  assert.deepEqual(final.latest_result.results.map(r => r.metric_value), [0, 0]);
+});
+
+test("alarm retry re-arms the original cleanup deadline after terminal persistence and repeated scheduling failures", async () => {
+  const { controller, storage } = setup();
+  await init(controller);
+  const record = storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY);
+  const deadline = Date.parse(record.host_initial_connect_deadline);
+  storage.failAlarm = true;
+  await assert.rejects(controller.alarm(new Date(deadline)));
+  const terminal = structuredClone(storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY));
+  assert.equal(terminal.end_reason, "HOST_DISCONNECTED");
+  await assert.rejects(controller.alarm(new Date(deadline + 2_000)));
+  storage.failAlarm = false;
+  await controller.alarm(new Date(deadline + 4_000));
+  const cleanup = Date.parse(terminal.ended_at) + 1_800_000;
+  assert.equal(storage.alarms.at(-1), cleanup);
+  assert.deepEqual(storage.values.get(EVENT_ROOM_RECORD_STORAGE_KEY), terminal);
+  await controller.alarm(new Date(cleanup - 1));
+  assert.equal(storage.alarms.at(-1), cleanup);
+  assert.equal(storage.values.has(EVENT_ROOM_RECORD_STORAGE_KEY), true);
+  await controller.alarm(new Date(cleanup));
+  assert.equal(storage.values.has(EVENT_ROOM_RECORD_STORAGE_KEY), false);
+  assert.equal(storage.alarms.at(-1), null);
+});
 
 test("EVENT_JOIN rejects protocol1 and unknown protocols before any accepted state", async () => {
   const { controller, storage } = setup(); await init(controller);

@@ -109,6 +109,25 @@ test("host event constants preserve the protocol and capacity contract", () => {
   assert.equal(HOST_EVENT_DISCONNECT_GRACE_SECONDS, 300);
 });
 
+test("SCORE and MISSCOUNT reject negative/fractional metrics without consuming a submission", () => {
+  for (const metric of ["SCORE", "MISSCOUNT"]) {
+    const state = createState("TOURNAMENT", false, metric);
+    const revision = beginSelectedRound(state, ["p1", "p2"], "TOURNAMENT");
+    assert.equal(state.startRound("host", "round-1", revision, at(22)).ok, true);
+    const key = state.toSnapshot().selected_chart.expected_key;
+    const before = state.toPersistenceRecord();
+    for (const value of [-1, -0.5, 0.5, NaN, Infinity, -Infinity]) {
+      assert.equal(state.submit("p1", "round-1", key, value, null, at(23)).reason, "INVALID_METRIC");
+      assert.deepEqual(state.toPersistenceRecord(), before);
+    }
+    assert.equal(state.submit("p1", "round-1", key, 0, null, at(24)).ok, true);
+    assert.equal(state.submit("p2", "round-1", key, 1, null, at(25)).ok, true);
+    const result = state.toSnapshot().latest_result;
+    assert.equal(result.results.find(row => row.player_id === "p1").metric_value, 0);
+    assert.equal(result.results.find(row => row.rank === 1).player_id, metric === "SCORE" ? "p2" : "p1");
+  }
+});
+
 test("dedicated host is outside the 20-player capacity", () => {
   const state = createState();
   assert.equal(joinHost(state).ok, true);
