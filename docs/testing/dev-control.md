@@ -1,8 +1,32 @@
 # #192 開発コントロール基盤・検証記録
 
+## 最新確認（2026-11-01、BPL4実機完走）
+
+本人からアプリ起動・BPL4完走の再開指示を受け、新session `s20261101083610-940460f0` を起動。旧session/WIP/stashを保持。実Workerは起動時に固定したbundle/configを使用する。本人A入室前に元Worker source/configへコメントを4秒間追加し、同じbyte列へ復元した。Bは同室/同generation、transportEpoch=3、CONNECTEDを維持し、失敗観測なし。固定bundle/configのSHA256も起動記録と一致。本人の対戦中にはこの編集試験を行わない。
+
+起動時、Windows 10.0.26300で応答中のWorker/実v3のbound endpointがraw state 0/1へ揺れ、`Get-NetTCPConnection -State Listen`から欠落する事象を確認（独立read-only確認あり）。Listenに加えてLocalPort>0/RemotePort=0のbound endpointを保守的に列挙する。readyには引き続き所有PID/生成時刻/pathとHTTP内容、模擬v3にはnonceを照合する。空の列挙は既存60秒期限内で再試行し、foreign/untracked/reused listenerは拒否する。停止後の別processの占有は成功に丸めない。実loopback serverの所有PID列挙/close後消失を含む5件、開発control標準120件、root typecheck/lint、Worker190件、stats17件がPASS。独立レビューで未解決Blocker/Must fixなし。修正commit `fe094c9`。
+
+起動前失敗 `s20261101083145-fd9cf794`、`s20261101083230-98e317cb`、`s20261101083322-a5b977a6` の所有process/port停止記録を保持。新しい列挙でも旧process/portの残存なし。診断用の手動Wranglerも終了し、そのportのbound endpoint消失を確認。IIDX/実打鍵カウンタは操作・停止していない。
+
+BPL4 match `8bfba1a1-a1d1-4091-a017-47b200bd4b93` はA実v3、B実client＋隔離模擬v3（毎曲EX0/MISS0、自動）で全4ステージ完走。A実結果はTriple Counter SPA 2934/MISS114、リリーゼと炎龍レーヴァテインSPA 2770/MISS54、.59 SPN 701/MISS0、5.1.1. SPA 1404/MISS7。各結果のRESULT_SUBMIT/PLAYER_ROUND_CONFIRMED/同曲snapshotと実mainを照合し、最終A4勝/B0勝。両clientはtransportEpoch=3を維持、失敗観測なし。
+
+最終bundle `bundle-1793523169186955600` はsaved/missing[]、全16file readBack=true。A/Bの実native画像を保存し、A画像（`A-dc58349a-74cf-4fa7-a8d6-f40631cdad26.png`）の最終4対0を目視。A専用profileのroom-results schema1にも4/4曲と最終winnerを確認。操作窓からのRETURN_TO_LOBBYはoperation `b00a7f14-5fcd-46b4-937d-ecb990366900` がconfirmedとなり、roomId fallbackの受付修正を実証。本人AのReady後、同室/世代で新match `52724009-c1d5-44c8-9c75-74a99a3baf8f` の両者PICKINGまで確認し、追加プレーはしなかった。
+
+停止は08:53:50.795Z→08:54:06.905Z、complete/errors[]、process/port再確認true、停止operationもconfirmed。自動保存bundle `bundle-1793523232856686100` は選曲入力フォームのA/B画像をprivacy拒否してpartialを表示し、先の欠落なし最終bundleを保持。所有runtime残存なし、実counterを停止対象にしていない。起動修正 `fe094c9` のPR CIもsuccess。
+
+本人操作なしの大会 `s20261101085429-0da85750`（event `f719ca43-0a23-4bbb-9531-468ba302c5b4`、B native Reflux/C headless、固定N=2）で、.59 SPHの10秒遅延を実確認。operation `44aa2af9-9731-45f7-b828-3c3aae6037de` は08:57:34.382Zに予約、08:57:44.897Zに実source入力、解析/SUBMIT/ACK/同曲SUBMITTEDでconfirmed。B/Cとも500/MISS10・同率1位/2pt。2曲目は同譜面/同値をBのnative経路で新規受付し、Host B切断後にCのhold→auto確認を一度取消（hold/PENDING/入力値保持）、再確認後に当該曲を即時提出。両提出済みでもACTIVEのまま公開を保留し、操作窓はCの新revisionから2/2・Host復帰期限を表示した。
+
+修正後の実時計300秒通知はPASS。Host期限09:03:33.043Zに対して終了保存09:03:33.046Z、Cの自動EVENT_STATE受信09:03:33.051Z（sequence122、revision16、phase RESULT、HOST_DISCONNECTED）。切断後から受信までCの追加STATE_GETは0件、transportEpoch=2/CONNECTEDを維持。未公開の第2曲は総合点へ加算せず、確定済み第1曲の両者2ptを保持した。
+
+ただし操作窓の定期native読込で一時エラー（`Offline runtime verification failed; records remain exportable`）となり、画面は明示エラー付きで旧表示を保持した。既存「最新の状態を確認」の再試行で「開催の最終結果」へ復帰し、Host待ち案内も消失。サーバーの自動通知成功と、この表示復帰を区別する。読込エラーの原因/再現頻度は未特定で残す。端末の状態再読込は製品STATE_GETを送っていない。復帰後画像は外部visualizationsの `host-deadline-final-20261101.png`、ログbundle `bundle-1793523907785988200` はA/B入力フォーム画像をprivacy拒否してpartialを表示した。
+
+同大会の停止前自動保存は `bundle-1793523952427944300`（partial、画像privacy拒否を明示）。最初のshutdown記録にはPID0のbound endpointが残り、安全側に停止未確認となった。その後のnative再確認では占有が消失し、stopped/complete・process/port確認true・停止operation confirmedを実確認。最後に新しい全5 sessionを同じinventory/port列挙で照合し、所有runtime/割当portの残存0。実counter PID9332と8767は維持、診断Workerのport残存も0。開発control120、client179、Worker190、integration6、stats17、root型/lint/契約/agent検査および変更script構文のquick相当を再確認しPASS。
+
+残る実機面は `tasks/issue-192-dev-control-validation.md` のHost A/本人Aの開催画面外提出・履歴再読込、BPLの手動再戦等の証拠照合、および上記の一時native読込エラーの調査。固定Worker実起動/編集耐性・BPL4完走/手動再戦・修正後300秒通知は再試験の起点へ戻さない。#192は引き続き未完、PR #208はDraftとし、merge/Issue close/deploy/releaseは行わない。
+
 ## 次回の再開入口（2026-10-29、対戦を停止して引き継ぎ）
 
-ユーザーの残り使用量に合わせ、この作業では追加の対戦・実プレーを行わない。branch `codex/issue-192-dev-control`、Draft PR #208。軽量規約を維持し、旧Phase記録は履歴として扱う。今回の全sessionはstopped/complete、process/port確認済み。元のIIDX/打鍵カウンタは停止対象に含めていない。既存WIP・2 stash・他worktreeを保持し、以下の検証を最初から繰り返さない。
+この記録時はユーザーの残り使用量に合わせ、追加の対戦・実プレーを停止した（2026-11-01の再開指示は上記）。branch `codex/issue-192-dev-control`、Draft PR #208。軽量規約を維持し、旧Phase記録は履歴として扱う。当時の全sessionはstopped/complete、process/port確認済み。元のIIDX/打鍵カウンタは停止対象に含めていない。既存WIP・2 stash・他worktreeを保持し、以下の検証を最初から繰り返さない。
 
 - 実機済み: BPL全3曲、ARENA全4曲と再戦開始、合同/大会の本人A実v3、相手3source×通常/合同/大会の実client/parser/受付（隔離した模擬入力）、保存成功/失敗/停止後再試行/native restart、画像privacy、release IPC拒否。詳細は本書のsession別記録。
 - 未完: BPL4 `s20261029102914-07b6c706` はAのColorful Cookie SPA 2782/MISS64、雪月花SPA 2142/MISS27まで受理。第3曲24h Endurance Race SPAは実プレー/読取後、開発中Workerの自動reloadでA/Bが切断しPLAYER_ALREADY_CONNECTED→RECONNECT_TIMEOUT、未提出。第4曲未実施。失敗記録と両窓画像はsaved bundle `bundle-1793270828009925900` に保全。完走成功と扱わず、新sessionで再確認する。過去結果を新matchへ移し替えない。
