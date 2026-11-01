@@ -1,0 +1,10 @@
+{
+  "case": "C2",
+  "lane": "legacy",
+  "repeat": 1,
+  "run_id": "C2-legacy-1",
+  "root": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C2-legacy-1",
+  "head": "78ed98d1252c036039bd0cddd59e7cf13081c33a",
+  "input_sha256": "d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9",
+  "seed_sha256": "58a79dac7f66de57e504f0de5a88ab0463ff0b76191456fc862bd2f086c5af13"
+}

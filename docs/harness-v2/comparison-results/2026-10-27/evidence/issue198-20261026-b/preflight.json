@@ -1,0 +1,79 @@
+{
+  "at": "2026-10-26T14:09:53.009615+00:00",
+  "phase": "stage1",
+  "condition_changes_after_model_results": false,
+  "model_sessions_started": 0,
+  "stage1_preparation_failures": [
+    {
+      "experiment": "issue198-20261026-a",
+      "reason": "C1 seed quoted-string assertion used single quotes; no seed applied, product unchanged; retained as baseline reference"
+    },
+    {
+      "reference": "reference",
+      "reason": "favicon 404 in synthetic HTML, fixed before model sessions; original capture retained"
+    },
+    {
+      "readback": "initial",
+      "reason": "app-server rejects --profile; used equivalent invocation-local trust override, preserving actual run profile path"
+    },
+    {
+      "readback": "disabled MCP",
+      "reason": "disabled leaf-only tables rejected transport; final complete disabled transport definitions read back"
+    }
+  ],
+  "baseline_gaps": [
+    "C1 baseline numeric strings differ from already frozen AC; AC unchanged"
+  ],
+  "pending_runtime_guarantees": [
+    "C2 actual DO restart read-back must be executed in run; unit cold restore not hibernation",
+    "C3 actual native watcher/source scenarios must be executed in run, cannot reuse existing listener or direct WS"
+  ],
+  "helper_hashes": {
+    "browser_fixture.mjs": "2cbab769852c277383c2a45dc06f064ba834217e31639c640dd81d55280f4c18",
+    "c2-barrier.test.mjs": "80bdfa8eff4cf113f6ac827638e806d0137fc4d6536303fc6805949fcdff2fab",
+    "compare.py": "b269a2578905c672e887ac0900ab9d57f2ce076b3be9770e5b79358c5351f813",
+    "environment.py": "0077f9b650f10e077d378176f8b225ce1e2ed8a2bd2b23ac68ce55fde77258a6",
+    "probes.py": "1ae4c64c6f39a26ab818448500f237474133935e03fd2d50306cdb2915beadf5",
+    "test_compare.py": "6fcdee8749aa6332675c86ddfc587482572c9556e8fac058a85c1c66517749e0",
+    "visual-fixture.tsx": "35abef2cc6ef2c1e1bc3b35fe407463e828c4e6fcfa4eb15ebf3c6e9f022b871"
+  },
+  "reference_hashes": {
+    "1024-guest-0-room.png": "b17b32be49a72de4711871b43d9e8b24ee48312b39b0fc87b4e3d6fd791ef875",
+    "1024-guest-0.png": "60f7ca036009a4c7acc9388670492a2eee04461f11ec9111f7df4b141e977d03",
+    "1024-guest-65-room.png": "6800dd1aa66ab4a0fd658e4d1bb5b694d4646f9038f42fae838f8e21d48763d6",
+    "1024-guest-65.png": "ce2c3e873abbebd627cf33ed3e4db9672a142d7465592418a97358b80d2f6c85",
+    "1024-guest-null-room.png": "fd47f2d5d91a1fb152668871456a177f109f560534d28ab08b14f0fe2e5b5cba",
+    "1024-guest-null.png": "177437529d8af3a4f61aec789cdc91c7ec160a1ce338798935571198b6139d8a",
+    "1024-host-0-room.png": "4cc5b51a1eef20fa1caf9fce41fe35bc6ae8bd7d3107f9abf782cc90315c9f31",
+    "1024-host-0.png": "8b30c19103dc01608c5f5214f2818d8e0c0c2d3561a7255807b459b9d3defd98",
+    "1024-host-65-room.png": "fcf4ae00308687ba7a3641166a061ace36c8275388e91847ad5ee189b8eb5df5",
+    "1024-host-65.png": "38e7eb7f30b6ab4f2ddd7630d5caf882a9f7dd7a599c53ffa4eba62e185815ae",
+    "1024-host-null-room.png": "d8e3b0eb1379a78d813c6fea67cc99ec642cdf1a0ba2687714c5b92dba926651",
+    "1024-host-null.png": "bfe6ec199b794519d2b7d7aae485cd74da23ba0bbdb466dc3bb1cebb8d30af87",
+    "320-guest-0-room.png": "d91923223a18ae91c7776c6df6784933b132ec45b31144ea77b75d491d6bf6a8",
+    "320-guest-0.png": "cf9ed8b14a4e6f55f20488d05ef41f18aabb843a34fd29a293741fc91d3f9934",
+    "320-guest-65-room.png": "de0fb341d1cae2f9165135d474bc144815de8cbc5b5bce792b67d7196f79c2d0",
+    "320-guest-65.png": "34bf3f32a6d85460fdba11ad5e2d419dff709344111d68cf47d1d70983df2d84",
+    "320-guest-null-room.png": "433220eb7b6a5b76348ee94e28cfc186fd7220419e0a46d01214f740478e5692",
+    "320-guest-null.png": "d7f3c09a80f8e8fbc11313b24aaa568461d8fa556f075843f24a62cd801613c3",
+    "320-host-0-room.png": "9e9a94f86ceaecc33a10bd8ca88450738d77b15f040c8cf49ce38f0f2016f4c5",
+    "320-host-0.png": "841f8c33d6651965c7ff34723d9cb772137cdcf640f000865a180f8512a48509",
+    "320-host-65-room.png": "4e46f29bad01f8d999ee9335261edaecac3416832a22967ff9432ee885f7eed8",
+    "320-host-65.png": "d1e95340ddc052e23dd3100906ab936468658dacf03d1d1989bfbdbfbbcd1f99",
+    "320-host-null-room.png": "3aacd73e97ea603f5b628532aae7900450f4914beab3750eb9ee2d0a16ba00d4",
+    "320-host-null.png": "34303fb976f4a78f9442787acbb9bacb4a614015d7f16b17b6d99ea373f3571b",
+    "visual.json": "6f166b86d70af139cee6b042444090227fa579fad9be11b171bb569dd3d2f46b"
+  },
+  "environment_readback": {
+    "C1-legacy-1.json": "922ce48f859fef2fc2a542b1b60163f1526dfc56d49e737eec193994c72e3ae0",
+    "C1-v2-1.json": "31cca9b43c067adea1daa2c8a4a448f05768bf2b207b63b54b4d90df29fa26f3",
+    "C2-legacy-1.json": "5a25cad527acd4a94b31ae6c2eb286e41145680b3076552e75912c9a3bee1823",
+    "C2-v2-1.json": "3d5bf9389f16f45b0354fdb73d0ce89ccd78e3de93a961819145264e1642fe1f",
+    "C3-legacy-1.json": "5cd15504f2ce0c7188125aeec2571f92fd48dc7f8943d79ee94a2ee7b4f5db75",
+    "C3-v2-1.json": "b8bb8162447550fa431af1a0c53116c6ca62dc907e956465c5fd7c9ca10288c0",
+    "P-legacy.json": "b167b82f4b744cfd5d718a503fafd8a16c466720d20c27456edaac0f2ae7c4bf",
+    "P-v2.json": "9431ceeca51620ca0e8f17d3bb76b85de22fe63448a28eaf98d0afe70525392b"
+  },
+  "probes_input_sha256": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+  "probes_expected_sha256": "7a28107cd839f312f5eb728188dcd7ee5dd4288e8068c0d3893b6a17e4542843"
+}

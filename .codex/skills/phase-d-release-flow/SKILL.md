@@ -1,6 +1,6 @@
 ---
 name: phase-d-release-flow
-description: Automate Phase D closure and release operations for this repository. Use when Phase D is complete and you need to run version bump, optional MIN_SUPPORTED_CLIENT_VERSION bump decision, version commit/push, conditional deploy workflow dispatch (worker/web/desktop), and GitHub Release notes update in a single bounded flow.
+description: Automate authorized Phase D release operations for this repository, including version bump, compatibility decision, commit/push, deploy dispatch, and Release notes. Also use for drafting or revising release announcements alone; writing-only requests do not run the release flow.
 ---
 
 # Phase D Release Flow
@@ -10,10 +10,12 @@ description: Automate Phase D closure and release operations for this repository
 Run a repeatable Phase D release sequence with one script:
 `scripts/release/phase-d-release.mjs`.
 
-Use this skill only after Phase D is confirmed `COMPLETE`.
+Run the release execution flow only after Phase D is confirmed `COMPLETE` and the current request authorizes the affected external operations.
 Return a release execution/evidence summary, not a release-policy substitute.
 
-## Inputs
+For release-note or announcement writing alone, read [references/release-writing.md](references/release-writing.md) and return the requested text. Do not run the script, bump versions, dispatch workflows, or publish from a writing-only request. This path does not require completing a new Phase D execution.
+
+## Inputs (release execution only)
 
 - `version` (required): next release version (`x.y.z`)
 - `from-ref` (optional): diff base for update detection (default: latest tag)
@@ -31,7 +33,7 @@ Return a release execution/evidence summary, not a release-policy substitute.
   - `--other "<text>"`
   - `--note "<text>"`
 
-## Workflow
+## Workflow (release execution only)
 
 1. Ensure preconditions:
 - run on clean git state unless explicitly overriding with `--allow-dirty`
@@ -60,7 +62,7 @@ Do not:
 - replace explicit release gating decisions with script-default assumptions
 - treat dispatched commands as success without post-run evidence
 
-5. Keep release-note body in this format:
+5. Apply [references/release-writing.md](references/release-writing.md) and keep release-note body in this format:
 
 ```md
 ## Download URL
@@ -86,7 +88,7 @@ Do not:
 - 
 ```
 
-## Command Templates
+## Command Templates (release execution only)
 
 Standard run:
 
@@ -103,8 +105,7 @@ npm run release:phase-d -- \
   --feature "BPL 4 STAGE を追加" \
   --feature "PRIVATEルーム自動再戦フローを追加" \
   --fix "join導線の不具合を修正" \
-  --other "運用ログ整備を実施" \
-  --note "詳細は各PRを参照"
+  --note "更新手順は配布ページを参照"
 ```
 
 Run with explicit `MIN_SUPPORTED_CLIENT_VERSION` bump and R2 URL source:
@@ -119,7 +120,7 @@ Dry-run:
 npm run release:phase-d -- --version 1.2.0 --no-bump-min-supported --dry-run
 ```
 
-## Output Contract
+## Output Contract (release execution only)
 
 Always report:
 - selected diff base and detected target updates

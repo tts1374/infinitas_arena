@@ -1,0 +1,293 @@
+{
+  "at": "2026-10-26T14:07:39.869082+00:00",
+  "root": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1",
+  "client": "Codex Desktop/0.164.0-alpha.11.1 (Windows 10.0.26300; x86_64) dumb (issue198-readback; 1)",
+  "effective": {
+    "model": "gpt-6.1-sol",
+    "model_reasoning_effort": "high",
+    "service_tier": null,
+    "approval_policy": "never",
+    "sandbox_mode": "workspace-write",
+    "agents": null,
+    "mcp_servers": {
+      "github": {
+        "enabled": false
+      },
+      "playwright": {
+        "enabled": false
+      },
+      "cloudflareObservability": {
+        "enabled": false
+      },
+      "node_repl": {
+        "enabled": false
+      }
+    },
+    "features": {
+      "apps": false,
+      "plugins": false,
+      "multi_agent": true,
+      "unbounded_connection_retries": false
+    }
+  },
+  "skills": [
+    {
+      "name": "branch-latest-sync-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\branch-latest-sync-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "commit-pr-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\commit-pr-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "fsm-protocol-guard",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\fsm-protocol-guard\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "issue-authoring-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\issue-authoring-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "issue-close-evidence-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\issue-close-evidence-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "issue-implementation-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\issue-implementation-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "issue-readiness-check",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\issue-readiness-check\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "issue-start-prompt-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\issue-start-prompt-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "phase-c-kickoff-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\phase-c-kickoff-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "phase-c-review-response-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\phase-c-review-response-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "phase-d-followup-issue-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\phase-d-followup-issue-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "phase-d-release-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\phase-d-release-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "plan-mode-gate",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\plan-mode-gate\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "post-approval-merge-flow",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\post-approval-merge-flow\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "quality-check-matrix",
+      "path": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex\\skills\\quality-check-matrix\\SKILL.md",
+      "enabled": true,
+      "scope": "repo"
+    },
+    {
+      "name": "2ten-note-interviewer",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\2ten-note-interviewer\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "2ten-note-writer",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\2ten-note-writer\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "commit-plan-enforcer",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\commit-plan-enforcer\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "ddrgp-update-reference-data",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\ddrgp-update-reference-data\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "decision-to-spec",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\decision-to-spec\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "empirical-prompt-tuning",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\empirical-prompt-tuning\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "windows-utf8-safe-write",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\windows-utf8-safe-write\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "worktree-branch-cleanup-guard",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\worktree-branch-cleanup-guard\\SKILL.md",
+      "enabled": true,
+      "scope": "user"
+    },
+    {
+      "name": "imagegen",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\imagegen\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    },
+    {
+      "name": "openai-docs",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\openai-docs\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    },
+    {
+      "name": "review-agent",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\review-agent\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    },
+    {
+      "name": "skill-creator",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\skill-creator\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    },
+    {
+      "name": "skill-installer",
+      "path": "C:\\Users\\tts13\\.codex\\skills\\.system\\skill-installer\\SKILL.md",
+      "enabled": true,
+      "scope": "system"
+    }
+  ],
+  "skill_errors": [],
+  "agent_assets": [
+    {
+      "name": "contract-auditor",
+      "effort": "high",
+      "model": "inherited gpt-6.1-sol",
+      "sha256": "558d6d3074dbab8f9b966ee47b2264992964fe3536b3f126f4eb76c62f169e75"
+    },
+    {
+      "name": "execution-coordinator",
+      "effort": "high",
+      "model": "inherited gpt-6.1-sol",
+      "sha256": "085b9325a450ff9257969befb7f4628ca7e8d94433d5470c888091f2d6b6f6b1"
+    },
+    {
+      "name": "front-implementer",
+      "effort": "medium",
+      "model": "inherited gpt-6.1-sol",
+      "sha256": "11c24d8f84c974ee203c2efbfc8b5b37879a703c2fe2ef53d45a880b4e8ba869"
+    },
+    {
+      "name": "implementation-auditor",
+      "effort": "high",
+      "model": "inherited gpt-6.1-sol",
+      "sha256": "da3d578b9cad8ca84130efb601b746bfa0a4e97d4b20d4870a61e3e647c552c1"
+    },
+    {
+      "name": "improvement-analyst",
+      "effort": "medium",
+      "model": "inherited gpt-6.1-sol",
+      "sha256": "f54c8e60132aef13686737161502f23951af816172307e391f65f97e26a5357b"
+    },
+    {
+      "name": "server-implementer",
+      "effort": "medium",
+      "model": "inherited gpt-6.1-sol",
+      "sha256": "46bec04b6219a86b332893377b8414a059fe4ae475667b3af60ecfd3fad9a5aa"
+    },
+    {
+      "name": "spec-designer",
+      "effort": "high",
+      "model": "inherited gpt-6.1-sol",
+      "sha256": "defcc85aa514f2020bee607278638d3e2cea23f6616de5e1b189a835eb265be5"
+    },
+    {
+      "name": "strategy-orchestrator",
+      "effort": "high",
+      "model": "inherited gpt-6.1-sol",
+      "sha256": "7ec48d561309ed20510dc0215a42d7955ff042716f79e776f65a8910a7f9dbe4"
+    }
+  ],
+  "stderr_line_hashes": [
+    "a03842374fd02ebdf1f1cfe72d1a4a9803603f1a16af230d25eb1105ae6a02a1",
+    "e477a7cebbbf7017b41a7251a7b0d787f5fe9cee67badaa121ad925f57af0381",
+    "fa027451ad45a7d06e3aada43d1ba5e9ea1cb4ddd40bd2e5aeeb687b236d6182",
+    "f12e0b2294ad03f767581429e1d1149f49f3e0446b6e247629d3b430f49c9669",
+    "f845e6dfda41c6a3fefb4fe449718b7c1260d64fdd682bae6e1625f8e23dc953",
+    "e0004a4eb1345e45a47c5405f446b3bb7ba4249bdf9972c9bd2a8a3c84a0683a"
+  ],
+  "layers": [
+    {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "disabledReason": null
+    },
+    {
+      "name": {
+        "type": "project",
+        "dotCodexFolder": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-b\\trials\\C1-legacy-1\\.codex"
+      },
+      "disabledReason": "To load project-local config, hooks, and exec policies, add c:\\users\\tts13\\documents\\codex\\experiments\\issue198-20261026-b\\trials\\c1-legacy-1 as a trusted project in C:\\Users\\tts13\\.codex\\config.toml."
+    },
+    {
+      "name": {
+        "type": "user",
+        "file": "C:\\Users\\tts13\\.codex\\config.toml",
+        "profile": null
+      },
+      "disabledReason": null
+    },
+    {
+      "name": {
+        "type": "system",
+        "file": "C:\\ProgramData\\OpenAI\\Codex\\config.toml"
+      },
+      "disabledReason": null
+    }
+  ],
+  "limitation": "app-server does not accept --profile; identical project trust supplied via invocation-local config override. Actual runtime/role invocation checked separately in model trace"
+}

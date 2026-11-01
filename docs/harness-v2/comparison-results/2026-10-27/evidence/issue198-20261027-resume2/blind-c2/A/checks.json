@@ -1,0 +1,206 @@
+[
+  {
+    "id": "check-1",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "lint"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-1.log"
+  },
+  {
+    "id": "check-2",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "lint"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-2.log"
+  },
+  {
+    "id": "check-3",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "lint"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-3.log"
+  },
+  {
+    "id": "check-4",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "typecheck"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-4.log"
+  },
+  {
+    "id": "check-5",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "typecheck"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-5.log"
+  },
+  {
+    "id": "check-6",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "typecheck"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-6.log"
+  },
+  {
+    "id": "check-7",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "test:client-stats"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-7.log"
+  },
+  {
+    "id": "check-8",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "test:client-stats"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-8.log"
+  },
+  {
+    "id": "check-9",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "test:client-stats"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-9.log"
+  },
+  {
+    "id": "check-10",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "test:worker"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-10.log"
+  },
+  {
+    "id": "check-11",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "test:worker"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-11.log"
+  },
+  {
+    "id": "check-12",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "test:worker"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-12.log"
+  },
+  {
+    "id": "check-13",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "check:design-contracts"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-13.log"
+  },
+  {
+    "id": "check-14",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "check:design-contracts"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-14.log"
+  },
+  {
+    "id": "check-15",
+    "argv": [
+      "npm.cmd",
+      "run",
+      "check:design-contracts"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "log": "logs/check-15.log"
+  },
+  {
+    "id": "check-16",
+    "argv": [
+      "npx.cmd",
+      "--no-install",
+      "wrangler",
+      "deploy",
+      "--dry-run"
+    ],
+    "cwd": "apps/worker",
+    "exit_code": 0,
+    "log": "logs/check-16.log"
+  },
+  {
+    "id": "check-17",
+    "argv": [
+      "npx.cmd",
+      "--no-install",
+      "wrangler",
+      "deploy",
+      "--dry-run"
+    ],
+    "cwd": "apps/worker",
+    "exit_code": 0,
+    "log": "logs/check-17.log"
+  },
+  {
+    "id": "check-18",
+    "argv": [
+      "npx.cmd",
+      "--no-install",
+      "wrangler",
+      "deploy",
+      "--dry-run"
+    ],
+    "cwd": "apps/worker",
+    "exit_code": 0,
+    "log": "logs/check-18.log"
+  }
+]

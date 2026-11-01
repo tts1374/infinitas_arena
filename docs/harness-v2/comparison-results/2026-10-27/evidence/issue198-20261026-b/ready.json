@@ -1,0 +1,8 @@
+{
+  "status": "READY",
+  "at": "2026-10-26T14:09:53.015171+00:00",
+  "manifest_sha256": "0d9922a149bc8da5e4c69cbc8906d65c19ffb3a5627b30e09b974c76f0180099",
+  "preflight_sha256": "094cdcedf005f587a4cf0bd7331eb83da96570d691708a5416d6c5468958299b",
+  "schedule_sha256": "011c1380090197e5a206d83ac0263e610667375f07f7e77d2fdcefa192d8e24a",
+  "scope": "inputs/environment ready; no workload quality pass implied"
+}

@@ -1,0 +1,77 @@
+{
+  "case_id": "C2",
+  "specification": "## C2: Worker/DOの非同期cleanup・保存復元\n\n**共通Goal:** 「同じミリ秒のupsertやdelete→recreate後に、古いlobby probeのcleanupが新しいsummaryを削除する回帰を修正する。旧storageからの復元でもtoken再利用を防ぎ、補助stateの無制限成長を防ぐ。公開schema/TTL/一覧条件は変えない。」\n\n- 入力: 基点の`lobby-directory-object.ts`に二つのseed defectを注入。(a) `Math.max(now, this.lastIssuedUpdatedAt + 1)`の`+ 1`を除く。(b) `restoreLastIssuedUpdatedAt`のlegacy map読取分岐だけを除く。exact patch/hashを事前保存。既存testは維持。\n- scope: `apps/worker/src/durable/lobby-directory-object.ts`、cleanup呼出の必要最小範囲、関連testのみ。client/shared/公開DTO/定数/製品ルール/依存/CI変更は禁止。\n- 期待値: upsert(now=1000)を2回→tokenがstrictly増加し、旧1000のremoveはfalse。1000の削除→同ms再作成→旧removeで再作成summaryを保持。legacy mapに最大2500、現clock2000なら新token>2500。scalar counter保存→新instance復元後もstrictly増加。削除/TTL後にper-room tombstoneを蓄積しない。\n- 非同期経路: `/api/lobby`のprobeをbarrierで保留→同roomをnewer upsert→保留していた`eligible=false`または`404 ROOM_STATE_LOST`応答を解放→古い条件削除がnewerを保持。delete/recreateとprobe完了順序逆転も実行。別試験として5xx/通信失敗時はfail-openで削除しないことを確認する。特定token実装の完全一致より安全な外部結果を評価する。\n- 検証: root型/lint、worker標準test、対象race/restore/成長test、Worker bundle dry-run。reconnect旧socket遅延close、ROOM_STATE_LOST、既存冪等性guardの回帰を標準testで確認。隔離local Worker/DOを再起動し、保存済counter/一覧状態をread-back。実hibernationが対象環境で再現できない場合はその保証を「未実証」とし、単なるnew instance unitを実hibernationと呼ばない。\n- 監査: 実装非担当の契約/挙動レビューで、内部storageと公開schema、race、復元、bounded-growthを確認。旧方式は現gate、新方式はR04を適用。人数の一致は評価目的でないがcoverageは同等にする。\n- 合格: Q05/Q06/Q12〜Q16と上記期待値を満たす。stateを永続化せず一時Mapだけで通す、全件削除/時刻待機で回避、破損stateを黙って正常化、実証欠損をPASS扱いしたら不合格。\n",
+  "scope_note": "Only the exact component/producer/consumer and directly required tests described in specification; directory grants do not authorize unrelated changes.",
+  "allowed_paths": [
+    "apps/worker/src/durable/lobby-directory-object.ts",
+    "apps/worker/src/routes/lobby.ts",
+    "apps/worker/src/durable",
+    "apps/worker/src/routes"
+  ],
+  "commands": [
+    [
+      "npm",
+      "run",
+      "lint"
+    ],
+    [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    [
+      "npm",
+      "run",
+      "test:client-stats"
+    ],
+    [
+      "npm",
+      "run",
+      "test:worker"
+    ],
+    [
+      "npm",
+      "run",
+      "check:design-contracts"
+    ],
+    [
+      "npx",
+      "--no-install",
+      "wrangler",
+      "deploy",
+      "--dry-run"
+    ]
+  ],
+  "quality": [
+    "Q05",
+    "Q06",
+    "Q12",
+    "Q13",
+    "Q14",
+    "Q15",
+    "Q16"
+  ],
+  "fixture": {
+    "clock": [
+      1000,
+      1000,
+      2000
+    ],
+    "legacy_max": 2500,
+    "barrier_results": [
+      "eligible=false",
+      "404 ROOM_STATE_LOST"
+    ],
+    "reorder": true,
+    "fail_open": [
+      "5xx",
+      "network"
+    ],
+    "persistence": [
+      "legacy map",
+      "scalar",
+      "real local runtime restart"
+    ],
+    "growth": "no per-room tombstones after delete/TTL"
+  }
+}

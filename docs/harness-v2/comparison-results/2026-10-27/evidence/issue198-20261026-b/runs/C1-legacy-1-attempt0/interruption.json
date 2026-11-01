@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-26T14:20:17.754215+00:00",
+  "reason": "Model session completed, runner telemetry postprocessing failed with JSONDecodeError (adjacent serialized objects); original capture retained and losslessly decoded. Actual execution used Node25.6.1 instead of required22.23.4. Sandbox denied browser deps/standard build.",
+  "verdict": "environment-invalid / unproven; not a valid comparison run",
+  "full_cli_wall_seconds": null,
+  "provider_usage": [
+    {
+      "input_tokens": 1815644,
+      "cached_input_tokens": 1722752,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 17064,
+      "reasoning_output_tokens": 4156
+    }
+  ],
+  "spawn_ids": [
+    "01a1788d-d7a9-7561-a1e2-a121ef32a421"
+  ],
+  "all_agents_total_tokens": 3686321,
+  "next": "Fresh condition revision for BOTH lanes, pinned toolchain and parity readback; one environment retry only for legacy C1."
+}

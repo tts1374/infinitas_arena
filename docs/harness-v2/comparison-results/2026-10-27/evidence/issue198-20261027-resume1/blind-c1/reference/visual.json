@@ -1,0 +1,520 @@
+{
+  "root": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-a\\trials\\C1-legacy-1",
+  "directory": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-a\\trials\\C1-legacy-1\\.tmp\\comparison-visual",
+  "fixture_sha256": "35abef2cc6ef2c1e1bc3b35fe407463e828c4e6fcfa4eb15ebf3c6e9f022b871",
+  "html_sha256": "2ee6e8e4bc58e2cdeb2df3262ba482c140645192e159bb3a0fbe9255fed324e3",
+  "browser_path": "regular Playwright; Browser plugin not available",
+  "controller_limit": "open/close controls are a synthetic controller for isOpen; selection invokes the actual product onSelect callback",
+  "started_at": "2026-10-26T14:05:15.641Z",
+  "reference": true,
+  "playwright_path": "C:\\Users\\tts13\\AppData\\Local\\npm-cache\\_npx\\9833c18b2d85bc59\\node_modules\\playwright\\index.mjs",
+  "rows": [
+    {
+      "width": 320,
+      "role": "host",
+      "time": "null",
+      "errors": [],
+      "modal": {
+        "text": "--:--",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 208.8125,
+          "y": 91,
+          "width": 52.1875,
+          "height": 90
+        }
+      },
+      "expected_text": "--:--",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-host-null.png",
+      "screenshot_sha256": "34303fb976f4a78f9442787acbb9bacb4a614015d7f16b17b6d99ea373f3571b",
+      "room_countdown": "TIME REMAINING\n--:--",
+      "room_null_preserved": true,
+      "room_screenshot": "320-host-null-room.png",
+      "room_screenshot_sha256": "3aacd73e97ea603f5b628532aae7900450f4914beab3750eb9ee2d0a16ba00d4",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "host",
+      "time": "0",
+      "errors": [],
+      "modal": {
+        "text": "0:00",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-red-500",
+        "color": "rgb(239, 68, 68)",
+        "rect": {
+          "x": 201.015625,
+          "y": 88.5,
+          "width": 59.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "00:00",
+      "countdown_matches_plan": false,
+      "expected_color_class": "text-red-500",
+      "color_class_preserved": true,
+      "baseline_gap": {
+        "expected": "00:00",
+        "actual": "0:00",
+        "disposition": "fixed before experiment as baseline/AC discrepancy; common Goal still requires plan expectation"
+      },
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-host-0.png",
+      "screenshot_sha256": "841f8c33d6651965c7ff34723d9cb772137cdcf640f000865a180f8512a48509",
+      "room_countdown": "TIME REMAINING\n0:00",
+      "room_null_preserved": true,
+      "room_screenshot": "320-host-0-room.png",
+      "room_screenshot_sha256": "9e9a94f86ceaecc33a10bd8ca88450738d77b15f040c8cf49ce38f0f2016f4c5",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "host",
+      "time": "65",
+      "errors": [],
+      "modal": {
+        "text": "1:05",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 201.015625,
+          "y": 88.5,
+          "width": 59.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "01:05",
+      "countdown_matches_plan": false,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": {
+        "expected": "01:05",
+        "actual": "1:05",
+        "disposition": "fixed before experiment as baseline/AC discrepancy; common Goal still requires plan expectation"
+      },
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-host-65.png",
+      "screenshot_sha256": "d1e95340ddc052e23dd3100906ab936468658dacf03d1d1989bfbdbfbbcd1f99",
+      "room_countdown": "TIME REMAINING\n1:05",
+      "room_null_preserved": true,
+      "room_screenshot": "320-host-65-room.png",
+      "room_screenshot_sha256": "4e46f29bad01f8d999ee9335261edaecac3416832a22967ff9432ee885f7eed8",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "guest",
+      "time": "null",
+      "errors": [],
+      "modal": {
+        "text": "--:--",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 208.8125,
+          "y": 91,
+          "width": 52.1875,
+          "height": 90
+        }
+      },
+      "expected_text": "--:--",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-guest-null.png",
+      "screenshot_sha256": "d7f3c09a80f8e8fbc11313b24aaa568461d8fa556f075843f24a62cd801613c3",
+      "room_countdown": "TIME REMAINING\n--:--",
+      "room_null_preserved": true,
+      "room_screenshot": "320-guest-null-room.png",
+      "room_screenshot_sha256": "433220eb7b6a5b76348ee94e28cfc186fd7220419e0a46d01214f740478e5692",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "guest",
+      "time": "0",
+      "errors": [],
+      "modal": {
+        "text": "0:00",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-red-500",
+        "color": "rgb(239, 68, 68)",
+        "rect": {
+          "x": 201.015625,
+          "y": 88.5,
+          "width": 59.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "00:00",
+      "countdown_matches_plan": false,
+      "expected_color_class": "text-red-500",
+      "color_class_preserved": true,
+      "baseline_gap": {
+        "expected": "00:00",
+        "actual": "0:00",
+        "disposition": "fixed before experiment as baseline/AC discrepancy; common Goal still requires plan expectation"
+      },
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-guest-0.png",
+      "screenshot_sha256": "cf9ed8b14a4e6f55f20488d05ef41f18aabb843a34fd29a293741fc91d3f9934",
+      "room_countdown": "TIME REMAINING\n0:00",
+      "room_null_preserved": true,
+      "room_screenshot": "320-guest-0-room.png",
+      "room_screenshot_sha256": "d91923223a18ae91c7776c6df6784933b132ec45b31144ea77b75d491d6bf6a8",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "guest",
+      "time": "65",
+      "errors": [],
+      "modal": {
+        "text": "1:05",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 201.015625,
+          "y": 88.5,
+          "width": 59.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "01:05",
+      "countdown_matches_plan": false,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": {
+        "expected": "01:05",
+        "actual": "1:05",
+        "disposition": "fixed before experiment as baseline/AC discrepancy; common Goal still requires plan expectation"
+      },
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-guest-65.png",
+      "screenshot_sha256": "34bf3f32a6d85460fdba11ad5e2d419dff709344111d68cf47d1d70983df2d84",
+      "room_countdown": "TIME REMAINING\n1:05",
+      "room_null_preserved": true,
+      "room_screenshot": "320-guest-65-room.png",
+      "room_screenshot_sha256": "de0fb341d1cae2f9165135d474bc144815de8cbc5b5bce792b67d7196f79c2d0",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "host",
+      "time": "null",
+      "errors": [],
+      "modal": {
+        "text": "--:--",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 722.015625,
+          "y": 81,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "--:--",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-host-null.png",
+      "screenshot_sha256": "bfe6ec199b794519d2b7d7aae485cd74da23ba0bbdb466dc3bb1cebb8d30af87",
+      "room_countdown": "TIME REMAINING\n--:--",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-host-null-room.png",
+      "room_screenshot_sha256": "d8e3b0eb1379a78d813c6fea67cc99ec642cdf1a0ba2687714c5b92dba926651",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "host",
+      "time": "0",
+      "errors": [],
+      "modal": {
+        "text": "0:00",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-red-500",
+        "color": "rgb(239, 68, 68)",
+        "rect": {
+          "x": 737.015625,
+          "y": 81,
+          "width": 59.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "00:00",
+      "countdown_matches_plan": false,
+      "expected_color_class": "text-red-500",
+      "color_class_preserved": true,
+      "baseline_gap": {
+        "expected": "00:00",
+        "actual": "0:00",
+        "disposition": "fixed before experiment as baseline/AC discrepancy; common Goal still requires plan expectation"
+      },
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-host-0.png",
+      "screenshot_sha256": "8b30c19103dc01608c5f5214f2818d8e0c0c2d3561a7255807b459b9d3defd98",
+      "room_countdown": "TIME REMAINING\n0:00",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-host-0-room.png",
+      "room_screenshot_sha256": "4cc5b51a1eef20fa1caf9fce41fe35bc6ae8bd7d3107f9abf782cc90315c9f31",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "host",
+      "time": "65",
+      "errors": [],
+      "modal": {
+        "text": "1:05",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 737.015625,
+          "y": 81,
+          "width": 59.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "01:05",
+      "countdown_matches_plan": false,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": {
+        "expected": "01:05",
+        "actual": "1:05",
+        "disposition": "fixed before experiment as baseline/AC discrepancy; common Goal still requires plan expectation"
+      },
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-host-65.png",
+      "screenshot_sha256": "38e7eb7f30b6ab4f2ddd7630d5caf882a9f7dd7a599c53ffa4eba62e185815ae",
+      "room_countdown": "TIME REMAINING\n1:05",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-host-65-room.png",
+      "room_screenshot_sha256": "fcf4ae00308687ba7a3641166a061ace36c8275388e91847ad5ee189b8eb5df5",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "guest",
+      "time": "null",
+      "errors": [],
+      "modal": {
+        "text": "--:--",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 722.015625,
+          "y": 81,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "--:--",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-guest-null.png",
+      "screenshot_sha256": "177437529d8af3a4f61aec789cdc91c7ec160a1ce338798935571198b6139d8a",
+      "room_countdown": "TIME REMAINING\n--:--",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-guest-null-room.png",
+      "room_screenshot_sha256": "fd47f2d5d91a1fb152668871456a177f109f560534d28ab08b14f0fe2e5b5cba",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "guest",
+      "time": "0",
+      "errors": [],
+      "modal": {
+        "text": "0:00",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-red-500",
+        "color": "rgb(239, 68, 68)",
+        "rect": {
+          "x": 737.015625,
+          "y": 81,
+          "width": 59.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "00:00",
+      "countdown_matches_plan": false,
+      "expected_color_class": "text-red-500",
+      "color_class_preserved": true,
+      "baseline_gap": {
+        "expected": "00:00",
+        "actual": "0:00",
+        "disposition": "fixed before experiment as baseline/AC discrepancy; common Goal still requires plan expectation"
+      },
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-guest-0.png",
+      "screenshot_sha256": "60f7ca036009a4c7acc9388670492a2eee04461f11ec9111f7df4b141e977d03",
+      "room_countdown": "TIME REMAINING\n0:00",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-guest-0-room.png",
+      "room_screenshot_sha256": "b17b32be49a72de4711871b43d9e8b24ee48312b39b0fc87b4e3d6fd791ef875",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "guest",
+      "time": "65",
+      "errors": [],
+      "modal": {
+        "text": "1:05",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 737.015625,
+          "y": 81,
+          "width": 59.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "01:05",
+      "countdown_matches_plan": false,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": {
+        "expected": "01:05",
+        "actual": "1:05",
+        "disposition": "fixed before experiment as baseline/AC discrepancy; common Goal still requires plan expectation"
+      },
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-guest-65.png",
+      "screenshot_sha256": "ce2c3e873abbebd627cf33ed3e4db9672a142d7465592418a97358b80d2f6c85",
+      "room_countdown": "TIME REMAINING\n1:05",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-guest-65-room.png",
+      "room_screenshot_sha256": "6800dd1aa66ab4a0fd658e4d1bb5b694d4646f9038f42fae838f8e21d48763d6",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "status": "pass",
+  "url": "http://127.0.0.1:64677/.tmp/comparison-visual/index.html",
+  "browser_executable": "C:/Users/tts13/AppData/Local/ms-playwright/chromium-1208/chrome-win64/chrome.exe",
+  "browser_version": "145.0.7632.6",
+  "note": "Baseline reference records actual product values; countdown_matches_plan is still reported and may be false. A reference capture is not AC acceptance.",
+  "ended_at": "2026-10-26T14:05:27.778Z"
+}

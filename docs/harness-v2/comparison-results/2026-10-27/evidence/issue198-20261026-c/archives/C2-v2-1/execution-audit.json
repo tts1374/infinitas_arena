@@ -1,0 +1,1170 @@
+{
+  "scope": "Post-blind identity/ownership/authority audit. Costs deliberately omitted.",
+  "thread_id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+  "initial_head": "72ed3f963d84ad866d9cb6ee6710485f6557e9ba",
+  "before": {
+    "head": "72ed3f963d84ad866d9cb6ee6710485f6557e9ba",
+    "branch": "codex/harness-v2-trial",
+    "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "files": {},
+    "fingerprint": "a592ba43b4c749033bdb504e44d2fc79a8e8a400100dbd608284330da077fc3b"
+  },
+  "after": {
+    "head": "72ed3f963d84ad866d9cb6ee6710485f6557e9ba",
+    "branch": "codex/harness-v2-trial",
+    "status_hash": "f2dd117d12d4f7edab30cafa8f9f83a72615608cc92bd1071878b4ebe8bff7ec",
+    "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_diff_hash": "3b35bf9ec141cc586a6982e6c741bdf42f8750b272c67c123702fe0d3f7e69d0",
+    "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "files": {
+      "apps/worker/src/durable/lobby-directory-object.test.mjs": "2ba64542272b5a00946e277b6a95199ec12e23d435d5e6bfaa10432eb77ff627",
+      "apps/worker/src/durable/lobby-directory-object.ts": "c87d9a0020b23ef56aff16fec5ffb614c1a8237547732fcc66ff57e5f57ea722",
+      "apps/worker/src/routes/lobby.test.mjs": "d3ee85bafc325412aff08ba7e249a17d6c77de861617690e88d7fa5d8ad0abab"
+    },
+    "fingerprint": "6090d54960f1d70e8062a2b6655b36f2c9e29856db067d47eda2230f7bf8e774"
+  },
+  "input": {
+    "case_id": "C2",
+    "specification": "## C2: Worker/DOの非同期cleanup・保存復元\n\n**共通Goal:** 「同じミリ秒のupsertやdelete→recreate後に、古いlobby probeのcleanupが新しいsummaryを削除する回帰を修正する。旧storageからの復元でもtoken再利用を防ぎ、補助stateの無制限成長を防ぐ。公開schema/TTL/一覧条件は変えない。」\n\n- 入力: 基点の`lobby-directory-object.ts`に二つのseed defectを注入。(a) `Math.max(now, this.lastIssuedUpdatedAt + 1)`の`+ 1`を除く。(b) `restoreLastIssuedUpdatedAt`のlegacy map読取分岐だけを除く。exact patch/hashを事前保存。既存testは維持。\n- scope: `apps/worker/src/durable/lobby-directory-object.ts`、cleanup呼出の必要最小範囲、関連testのみ。client/shared/公開DTO/定数/製品ルール/依存/CI変更は禁止。\n- 期待値: upsert(now=1000)を2回→tokenがstrictly増加し、旧1000のremoveはfalse。1000の削除→同ms再作成→旧removeで再作成summaryを保持。legacy mapに最大2500、現clock2000なら新token>2500。scalar counter保存→新instance復元後もstrictly増加。削除/TTL後にper-room tombstoneを蓄積しない。\n- 非同期経路: `/api/lobby`のprobeをbarrierで保留→同roomをnewer upsert→保留していた`eligible=false`または`404 ROOM_STATE_LOST`応答を解放→古い条件削除がnewerを保持。delete/recreateとprobe完了順序逆転も実行。別試験として5xx/通信失敗時はfail-openで削除しないことを確認する。特定token実装の完全一致より安全な外部結果を評価する。\n- 検証: root型/lint、worker標準test、対象race/restore/成長test、Worker bundle dry-run。reconnect旧socket遅延close、ROOM_STATE_LOST、既存冪等性guardの回帰を標準testで確認。隔離local Worker/DOを再起動し、保存済counter/一覧状態をread-back。実hibernationが対象環境で再現できない場合はその保証を「未実証」とし、単なるnew instance unitを実hibernationと呼ばない。\n- 監査: 実装非担当の契約/挙動レビューで、内部storageと公開schema、race、復元、bounded-growthを確認。旧方式は現gate、新方式はR04を適用。人数の一致は評価目的でないがcoverageは同等にする。\n- 合格: Q05/Q06/Q12〜Q16と上記期待値を満たす。stateを永続化せず一時Mapだけで通す、全件削除/時刻待機で回避、破損stateを黙って正常化、実証欠損をPASS扱いしたら不合格。\n",
+    "scope_note": "Only the exact component/producer/consumer and directly required tests described in specification; directory grants do not authorize unrelated changes.",
+    "allowed_paths": [
+      "apps/worker/src/durable/lobby-directory-object.ts",
+      "apps/worker/src/routes/lobby.ts",
+      "apps/worker/src/durable",
+      "apps/worker/src/routes"
+    ],
+    "commands": [
+      [
+        "npm",
+        "run",
+        "lint"
+      ],
+      [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      [
+        "npm",
+        "run",
+        "test:client-stats"
+      ],
+      [
+        "npm",
+        "run",
+        "test:worker"
+      ],
+      [
+        "npm",
+        "run",
+        "check:design-contracts"
+      ],
+      [
+        "npx",
+        "--no-install",
+        "wrangler",
+        "deploy",
+        "--dry-run"
+      ]
+    ],
+    "quality": [
+      "Q05",
+      "Q06",
+      "Q12",
+      "Q13",
+      "Q14",
+      "Q15",
+      "Q16"
+    ],
+    "fixture": {
+      "clock": [
+        1000,
+        1000,
+        2000
+      ],
+      "legacy_max": 2500,
+      "barrier_results": [
+        "eligible=false",
+        "404 ROOM_STATE_LOST"
+      ],
+      "reorder": true,
+      "fail_open": [
+        "5xx",
+        "network"
+      ],
+      "persistence": [
+        "legacy map",
+        "scalar",
+        "real local runtime restart"
+      ],
+      "growth": "no per-room tombstones after delete/TTL"
+    }
+  },
+  "goal_adapter": {
+    "request_id": "comparison-C2-v2-1-20261027",
+    "base_revision": "72ed3f963d84ad866d9cb6ee6710485f6557e9ba",
+    "objective": "## C2: Worker/DOの非同期cleanup・保存復元\n\n**共通Goal:** 「同じミリ秒のupsertやdelete→recreate後に、古いlobby probeのcleanupが新しいsummaryを削除する回帰を修正する。旧storageからの復元でもtoken再利用を防ぎ、補助stateの無制限成長を防ぐ。公開schema/TTL/一覧条件は変えない。」\n\n- 入力: 基点の`lobby-directory-object.ts`に二つのseed defectを注入。(a) `Math.max(now, this.lastIssuedUpdatedAt + 1)`の`+ 1`を除く。(b) `restoreLastIssuedUpdatedAt`のlegacy map読取分岐だけを除く。exact patch/hashを事前保存。既存testは維持。\n- scope: `apps/worker/src/durable/lobby-directory-object.ts`、cleanup呼出の必要最小範囲、関連testのみ。client/shared/公開DTO/定数/製品ルール/依存/CI変更は禁止。\n- 期待値: upsert(now=1000)を2回→tokenがstrictly増加し、旧1000のremoveはfalse。1000の削除→同ms再作成→旧removeで再作成summaryを保持。legacy mapに最大2500、現clock2000なら新token>2500。scalar counter保存→新instance復元後もstrictly増加。削除/TTL後にper-room tombstoneを蓄積しない。\n- 非同期経路: `/api/lobby`のprobeをbarrierで保留→同roomをnewer upsert→保留していた`eligible=false`または`404 ROOM_STATE_LOST`応答を解放→古い条件削除がnewerを保持。delete/recreateとprobe完了順序逆転も実行。別試験として5xx/通信失敗時はfail-openで削除しないことを確認する。特定token実装の完全一致より安全な外部結果を評価する。\n- 検証: root型/lint、worker標準test、対象race/restore/成長test、Worker bundle dry-run。reconnect旧socket遅延close、ROOM_STATE_LOST、既存冪等性guardの回帰を標準testで確認。隔離local Worker/DOを再起動し、保存済counter/一覧状態をread-back。実hibernationが対象環境で再現できない場合はその保証を「未実証」とし、単なるnew instance unitを実hibernationと呼ばない。\n- 監査: 実装非担当の契約/挙動レビューで、内部storageと公開schema、race、復元、bounded-growthを確認。旧方式は現gate、新方式はR04を適用。人数の一致は評価目的でないがcoverageは同等にする。\n- 合格: Q05/Q06/Q12〜Q16と上記期待値を満たす。stateを永続化せず一時Mapだけで通す、全件削除/時刻待機で回避、破損stateを黙って正常化、実証欠損をPASS扱いしたら不合格。\n",
+    "kind": "change",
+    "ceiling": "implementation",
+    "target": "isolated-C2-v2-1",
+    "acceptance": [
+      {
+        "id": "AC1",
+        "text": "Same-ms upsert tokens strictly increase; stale conditional remove preserves newer and delete/recreated summary."
+      },
+      {
+        "id": "AC2",
+        "text": "Legacy map max 2500 at clock 2000 issues >2500; scalar counter survives new instance and real isolated local DO runtime restart."
+      },
+      {
+        "id": "AC3",
+        "text": "Helper storage stays scalar/bounded after deletion and TTL; public schema, TTL and listing conditions unchanged."
+      },
+      {
+        "id": "AC4",
+        "text": "Actual lobby route barriers: ineligible and ROOM_STATE_LOST, delete/recreate, reverse probe completion preserve newer summary; 5xx/network fail open."
+      },
+      {
+        "id": "AC5",
+        "text": "Fixed lint/types/stats/worker/design/bundle, explicit barrier and necessary tests; reconnect stale close, ROOM_STATE_LOST, idempotency regressions retain coverage; report native/source/browser/hibernation evidence limits honestly."
+      },
+      {
+        "id": "AC6",
+        "text": "Independent nonimplementer contract and behavior review of immutable diff, storage/public boundary, race, restore and bounded growth; no unresolved significant product finding."
+      },
+      {
+        "id": "AC7",
+        "text": "Scope, single writer, original WIP/index/stash/branch, operation permissions and local runtime ownership preserved; complete evidence artifact with unproven guarantees explicit."
+      },
+      {
+        "id": "AC8",
+        "text": "Real DO hibernation/recovery guarantee must have direct runtime evidence; if unavailable mark unproven and do not claim full acceptance."
+      }
+    ],
+    "non_goals": [
+      "client/shared/public DTO/constants/product rules/dependencies/lockfile/CI/harness/comparison conditions changes",
+      "External writes, commit/push/PR/merge/Issue/deploy/release/cleanup, secrets, other repo/runtime/process operations",
+      "No claims of real hibernation/native/source/browser from unit tests"
+    ],
+    "allowed_paths": [
+      "apps/worker/src/durable/lobby-directory-object.ts",
+      "apps/worker/src/durable/lobby-directory-object.test.mjs",
+      "apps/worker/src/routes/lobby.test.mjs",
+      ".tmp/evidence",
+      ".tmp/goal.json"
+    ],
+    "forbidden_paths": [
+      "apps/client",
+      "apps/web",
+      "packages/shared",
+      ".github",
+      "docs/design",
+      "tools/harness-v2",
+      ".agents",
+      ".codex",
+      "package.json",
+      "package-lock.json",
+      "apps/worker/package.json",
+      "apps/worker/wrangler.toml",
+      ".tmp/comparison"
+    ],
+    "artifact_paths": [
+      ".tmp/evidence",
+      ".tmp/goal.json"
+    ],
+    "grants": [
+      {
+        "operation": "edit",
+        "target": "apps/worker/src/durable/lobby-directory-object.ts",
+        "source": "user",
+        "request_id": "comparison-C2-v2-1-20261027",
+        "evidence": "Current user authorizes isolated C2 synthetic fix and directly required tests/artifacts only."
+      },
+      {
+        "operation": "edit",
+        "target": "apps/worker/src/durable/lobby-directory-object.test.mjs",
+        "source": "user",
+        "request_id": "comparison-C2-v2-1-20261027",
+        "evidence": "Current user authorizes isolated C2 synthetic fix and directly required tests/artifacts only."
+      },
+      {
+        "operation": "edit",
+        "target": "apps/worker/src/routes/lobby.test.mjs",
+        "source": "user",
+        "request_id": "comparison-C2-v2-1-20261027",
+        "evidence": "Current user authorizes isolated C2 synthetic fix and directly required tests/artifacts only."
+      },
+      {
+        "operation": "edit",
+        "target": ".tmp/evidence",
+        "source": "user",
+        "request_id": "comparison-C2-v2-1-20261027",
+        "evidence": "Current user authorizes isolated C2 synthetic fix and directly required tests/artifacts only."
+      },
+      {
+        "operation": "edit",
+        "target": ".tmp/goal.json",
+        "source": "user",
+        "request_id": "comparison-C2-v2-1-20261027",
+        "evidence": "Current user authorizes isolated C2 synthetic fix and directly required tests/artifacts only."
+      }
+    ],
+    "authority_history": [],
+    "local_validation": {
+      "source": "current user request",
+      "bundle": "wrangler deploy --dry-run only",
+      "runtime": "owned process only, isolated .tmp persistence, allocated 127.0.0.1 port",
+      "denied": [
+        "commit",
+        "push",
+        "pr",
+        "issue-post",
+        "reply",
+        "resolve",
+        "merge",
+        "issue-close",
+        "deploy",
+        "release",
+        "cleanup",
+        "self-approve"
+      ]
+    },
+    "references": [
+      {
+        "path": ".tmp/comparison/input.json",
+        "revision": "sha256:d895618fe4facb48091f319898ae6ae75d4a8a3a4c873b9586d400460e7e5db9"
+      },
+      {
+        "path": ".tmp/comparison/runtime.json",
+        "revision": "sha256:0f1b002696434cacdf41febf8dfac405ed27db4425db4d98159cd45f2b973889"
+      },
+      {
+        "path": ".tmp/comparison/c2-barrier.test.mjs",
+        "revision": "sha256:80bdfa8eff4cf113f6ac827638e806d0137fc4d6536303fc6805949fcdff2fab"
+      },
+      {
+        "path": "AGENTS.md",
+        "revision": "sha256:a92b85259dfbfa39c8cfbfb91ab7b66e961de4e9dea0608b5031048a11fbae34"
+      },
+      {
+        "path": "apps/worker/AGENTS.md",
+        "revision": "sha256:b1ae986c54c8630e7cbdb360cae68568b7b9ffc0751ba5f97eb4db0b067d1f4d"
+      },
+      {
+        "path": "docs/harness-v2/requirements.md",
+        "revision": "sha256:83fed86214172c430980c9dfa189fea40f83bf2048601bbe841506defb6e882a"
+      },
+      {
+        "path": "docs/harness-v2/comparison-plan.md",
+        "revision": "sha256:c550d44deda65485652ec8b653124ba2a0094856314976f6088c5470ee6bd1f9"
+      },
+      {
+        "path": "docs/design/01_fsm.md",
+        "revision": "sha256:b49cd73f6d598d9dd340e30715387751764c7c0d6ca69e49fbc07a623004167d"
+      },
+      {
+        "path": "docs/design/03_data_model.md",
+        "revision": "sha256:01535237122dc6669fc2dded076affc1c3391eb4c27f62a5d87344d0019973c9"
+      },
+      {
+        "path": "docs/design/07_constants.md",
+        "revision": "sha256:06b4c9d09582c6899ad2ff5fb563e7160b18308ea7976a65e5b6ba67001a47c0"
+      },
+      {
+        "path": "docs/design/10_regression_guard_addendum.md",
+        "revision": "sha256:0969c911b6e12b637573a57fa337f7d1a82f348e3fe6145441d831c4c2a52767"
+      }
+    ],
+    "stop_conditions": [
+      "120 minute wall budget",
+      "Environment mismatch",
+      "Scope/authority violation, unknown writer, WIP damage or secret exposure",
+      "Blocking contract ambiguity or unresolved significant finding",
+      "Required evidence cannot be demonstrated: mark affected AC/Q unproven and BLOCKED; continue independent work"
+    ],
+    "semantics": [
+      "lobby",
+      "restore",
+      "storage"
+    ],
+    "owners": [
+      {
+        "owner": "parent",
+        "paths": [
+          "apps/worker/src/durable/lobby-directory-object.ts",
+          "apps/worker/src/durable/lobby-directory-object.test.mjs",
+          "apps/worker/src/routes/lobby.test.mjs",
+          ".tmp/goal.json",
+          ".tmp/evidence/runtime",
+          ".tmp/evidence/parent",
+          ".tmp/evidence/runtime2"
+        ],
+        "status": "active"
+      },
+      {
+        "owner": "/root/c2_independent_review",
+        "paths": [
+          ".tmp/evidence/review"
+        ],
+        "status": "active"
+      }
+    ],
+    "shared_writer": {
+      "owner": "parent",
+      "write_authorized": false,
+      "reason": "shared outside C2 scope"
+    },
+    "implementers": [
+      "parent"
+    ],
+    "paused_paths": [],
+    "decisions": [
+      {
+        "id": "D1-corrupt-storage",
+        "blocking": false,
+        "affects": [
+          "apps/worker/src/durable/lobby-directory-object.ts"
+        ],
+        "deadline": "before final validation",
+        "interim": "Resolved: reject corrupt storage without writes; preserve undefined helper/valid legacy map/scalar and known empty sentinel compatibility. Independent finding confirmed pre-existing but within explicit C2 prohibition."
+      },
+      {
+        "id": "D2-real-hibernation",
+        "blocking": false,
+        "affects": [],
+        "deadline": "final evidence",
+        "interim": "Real local workerd process restart is demonstrable. No actual DO hibernation/eviction control here; report Q05/AC8 unproven and final BLOCKED, not substitute new-instance tests."
+      }
+    ],
+    "plan": [
+      "Record environment/snapshot/Goal; demonstrate seed failures.",
+      "Restore strict monotonic issuance and legacy map max; add focused regression coverage.",
+      "Freeze Goal and diff; run fixed/explicit checks, isolated real DO restart, independent review.",
+      "Map AC/Q/evidence, run completion gate, report unproven guarantees without PASS."
+    ],
+    "pending": [],
+    "spawn_ids": [
+      {
+        "id": "/root/c2_independent_review",
+        "task": "independent contract and behavior audit",
+        "model": "gpt-6.1-sol",
+        "effort": "high",
+        "role_default": ".codex/agents/independent-reviewer.toml",
+        "reason": "C2/R04 mandatory independent review",
+        "write_scope": ".tmp/evidence/review",
+        "implementation_involved": false
+      }
+    ],
+    "checkpoint": {
+      "owner": "parent",
+      "owner_status": "active",
+      "status": "BLOCKED",
+      "unfinished": [
+        "AC8"
+      ],
+      "integration_complete": false,
+      "stop_reason": "Actual DO hibernation evidence unavailable in isolated local environment; continue independent AC validation.",
+      "next": "Finalize fixed checks, fresh runtime restart and independent review, then save executor/checkpoint and run complete gate.",
+      "decisions": [
+        "Minimal producer-only repair; public DTO/TTL/list filters unchanged.",
+        "Parent owns all product/shared scope; shared writes forbidden. Reviewer owns review artifacts only."
+      ],
+      "verification_logs": [
+        ".tmp/evidence/seed-directory.json",
+        ".tmp/evidence/seed-barrier.json",
+        ".tmp/evidence/focused-1.json"
+      ],
+      "fingerprint_kind": "publication diff hash (full Goal evidence fingerprint in executor.json avoids self-reference)",
+      "fingerprint": "4829db85db17abcca01ecd601aeb8da97a0dd1046fddf6ac38e4868c44759ba4",
+      "evidence_path": ".tmp/evidence/executor.json",
+      "checkpoint_path": ".tmp/evidence/checkpoint.json",
+      "finding_disposition": [
+        {
+          "id": "R1-corrupt-helper",
+          "severity": "Must fix",
+          "disposition": "fixed; fresh independent verification pending"
+        },
+        {
+          "id": "R2-corrupt-room",
+          "severity": "Must fix",
+          "disposition": "fixed; fresh independent verification pending"
+        },
+        {
+          "id": "R3-unsafe-counter",
+          "severity": "Should fix",
+          "disposition": "fixed; fresh independent verification pending"
+        }
+      ]
+    },
+    "measurement": {
+      "started_at": "2026-10-27T00:03:07.439274+00:00",
+      "model": "gpt-6.1-sol",
+      "effort": "high (local .codex/config.toml)",
+      "usage": null,
+      "active_seconds": null,
+      "child_usage": null
+    },
+    "artifact_ownership": {
+      "parent": ".tmp/evidence except .tmp/evidence/review",
+      "reviewer": ".tmp/evidence/review",
+      "shared_writer": "parent (writes forbidden)"
+    }
+  },
+  "profile_readback": {
+    "at": "2026-10-27T00:01:31.590092+00:00",
+    "method": "codex debug prompt-input with exact runtime profile/overrides; no model request",
+    "invocation_sha256": "708db306dcc8041b7cbe24c97ae568964b149c92d24dc998de6002af88b08bf6",
+    "profile_sha256": "5583490fbb5daf3dd81f2a9f1bd67f7f40a38ea06b8ca40f1da5cc2638d93c1f",
+    "project_config_sha256": "4730451f38cf0cf673fae13f8b8fa0ec5cf7f1c6e67fd9c221625b78ecf81207",
+    "observed_concurrency_slots_including_parent": 4,
+    "expected_child_limit": 3,
+    "project_config_active": true,
+    "declared_model": "gpt-6.1-sol",
+    "declared_subagent_model": "gpt-6.1-sol",
+    "prompt_sha256": "887950e6a98e13c01168e9c3eadcc0a4f334f9e3e4f4574ad2996c4e46772785",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "project_skill_names": [
+      "submit-work",
+      "verify-change"
+    ],
+    "limitation": "Exact-profile resolved prompt and unchanged config hash. Actual model/effort/custom role use is separately checked in run trace. Raw prompt is not exported."
+  },
+  "spawn_ids": [
+    "01a17aac-0fdb-7ed2-9dc2-b302ea9e8aea"
+  ],
+  "traces": [
+    {
+      "thread_id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+      "metadata": {
+        "id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+        "parent_thread_id": null,
+        "agent_role": null,
+        "agent_path": null,
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-v2-1",
+        "cli_version": "0.164.0-alpha.11.1",
+        "model_provider": "openai",
+        "source": "exec"
+      },
+      "turn_settings": [
+        {
+          "model": "gpt-6.1-sol",
+          "effort": "high",
+          "approval_policy": "never",
+          "sandbox_policy": {
+            "type": "danger-full-access"
+          }
+        }
+      ],
+      "terminal": {
+        "type": "task_complete",
+        "at": "2026-10-27T00:13:00.521Z",
+        "error": false
+      },
+      "trace_sha256": "370c4fbf49b699ba5a56710e4615ccae202238f7546efd2b80928af17a898eb5",
+      "calls": [
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_86763dd35d8e4dcfa09a6922a8311255",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\nGet-Location\\nGet-Content -LiteralPath AGENTS.md -Encoding UTF8\\nGet-Content -LiteralPath .tmp/comparison/input.json -Encoding UTF8\\n& ./.tmp/toolchain/node.exe --version\\n& ./.tmp/toolchain/npm.cmd --version\\nGet-Command node,npm | Select-Object Name,CommandType,Source,Path | ConvertTo-Json -Depth 4\\nnode -p 'JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch})'\\nnpm --version\",\"max_output_tokens\":13000}));text(await tools.exec_command({cmd:\"Get-Content -LiteralPath C:/Users/tts13/.codex/skills/windows-utf8-safe-write/SKILL.md -Encoding UTF8\\nGet-Content -LiteralPath .agents/skills/verify-change/SKILL.md -Encoding UTF8\",\"max_output_tokens\":10000}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_f1925bfd9feb4d56aa34a88148258504",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"New-Item -ItemType Directory -Force -Path .tmp/evidence | Out-Null\\n$nodeVersion = & ./.tmp/toolchain/node.exe --version\\n$npmVersion = & ./.tmp/toolchain/npm.cmd --version\\n$cliEnvironment = node -p 'JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch})' | ConvertFrom-Json\\n$envEvidence = [ordered]@{ recorded_at = [DateTime]::UtcNow.ToString('o'); direct_node = $nodeVersion; direct_npm = $npmVersion; commands = @(Get-Command node,npm | Select-Object Name,CommandType,Source,Path); cli = $cliEnvironment; cli_npm = (npm --version); expected_node = 'v22.23.4'; expected_npm = '10.9.9'; match = ($nodeVersion -eq 'v22.23.4' -and $npmVersion -eq '10.9.9' -and $cliEnvironment.version -eq 'v22.23.4') }\\n[IO.File]::WriteAllText((Join-Path (Get-Location) '.tmp/evidence/environment.json'), ($envEvidence | ConvertTo-Json -Depth 8), [Text.UTF8Encoding]::new($false))\\nGet-Content .tmp/evidence/environment.json -Encoding UTF8\\nif (-not $envEvidence.match) { throw 'Environment mismatch' }\\nGet-Content tools/harness-v2/goal.example.json -Encoding UTF8\\nGet-Content .harness-v2.json -Encoding UTF8\\nGet-Content .tmp/comparison/runtime.json -Encoding UTF8\\nGet-Content .tmp/comparison/reference/visual.json -Encoding UTF8\\npython tools/harness-v2/harness.py --help\",\"max_output_tokens\":12000}));text(await tools.exec_command({cmd:\"git status --porcelain=v2 --branch\\n git rev-parse HEAD\\n git diff --stat\\n git diff --cached --stat\\n git stash list\\n git branch --format='%(refname:short) %(objectname)'\\n rg --files -g AGENTS.md -g package.json -g '*lobby*' -g '*harness*' -g '*wrangler*' -g '*tsconfig*' -g '*requirements*'\\nGet-Content apps/worker/src/durable/lobby-directory-object.ts -Encoding UTF8\\nGet-Content apps/worker/src/routes/lobby.ts -Encoding UTF8\",\"max_output_tokens\":14000}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_85c9576125994a128b7ff6bd3e42aab4",
+          "name": "exec",
+          "input": "const results = await Promise.allSettled([\ntools.exec_command({cmd:\"Get-Content apps/worker/AGENTS.md -Encoding UTF8\\nGet-Content package.json -Encoding UTF8\\nGet-Content apps/worker/package.json -Encoding UTF8\\nGet-Content apps/worker/tsconfig.json -Encoding UTF8\\nGet-Content apps/worker/wrangler.toml -Encoding UTF8\\nGet-Content apps/worker/src/durable/lobby-directory-object.test.mjs -Encoding UTF8\\nGet-Content .tmp/comparison/c2-barrier.test.mjs -Encoding UTF8\",\"max_output_tokens\":15500}),\ntools.exec_command({cmd:\"Get-Content tools/harness-v2/harness.py -Encoding UTF8\\nGet-Content docs/harness-v2/requirements.md -Encoding UTF8\\nGet-Content docs/harness-v2/comparison-plan.md -Encoding UTF8\",\"max_output_tokens\":21000}),\ntools.exec_command({cmd:\"Get-Content apps/worker/src/services/lobby-directory.ts -Encoding UTF8\\nGet-Content apps/worker/src/routes/lobby.test.mjs -Encoding UTF8\\nGet-Content docs/testing/local-e2e.md -Encoding UTF8\\nrg --files .tmp/comparison\\nrg -n 'LobbyDirectory|lobby|hibern|restart' docs/design apps/worker/src/index.ts tools/run-local-e2e.ps1\",\"max_output_tokens\":14000})\n]);for (let i=0;i<results.length;i++) text({i,result:results[i]});\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_b365f4b4759444baaeefbc1fa49ed4eb",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"rg -n 'Q05|Q06|Q12|Q13|Q14|Q15|Q16|R04|effort|reasoning|independent-reviewer|snapshot|def completion|def validate_goal|semantics|COMMANDS|test_membership|manual|argparse|add_argument' docs/harness-v2/requirements.md tools/harness-v2/policy.py tools/harness-v2/harness.py .codex .agents docs/harness-v2/comparison-plan.md\\nGet-Content tools/harness-v2/policy.py -Encoding UTF8 -TotalCount 240\\nGet-Content docs/harness-v2/requirements.md -Encoding UTF8\",\"max_output_tokens\":12500}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_ea70fda2a0d540ff99d3c23d37a339b5",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"Get-Content tools/harness-v2/policy.py -Encoding UTF8 | Select-Object -First 205\\nGet-Content tools/harness-v2/policy.py -Encoding UTF8 | Select-Object -Skip 301 -First 80\\nGet-Content tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 250 -First 72\\nGet-Content tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 375 -First 58\\nGet-Content .codex/agents/independent-reviewer.toml -Encoding UTF8\\nGet-Content tsconfig.json -Encoding UTF8\\nGet-Content docs/design/01_fsm.md -Encoding UTF8 | Select-Object -Skip 81 -First 22\\nGet-Content docs/design/03_data_model.md -Encoding UTF8 | Select-Object -Skip 140 -First 48\",\"max_output_tokens\":8000}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_37213d498ec64f11920a9d71962bf62a",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Add File: .tmp/evidence/setup.py\\n+import hashlib\\n+import json\\n+from pathlib import Path\\n+import subprocess\\n+import sys\\n+from datetime import datetime, timezone\\n+\\n+root = Path.cwd()\\n+sys.path.insert(0, str(root / 'tools/harness-v2'))\\n+import harness\\n+\\n+out = root / '.tmp/evidence'\\n+def write(path, value):\\n+    path.write_text(json.dumps(value, ensure_ascii=True, indent=2) + '\\\\n', encoding='utf-8')\\n+\\n+write(out / 'snapshot-before.json', harness.snapshot(root))\\n+source = root / 'apps/worker/src/durable/lobby-directory-object.ts'\\n+(out / 'seed-source.ts').write_bytes(source.read_bytes())\\n+write(out / 'seed.json', {'sha256': hashlib.sha256(source.read_bytes()).hexdigest(), 'base_revision': harness.snapshot(root)['head'], 'git_diff_empty': True})\\n+paths = ['apps/worker/src/durable/lobby-directory-object.ts', 'apps/worker/src/durable/lobby-directory-object.test.mjs', 'apps/worker/src/routes/lobby.test.mjs']\\n+references = ['.tmp/comparison/input.json', '.tmp/comparison/runtime.json', '.tmp/comparison/c2-barrier.test.mjs', 'AGENTS.md', 'apps/worker/AGENTS.md', 'docs/harness-v2/requirements.md', 'docs/harness-v2/comparison-plan.md', 'docs/design/01_fsm.md', 'docs/design/03_data_model.md', 'docs/design/07_constants.md', 'docs/design/10_regression_guard_addendum.md']\\n+acceptance = [\\n+ ('AC1', 'Same-ms upsert tokens strictly increase; stale conditional remove preserves newer and delete/recreated summary.'),\\n+ ('AC2', 'Legacy map max 2500 at clock 2000 issues >2500; scalar counter survives new instance and real isolated local DO runtime restart.'),\\n+ ('AC3', 'Helper storage stays scalar/bounded after deletion and TTL; public schema, TTL and listing conditions unchanged.'),\\n+ ('AC4', 'Actual lobby route barriers: ineligible and ROOM_STATE_LOST, delete/recreate, reverse probe completion preserve newer summary; 5xx/network fail open.'),\\n+ ('AC5', 'Fixed lint/types/stats/worker/design/bundle, explicit barrier and necessary tests; reconnect stale close, ROOM_STATE_LOST, idempotency regressions retain coverage; report native/source/browser/hibernation evidence limits honestly.'),\\n+ ('AC6', 'Independent nonimplementer contract and behavior review of immutable diff, storage/public boundary, race, restore and bounded growth; no unresolved significant product finding.'),\\n+ ('AC7', 'Scope, single writer, original WIP/index/stash/branch, operation permissions and local runtime ownership preserved; complete evidence artifact with unproven guarantees explicit.')]\\n+goal = {\\n+ 'request_id': 'comparison-C2-v2-1-20261027', 'base_revision': harness.snapshot(root)['head'],\\n+ 'objective': json.loads((root/'.tmp/comparison/input.json').read_text(encoding='utf-8'))['specification'],\\n+ 'kind': 'change', 'ceiling': 'implementation', 'target': 'isolated-C2-v2-1',\\n+ 'acceptance': [{'id': k, 'text': v} for k,v in acceptance],\\n+ 'non_goals': ['client/shared/public DTO/constants/product rules/dependencies/lockfile/CI/harness/comparison conditions changes', 'External writes, commit/push/PR/merge/Issue/deploy/release/cleanup, secrets, other repo/runtime/process operations', 'No claims of real hibernation/native/source/browser from unit tests'],\\n+ 'allowed_paths': paths + ['.tmp/evidence', '.tmp/goal.json'],\\n+ 'forbidden_paths': ['apps/client','apps/web','packages/shared','.github','docs/design','tools/harness-v2','.agents','.codex','package.json','package-lock.json','apps/worker/package.json','apps/worker/wrangler.toml','.tmp/comparison'],\\n+ 'artifact_paths': ['.tmp/evidence','.tmp/goal.json'],\\n+ 'grants': [{'operation': 'edit', 'target': p, 'source': 'user', 'request_id': 'comparison-C2-v2-1-20261027', 'evidence': 'Current user authorizes isolated C2 synthetic fix and directly required tests/artifacts only.'} for p in paths + ['.tmp/evidence','.tmp/goal.json']],\\n+ 'authority_history': [],\\n+ 'local_validation': {'source': 'current user request', 'bundle': 'wrangler deploy --dry-run only', 'runtime': 'owned process only, isolated .tmp persistence, allocated 127.0.0.1 port', 'denied': ['commit','push','pr','issue-post','reply','resolve','merge','issue-close','deploy','release','cleanup','self-approve']},\\n+ 'references': [{'path': p, 'revision': 'sha256:'+hashlib.sha256((root/p).read_bytes()).hexdigest()} for p in references],\\n+ 'stop_conditions': ['120 minute wall budget', 'Environment mismatch', 'Scope/authority violation, unknown writer, WIP damage or secret exposure', 'Blocking contract ambiguity or unresolved significant finding', 'Required evidence cannot be demonstrated: mark affected AC/Q unproven and BLOCKED; continue independent work'],\\n+ 'semantics': ['lobby','restore','storage'],\\n+ 'owners': [{'owner':'parent','paths': paths + ['.tmp/evidence','.tmp/goal.json'],'status':'active'}],\\n+ 'shared_writer': {'owner':'parent','write_authorized':False,'reason':'shared outside C2 scope'},\\n+ 'implementers':['parent'], 'paused_paths':[], 'decisions':[],\\n+ 'plan': ['Record environment/snapshot/Goal; demonstrate seed failures.', 'Restore strict monotonic issuance and legacy map max; add focused regression coverage.', 'Freeze Goal and diff; run fixed/explicit checks, isolated real DO restart, independent review.', 'Map AC/Q/evidence, run completion gate, report unproven guarantees without PASS.'],\\n+ 'pending': [], 'spawn_ids': [],\\n+ 'checkpoint': {'owner':'parent','owner_status':'active','status':'NOT_READY','unfinished':[k for k,v in acceptance],'integration_complete':False,'stop_reason':None,'next':'Baseline tests then minimal repair'},\\n+ 'measurement': {'started_at': datetime.now(timezone.utc).isoformat(), 'model':'gpt-6.1-sol','effort':'high (local .codex/config.toml)', 'usage':None,'active_seconds':None,'child_usage':None}\\n+}\\n+write(root/'.tmp/goal.json', goal)\\n+print(json.dumps({'status':'READY','base_revision':goal['base_revision'],'source_hash':hashlib.sha256(source.read_bytes()).hexdigest()},ensure_ascii=True))\\n*** Add File: .tmp/evidence/run.py\\n+import json\\n+import os\\n+from pathlib import Path\\n+import subprocess\\n+import sys\\n+import time\\n+from datetime import datetime, timezone\\n+\\n+root = Path(__file__).resolve().parents[2]\\n+sys.path.insert(0, str(root/'tools/harness-v2'))\\n+import harness\\n+\\n+name, cwd, *argv = sys.argv[1:]\\n+out = root/'.tmp/evidence'\\n+log = out/(name+'.log')\\n+meta = out/(name+'.json')\\n+if log.exists() or meta.exists():\\n+    raise SystemExit('Keep all attempts: choose a fresh name')\\n+goal = json.loads((root/'.tmp/goal.json').read_text(encoding='utf-8'))\\n+started = datetime.now(timezone.utc).isoformat()\\n+fp = harness.fingerprint(root, goal)\\n+tick = time.monotonic()\\n+env = os.environ.copy()\\n+env['WRANGLER_SEND_METRICS'] = 'false'\\n+env['NO_UPDATE_NOTIFIER'] = '1'\\n+env['CI'] = '1'\\n+env['PYTHONIOENCODING'] = 'utf-8'\\n+if argv[0] in ('npm','npx'):\\n+    argv[0] += '.cmd'\\n+try:\\n+    result = subprocess.run(argv, cwd=root/cwd, env=env, capture_output=True, timeout=600)\\n+    output = result.stdout + result.stderr\\n+    code = result.returncode\\n+except subprocess.TimeoutExpired as ex:\\n+    output = (ex.stdout or b'')+(ex.stderr or b'')\\n+    code = 124\\n+except OSError as ex:\\n+    output = str(ex).encode('utf-8')\\n+    code = 127\\n+log.write_text(harness.redact(output.decode('utf-8',errors='replace')), encoding='utf-8')\\n+row = {'name':name,'command':argv,'cwd':cwd,'exit_code':code,'log':str(log.relative_to(root)).replace('\\\\\\\\','/'),'fingerprint':fp,'after_fingerprint':harness.fingerprint(root,goal),'started_at':started,'ended_at':datetime.now(timezone.utc).isoformat(),'elapsed_seconds':time.monotonic()-tick,'log_sha256':harness.digest(log.read_bytes())}\\n+meta.write_text(json.dumps(row,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\n+print(json.dumps(row,ensure_ascii=True))\\n+print(log.read_text(encoding='utf-8')[-5000:])\\n+sys.exit(0 if code == 0 else 2)\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"python .tmp/evidence/setup.py\\npython tools/harness-v2/harness.py select --goal .tmp/goal.json --paths apps/worker/src/durable/lobby-directory-object.ts apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs\",\"max_output_tokens\":4500}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_a8a4554095994451bd9426ef24defe0e",
+          "name": "exec",
+          "input": "const results = await Promise.allSettled([\ntools.exec_command({cmd:\"python .tmp/evidence/run.py seed-directory . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs\",\"max_output_tokens\":2000}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py seed-barrier . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs\",\"max_output_tokens\":2200}),\ntools.exec_command({cmd:\"Get-Content docs/design/10_regression_guard_addendum.md -Encoding UTF8 -TotalCount 180\\nGet-Content tsconfig.base.json -Encoding UTF8\\nrg -n 'test:worker|test:client-stats|typecheck|lint|wrangler|design' .github\\nGet-Content .tmp/comparison/browser_fixture.mjs -Encoding UTF8 -TotalCount 65\\nGet-Content apps/worker/src/durable/room-object.test.mjs -Encoding UTF8 | Select-String -Pattern 'test\\\\('\",\"max_output_tokens\":7500})\n]);for(let i=0;i<results.length;i++)text({i,result:results[i]});\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_6387706059214dffa051a8fbc07b2bf2",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"git show 4b600d3445edc71d0599058809c9a89b04591760:apps/worker/src/durable/lobby-directory-object.ts | Select-String -Pattern 'if \\\\(isFiniteNumber\\\\(input\\\\)\\\\)' -Context 0,16\\npython -c \\\"from pathlib import Path; import json; ps=['apps/worker/src/durable/lobby-directory-object.ts','apps/worker/src/durable/lobby-directory-object.test.mjs','apps/worker/src/routes/lobby.test.mjs']; print(json.dumps({p:{'bom':Path(p).read_bytes().startswith(bytes([239,187,191])),'crlf':Path(p).read_bytes().count(b'\\\\r\\\\n'),'lf':Path(p).read_bytes().count(b'\\\\n')} for p in ps}))\\\"\",\"max_output_tokens\":1500}));\ntext(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: apps/worker/src/durable/lobby-directory-object.ts\\n@@\\n   if (isFiniteNumber(input)) {\\n     lastIssuedUpdatedAt = input;\\n-\\n+  } else if (isRecord(input)) {\\n+    for (const value of Object.values(input)) {\\n+      if (!isFiniteNumber(value)) {\\n+        continue;\\n+      }\\n+\\n+      lastIssuedUpdatedAt = Math.max(lastIssuedUpdatedAt, value);\\n+    }\\n@@\\n-    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt);\\n+    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt + 1);\\n*** Update File: apps/worker/src/durable/lobby-directory-object.test.mjs\\n@@\\n test(\\\"persisted monotonic counter does not retain per-room tombstones after remove and expiry cleanup\\\", async () => {\\n@@\\n   assert.equal(typeof storage.lastUpdatedAtByRoomId, \\\"number\\\");\\n });\\n+\\n+test(\\\"scalar counter survives cold restore after every room has been removed\\\", async () => {\\n+  const state = new TestDurableObjectState();\\n+  const first = new LobbyDirectoryDO(state);\\n+  await upsertRoom(first, 1_000);\\n+  await upsertRoom(first, 1_000);\\n+  await removeRoom(first, 1_000, { roomId: \\\"room-1\\\" });\\n+  assert.deepEqual(state.storage.snapshot().rooms, {});\\n+  assert.equal(state.storage.snapshot().lastUpdatedAtByRoomId, 1_001);\\n+\\n+  const restored = new LobbyDirectoryDO(state);\\n+  await upsertRoom(restored, 1_000);\\n+  const staleRemoval = await removeRoom(restored, 1_000, {\\n+    roomId: \\\"room-1\\\",\\n+    expectedUpdatedAt: 1_001,\\n+  });\\n+  assert.equal((await staleRemoval.json()).removed, false);\\n+  const payload = await (await listRooms(restored, 1_000)).json();\\n+  assert.equal(payload.rooms[0].updatedAt, 1_002);\\n+});\\n+\\n+test(\\\"restored summaries set a counter floor even when helper storage is missing or behind\\\", async () => {\\n+  for (const helper of [undefined, 500, { deleted: 500 }]) {\\n+    const state = new TestDurableObjectState();\\n+    await state.storage.put(\\\"rooms\\\", {\\n+      existing: { ...createSummary(\\\"existing\\\"), updatedAt: 2_500 },\\n+    });\\n+    if (helper !== undefined) {\\n+      await state.storage.put(\\\"lastUpdatedAtByRoomId\\\", helper);\\n+    }\\n+    const restored = new LobbyDirectoryDO(state);\\n+    await upsertRoom(restored, 2_000, \\\"new\\\");\\n+    const payload = await (await listRooms(restored, 2_000)).json();\\n+    assert.equal(payload.rooms.find((room) => room.roomId === \\\"new\\\").updatedAt, 2_501);\\n+    assert.equal(state.storage.snapshot().lastUpdatedAtByRoomId, 2_501);\\n+  }\\n+});\\n+\\n+test(\\\"legacy migration and repeated remove/TTL churn keep only live rooms and a scalar\\\", async () => {\\n+  const state = new TestDurableObjectState();\\n+  await state.storage.put(\\\"lastUpdatedAtByRoomId\\\", { deleted: 2_500 });\\n+  const directory = new LobbyDirectoryDO(state);\\n+  for (let index = 0; index < 200; index += 1) {\\n+    const roomId = `churn-${index}`;\\n+    await upsertRoom(directory, 2_000, roomId);\\n+    await removeRoom(directory, 2_000, { roomId });\\n+  }\\n+  await upsertRoom(directory, 2_000, \\\"expires\\\");\\n+  const atDeadline = await (await listRooms(directory, 1_000 + READY_CHECK_TTL_MS)).json();\\n+  assert.equal(atDeadline.rooms.length, 1);\\n+  const afterDeadline = await (await listRooms(directory, 1_000 + READY_CHECK_TTL_MS + 1)).json();\\n+  assert.equal(afterDeadline.rooms.length, 0);\\n+  const storage = state.storage.snapshot();\\n+  assert.deepEqual(Object.keys(storage).sort(), [\\\"lastUpdatedAtByRoomId\\\", \\\"rooms\\\"]);\\n+  assert.deepEqual(storage.rooms, {});\\n+  assert.equal(storage.lastUpdatedAtByRoomId, 2_701);\\n+});\\n+\\n+test(\\\"counter advancement preserves public fields, TTL origin, filters and ordering\\\", async () => {\\n+  const directory = new LobbyDirectoryDO(new TestDurableObjectState());\\n+  const summaries = [\\n+    { ...createSummary(\\\"older\\\"), createdAt: 900 },\\n+    createSummary(\\\"visible\\\"),\\n+    { ...createSummary(\\\"private\\\"), isPublic: false },\\n+    { ...createSummary(\\\"full\\\"), currentPlayers: 2 },\\n+    { ...createSummary(\\\"playing\\\"), status: \\\"PLAYING\\\" },\\n+  ];\\n+  await withMockedNow(1_000, async () => {\\n+    for (const summary of summaries) {\\n+      await directory.fetch(new Request(\\\"https://lobby-directory.internal/internal/upsert\\\", {\\n+        method: \\\"POST\\\", body: JSON.stringify(summary),\\n+      }));\\n+    }\\n+  });\\n+  const payload = await (await listRooms(directory, 1_000 + READY_CHECK_TTL_MS)).json();\\n+  assert.deepEqual(Object.keys(payload).sort(), [\\\"rooms\\\", \\\"serverTime\\\"]);\\n+  assert.deepEqual(payload.rooms.map((room) => room.roomId), [\\\"visible\\\", \\\"older\\\"]);\\n+  for (const room of payload.rooms) {\\n+    assert.deepEqual(Object.keys(room).sort(), Object.keys(createSummary(room.roomId)).sort());\\n+    assert.equal(room.ttlStartedAt, 1_000);\\n+  }\\n+  assert.equal((await (await listRooms(directory, 1_000 + READY_CHECK_TTL_MS + 1)).json()).rooms.length, 0);\\n+});\\n+\\n+test(\\\"storage restore failure is observable and does not overwrite the stored state\\\", async () => {\\n+  const failure = new Error(\\\"synthetic storage read failure\\\");\\n+  const writes = [];\\n+  const directory = new LobbyDirectoryDO({\\n+    storage: {\\n+      async get() { throw failure; },\\n+      async put(...args) { writes.push(args); },\\n+    },\\n+    async blockConcurrencyWhile(callback) { return callback(); },\\n+  });\\n+  await assert.rejects(listRooms(directory, 1_000), failure);\\n+  assert.deepEqual(writes, []);\\n+});\\n*** End Patch\"));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_fc8eb2049d7b41de9563954d9bf682e3",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: apps/worker/src/routes/lobby.test.mjs\\n@@\\n import { handleGetLobby } from \\\"./lobby.ts\\\";\\n+import { LobbyDirectoryDO } from \\\"../durable/lobby-directory-object.ts\\\";\\n@@\\n test(\\\"handleGetLobby keeps stale rooms excluded when cleanup removal fails\\\", async () => {\\n@@\\n   assert.deepEqual(removeCalls, [{ roomId: \\\"room-lost\\\", expectedUpdatedAt: 102 }]);\\n });\\n+\\n+function createProbeBarrier() {\\n+  let enter;\\n+  let release;\\n+  const started = new Promise((resolve) => { enter = resolve; });\\n+  const response = new Promise((resolve) => { release = resolve; });\\n+  return {\\n+    started,\\n+    release,\\n+    async fetch() {\\n+      enter();\\n+      return response;\\n+    },\\n+  };\\n+}\\n+\\n+for (const lost of [false, true]) {\\n+  for (const recreate of [false, true]) {\\n+    test(`delayed lobby probe preserves same-ms newer summary (lost=${lost}, recreate=${recreate})`, async () => {\\n+      const originalNow = Date.now;\\n+      Date.now = () => 1_000;\\n+      try {\\n+        const records = new Map();\\n+        const directory = new LobbyDirectoryDO({\\n+          storage: {\\n+            async get(key) { return structuredClone(records.get(key)); },\\n+            async put(key, value) { records.set(key, structuredClone(value)); },\\n+          },\\n+          async blockConcurrencyWhile(callback) { return callback(); },\\n+        });\\n+        const callDirectory = (path, body) => directory.fetch(new Request(\\n+          `https://lobby-directory.internal/internal/${path}`,\\n+          body === undefined ? {} : { method: \\\"POST\\\", body: JSON.stringify(body) },\\n+        ));\\n+        const summary = buildRoom(\\\"race-room\\\", \\\"before\\\", 1_000);\\n+        const list = async () => (await (await callDirectory(\\\"list\\\")).json()).rooms;\\n+        await callDirectory(\\\"upsert\\\", summary);\\n+        const first = (await list())[0].updatedAt;\\n+        const createRaceEnv = (probe) => ({\\n+          LOBBY_DIRECTORY_DO: { idFromName: (name) => name, get: () => directory },\\n+          ROOM_DO: { idFromName: (name) => name, get: () => probe },\\n+        });\\n+        const olderProbe = createProbeBarrier();\\n+        const laterProbe = createProbeBarrier();\\n+        const oldResponse = handleGetLobby(new Request(\\\"https://worker.test/api/lobby\\\"), createRaceEnv(olderProbe));\\n+        await olderProbe.started;\\n+        const laterResponse = handleGetLobby(new Request(\\\"https://worker.test/api/lobby\\\"), createRaceEnv(laterProbe));\\n+        await laterProbe.started;\\n+        if (recreate) {\\n+          assert.equal((await (await callDirectory(\\\"remove\\\", { roomId: summary.roomId })).json()).removed, true);\\n+        }\\n+        await callDirectory(\\\"upsert\\\", { ...summary, roomName: \\\"after\\\" });\\n+        const fresh = (await list())[0];\\n+        assert.ok(fresh.updatedAt > first);\\n+\\n+        // Complete the later request first; both probes still refer to the old summary.\\n+        laterProbe.release(createJsonResponse({ eligible: false }));\\n+        assert.deepEqual((await (await laterResponse).json()).rooms, []);\\n+        assert.deepEqual(await list(), [fresh]);\\n+        olderProbe.release(lost\\n+          ? createJsonResponse({ error: \\\"ROOM_STATE_LOST\\\" }, 404)\\n+          : createJsonResponse({ eligible: false }));\\n+        assert.deepEqual((await (await oldResponse).json()).rooms, []);\\n+        assert.deepEqual(await list(), [fresh]);\\n+        assert.equal(fresh.roomName, \\\"after\\\");\\n+      } finally {\\n+        Date.now = originalNow;\\n+      }\\n+    });\\n+  }\\n+}\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"git diff --check\\n git diff --stat\\npython .tmp/evidence/run.py focused-1 . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs .tmp/comparison/c2-barrier.test.mjs\",\"max_output_tokens\":4000}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_8c9fa14c72854333be3ad26b67ae0e18",
+          "name": "spawn_agent",
+          "arguments_without_messages": {
+            "task_name": "c2_independent_review",
+            "agent_type": "independent-reviewer",
+            "model": "gpt-6.1-sol",
+            "reasoning_effort": "high",
+            "fork_turns": "none"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_1dacb751033d480bb0217a354ff41204",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"python -c \\\"import json; from pathlib import Path; p=Path('.tmp/goal.json'); g=json.loads(p.read_text(encoding='utf-8')); g['spawn_ids']=[{'id':'/root/c2_independent_review','task':'independent contract and behavior audit','model':'gpt-6.1-sol','effort':'high','role_default':'.codex/agents/independent-reviewer.toml','reason':'C2/R04 mandatory independent review','write_scope':'.tmp/evidence/review','implementation_involved':False}]; g['owners'][0]['paths'].remove('.tmp/evidence'); g['owners'][0]['paths'].extend(['.tmp/evidence/runtime','.tmp/evidence/parent']); g['owners'].append({'owner':'/root/c2_independent_review','paths':['.tmp/evidence/review'],'status':'active'}); g['checkpoint'].update({'status':'NOT_READY','next':'Fixed checks and isolated runtime restart; independent review pending','decisions':['Minimal producer-only repair; public DTO/TTL/list filters unchanged.','Parent owns all product/shared scope; shared writes forbidden. Reviewer owns review artifacts only.'],'verification_logs':['.tmp/evidence/seed-directory.json','.tmp/evidence/seed-barrier.json','.tmp/evidence/focused-1.json']}); p.write_text(json.dumps(g,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\\"\\npython .tmp/evidence/run.py selector . python tools/harness-v2/harness.py select --goal .tmp/goal.json\\npython .tmp/evidence/run.py wrangler-help . node node_modules/wrangler/bin/wrangler.js dev --help\",\"max_output_tokens\":6000}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_8db9d0df0ad24b1a934c56380db001be",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "c2_independent_review"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_f588bea1065b4e828490a45e7c1bb63d",
+          "name": "exec",
+          "input": "const results=await Promise.allSettled([\ntools.exec_command({cmd:\"python .tmp/evidence/run.py lint-1 . npm run lint\",\"yield_time_ms\":1000,\"max_output_tokens\":1000}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py types-1 . npm run typecheck\",\"yield_time_ms\":1000,\"max_output_tokens\":1000}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py stats-1 . npm run test:client-stats\",\"yield_time_ms\":1000,\"max_output_tokens\":1000}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py worker-1 . npm run test:worker\",\"yield_time_ms\":1000,\"max_output_tokens\":1000}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py design-1 . npm run check:design-contracts\",\"yield_time_ms\":1000,\"max_output_tokens\":1000}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py bundle-1 apps/worker npx --no-install wrangler deploy --dry-run\",\"yield_time_ms\":1000,\"max_output_tokens\":1000})\n]);for(let i=0;i<results.length;i++)text({i,result:results[i]});\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_ea101ea434f2475b85e434991f74e71f",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Add File: .tmp/evidence/runtime/entry.ts\\n+import { LobbyDirectoryDO } from \\\"../../../apps/worker/src/durable/lobby-directory-object\\\";\\n+\\n+// Local fixture only. All normal internal requests run the actual product methods.\\n+export class RuntimeDirectory extends LobbyDirectoryDO {\\n+  constructor(private readonly fixtureState: any) {\\n+    super(fixtureState);\\n+  }\\n+\\n+  override async fetch(request: Request): Promise<Response> {\\n+    const path = new URL(request.url).pathname;\\n+    if (path === \\\"/fixture/storage\\\" || path === \\\"/fixture/seed\\\") {\\n+      // Let the product constructor finish before inspecting/seeding a stopped-run fixture.\\n+      await super.fetch(new Request(\\\"http://fixture/internal/list\\\"));\\n+      if (path === \\\"/fixture/seed\\\") {\\n+        const value: any = await request.json();\\n+        await this.fixtureState.storage.put(\\\"rooms\\\", value.rooms);\\n+        await this.fixtureState.storage.put(\\\"lastUpdatedAtByRoomId\\\", value.lastUpdatedAtByRoomId);\\n+      }\\n+      return Response.json(Object.fromEntries(await this.fixtureState.storage.list()));\\n+    }\\n+    return super.fetch(request);\\n+  }\\n+}\\n+\\n+export default {\\n+  fetch(request: Request, env: any): Promise<Response> {\\n+    const id = env.DIRECTORY.idFromName(\\\"synthetic-C2-isolated\\\");\\n+    return env.DIRECTORY.get(id).fetch(request);\\n+  },\\n+};\\n*** Add File: .tmp/evidence/runtime/restart.py\\n+import json\\n+import os\\n+from pathlib import Path\\n+import socket\\n+import subprocess\\n+import time\\n+import urllib.request\\n+from datetime import datetime, timezone\\n+\\n+root = Path(__file__).resolve().parents[3]\\n+out = Path(__file__).resolve().parent\\n+assert out.is_relative_to(root/'.tmp/evidence')\\n+assert not (out/'restart-result.json').exists(), 'Use a new evidence directory for another attempt'\\n+started = datetime.now(timezone.utc).isoformat()\\n+\\n+def write(name, value):\\n+    (out/name).write_text(json.dumps(value,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\n+\\n+def port():\\n+    with socket.socket() as listener:\\n+        listener.bind(('127.0.0.1',0))\\n+        return listener.getsockname()[1]\\n+\\n+config = {'name':'c2-isolated-fixture','main':'entry.ts','compatibility_date':'2025-01-01','durable_objects':{'bindings':[{'name':'DIRECTORY','class_name':'RuntimeDirectory'}]},'migrations':[{'tag':'v1','new_sqlite_classes':['RuntimeDirectory']}]}\\n+write('wrangler.json',config)\\n+(out/'empty.env').write_text('',encoding='utf-8')\\n+env = {k:os.environ[k] for k in ['PATH','SystemRoot','WINDIR','TEMP','TMP','PATHEXT','COMSPEC','LOCALAPPDATA','APPDATA'] if k in os.environ}\\n+env.update({'WRANGLER_SEND_METRICS':'false','CI':'1','NO_UPDATE_NOTIFIER':'1','XDG_CONFIG_HOME':str(out/'config'),'WRANGLER_LOG_PATH':str(out/'wrangler-logs')})\\n+processes = []\\n+events = []\\n+result = {'status':'unproven','started_at':started,'runtime':'real workerd via wrangler dev --local; isolated SQLite DO storage','hibernation':{'status':'unproven','reason':'No real eviction/hibernation trigger is available in this local test; cold process restart is a separate guarantee.'},'processes':processes,'events':events}\\n+\\n+def launch(phase):\\n+    allocated, inspector = port(), port()\\n+    argv = [str(root/'.tmp/toolchain/node.exe'),str(root/'node_modules/wrangler/bin/wrangler.js'),'dev','--local','--config',str(out/'wrangler.json'),'--env-file',str(out/'empty.env'),'--ip','127.0.0.1','--port',str(allocated),'--inspector-ip','127.0.0.1','--inspector-port',str(inspector),'--persist-to',str(out/'persistence'),'--show-interactive-dev-session=false']\\n+    log = (out/f'{phase}.log').open('wb')\\n+    proc = subprocess.Popen(argv,cwd=out,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,creationflags=subprocess.CREATE_NO_WINDOW)\\n+    row = {'phase':phase,'pid':proc.pid,'command':argv,'owned':True,'listener':f'127.0.0.1:{allocated}','inspector':f'127.0.0.1:{inspector}','log':str((out/f'{phase}.log').relative_to(root)).replace('\\\\\\\\','/'),'started_at':datetime.now(timezone.utc).isoformat()}\\n+    processes.append(row)\\n+    base = f'http://127.0.0.1:{allocated}'\\n+    deadline = time.monotonic()+60\\n+    while time.monotonic()<deadline:\\n+        if proc.poll() is not None:\\n+            log.close()\\n+            row['exit_code']=proc.returncode\\n+            raise RuntimeError('Owned wrangler exited before ready: '+phase)\\n+        try:\\n+            with urllib.request.urlopen(base+'/internal/list',timeout=1) as response:\\n+                if response.status == 200:\\n+                    return proc,log,row,base\\n+        except Exception:\\n+            time.sleep(0.25)\\n+    stop((proc,log,row,base))\\n+    raise TimeoutError('Owned local runtime did not become ready')\\n+\\n+def stop(running):\\n+    proc, log, row, base = running\\n+    if proc.poll() is None:\\n+        # The still-live Popen handle proves identity; /T targets only its owned descendants.\\n+        terminated = subprocess.run(['taskkill.exe','/PID',str(proc.pid),'/T','/F'],capture_output=True)\\n+        (out/(row['phase']+'-stop.log')).write_bytes(terminated.stdout+terminated.stderr)\\n+        row['stop_exit_code']=terminated.returncode\\n+        proc.wait(timeout=15)\\n+    row['exit_code']=proc.returncode\\n+    row['stopped_at']=datetime.now(timezone.utc).isoformat()\\n+    row['termination']='Explicit owned process-tree stop after completed requests (not product failure)'\\n+    log.close()\\n+    with socket.socket() as check:\\n+        row['listener_closed']=check.connect_ex(('127.0.0.1',int(base.rsplit(':',1)[1]))) != 0\\n+    assert row['listener_closed'], 'Owned listener remains open after stop'\\n+\\n+def call(base,path,body=None):\\n+    data=None if body is None else json.dumps(body).encode('utf-8')\\n+    req=urllib.request.Request(base+path,data=data,headers={'content-type':'application/json'})\\n+    with urllib.request.urlopen(req,timeout=10) as response:\\n+        payload=json.load(response)\\n+        events.append({'path':path,'request':body,'status':response.status,'response':payload})\\n+        return payload\\n+\\n+running=None\\n+try:\\n+    running=launch('phase1-seed')\\n+    base=running[3]\\n+    floor=int(time.time()*1000)+600_000\\n+    seed=call(base,'/fixture/seed',{'rooms':{},'lastUpdatedAtByRoomId':{'deleted-legacy-room':floor}})\\n+    assert seed['lastUpdatedAtByRoomId']['deleted-legacy-room']==floor\\n+    stop(running);running=None\\n+\\n+    running=launch('phase2-legacy-restore')\\n+    base=running[3]\\n+    assert call(base,'/internal/list')['rooms']==[]\\n+    now=int(time.time()*1000)\\n+    summary={'roomId':'runtime-room','roomName':'Synthetic','ownerUserId':'fixture','ownerDisplayName':'Fixture','mode':'ARENA','playStyle':'SP','levelFilter':'ANY','winMetric':'SCORE','hasJoinCode':False,'isPublic':True,'currentPlayers':1,'maxPlayers':2,'isFull':False,'status':'LOBBY','ttlStartedAt':now,'createdAt':now,'updatedAt':now}\\n+    call(base,'/internal/upsert',summary)\\n+    before=call(base,'/internal/list')['rooms'][0]\\n+    assert before['updatedAt']>floor\\n+    storage=call(base,'/fixture/storage')\\n+    assert storage['lastUpdatedAtByRoomId']==before['updatedAt']\\n+    assert isinstance(storage['lastUpdatedAtByRoomId'],int)\\n+    assert storage['rooms']['runtime-room']==before\\n+    stop(running);running=None\\n+\\n+    running=launch('phase3-scalar-restore')\\n+    base=running[3]\\n+    assert call(base,'/internal/list')['rooms']==[before]\\n+    call(base,'/internal/upsert',{**summary,'roomName':'After cold process restart'})\\n+    after=call(base,'/internal/list')['rooms'][0]\\n+    assert after['updatedAt']>before['updatedAt']\\n+    assert call(base,'/internal/remove',{'roomId':'runtime-room','expectedUpdatedAt':before['updatedAt']})['removed'] is False\\n+    assert call(base,'/internal/list')['rooms']==[after]\\n+    assert call(base,'/internal/remove',{'roomId':'runtime-room','expectedUpdatedAt':after['updatedAt']})['removed'] is True\\n+    empty=call(base,'/fixture/storage')\\n+    assert empty=={'rooms':{},'lastUpdatedAtByRoomId':after['updatedAt']}\\n+    stop(running);running=None\\n+\\n+    running=launch('phase4-empty-restore')\\n+    base=running[3]\\n+    assert call(base,'/internal/list')['rooms']==[]\\n+    call(base,'/internal/upsert',summary)\\n+    recreated=call(base,'/internal/list')['rooms'][0]\\n+    assert recreated['updatedAt']>after['updatedAt']\\n+    assert call(base,'/internal/remove',{'roomId':'runtime-room','expectedUpdatedAt':after['updatedAt']})['removed'] is False\\n+    assert call(base,'/internal/list')['rooms']==[recreated]\\n+    storage=call(base,'/fixture/storage')\\n+    assert set(storage)=={'rooms','lastUpdatedAtByRoomId'}\\n+    result.update({'status':'pass','legacy_floor':floor,'first_token':before['updatedAt'],'scalar_restored_token':after['updatedAt'],'empty_restored_token':recreated['updatedAt'],'stored_list_restored':True,'stale_remove_preserved':True,'no_tombstones':True})\\n+except Exception as ex:\\n+    result.update({'status':'fail','error':str(ex)})\\n+    raise\\n+finally:\\n+    if running is not None:\\n+        stop(running)\\n+    result['ended_at']=datetime.now(timezone.utc).isoformat()\\n+    write('restart-result.json',result)\\n+    print(json.dumps(result,ensure_ascii=True))\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"python .tmp/evidence/run.py real-do-restart-1 . python .tmp/evidence/runtime/restart.py\",\"yield_time_ms\":1000,\"max_output_tokens\":1500}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_6a06bb107b0b4465bc34414e1266e30d",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"Get-Content .tmp/evidence/review/boundary.test.mjs -Encoding UTF8\\nGet-Content .tmp/evidence/runtime/restart-result.json -Encoding UTF8 | Select-Object -First 24\",\"max_output_tokens\":4500}));\ntext(await tools.write_stdin({session_id:45879,chars:\"\",\"max_output_tokens\":1000}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_f964a37737ea458b8c8e316ad95f77cc",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: apps/worker/src/durable/lobby-directory-object.ts\\n@@\\n function buildStoredRooms(input: unknown): Map<string, LobbyRoomSummary> {\\n-  if (!isRecord(input)) {\\n+  if (input === undefined) {\\n     return new Map<string, LobbyRoomSummary>();\\n   }\\n+  if (!isRecord(input)) {\\n+    throw new Error(\\\"Invalid stored lobby rooms.\\\");\\n+  }\\n@@\\n-    if (!isRecord(rawRoom)) {\\n-      continue;\\n-    }\\n-\\n     const parsed = parseLobbyRoomSummary(rawRoom);\\n-    if (parsed === null) {\\n-      continue;\\n+    if (parsed === null || parsed.roomId !== roomId || !Number.isSafeInteger(parsed.updatedAt)) {\\n+      throw new Error(\\\"Invalid stored lobby room summary.\\\");\\n@@\\n function restoreLastIssuedUpdatedAt(\\n@@\\n-  if (isFiniteNumber(input)) {\\n+  // An empty directory could previously persist this initial sentinel on remove.\\n+  if (input === undefined || input === Number.NEGATIVE_INFINITY) {\\n+    // Valid empty/legacy storage: derive the floor from the surviving summaries.\\n+  } else if (Number.isSafeInteger(input)) {\\n+    lastIssuedUpdatedAt = input as number;\\n+  } else if (isRecord(input)) {\\n+    for (const value of Object.values(input)) {\\n+      if (!Number.isSafeInteger(value)) {\\n+        throw new Error(\\\"Invalid stored lobby update counter.\\\");\\n+      }\\n+\\n+      lastIssuedUpdatedAt = Math.max(lastIssuedUpdatedAt, value as number);\\n+    }\\n+  } else {\\n+    throw new Error(\\\"Invalid stored lobby update counter.\\\");\\n+  }\\n-    lastIssuedUpdatedAt = input;\\n-  } else if (isRecord(input)) {\\n-    for (const value of Object.values(input)) {\\n-      if (!isFiniteNumber(value)) {\\n-        continue;\\n-      }\\n-\\n-      lastIssuedUpdatedAt = Math.max(lastIssuedUpdatedAt, value);\\n-    }\\n-  }\\n@@\\n     const now = Date.now();\\n-    this.cleanupExpired(now);\\n     const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt + 1);\\n+    if (!Number.isSafeInteger(nextUpdatedAt) || nextUpdatedAt <= this.lastIssuedUpdatedAt) {\\n+      throw new Error(\\\"Lobby update counter exhausted.\\\");\\n+    }\\n+    this.cleanupExpired(now);\\n*** End Patch\"));\ntext(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: apps/worker/src/durable/lobby-directory-object.test.mjs\\n@@\\n test(\\\"storage restore failure is observable and does not overwrite the stored state\\\", async () => {\\n@@\\n   assert.deepEqual(writes, []);\\n });\\n+\\n+test(\\\"corrupt stored rooms or counters fail restoration without overwriting evidence\\\", async () => {\\n+  const fixtures = [\\n+    { rooms: null, lastUpdatedAtByRoomId: 2_500 },\\n+    { rooms: [], lastUpdatedAtByRoomId: 2_500 },\\n+    { rooms: { bad: null }, lastUpdatedAtByRoomId: 2_500 },\\n+    { rooms: { \\\"room-1\\\": { ...createSummary(\\\"room-1\\\"), ttlStartedAt: \\\"corrupt\\\" } }, lastUpdatedAtByRoomId: 2_500 },\\n+    { rooms: { mismatch: createSummary(\\\"room-1\\\") }, lastUpdatedAtByRoomId: 2_500 },\\n+    { rooms: {}, lastUpdatedAtByRoomId: \\\"corrupt\\\" },\\n+    { rooms: {}, lastUpdatedAtByRoomId: null },\\n+    { rooms: {}, lastUpdatedAtByRoomId: { deleted: \\\"corrupt\\\" } },\\n+    { rooms: {}, lastUpdatedAtByRoomId: Number.POSITIVE_INFINITY },\\n+    { rooms: {}, lastUpdatedAtByRoomId: 2 ** 53 },\\n+    { rooms: { \\\"room-1\\\": { ...createSummary(\\\"room-1\\\"), updatedAt: 2 ** 53 } } },\\n+    { rooms: {}, lastUpdatedAtByRoomId: 2_500.5 },\\n+  ];\\n+  for (const fixture of fixtures) {\\n+    const state = new TestDurableObjectState();\\n+    for (const [key, value] of Object.entries(fixture)) {\\n+      await state.storage.put(key, value);\\n+    }\\n+    const before = structuredClone(state.storage.snapshot());\\n+    const directory = new LobbyDirectoryDO(state);\\n+    await assert.rejects(upsertRoom(directory, 2_000), /Invalid stored lobby/);\\n+    await assert.rejects(listRooms(directory, 2_000), /Invalid stored lobby/);\\n+    assert.deepEqual(state.storage.snapshot(), before);\\n+  }\\n+});\\n+\\n+test(\\\"counter exhaustion cannot reuse the last exact integer or modify storage\\\", async () => {\\n+  const state = new TestDurableObjectState();\\n+  await state.storage.put(\\\"lastUpdatedAtByRoomId\\\", Number.MAX_SAFE_INTEGER - 1);\\n+  const directory = new LobbyDirectoryDO(state);\\n+  await upsertRoom(directory, 1_000);\\n+  const before = structuredClone(state.storage.snapshot());\\n+  assert.equal(before.rooms[\\\"room-1\\\"].updatedAt, Number.MAX_SAFE_INTEGER);\\n+  await assert.rejects(upsertRoom(directory, 1_000), /counter exhausted/);\\n+  assert.deepEqual(state.storage.snapshot(), before);\\n+});\\n+\\n+test(\\\"empty-directory sentinel persisted by an absent remove remains readable\\\", async () => {\\n+  const state = new TestDurableObjectState();\\n+  const first = new LobbyDirectoryDO(state);\\n+  await removeRoom(first, 1_000, { roomId: \\\"absent\\\" });\\n+  assert.equal(state.storage.snapshot().lastUpdatedAtByRoomId, Number.NEGATIVE_INFINITY);\\n+  const restored = new LobbyDirectoryDO(state);\\n+  await upsertRoom(restored, 1_000);\\n+  assert.equal((await (await listRooms(restored, 1_000)).json()).rooms[0].updatedAt, 1_000);\\n+});\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"python .tmp/evidence/run.py focused-2 . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs .tmp/comparison/c2-barrier.test.mjs\",\"max_output_tokens\":2000}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_d401627b78bb4311ab139864f29f059b",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"Get-Content apps/worker/src/utils/validation.ts -Encoding UTF8 -TotalCount 22\",\"max_output_tokens\":500}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_d18f08ed300e4a2f8f5dad230712c646",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: apps/worker/src/durable/lobby-directory-object.ts\\n@@\\n-function buildStoredRooms(input: unknown): Map<string, LobbyRoomSummary> {\\n+function isStoredRecord(value: unknown): value is Record<string, unknown> {\\n+  return isRecord(value) &&\\n+    (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);\\n+}\\n+\\n+function buildStoredRooms(input: unknown): Map<string, LobbyRoomSummary> {\\n@@\\n-  if (!isRecord(input)) {\\n+  if (!isStoredRecord(input)) {\\n@@\\n-  } else if (Number.isSafeInteger(input)) {\\n-    lastIssuedUpdatedAt = input as number;\\n-  } else if (isRecord(input)) {\\n+  } else if (isFiniteNumber(input) && Number.isSafeInteger(input)) {\\n+    lastIssuedUpdatedAt = input;\\n+  } else if (isStoredRecord(input)) {\\n     for (const value of Object.values(input)) {\\n-      if (!Number.isSafeInteger(value)) {\\n+      if (!isFiniteNumber(value) || !Number.isSafeInteger(value)) {\\n@@\\n-      lastIssuedUpdatedAt = Math.max(lastIssuedUpdatedAt, value as number);\\n+      lastIssuedUpdatedAt = Math.max(lastIssuedUpdatedAt, value);\\n*** Update File: apps/worker/src/durable/lobby-directory-object.test.mjs\\n@@\\n     { rooms: [], lastUpdatedAtByRoomId: 2_500 },\\n+    { rooms: new Map(), lastUpdatedAtByRoomId: 2_500 },\\n@@\\n     { rooms: {}, lastUpdatedAtByRoomId: null },\\n+    { rooms: {}, lastUpdatedAtByRoomId: [] },\\n+    { rooms: {}, lastUpdatedAtByRoomId: new Map() },\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"python .tmp/evidence/run.py focused-3 . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs .tmp/comparison/c2-barrier.test.mjs\\n git diff --check\",\"max_output_tokens\":1800}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_88cebc70c3cf4e9584f9d562368803a5",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "c2_independent_review"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_100aaa197c2949e297841734033c8af7",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: .tmp/evidence/runtime/restart.py\\n@@\\n import subprocess\\n+import sys\\n@@\\n-out = Path(__file__).resolve().parent\\n+out = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parent\\n+out.mkdir(parents=True, exist_ok=True)\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"New-Item -ItemType Directory -Force -Path .tmp/evidence/runtime2 | Out-Null\\nCopy-Item -LiteralPath .tmp/evidence/runtime/entry.ts -Destination .tmp/evidence/runtime2/entry.ts\\npython -c \\\"import json,sys; from pathlib import Path; sys.path.insert(0,'tools/harness-v2'); import harness; p=Path('.tmp/goal.json'); g=json.loads(p.read_text(encoding='utf-8')); g['owners'][0]['paths'].append('.tmp/evidence/runtime2'); g['artifact_ownership']={'parent':'.tmp/evidence except .tmp/evidence/review','reviewer':'.tmp/evidence/review','shared_writer':'parent (writes forbidden)'}; g['decisions']=[{'id':'D1-corrupt-storage','blocking':False,'affects':['apps/worker/src/durable/lobby-directory-object.ts'],'deadline':'before final validation','interim':'Resolved: reject corrupt storage without writes; preserve undefined helper/valid legacy map/scalar and known empty sentinel compatibility. Independent finding confirmed pre-existing but within explicit C2 prohibition.'},{'id':'D2-real-hibernation','blocking':False,'affects':[],'deadline':'final evidence','interim':'Real local workerd process restart is demonstrable. No actual DO hibernation/eviction control here; report Q05/AC8 unproven and final BLOCKED, not substitute new-instance tests.'}]; g['acceptance'].append({'id':'AC8','text':'Real DO hibernation/recovery guarantee must have direct runtime evidence; if unavailable mark unproven and do not claim full acceptance.'}); g['checkpoint'].update({'status':'BLOCKED','owner':'parent','owner_status':'active','stop_reason':'Actual DO hibernation evidence unavailable in isolated local environment; continue independent AC validation.','unfinished':['AC8'],'integration_complete':False,'fingerprint_kind':'publication diff hash (full Goal evidence fingerprint in executor.json avoids self-reference)','fingerprint':harness.publication_fingerprint(Path.cwd(),g['base_revision']),'next':'Finalize fixed checks, fresh runtime restart and independent review, then save executor/checkpoint and run complete gate.','evidence_path':'.tmp/evidence/executor.json','checkpoint_path':'.tmp/evidence/checkpoint.json','finding_disposition':[{'id':'R1-corrupt-helper','severity':'Must fix','disposition':'fixed; fresh independent verification pending'},{'id':'R2-corrupt-room','severity':'Must fix','disposition':'fixed; fresh independent verification pending'},{'id':'R3-unsafe-counter','severity':'Should fix','disposition':'fixed; fresh independent verification pending'}]}); p.write_text(json.dumps(g,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\\"\\npython .tmp/evidence/run.py selector-final . python tools/harness-v2/harness.py select --goal .tmp/goal.json\",\"max_output_tokens\":2500}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_841093a75e4d48f8b57f5afe3a3efefd",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "c2_independent_review"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_2487a1fffd3b4490ade2207b82705a95",
+          "name": "exec",
+          "input": "const results=await Promise.allSettled([\ntools.exec_command({cmd:\"python .tmp/evidence/run.py lint-final . npm run lint\",\"yield_time_ms\":1000,\"max_output_tokens\":600}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py types-final . npm run typecheck\",\"yield_time_ms\":1000,\"max_output_tokens\":600}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py stats-final . npm run test:client-stats\",\"yield_time_ms\":1000,\"max_output_tokens\":600}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py worker-final . npm run test:worker\",\"yield_time_ms\":1000,\"max_output_tokens\":600}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py design-final . npm run check:design-contracts\",\"yield_time_ms\":1000,\"max_output_tokens\":600}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py bundle-final apps/worker npx --no-install wrangler deploy --dry-run\",\"yield_time_ms\":1000,\"max_output_tokens\":600}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py barrier-final . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs\",\"yield_time_ms\":1000,\"max_output_tokens\":600}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py worker-types-final . npm --workspace @infinitas/worker run typecheck\",\"yield_time_ms\":1000,\"max_output_tokens\":600}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py real-do-restart-final . python .tmp/evidence/runtime/restart.py .tmp/evidence/runtime2\",\"yield_time_ms\":1000,\"max_output_tokens\":600})\n]);for(let i=0;i<results.length;i++)text({i,result:results[i]});\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_c436ce02a17e4629ae30098fec941a32",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: apps/worker/src/durable/lobby-directory-object.ts\\n@@\\n-    if (parsed === null || parsed.roomId !== roomId || !Number.isSafeInteger(parsed.updatedAt)) {\\n+    if (\\n+      parsed === null ||\\n+      parsed.roomId !== roomId ||\\n+      !Number.isSafeInteger(parsed.updatedAt) ||\\n+      !Number.isSafeInteger(parsed.currentPlayers) ||\\n+      parsed.currentPlayers < 0\\n+    ) {\\n*** Update File: apps/worker/src/durable/lobby-directory-object.test.mjs\\n@@\\n     { rooms: { \\\"room-1\\\": { ...createSummary(\\\"room-1\\\"), ttlStartedAt: \\\"corrupt\\\" } }, lastUpdatedAtByRoomId: 2_500 },\\n+    { rooms: { \\\"room-1\\\": { ...createSummary(\\\"room-1\\\"), currentPlayers: Number.NaN } }, lastUpdatedAtByRoomId: 2_500 },\\n+    { rooms: { \\\"room-1\\\": { ...createSummary(\\\"room-1\\\"), currentPlayers: Number.POSITIVE_INFINITY } }, lastUpdatedAtByRoomId: 2_500 },\\n+    { rooms: { \\\"room-1\\\": { ...createSummary(\\\"room-1\\\"), currentPlayers: -1 } }, lastUpdatedAtByRoomId: 2_500 },\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"python .tmp/evidence/run.py selector-final2 . python tools/harness-v2/harness.py select --goal .tmp/goal.json\",\"max_output_tokens\":1800}));\ntext(await tools.write_stdin({session_id:34593,chars:\"\",\"max_output_tokens\":600}));\ntext(await tools.write_stdin({session_id:76468,chars:\"\",\"max_output_tokens\":700}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_7f9f4eb6ecf34ce898591dc7b42386ec",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "c2_independent_review"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_8c9df317a03243e69fd980713fb6e10c",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"New-Item -ItemType Directory -Force -Path .tmp/evidence/runtime3 | Out-Null\\nCopy-Item -LiteralPath .tmp/evidence/runtime/entry.ts -Destination .tmp/evidence/runtime3/entry.ts\\nGet-Content .codex/config.toml -Encoding UTF8\\n git diff -- apps/worker/src/durable/lobby-directory-object.ts\\nGet-Content .github/workflows/validate-reusable.yml -Encoding UTF8 | Select-Object -Skip 30 -First 52\",\"max_output_tokens\":4000}));\nconst results=await Promise.allSettled([\ntools.exec_command({cmd:\"python .tmp/evidence/run.py lint-final2 . npm run lint\",\"yield_time_ms\":1000,\"max_output_tokens\":500}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py types-final2 . npm run typecheck\",\"yield_time_ms\":1000,\"max_output_tokens\":500}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py stats-final2 . npm run test:client-stats\",\"yield_time_ms\":1000,\"max_output_tokens\":500}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py worker-final2 . npm run test:worker\",\"yield_time_ms\":1000,\"max_output_tokens\":500}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py design-final2 . npm run check:design-contracts\",\"yield_time_ms\":1000,\"max_output_tokens\":500}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py bundle-final2 apps/worker npx --no-install wrangler deploy --dry-run\",\"yield_time_ms\":1000,\"max_output_tokens\":500}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py barrier-final2 . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs\",\"yield_time_ms\":1000,\"max_output_tokens\":500}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py worker-types-final2 . npm --workspace @infinitas/worker run typecheck\",\"yield_time_ms\":1000,\"max_output_tokens\":500}),\ntools.exec_command({cmd:\"python .tmp/evidence/run.py real-do-restart-final2 . python .tmp/evidence/runtime/restart.py .tmp/evidence/runtime3\",\"yield_time_ms\":1000,\"max_output_tokens\":500})\n]);for(let i=0;i<results.length;i++)text({i,result:results[i]});\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_8b0e94c65b3742f6a33d370698fe91f1",
+          "name": "exec",
+          "input": "text(await tools.write_stdin({session_id:99210,chars:\"\",\"max_output_tokens\":600}));\ntext(await tools.write_stdin({session_id:59338,chars:\"\",\"max_output_tokens\":600}));\ntext(await tools.exec_command({cmd:\"Get-Content .tmp/evidence/snapshot-before.json -Encoding UTF8\\nGet-Content apps/worker/src/durable/lobby-directory-object.ts -Encoding UTF8 | Select-Object -Skip 130 -First 78\\nGet-Content .tmp/evidence/review/final-recheck.json -Encoding UTF8\",\"max_output_tokens\":2500}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_3960bcf2597f40f08b157c1b35641634",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "c2_independent_review"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_60b1e04cbc704ca5afabab8c150b6866",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"rg --files .tmp/evidence/review\\npython .tmp/evidence/run.py diff-check-final . git diff --check\\npython .tmp/evidence/run.py environment-final . node -p 'JSON.stringify({version:process.version,execPath:process.execPath})'\\npython .tmp/evidence/run.py root-membership . node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json --listFilesOnly\",\"max_output_tokens\":1500}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_09671684dc7f4c4f947c92af726e0f9f",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Add File: .tmp/evidence/finalize.py\\n+import hashlib\\n+import json\\n+from pathlib import Path\\n+import subprocess\\n+import sys\\n+from datetime import datetime, timezone\\n+\\n+root = Path(__file__).resolve().parents[2]\\n+out = root/'.tmp/evidence'\\n+sys.path.insert(0,str(root/'tools/harness-v2'))\\n+import harness\\n+\\n+def read(p):\\n+    return json.loads((root/p).read_text(encoding='utf-8'))\\n+def write(p,value):\\n+    (root/p).write_text(json.dumps(value,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\n+def row(status, *evidence, **kwargs):\\n+    return {'status':status,'evidence':list(evidence),**kwargs}\\n+\\n+g=read('.tmp/goal.json')\\n+plan=json.loads((out/'selector-final2.log').read_text(encoding='utf-8'))\\n+fp=harness.fingerprint(root,g)\\n+assert fp == plan['fingerprint']\\n+before=read('.tmp/evidence/snapshot-before.json')\\n+after=harness.snapshot(root)\\n+write('.tmp/evidence/snapshot-after.json',after)\\n+assert all(before[k]==after[k] for k in ['head','branch','index_diff_hash','stash_hash'])\\n+paths=set(harness.changed_paths(root,g['base_revision']))\\n+expected=set(['apps/worker/src/durable/lobby-directory-object.ts','apps/worker/src/durable/lobby-directory-object.test.mjs','apps/worker/src/routes/lobby.test.mjs'])\\n+assert paths==expected\\n+refs=[]\\n+for ref in g['references']:\\n+    current='sha256:'+hashlib.sha256((root/ref['path']).read_bytes()).hexdigest()\\n+    assert current==ref['revision'],ref['path']\\n+    refs.append({**ref,'current_revision':current,'unchanged':True})\\n+write('.tmp/evidence/reference-readback.json',refs)\\n+git_state={'branches':subprocess.check_output(['git','branch','--format=%(refname:short) %(objectname)'],cwd=root).decode().splitlines(),'status':subprocess.check_output(['git','status','--porcelain=v2','--branch'],cwd=root).decode().splitlines(),'unchanged_head_branch_index_stash':True,'only_expected_product_paths':True}\\n+write('.tmp/evidence/git-readback.json',git_state)\\n+\\n+review=read('.tmp/evidence/review/report.json')\\n+assert review['fingerprint']==fp, 'Independent review must bind to latest Goal+diff'\\n+runtime=read('.tmp/evidence/runtime3/restart-result.json')\\n+assert runtime['status']=='pass'\\n+assert all(p['listener_closed'] and p['stop_exit_code']==0 for p in runtime['processes'])\\n+checks={'lint':'lint-final2','types':'types-final2','stats':'stats-final2','worker-test':'worker-final2','design':'design-final2','worker-bundle':'bundle-final2'}\\n+commands={}\\n+all_attempts=[]\\n+for path in out.glob('*.json'):\\n+    data=json.loads(path.read_text(encoding='utf-8'))\\n+    if isinstance(data,dict) and 'command' in data and 'exit_code' in data and 'log' in data:\\n+        all_attempts.append(data)\\n+all_attempts.sort(key=lambda a:a.get('started_at',''))\\n+prefixes={'lint':'lint-','types':'types-','stats':'stats-','worker-test':'worker-','design':'design-','worker-bundle':'bundle-'}\\n+for check,name in checks.items():\\n+    final=read('.tmp/evidence/'+name+'.json')\\n+    assert final['exit_code']==0 and final['fingerprint']==fp and final['after_fingerprint']==fp\\n+    commands[check]=[a for a in all_attempts if a['name'].startswith(prefixes[check]) and not a['name'].startswith('worker-types')]\\n+    assert commands[check][-1]['name']==name\\n+\\n+worker=(out/'worker-final2.log').read_text(encoding='utf-8')\\n+assert '# tests 110' in worker and '# pass 110' in worker and '# fail 0' in worker\\n+barrier=(out/'barrier-final2.log').read_text(encoding='utf-8')\\n+assert '# tests 7' in barrier and '# pass 7' in barrier\\n+membership=(out/'root-membership.log').read_text(encoding='utf-8').replace('\\\\\\\\','/')\\n+assert 'apps/worker/src/durable/lobby-directory-object.ts' in membership\\n+assert 'apps/worker/src/durable/lobby-directory-object.test.mjs' not in membership\\n+write('.tmp/evidence/test-membership.json',{'standard':plan['test_membership'],'type_surface':{'product':'root tsconfig includes worker src/**/*.ts; --listFilesOnly confirms actual producer membership; workspace tsc also passes','mjs_tests':'Existing standard .mjs tests and newly added cases execute in worker npm test; .mjs is outside root/workspace TS include and is not claimed typechecked','external_barrier':'outside standard worker enumeration; explicitly executed via node --import tsx --test .tmp/comparison/c2-barrier.test.mjs','review_tests':'outside standard enumeration; explicitly executed by independent reviewer'},'evidence':['.tmp/evidence/root-membership.log','.tmp/evidence/worker-types-final2.log','.tmp/evidence/worker-final2.log','.tmp/evidence/barrier-final2.log','.tmp/evidence/review/final-recheck.log']})\\n+\\n+acceptance={\\n+ 'AC1':row('pass','.tmp/evidence/worker-final2.log','.tmp/evidence/barrier-final2.log',detail='same-ms tokens strictly increase; stale conditional remove preserves upsert and delete/recreate'),\\n+ 'AC2':row('pass','.tmp/evidence/worker-final2.log','.tmp/evidence/runtime3/restart-result.json','.tmp/evidence/real-do-restart-final2.json',detail='legacy max2500 at clock2000; scalar cold instance, real four-phase workerd restart and SQLite read-back'),\\n+ 'AC3':row('pass','.tmp/evidence/worker-final2.log','.tmp/evidence/barrier-final2.log','.tmp/evidence/runtime3/restart-result.json',detail='200-room churn, exact TTL/TTL+1, fixed schema/filter/order, only rooms plus scalar storage'),\\n+ 'AC4':row('pass','.tmp/evidence/barrier-final2.log','.tmp/evidence/worker-final2.log',detail='ineligible/lost x upsert/recreate; reverse probe completion; independent 5xx/network fail-open'),\\n+ 'AC5':row('pass','.tmp/evidence/test-membership.json',*[f'.tmp/evidence/{n}.json' for n in checks.values()],detail='all six fixed commands passed at final fingerprint; worker110 and barrier7, workspace types; unrun environment surfaces separately unproven'),\\n+ 'AC6':row('pass','.tmp/evidence/review/report.json','.tmp/evidence/review/final-recheck.log',detail='nonimplementer independent contract+behavior review; all significant code findings fixed'),\\n+ 'AC7':row('pass','.tmp/evidence/environment.json','.tmp/evidence/reference-readback.json','.tmp/evidence/snapshot-before.json','.tmp/evidence/snapshot-after.json','.tmp/evidence/git-readback.json','.tmp/evidence/runtime3/restart-result.json',detail='only three permitted product files; HEAD/branch/index/stash unchanged; owned loopback runtime stopped; no external write'),\\n+ 'AC8':row('unproven','.tmp/evidence/runtime3/restart-result.json',reason='No actual DO hibernation/eviction or websocket hibernation event was demonstrated. Real process restart and new-instance units prove separate guarantees.')\\n+}\\n+quality={k:row('pass','.tmp/evidence/worker-final2.log','.tmp/evidence/review/report.json',scope='Only guarantees touched by C2; no claim of unrelated native/source/UI verification.') for k in plan['quality']}\\n+quality['Q05']=row('unproven','.tmp/evidence/worker-final2.log','.tmp/evidence/runtime3/restart-result.json','.tmp/evidence/review/report.json',proven=['unit reconnect old socket delayed-close','ROOM_STATE_LOST guard','real persisted directory cold-process restart','corrupt restore refusal and storage preservation'],unproven=['real DO hibernation'],reason='Mock/new instance/cold process restart cannot substitute for actual hibernation.')\\n+quality['Q06']=row('pass','.tmp/evidence/worker-final2.log','.tmp/evidence/barrier-final2.log','.tmp/evidence/runtime3/restart-result.json','.tmp/evidence/review/final-recheck.log')\\n+quality['Q08']=row('pass','.tmp/evidence/worker-final2.log','.tmp/evidence/review/final-recheck.log','.tmp/evidence/runtime3/restart-result.json',scope='Directory valid absent/legacy map/scalar/live-room floor/sentinel, corrupt unsupported shapes fail without write. Versioned client archives untouched.')\\n+quality['Q12']=row('pass','.tmp/evidence/test-membership.json','.tmp/evidence/selector-final2.log','.tmp/evidence/review/report.json',detail='All attempts retained, old fingerprints not promoted; failures and unproven surfaces explicit.')\\n+for key in ['Q13','Q15','Q16']:\\n+    quality[key]=row('pass','.tmp/evidence/snapshot-before.json','.tmp/evidence/snapshot-after.json','.tmp/evidence/git-readback.json','.tmp/evidence/reference-readback.json','.tmp/evidence/runtime3/restart-result.json','.tmp/goal.json',scope='Local C2-only operations, no external side effect performed, one product writer; reviewer own artifacts only.')\\n+quality['Q14']=row('pass','.tmp/evidence/review/report.json','.tmp/evidence/review/final-recheck.log')\\n+manual={\\n+ 'scope-and-meaning':row('pass','.tmp/evidence/git-readback.json','.tmp/evidence/review/report.json'),\\n+ 'ci-surface-parity':row('pass','.tmp/evidence/test-membership.json','.tmp/evidence/selector-final2.log',detail='Fixed commands cover quick product CI and Worker bundle; no dependency install or old exact-role check: dependencies/CI/harness unchanged. Native/full-client build are not C2 product changes and were not run.'),\\n+ 'secret-and-untrusted-input':row('pass','.tmp/goal.json','.tmp/evidence/runtime3/restart-result.json',detail='No secret values collected, no MCP/apps/plugins/external writes. Runtime uses isolated config/no production bindings and explicit empty env file.'),\\n+ 'contract-and-behavior-cases':row('pass','.tmp/evidence/worker-final2.log','.tmp/evidence/barrier-final2.log','.tmp/evidence/review/report.json'),\\n+ 'clock-barrier-restore-replay-growth-and-runtime':row('unproven','.tmp/evidence/worker-final2.log','.tmp/evidence/barrier-final2.log','.tmp/evidence/runtime3/restart-result.json',reason='Clock/barrier/replay/growth/real restart proven; actual hibernation unproven.'),\\n+ 'old-new-writer-reader-corrupt-future-matrix':row('pass','.tmp/evidence/worker-final2.log','.tmp/evidence/review/final-recheck.log',scope='Internal directory formats only: old map/deleted-room max -> scalar writer -> current reader; absent helper/live room max, invalid shapes, unsafe counters, sentinel; unsupported shapes rejected without write. No new format/version introduced.'),\\n+ 'compatibility-and-rollout-decision':row('pass','.tmp/evidence/review/report.json',detail='No public DTO/constants/TTL/list contract or scalar writer format change. Read supported legacy map and scalar; no rollout/min-client change.'),\\n+ 'real-client-worker-source-e2e':row('unproven','.tmp/evidence/selector-final2.log',reason='Selector adds broad FSM/WS tag for every worker file. C2 directly changes directory only; no real native/source/client E2E was run or claimed, and this gate remains unproven.'),\\n+ 'changed-test-runtime-and-type-membership':row('pass','.tmp/evidence/test-membership.json','.tmp/evidence/worker-final2.log','.tmp/evidence/barrier-final2.log')\\n+}\\n+findings=review.get('findings',[])\\n+assert all(f.get('disposition')=='fixed' for f in findings if f.get('severity') in ['Blocker','Must fix'])\\n+for finding in findings:\\n+    if not finding.get('remaining_risk'):\\n+        finding['remaining_risk']='No known remaining risk in the repaired boundary; actual hibernation remains unproven.'\\n+review_row={'status':review['status'],'reviewer':'/root/c2_independent_review','independent':True,'fingerprint':fp,'coverage':['contract','behavior'],'evidence':['.tmp/evidence/review/report.json','.tmp/evidence/review/final-recheck.log']}\\n+checkpoint={'owner':'parent','owner_status':'stopped','status':'BLOCKED','stop_reason':'Actual hibernation and broad real-client-worker-source-e2e manual guarantee unproven; no unresolved significant product defect.','fingerprint':fp,'publication_fingerprint':plan['publication_fingerprint'],'decisions':g['decisions'],'verification_logs':[a['log'] for a in all_attempts],'unfinished':['AC8','Q05','manual:clock-barrier-restore-replay-growth-and-runtime','manual:real-client-worker-source-e2e'],'integration_complete':False,'implementation_integrated':True,'next':'Resume only in an authorized environment that can demonstrate actual DO hibernation and any required native/source E2E. Keep patch, isolated persistence and failed-attempt evidence; no cleanup performed.','goal_checkpoint_note':'Goal contains checkpoint at contract freeze and points here; this external final checkpoint supplies the current fingerprint without self-reference.'}\\n+write('.tmp/evidence/checkpoint.json',checkpoint)\\n+evidence={\\n+ 'run_id':'C2-v2-1','case_id':'C2','verdict':'BLOCKED','status':'BLOCKED','fingerprint':fp,'publication_fingerprint':plan['publication_fingerprint'],\\n+ 'base_revision':g['base_revision'],'harness_commit':read('.harness-v2.json')['harness_revision'],'product_base':read('.harness-v2.json')['product_base'],'input_hash':hashlib.sha256((root/'.tmp/comparison/input.json').read_bytes()).hexdigest(),\\n+ 'model':{'configured_parent':'gpt-6.1-sol','configured_effort':'high','source':'.codex/config.toml','provider_actual_parent_model':None,'service_tier':None,'children':g['spawn_ids']},\\n+ 'timestamps':{'environment_first_readback':read('.tmp/evidence/environment.json')['recorded_at'],'goal_created':g['measurement']['started_at'],'evidence_finalized':datetime.now(timezone.utc).isoformat()},\\n+ 'environment':read('.tmp/evidence/environment.json'), 'acceptance':acceptance,'AC_results':acceptance,'quality':quality,'Q_results':quality,'commands':commands,'all_command_attempts':all_attempts,'manual':manual,'review':review_row,'findings':findings,'checkpoint':checkpoint,\\n+ 'spawn_ids':g['spawn_ids'],'retries':{'seed_directory':'3 failed expected regression assertions before fix','seed_barrier':'5 failed expected regression assertions before fix','focused_2':'1 fail: array accepted by shared isRecord; fixed via internal plain-record validation','review_boundary':'corrupt helper/room and unsafe integer negative cases initially failed; fixed and independently retested','review_nan':'NaN stored currentPlayers initially accepted; fixed and independently retested','validation_repeats':'Every final required check rerun after product change; older fingerprints retained, not reused.'},\\n+ 'runtime_evidence':{'latest':'.tmp/evidence/runtime3/restart-result.json','attempts':['.tmp/evidence/runtime/restart-result.json','.tmp/evidence/runtime2/restart-result.json','.tmp/evidence/runtime3/restart-result.json'],'process_stop_readback':all(p['listener_closed'] for p in runtime['processes']),'actual_hibernation':'unproven'},\\n+ 'unexecuted_surfaces':{'native':{'status':'unproven','reason':'C2 does not modify native app; no native run claimed'},'source':{'status':'unproven','reason':'No actual watcher/parser E2E executed'},'browser':{'status':'unproven','reason':'C2 has no UI change; common C1 browser helper not run and no visual PASS claimed'},'hibernation':{'status':'unproven','reason':'Real process restart is distinct from runtime hibernation'}},\\n+ 'remaining_risk':['Actual DO hibernation behavior is not demonstrated.','No actual native/source/browser run was performed.','Corrupt persisted directory state now fails visibly and remains stored; operational repair policy is outside C2.','Process-stop exit code 1 is intentional owned runtime termination; runtime validation command exit is 0.'],\\n+ 'usage':{'input_tokens':None,'cached_input_tokens':None,'output_tokens':None,'reasoning_tokens':None,'parent':None,'children':None,'coverage':'unmeasured; no provider usage telemetry exposed; no estimates from text/agent counts'},\\n+ 'raw_log_links':{'parent_commands':'.tmp/evidence/*.log with matching *.json command/exit/fingerprint/timestamps','child_commands':'.tmp/evidence/review/report.json and review/*.log','conversation_provider_log':None},\\n+ 'final_snapshot':'.tmp/evidence/snapshot-after.json','purpose_external_operations':[]\\n+}\\n+write('.tmp/evidence/executor.json',evidence)\\n+print(json.dumps({'status':'BLOCKED','fingerprint':fp,'AC':{k:v['status'] for k,v in acceptance.items()},'Q':{k:v['status'] for k,v in quality.items()},'artifact':'.tmp/evidence/executor.json'},ensure_ascii=True))\\n*** End Patch\"));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_fafea5e6e93249319e263a2a42dd2b43",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"Get-Content .tmp/evidence/review/report.json -Encoding UTF8\\npython .tmp/evidence/finalize.py\",\"max_output_tokens\":8000}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_66b680f2fc90445ebc0c6552aaa2025a",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: .tmp/evidence/finalize.py\\n@@\\n findings=review.get('findings',[])\\n-assert all(f.get('disposition')=='fixed' for f in findings if f.get('severity') in ['Blocker','Must fix'])\\n+assert all(f.get('disposition') in ['fixed','FIXED_AND_INDEPENDENTLY_VERIFIED'] for f in findings if f.get('severity') in ['Blocker','Must fix'])\\n for finding in findings:\\n+    finding['review_disposition']=finding['disposition']\\n+    if finding['disposition']=='FIXED_AND_INDEPENDENTLY_VERIFIED':\\n+        finding['disposition']='fixed'\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"python .tmp/evidence/run.py artifact-finalize . python .tmp/evidence/finalize.py\\npython .tmp/evidence/run.py completion . python tools/harness-v2/harness.py complete --goal .tmp/goal.json --evidence .tmp/evidence/executor.json\",\"max_output_tokens\":2300}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_69b862d77ee74f70aaaf40d58363b91e",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"python -c \\\"import json; from pathlib import Path; p=Path('.tmp/evidence/executor.json'); e=json.loads(p.read_text(encoding='utf-8')); e['completion_gate']={'command':'python tools/harness-v2/harness.py complete --goal .tmp/goal.json --evidence .tmp/evidence/executor.json','metadata':'.tmp/evidence/completion.json','exit_code':2,'result':json.loads(Path('.tmp/evidence/completion.log').read_text(encoding='utf-8'))}; e['all_command_attempts'].extend(json.loads(Path('.tmp/evidence/'+n+'.json').read_text(encoding='utf-8')) for n in ['artifact-finalize','completion']); e['retries']['artifact_generation']='First finalize invocation failed because reviewer disposition enum differed from harness fixed enum; normalized in aggregate while preserving original independent report; next artifact-finalize exited 0. Product evidence was unchanged.'; p.write_text(json.dumps(e,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8'); print(json.dumps({'status':e['status'],'fingerprint':e['fingerprint'],'completion_gate':e['completion_gate']['result'],'review':e['review']['status'],'findings':[{k:f[k] for k in ['id','severity','disposition']} for f in e['findings']],'unproven_ac':[k for k,v in e['acceptance'].items() if v['status']=='unproven'],'all_attempts':len(e['all_command_attempts'])},ensure_ascii=True))\\\"\\n git status --porcelain=v2 --branch\\n git diff --stat\\n git diff --check\",\"max_output_tokens\":1800}));\n"
+        }
+      ]
+    },
+    {
+      "thread_id": "01a17aac-0fdb-7ed2-9dc2-b302ea9e8aea",
+      "metadata": {
+        "id": "01a17aac-0fdb-7ed2-9dc2-b302ea9e8aea",
+        "parent_thread_id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+        "agent_role": "independent-reviewer",
+        "agent_path": "/root/c2_independent_review",
+        "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C2-v2-1",
+        "cli_version": "0.164.0-alpha.11.1",
+        "model_provider": "openai",
+        "source": {
+          "subagent": {
+            "thread_spawn": {
+              "parent_thread_id": "01a17aa9-8440-78c1-982c-222c19df7b39",
+              "depth": 1,
+              "agent_path": "/root/c2_independent_review",
+              "agent_nickname": "Sartre",
+              "agent_role": "independent-reviewer"
+            }
+          }
+        }
+      },
+      "turn_settings": [
+        {
+          "model": "gpt-6.1-sol",
+          "effort": "high",
+          "approval_policy": "never",
+          "sandbox_policy": {
+            "type": "danger-full-access"
+          }
+        }
+      ],
+      "terminal": {
+        "type": "task_complete",
+        "at": "2026-10-27T00:11:46.462Z",
+        "error": false
+      },
+      "trace_sha256": "dfaf90744b17d5914fad28e80eb459c333f94ec28d7c050241f68aed6984bc25",
+      "calls": [
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_48b623d6e5844475a68ac284a74a1712",
+          "name": "exec",
+          "input": "const r = await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\nGet-Content -Raw -Encoding UTF8 AGENTS.md\\nGet-Content -Raw -Encoding UTF8 apps/worker/AGENTS.md\\nGet-Content -Raw -Encoding UTF8 .tmp/comparison/input.json\\nGet-Content -Raw -Encoding UTF8 .tmp/goal.json\\nGet-Content -Raw -Encoding UTF8 .agents/skills/verify-change/SKILL.md\",\"max_output_tokens\":17000});text(r);\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_29ef84c5ee3b42319845d5e4a14ad16c",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\nNew-Item -ItemType Directory -Force -Path .tmp/evidence/review | Out-Null\\n$reviewLog = '.tmp/evidence/review/initial-inspection.log'\\n@('Command 1: UTF-8 Get-Content AGENTS.md, apps/worker/AGENTS.md, .tmp/comparison/input.json, .tmp/goal.json, .agents/skills/verify-change/SKILL.md','Exit 0; full raw tool output preserved in parent/child conversation log.') | Set-Content -Encoding utf8 $reviewLog\\n& { Get-Content -Raw -Encoding UTF8 .tmp/comparison/runtime.json; node --version; npm --version; python tools/harness-v2/harness.py select --goal .tmp/goal.json; Get-Content -Raw -Encoding UTF8 docs/harness-v2/requirements.md; Get-Content -Raw -Encoding UTF8 apps/worker/src/durable/lobby-directory-object.ts; Get-Content -Raw -Encoding UTF8 apps/worker/src/routes/lobby.ts } *>&1 | Tee-Object -FilePath .tmp/evidence/review/inspection.log\\n'Command 2: runtime read-back, selector, requirements, DO and lobby route reads. Exit=' + $LASTEXITCODE | Add-Content -Encoding utf8 $reviewLog\",\"max_output_tokens\":19000})); \n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_bd4f4bbc8cf94d888108710059065fb3",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { Get-Content -Raw -Encoding UTF8 apps/worker/src/services/lobby-directory.ts; Get-Content -Raw -Encoding UTF8 apps/worker/src/durable/lobby-directory-object.test.mjs; Get-Content -Raw -Encoding UTF8 apps/worker/src/routes/lobby.test.mjs; Get-Content -Raw -Encoding UTF8 .tmp/comparison/c2-barrier.test.mjs; git diff --stat; git diff -- apps/worker/src/durable/lobby-directory-object.ts; rg -n 'lobby|Directory|TTL|ROOM_STATE_LOST|schema_version|corrupt|破損|復元' docs/design/01_fsm.md docs/design/03_data_model.md docs/design/07_constants.md docs/design/10_regression_guard_addendum.md; Get-Content -Raw -Encoding UTF8 package.json; Get-Content -Raw -Encoding UTF8 apps/worker/package.json; Get-Content -Raw -Encoding UTF8 tsconfig.json; Get-Content -Raw -Encoding UTF8 apps/worker/tsconfig.json; Get-Content -Raw -Encoding UTF8 .github/workflows/ci.yml } *>&1 | Tee-Object -FilePath .tmp/evidence/review/contract-code.log\\n'Command 3: service/test/contract/build config reads and diff. Shell exit=' + $LASTEXITCODE | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":24500})); \n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_d511117326cc44a8b121f84a09208905",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "/root"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_691efc8449164baea98cfd1cdd4d3a91",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { Get-Content -Encoding UTF8 docs/design/03_data_model.md | Select-Object -Skip 135 -First 52; Get-Content -Encoding UTF8 docs/design/01_fsm.md | Select-Object -Skip 80 -First 24; Get-Content -Encoding UTF8 docs/design/07_constants.md | Select-Object -Skip 153 -First 10; Get-Content -Encoding UTF8 docs/design/10_regression_guard_addendum.md | Select-Object -Skip 25 -First 12; Get-Content -Raw -Encoding UTF8 .github/workflows/validate-reusable.yml; rg -n 'LobbyRoomSummary|LobbyListResponse|upsertLobbyDirectoryRoom|removeLobbyDirectoryRoom|lobby-eligibility|stale|reconnect|replay|ROOM_STATE_LOST' packages/shared/src apps/worker/src/durable/room-object.ts apps/worker/src/durable/room-object.test.mjs apps/client/src/services apps/client/src/features/lobby; git status --short; rg --files .tmp/evidence } *>&1 | Tee-Object -FilePath .tmp/evidence/review/contract-details.log\\n'Command 4: normative excerpts, CI, producer/consumer lookup, status/evidence list. Shell exit=' + $LASTEXITCODE | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":10000})); \n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_1b64ff4b5382442a8481a334eb531aaa",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Add File: C:/Users/tts13/Documents/Codex/experiments/issue198-20261026-c/trials/C2-v2-1/.tmp/evidence/review/boundary.test.mjs\\n+import test from 'node:test';\\n+import assert from 'node:assert/strict';\\n+import { LobbyDirectoryDO } from '../../../apps/worker/src/durable/lobby-directory-object.ts';\\n+import { READY_CHECK_TTL_MS } from '@infinitas/shared';\\n+\\n+const summary = id => ({roomId:id,roomName:'Review',ownerUserId:'fixture',ownerDisplayName:'Fixture',mode:'ARENA',playStyle:'SP',levelFilter:'ANY',winMetric:'SCORE',hasJoinCode:false,isPublic:true,currentPlayers:1,maxPlayers:2,isFull:false,status:'LOBBY',ttlStartedAt:1000,createdAt:1000,updatedAt:1000});\\n+const request = (path, body) => new Request('https://review.invalid/internal/'+path,body===undefined?{}:{method:'POST',body:JSON.stringify(body)});\\n+function state(initial={}) {\\n+  const records=structuredClone(initial),writes=[];\\n+  return {records,writes,storage:{async get(key){return structuredClone(records[key]);},async put(key,value){writes.push(key);records[key]=structuredClone(value);}},async blockConcurrencyWhile(callback){return callback();}};\\n+}\\n+async function clock(now, fn) {const original=Date.now;Date.now=()=>now;try{return await fn();}finally{Date.now=original;}}\\n+async function listed(directory){return (await (await directory.fetch(request('list'))).json()).rooms;}\\n+\\n+test('independent: legacy deleted-room maximum persists after expiry and clock rollback',async()=>{\\n+  const s=state({rooms:{},lastUpdatedAtByRoomId:{deleted:2500}}),directory=new LobbyDirectoryDO(s);\\n+  await clock(2000,async()=>{await directory.fetch(request('upsert',summary('r')));assert.equal((await listed(directory))[0].updatedAt,2501);});\\n+  await clock(1000+READY_CHECK_TTL_MS+1,async()=>assert.deepEqual(await listed(directory),[]));\\n+  assert.deepEqual(s.records.rooms,{});\\n+  const restored=new LobbyDirectoryDO(s);\\n+  await clock(1000,async()=>{await restored.fetch(request('upsert',summary('r')));assert.equal((await listed(restored))[0].updatedAt,2502);assert.equal((await (await restored.fetch(request('remove',{roomId:'r',expectedUpdatedAt:2501}))).json()).removed,false);});\\n+  assert.deepEqual(Object.keys(s.records).sort(),['lastUpdatedAtByRoomId','rooms']);\\n+});\\n+\\n+test('independent: storage read rejection preserves existing bytes and propagates',async()=>{\\n+  const s=state({rooms:{r:summary('r')},lastUpdatedAtByRoomId:2500});\\n+  s.storage.get=async()=>{throw new Error('review read failure');};\\n+  const directory=new LobbyDirectoryDO(s);\\n+  await assert.rejects(directory.fetch(request('list')),/review read failure/);\\n+  assert.deepEqual(s.writes,[]);\\n+  assert.equal(s.records.lastUpdatedAtByRoomId,2500);\\n+});\\n+\\n+test('independent: corrupt scalar helper must not silently reset then overwrite storage',async()=>{\\n+  const s=state({rooms:{},lastUpdatedAtByRoomId:'corrupt-scalar-2500'}),directory=new LobbyDirectoryDO(s);\\n+  await clock(2000,async()=>{\\n+    const result=await directory.fetch(request('upsert',summary('r'))).then(async response=>({status:response.status,body:await response.json()})).catch(error=>({error:String(error)}));\\n+    console.log(JSON.stringify({case:'corrupt-helper',result,records:s.records,writes:s.writes}));\\n+    assert.ok(result.error||result.status>=400,'Corrupt helper was accepted as a clean empty counter');\\n+    assert.deepEqual(s.writes,[]);\\n+  });\\n+});\\n+\\n+test('independent: corrupt room payload must not silently disappear then overwrite storage',async()=>{\\n+  const s=state({rooms:{r:{...summary('r'),ttlStartedAt:'corrupt'}},lastUpdatedAtByRoomId:2500}),directory=new LobbyDirectoryDO(s);\\n+  await clock(2000,async()=>{\\n+    const result=await directory.fetch(request('upsert',summary('new'))).then(async response=>({status:response.status,body:await response.json()})).catch(error=>({error:String(error)}));\\n+    console.log(JSON.stringify({case:'corrupt-room',result,records:s.records,writes:s.writes}));\\n+    assert.ok(result.error||result.status>=400,'Corrupt room was silently removed during restore');\\n+    assert.deepEqual(s.writes,[]);\\n+  });\\n+});\\n+\\n+test('independent: finite scalar outside exact-integer range cannot reuse token',async()=>{\\n+  const [REDACTED];\\n+  const s=state({rooms:{r:{...summary('r'),updatedAt:token}},lastUpdatedAtByRoomId:token}),directory=new LobbyDirectoryDO(s);\\n+  await clock(2000,async()=>{\\n+    await directory.fetch(request('upsert',summary('r')));\\n+    const fresh=(await listed(directory))[0];\\n+    const removed=await (await directory.fetch(request('remove',{roomId:'r',expectedUpdatedAt:token}))).json();\\n+    console.log(JSON.stringify({case:'unsafe-integer',old:token,new:fresh.updatedAt,removed}));\\n+    assert.ok(fresh.updatedAt>token,'Floating point counter reused an old token');\\n+    assert.equal(removed.removed,false);\\n+  });\\n+});\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { python tools/harness-v2/harness.py select --goal .tmp/goal.json; Get-Content -Raw -Encoding UTF8 .tmp/evidence/selector.log; npx --no-install tsx --test .tmp/evidence/review/boundary.test.mjs; $reviewTestExit = $LASTEXITCODE; 'BOUNDARY_TEST_EXIT=' + $reviewTestExit } *>&1 | Tee-Object -FilePath .tmp/evidence/review/boundary.log\\n'Command 5: selector read-back and npx --no-install tsx --test .tmp/evidence/review/boundary.test.mjs; inspect BOUNDARY_TEST_EXIT in boundary.log.' | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":7000}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_04fd3ee8362749c39637ea8e7315f2a3",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "/root"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_41480c3d5cc94cbeb6b96c121ba5a1cf",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: C:/Users/tts13/Documents/Codex/experiments/issue198-20261026-c/trials/C2-v2-1/.tmp/evidence/review/boundary.test.mjs\\n@@\\n-import { LobbyDirectoryDO } from '../../../apps/worker/src/durable/lobby-directory-object.ts';\\n+const { LobbyDirectoryDO } = await import(process.env.REVIEW_TEST_BASELINE === 'seed'\\n+  ? './seed-baseline.ts'\\n+  : '../../../apps/worker/src/durable/lobby-directory-object.ts');\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n$reviewSeedSource = Get-Content -Raw -Encoding UTF8 .tmp/evidence/seed-source.ts\\n$reviewSeedSource = $reviewSeedSource.Replace('\\\"../utils/validation\\\"', '\\\"../../../apps/worker/src/utils/validation\\\"')\\n[IO.File]::WriteAllText((Join-Path (Get-Location) '.tmp/evidence/review/seed-baseline.ts'), $reviewSeedSource, [Text.UTF8Encoding]::new($false))\\n$env:REVIEW_TEST_BASELINE='seed'\\n& { npx --no-install tsx --test .tmp/evidence/review/boundary.test.mjs; 'SEED_BOUNDARY_TEST_EXIT=' + $LASTEXITCODE } *>&1 | Tee-Object -FilePath .tmp/evidence/review/seed-boundary.log\\nRemove-Item Env:REVIEW_TEST_BASELINE\\n'Command 6: copied saved seed into review scope, rewrote sole validation import to unchanged product module, REVIEW_TEST_BASELINE=seed npx --no-install tsx --test boundary.test.mjs; inspect SEED_BOUNDARY_TEST_EXIT.' | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":5500}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_daeefdf4f67b46c288c97eb0b6fdb1a7",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "/root"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_efad59d94a3542d3a782433a4c7f72be",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { npx --no-install tsx --test .tmp/comparison/c2-barrier.test.mjs; 'FIXED_BARRIER_EXIT=' + $LASTEXITCODE; Get-Content -Encoding UTF8 apps/worker/src/durable/room-object.ts | Select-Object -Skip 3487 -First 82; Get-Content -Raw -Encoding UTF8 packages/shared/src/models/lobby-room-summary.ts; Get-Content -Encoding UTF8 apps/client/src/services/worker-api-client.ts | Select-Object -First 115; rg -n 'idempot|duplicate|restore|corrupt|generation|stale close|reconnect' apps/worker/src/durable/contract-guards.test.mjs apps/worker/src/durable/room-object.test.mjs; Get-FileHash -Algorithm SHA256 apps/worker/src/durable/lobby-directory-object.ts,apps/worker/src/durable/lobby-directory-object.test.mjs,apps/worker/src/routes/lobby.test.mjs | Format-List } *>&1 | Tee-Object -FilePath .tmp/evidence/review/barrier-consumers.log\\n'Command 7: independently executed fixed c2-barrier.test.mjs, producer/public DTO/client and guard assertions, product hashes. See FIXED_BARRIER_EXIT.' | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":7500}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_564b8d990ee74f439b8802c6878396cd",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { Get-Content -Encoding UTF8 apps/worker/src/durable/room-object.test.mjs | Select-Object -Skip 170 -First 33; Get-Content -Encoding UTF8 apps/worker/src/durable/room-object.test.mjs | Select-Object -Skip 748 -First 61; Get-Content -Encoding UTF8 apps/worker/src/durable/contract-guards.test.mjs | Select-Object -First 200; Get-Content -Encoding UTF8 .tmp/evidence/seed.json; Get-Content -Encoding UTF8 .tmp/evidence/focused-1.json; rg -n 'fingerprint|def fingerprint|publication_fingerprint|def .*fingerprint' tools/harness-v2/harness.py; rg --files .tmp/evidence } *>&1 | Tee-Object -FilePath .tmp/evidence/review/guards-evidence.log\\n'Command 8: inspect exact reconnect/idempotency assertions and current evidence; shell exit=' + $LASTEXITCODE | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":6500}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_65ddcf6c37c24d52a95c353246b3bf71",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime/entry.ts; Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime/restart.py; Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime/restart-result.json; Get-Content -Raw -Encoding UTF8 .tmp/evidence/real-do-restart-1.json; Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime/phase1-seed.log; Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime/phase2-legacy-restore.log; Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime/phase3-scalar-restore.log; Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime/phase4-empty-restore.log; Get-Content -Raw -Encoding UTF8 .tmp/evidence/worker-1.json; Get-Content -Raw -Encoding UTF8 .tmp/evidence/lint-1.json; Get-Content -Raw -Encoding UTF8 .tmp/evidence/types-1.json; Get-Content -Raw -Encoding UTF8 .tmp/evidence/bundle-1.json } *>&1 | Tee-Object -FilePath .tmp/evidence/review/runtime-readback.log\\n'Command 9: real runtime driver, actual DO fixture import, process-restart logs and standard-check metadata reads. Shell exit=' + $LASTEXITCODE | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":11000}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_96ada393e24b45498ba46ee9ec0eb058",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "/root"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_779c2cc839bd4fd4b456074f82ca9f24",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: C:/Users/tts13/Documents/Codex/experiments/issue198-20261026-c/trials/C2-v2-1/.tmp/evidence/review/boundary.test.mjs\\n@@\\n test('independent: finite scalar outside exact-integer range cannot reuse token',async()=>{\\n@@\\n-    await directory.fetch(request('upsert',summary('r')));\\n+    const response=await directory.fetch(request('upsert',summary('r'))).catch(error=>({error:String(error)}));\\n+    if(response.error||response.status>=400){assert.deepEqual(s.writes,[]);return;}\\n@@\\n   });\\n });\\n+\\n+for(const [kind,initial] of [\\n+  ['mixed legacy member',{rooms:{},lastUpdatedAtByRoomId:{deleted:2500,broken:'invalid'}}],\\n+  ['null helper',{rooms:{},lastUpdatedAtByRoomId:null}],\\n+  ['non-record rooms',{rooms:'corrupt',lastUpdatedAtByRoomId:2500}],\\n+  ['null rooms',{rooms:null,lastUpdatedAtByRoomId:2500}],\\n+])test(`independent: ${kind} rejects writes and retains storage`,async()=>{\\n+  const s=state(initial),directory=new LobbyDirectoryDO(s);\\n+  await clock(2000,async()=>{\\n+    const response=await directory.fetch(request('upsert',summary('new'))).catch(error=>({error:String(error)}));\\n+    assert.ok(response.error||response.status>=400,`${kind} was silently normalized`);\\n+    assert.deepEqual(s.writes,[]);\\n+    assert.deepEqual(s.records,initial);\\n+  });\\n+});\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { Get-Content -Encoding UTF8 apps/worker/src/durable/lobby-directory-object.ts | Select-Object -Skip 120 -First 100; rg -n '# tests|# pass|# fail|reconnect replaces|ROOM_STATE_LOST|QUICK_CHAT_POST duplicate' .tmp/evidence/worker-1.log; Get-Content -Raw -Encoding UTF8 .tmp/evidence/stats-1.json; Get-Content -Raw -Encoding UTF8 .tmp/evidence/design-1.json } *>&1 | Tee-Object -FilePath .tmp/evidence/review/check-results.log\\n'Command 10: source edit status and raw standard guard outcome reads. Shell exit=' + $LASTEXITCODE | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":2500}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_bb2ca25393df4ad3a7159236970d1951",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "/root"
+          }
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_c564805c9b4a422e84271c7627ffed39",
+          "name": "wait_agent",
+          "arguments_without_messages": {
+            "timeout_ms": 60000
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_c576dca3323647509129b427a16e4abf",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { git diff -- apps/worker/src/durable/lobby-directory-object.ts; Get-Content -Encoding UTF8 apps/worker/src/durable/lobby-directory-object.test.mjs | Select-Object -Skip 300; python tools/harness-v2/harness.py select --goal .tmp/goal.json; npx --no-install tsx --test .tmp/evidence/review/boundary.test.mjs .tmp/comparison/c2-barrier.test.mjs; 'REVIEW_RECHECK_EXIT=' + $LASTEXITCODE; Get-FileHash -Algorithm SHA256 apps/worker/src/durable/lobby-directory-object.ts,apps/worker/src/durable/lobby-directory-object.test.mjs,apps/worker/src/routes/lobby.test.mjs | Format-List } *>&1 | Tee-Object -FilePath .tmp/evidence/review/recheck-1.log\\n'Command 11: post-finding product diff/test read; selector; independent boundary+fixed barrier tests; product hashes. See REVIEW_RECHECK_EXIT.' | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":8000}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_0c0a56f038854581bf6111dbaa7277ab",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Update File: C:/Users/tts13/Documents/Codex/experiments/issue198-20261026-c/trials/C2-v2-1/.tmp/evidence/review/boundary.test.mjs\\n@@\\n   ['null rooms',{rooms:null,lastUpdatedAtByRoomId:2500}],\\n+  ['nonfinite stored player count',{rooms:{r:{...summary('r'),currentPlayers:Number.NaN}},lastUpdatedAtByRoomId:2500}],\\n ])test(`independent: ${kind} rejects writes and retains storage`,async()=>{\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { npx --no-install tsx --test .tmp/evidence/review/boundary.test.mjs; 'REVIEW_RECHECK_EXIT=' + $LASTEXITCODE } *>&1 | Tee-Object -FilePath .tmp/evidence/review/recheck-2.log\\n'Command 12: independent corrupt nonfinite count expanded boundary run; see REVIEW_RECHECK_EXIT.' | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":3800}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_76374873dc1f4f459679637937e0ccb5",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "/root"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_72dac2cae9f14f61b1dcaa5b3c3252ed",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { Get-Content -Raw -Encoding UTF8 .tmp/evidence/selector-final.log; Get-Content -Encoding UTF8 .tmp/goal.json | Select-Object -Last 85; rg --files .tmp/evidence/runtime2; Get-Content -Encoding UTF8 .tmp/evidence/review/boundary.test.mjs | Select-Object -Last 22; python tools/harness-v2/harness.py select --goal .tmp/goal.json } *>&1 | Tee-Object -FilePath .tmp/evidence/review/packet-final-read.log\\n'Command 13: final packet/Goal/runtime2 evidence presence and current selector reads. Shell exit=' + $LASTEXITCODE | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":3000}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_3e31f1456eb84a51a532a2071d6ebe37",
+          "name": "wait_agent",
+          "arguments_without_messages": {
+            "timeout_ms": 60000
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_7bd4e46bf14449bf9d13699c860e1234",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { node --version; npm --version; python tools/harness-v2/harness.py select --goal .tmp/goal.json; git diff -- apps/worker/src/durable/lobby-directory-object.ts; npx --no-install tsx --test .tmp/evidence/review/boundary.test.mjs .tmp/comparison/c2-barrier.test.mjs apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs; 'FINAL_REVIEW_TEST_EXIT=' + $LASTEXITCODE; python tools/harness-v2/harness.py select --goal .tmp/goal.json; Get-FileHash -Algorithm SHA256 apps/worker/src/durable/lobby-directory-object.ts,apps/worker/src/durable/lobby-directory-object.test.mjs,apps/worker/src/routes/lobby.test.mjs | Format-List } *>&1 | Tee-Object -FilePath .tmp/evidence/review/final-recheck.log\\n'Command 14: Node/npm read-back; before/after selector; frozen diff; independent+fixed+direct product tests; source hashes. See FINAL_REVIEW_TEST_EXIT.' | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":8000}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_254cd3b386be413b9dae0852f3fed0e8",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "/root"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_b0fec1b13c804401b956b0350e5c35ec",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { rg --files .tmp/evidence | rg '(runtime3|-[234]\\\\.(json|log)$|selector-final2|snapshot-after)'; Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime3/restart-result.json; Get-Content -Raw -Encoding UTF8 .tmp/evidence/worker-3.json; git diff --numstat; git diff --check } *>&1 | Tee-Object -FilePath .tmp/evidence/review/evidence-final-read.log\\n'Command 15: current final runtime3/standard evidence and diff read. Shell exit=' + $LASTEXITCODE | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":5500}));\n"
+        },
+        {
+          "kind": "function_call",
+          "call_id": "call_c479b16ea04043a78b819f35d9b68e5f",
+          "name": "send_message",
+          "arguments_without_messages": {
+            "target": "/root"
+          }
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_189ccfb522f94c5785e55cf50c99bca3",
+          "name": "exec",
+          "input": "text(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { Get-Content -Raw -Encoding UTF8 .tmp/evidence/real-do-restart-final2.json; Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime3/entry.ts; Get-Content -Raw -Encoding UTF8 .tmp/evidence/runtime/restart.py; rg -n 'Ready on|GET|POST' .tmp/evidence/runtime3/phase*.log; rg -n '# tests|# pass|# fail|reconnect replaces|ROOM_STATE_LOST|QUICK_CHAT_POST duplicate' .tmp/evidence/worker-final2.log; Get-Content -Raw -Encoding UTF8 .tmp/evidence/types-final2.log; Get-Content -Raw -Encoding UTF8 .tmp/evidence/worker-types-final2.log; Get-Content -Raw -Encoding UTF8 .tmp/evidence/bundle-final2.log } *>&1 | Tee-Object -FilePath .tmp/evidence/review/final-runtime-checks.log\\n'Command 16: latest final2 metadata, actual runtime3 entry/driver, raw process HTTP logs, standard regression counts, root/workspace types and dry-run output. Shell exit=' + $LASTEXITCODE | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":6500}));\n"
+        },
+        {
+          "kind": "custom_tool_call",
+          "call_id": "call_20defa5eab6d4e7ca92f3f9e020eb6a6",
+          "name": "exec",
+          "input": "text(await tools.apply_patch(\"*** Begin Patch\\n*** Add File: C:/Users/tts13/Documents/Codex/experiments/issue198-20261026-c/trials/C2-v2-1/.tmp/evidence/review/finalize_report.py\\n+import hashlib\\n+import json\\n+from datetime import datetime, timezone\\n+from pathlib import Path\\n+\\n+root = Path(__file__).resolve().parents[3]\\n+out = Path(__file__).resolve().parent\\n+fingerprint = 'bb62f2eff8723719943eac622dfaf0aa570090b0a03003e5590dd5cc19c7ce6e'\\n+publication = 'e5df869e3a77735e621cbc924769aba570aa21a547e00f19969f8f63a0b8e942'\\n+read = lambda path: json.loads((root/path).read_text(encoding='utf-8-sig'))\\n+sha = lambda path: hashlib.sha256((root/path).read_bytes()).hexdigest()\\n+\\n+checks = []\\n+for name in ['lint', 'types', 'stats', 'worker', 'design', 'bundle', 'barrier', 'worker-types', 'real-do-restart']:\\n+    row = read(f'.tmp/evidence/{name}-final2.json')\\n+    assert row['exit_code'] == 0\\n+    assert row['fingerprint'] == row['after_fingerprint'] == fingerprint\\n+    assert row['log_sha256'] == sha(row['log'])\\n+    checks.append(row)\\n+\\n+runtime = read('.tmp/evidence/runtime3/restart-result.json')\\n+assert runtime['status'] == 'pass'\\n+assert len(runtime['processes']) == 4\\n+assert all(row['owned'] and row['listener_closed'] and row['stop_exit_code'] == 0 for row in runtime['processes'])\\n+assert len({row['pid'] for row in runtime['processes']}) == 4\\n+assert runtime['legacy_floor'] < runtime['first_token'] < runtime['scalar_restored_token'] < runtime['empty_restored_token']\\n+assert runtime['stored_list_restored'] and runtime['stale_remove_preserved'] and runtime['no_tombstones']\\n+assert runtime['hibernation']['status'] == 'unproven'\\n+\\n+product_paths = ['apps/worker/src/durable/lobby-directory-object.ts','apps/worker/src/durable/lobby-directory-object.test.mjs','apps/worker/src/routes/lobby.test.mjs']\\n+final_log = (out/'final-recheck.log').read_text(encoding='utf-8-sig')\\n+assert '# pass 38' in final_log and '# fail 0' in final_log and 'FINAL_REVIEW_TEST_EXIT=0' in final_log\\n+assert final_log.count(fingerprint) == 2\\n+\\n+report = {\\n+    'status': 'COMPLETE',\\n+    'trial_status': 'BLOCKED',\\n+    'trial_status_reason': 'AC8 / Q05 actual DO hibernation is unproven. Review completion does not certify whole-trial completion.',\\n+    'task': 'C2-independent-contract-behavior',\\n+    'reviewer': '/root/c2_independent_review',\\n+    'implementation_involved': False,\\n+    'write_scope': '.tmp/evidence/review only',\\n+    'completed_at': datetime.now(timezone.utc).isoformat(),\\n+    'fingerprint': fingerprint,\\n+    'publication_fingerprint': publication,\\n+    'base_revision': '72ed3f963d84ad866d9cb6ee6710485f6557e9ba',\\n+    'product_sha256': {path:sha(path) for path in product_paths},\\n+    'environment': {'node':'v22.23.4','npm':'10.9.9','readback_log':'.tmp/evidence/review/final-recheck.log'},\\n+    'contract_coverage': [\\n+        {'question':'Directory authority and producer/consumer flow','status':'PASS','evidence':['docs/design/01_fsm.md:82','docs/design/03_data_model.md:141','apps/worker/src/durable/room-object.ts:3490','apps/worker/src/services/lobby-directory.ts','apps/worker/src/routes/lobby.ts','.tmp/evidence/review/barrier-consumers.log'],'conclusion':'RoomDO produces public non-auto-match summary; Directory owns stored summary and token; read-cleanup propagates observed updatedAt as expectedUpdatedAt.'},\\n+        {'question':'Public schema, TTL origin, listing filters and ordering unchanged','status':'PASS','evidence':['packages/shared/src/models/lobby-room-summary.ts','docs/design/03_data_model.md:171','docs/design/07_constants.md:156','.tmp/evidence/review/contract-details.log','.tmp/evidence/review/final-recheck.log'],'conclusion':'No DTO/constants/client/service change. Scalar helper storage is not serialized into public response. TTL continues to use ttlStartedAt with strict greater-than expiration; public/full/status filters and sort remain unchanged.'},\\n+        {'question':'Legacy/scalar/missing/known empty sentinel compatibility and corrupt storage','status':'PASS_FOR_TESTED_MATRIX','evidence':['.tmp/evidence/review/final-recheck.log','.tmp/evidence/runtime3/restart-result.json'],'conclusion':'Valid legacy map, scalar, missing helper, surviving summary floor and historical -Infinity sentinel restore. Malformed tested rooms/helpers and unsafe counters reject before writes. No storage schema format or rollout format change.'},\\n+        {'question':'Test/runtime/type/CI surface','status':'PASS_WITH_LIMITS','evidence':['package.json','apps/worker/package.json','tsconfig.json','apps/worker/tsconfig.json','.github/workflows/validate-reusable.yml','.tmp/evidence/review/final-runtime-checks.log'],'conclusion':'Both changed mjs tests are explicitly in standard worker command. Production ts reaches root and worker typecheck. mjs tests execute via tsx but are excluded from tsc/eslint TypeScript globs. Fixed barrier and independent cases executed explicitly; CI full additionally has client/native builds outside this C2 product scope.'},\\n+    ],\\n+    'behavior_coverage': [\\n+        {'question':'same-ms upsert/delete-recreate stale removal','status':'PASS','acceptance':['AC1'],'evidence':['.tmp/evidence/review/final-recheck.log']},\\n+        {'question':'actual lobby route ineligible/lost probe barriers, reversed completion, recreate','status':'PASS','acceptance':['AC4'],'evidence':['.tmp/evidence/review/final-recheck.log'],'boundary':'Actual product route/service/DO with synthetic storage and RoomDO probe responses; no live socket or browser claim.'},\\n+        {'question':'5xx and network fail-open','status':'PASS','acceptance':['AC4'],'evidence':['.tmp/evidence/review/final-recheck.log']},\\n+        {'question':'legacy max2500 at clock2000, scalar restore, rollback, TTL/deletion churn','status':'PASS','acceptance':['AC2','AC3'],'evidence':['.tmp/evidence/review/final-recheck.log']},\\n+        {'question':'storage failure/corruption/number overflow preserve evidence','status':'PASS_FOR_TESTED_MATRIX','evidence':['.tmp/evidence/review/boundary.log','.tmp/evidence/review/seed-boundary.log','.tmp/evidence/review/recheck-2.log','.tmp/evidence/review/final-recheck.log']},\\n+        {'question':'real local workerd SQLite DO process restart and stored list/counter read-back','status':'PASS','acceptance':['AC2'],'evidence':['.tmp/evidence/runtime3/entry.ts','.tmp/evidence/runtime/restart.py','.tmp/evidence/runtime3/restart-result.json','.tmp/evidence/review/final-runtime-checks.log'],'boundary':'Synthetic wrapper exposes fixture seed/storage only. Normal requests invoke actual product superclass. Four distinct owned PID/listeners, same isolated persistence, stop and cold restart. Not actual DO hibernation.'},\\n+        {'question':'reconnect stale socket close, ROOM_STATE_LOST and duplicate request regressions','status':'PASS_IN_STANDARD_TESTS','acceptance':['AC5'],'evidence':['.tmp/evidence/worker-final2.log','.tmp/evidence/review/guards-evidence.log'],'boundary':'110 standard tests pass; concrete relevant assertions inspected. Does not certify live client/native/source paths.'},\\n+    ],\\n+    'findings': [\\n+        {'id':'R1-corrupt-helper','severity':'Must fix','disposition':'FIXED_AND_INDEPENDENTLY_VERIFIED','introduced_by_diff':False,'reproduction':'Restore helper=\\\"corrupt-scalar-2500\\\" with empty rooms, upsert at 2000. Initial code returned 200 and rewrote helper to 2000; mixed legacy invalid members/null likewise normalized.','evidence':['.tmp/evidence/review/boundary.log','.tmp/evidence/review/seed-boundary.log','.tmp/evidence/review/final-recheck.log'],'remaining_risk':'No automatic repair or recovery of already-corrupt persisted bytes is implemented; reads/writes fail observably and preserve bytes.'},\\n+        {'id':'R2-corrupt-room','severity':'Must fix','disposition':'FIXED_AND_INDEPENDENTLY_VERIFIED','introduced_by_diff':False,'reproduction':'Invalid ttlStartedAt silently dropped a stored room, and subsequent upsert overwrote original storage. Follow-up stored currentPlayers=NaN remained accepted and would serialize as null. Non-record/key-mismatch/unsafe numeric variants checked.','evidence':['.tmp/evidence/review/boundary.log','.tmp/evidence/review/seed-boundary.log','.tmp/evidence/review/recheck-2.log','.tmp/evidence/review/final-recheck.log'],'remaining_risk':'This is tested corruption coverage, not exhaustive validation of every optional historical field. Existing parser defaults for optional legacy fields remain unchanged.'},\\n+        {'id':'R3-unsafe-counter','severity':'Should fix','disposition':'FIXED_AND_INDEPENDENTLY_VERIFIED','introduced_by_diff':False,'reproduction':'Helper and room updatedAt=2**53 caused +1 rounding to same token and stale remove deleted newer summary. Boundary MAX_SAFE_INTEGER exhaustion also checked.','evidence':['.tmp/evidence/review/boundary.log','.tmp/evidence/review/seed-boundary.log','.tmp/evidence/review/final-recheck.log'],'remaining_risk':'Counter exhaustion now fails observably before modifying storage. No realistic wall clock exhaustion is expected; no token format expansion implemented.'},\\n+    ],\\n+    'unresolved_significant_product_findings': [],\\n+    'limitations': [\\n+        {'quality':'Q05','acceptance':'AC8','status':'UNPROVEN','guarantee':'Actual DO hibernation/eviction','reason':'No actual hibernation trigger exercised. Cold process restart and new-instance units do not substitute. This keeps overall trial BLOCKED.'},\\n+        {'status':'NOT_EXECUTED_OUTSIDE_C2_SCOPE','guarantee':'Native/source/browser/real-client E2E','reason':'No corresponding product code changed. No PASS or native/source execution claim.'},\\n+        {'quality':'Q13/Q15/Q16','status':'REVIEW_SCOPE_ONLY','guarantee':'Whole-trial WIP/authority/process protection','reason':'Reviewer only wrote isolated review artifacts, read explicit local files, and ran isolated no-network test commands. Parent owns full before/after snapshot and runtime shutdown evidence; reviewer inspected runtime driver/owned identity and four stopped listeners.'},\\n+    ],\\n+    'own_validation': {'command':['npx','--no-install','tsx','--test','.tmp/evidence/review/boundary.test.mjs','.tmp/comparison/c2-barrier.test.mjs',*product_paths[1:]],'exit_code':0,'tests':38,'pass':38,'fail':0,'log':'.tmp/evidence/review/final-recheck.log','before_fingerprint':fingerprint,'after_fingerprint':fingerprint},\\n+    'all_review_attempts': '.tmp/evidence/review/initial-inspection.log',\\n+    'failed_attempts_preserved': ['.tmp/evidence/review/boundary.log','.tmp/evidence/review/seed-boundary.log','.tmp/evidence/review/recheck-2.log','.tmp/evidence/review/evidence-final-read.log'],\\n+    'standard_checks_verified_by_hash_and_fingerprint': checks,\\n+    'usage': None,\\n+}\\n+(out/'report.json').write_text(json.dumps(report,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\n+print(json.dumps({'status':report['status'],'trial_status':report['trial_status'],'fingerprint':fingerprint,'report_sha256':sha('.tmp/evidence/review/report.json'),'tests':38,'significant_open':0,'verified_standard_commands':len(checks)},ensure_ascii=True))\\n*** End Patch\"));\ntext(await tools.exec_command({cmd:\"[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\\n& { rg -n -g 'phase*.log' 'Ready on|GET|POST' .tmp/evidence/runtime3; python .tmp/evidence/review/finalize_report.py; 'REPORT_FINALIZE_EXIT=' + $LASTEXITCODE; python tools/harness-v2/harness.py select --goal .tmp/goal.json } *>&1 | Tee-Object -FilePath .tmp/evidence/review/report-finalize.log\\n'Command 17: corrected rg Windows glob via -g; verify hashes/fingerprints/check outcomes and write review report; final selector. See REPORT_FINALIZE_EXIT.' | Add-Content -Encoding utf8 .tmp/evidence/review/initial-inspection.log\",\"max_output_tokens\":3000}));\n"
+        }
+      ]
+    }
+  ],
+  "root_command_executions": [
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Location\nGet-Content -LiteralPath AGENTS.md -Encoding UTF8\nGet-Content -LiteralPath .tmp/comparison/input.json -Encoding UTF8\n& ./.tmp/toolchain/node.exe --version\n& ./.tmp/toolchain/npm.cmd --version\nGet-Command node,npm | Select-Object Name,CommandType,Source,Path | ConvertTo-Json -Depth 4\nnode -p '\"'JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch})'\nnpm --version\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -LiteralPath C:/Users/tts13/.codex/skills/windows-utf8-safe-write/SKILL.md -Encoding UTF8\nGet-Content -LiteralPath .agents/skills/verify-change/SKILL.md -Encoding UTF8'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'New-Item -ItemType Directory -Force -Path .tmp/evidence | Out-Null\n$nodeVersion = & ./.tmp/toolchain/node.exe --version\n$npmVersion = & ./.tmp/toolchain/npm.cmd --version\n$cliEnvironment = node -p '\"'JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch})' | ConvertFrom-Json\n\"'$envEvidence = [ordered]@{ recorded_at = [DateTime]::UtcNow.ToString('\"'o'); direct_node = \"'$nodeVersion; direct_npm = $npmVersion; commands = @(Get-Command node,npm | Select-Object Name,CommandType,Source,Path); cli = $cliEnvironment; cli_npm = (npm --version); expected_node = '\"'v22.23.4'; expected_npm = '10.9.9'; match = (\"'$nodeVersion -eq '\"'v22.23.4' -and \"'$npmVersion -eq '\"'10.9.9' -and \"'$cliEnvironment.version -eq '\"'v22.23.4') }\n[IO.File]::WriteAllText((Join-Path (Get-Location) '.tmp/evidence/environment.json'), (\"'$envEvidence | ConvertTo-Json -Depth 8), [Text.UTF8Encoding]::new($false))\nGet-Content .tmp/evidence/environment.json -Encoding UTF8\nif (-not $envEvidence.match) { throw '\"'Environment mismatch' }\nGet-Content tools/harness-v2/goal.example.json -Encoding UTF8\nGet-Content .harness-v2.json -Encoding UTF8\nGet-Content .tmp/comparison/runtime.json -Encoding UTF8\nGet-Content .tmp/comparison/reference/visual.json -Encoding UTF8\npython tools/harness-v2/harness.py --help\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"git status --porcelain=v2 --branch\n git rev-parse HEAD\n git diff --stat\n git diff --cached --stat\n git stash list\n git branch --format='%(refname:short) %(objectname)'\n rg --files -g AGENTS.md -g package.json -g '*lobby*' -g '*harness*' -g '*wrangler*' -g '*tsconfig*' -g '*requirements*'\nGet-Content apps/worker/src/durable/lobby-directory-object.ts -Encoding UTF8\nGet-Content apps/worker/src/routes/lobby.ts -Encoding UTF8\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content apps/worker/AGENTS.md -Encoding UTF8\nGet-Content package.json -Encoding UTF8\nGet-Content apps/worker/package.json -Encoding UTF8\nGet-Content apps/worker/tsconfig.json -Encoding UTF8\nGet-Content apps/worker/wrangler.toml -Encoding UTF8\nGet-Content apps/worker/src/durable/lobby-directory-object.test.mjs -Encoding UTF8\nGet-Content .tmp/comparison/c2-barrier.test.mjs -Encoding UTF8'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content tools/harness-v2/harness.py -Encoding UTF8\nGet-Content docs/harness-v2/requirements.md -Encoding UTF8\nGet-Content docs/harness-v2/comparison-plan.md -Encoding UTF8'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content apps/worker/src/services/lobby-directory.ts -Encoding UTF8\nGet-Content apps/worker/src/routes/lobby.test.mjs -Encoding UTF8\nGet-Content docs/testing/local-e2e.md -Encoding UTF8\nrg --files .tmp/comparison\nrg -n 'LobbyDirectory|lobby|hibern|restart' docs/design apps/worker/src/index.ts tools/run-local-e2e.ps1\"",
+      "exit_code": 1,
+      "status": "failed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"rg -n 'Q05|Q06|Q12|Q13|Q14|Q15|Q16|R04|effort|reasoning|independent-reviewer|snapshot|def completion|def validate_goal|semantics|COMMANDS|test_membership|manual|argparse|add_argument' docs/harness-v2/requirements.md tools/harness-v2/policy.py tools/harness-v2/harness.py .codex .agents docs/harness-v2/comparison-plan.md\nGet-Content tools/harness-v2/policy.py -Encoding UTF8 -TotalCount 240\nGet-Content docs/harness-v2/requirements.md -Encoding UTF8\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content tools/harness-v2/policy.py -Encoding UTF8 | Select-Object -First 205\nGet-Content tools/harness-v2/policy.py -Encoding UTF8 | Select-Object -Skip 301 -First 80\nGet-Content tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 250 -First 72\nGet-Content tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 375 -First 58\nGet-Content .codex/agents/independent-reviewer.toml -Encoding UTF8\nGet-Content tsconfig.json -Encoding UTF8\nGet-Content docs/design/01_fsm.md -Encoding UTF8 | Select-Object -Skip 81 -First 22\nGet-Content docs/design/03_data_model.md -Encoding UTF8 | Select-Object -Skip 140 -First 48'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/setup.py\npython tools/harness-v2/harness.py select --goal .tmp/goal.json --paths apps/worker/src/durable/lobby-directory-object.ts apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content docs/design/10_regression_guard_addendum.md -Encoding UTF8 -TotalCount 180\nGet-Content tsconfig.base.json -Encoding UTF8\nrg -n 'test:worker|test:client-stats|typecheck|lint|wrangler|design' .github\nGet-Content .tmp/comparison/browser_fixture.mjs -Encoding UTF8 -TotalCount 65\nGet-Content apps/worker/src/durable/room-object.test.mjs -Encoding UTF8 | Select-String -Pattern 'test\\\\('\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py seed-barrier . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs'",
+      "exit_code": 1,
+      "status": "failed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py seed-directory . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs'",
+      "exit_code": 1,
+      "status": "failed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"git show 4b600d3445edc71d0599058809c9a89b04591760:apps/worker/src/durable/lobby-directory-object.ts | Select-String -Pattern 'if \\\\(isFiniteNumber\\\\(input\\\\)\\\\)' -Context 0,16\npython -c \\\"from pathlib import Path; import json; ps=['apps/worker/src/durable/lobby-directory-object.ts','apps/worker/src/durable/lobby-directory-object.test.mjs','apps/worker/src/routes/lobby.test.mjs']; print(json.dumps({p:{'bom':Path(p).read_bytes().startswith(bytes([239,187,191])),'crlf':Path(p).read_bytes().count(b'\\\\r\\\\n'),'lf':Path(p).read_bytes().count(b'\\\\n')} for p in ps}))\\\"\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'git diff --check\n git diff --stat\npython .tmp/evidence/run.py focused-1 . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs .tmp/comparison/c2-barrier.test.mjs'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"python -c \\\"import json; from pathlib import Path; p=Path('.tmp/goal.json'); g=json.loads(p.read_text(encoding='utf-8')); g['spawn_ids']=[{'id':'/root/c2_independent_review','task':'independent contract and behavior audit','model':'gpt-6.1-sol','effort':'high','role_default':'.codex/agents/independent-reviewer.toml','reason':'C2/R04 mandatory independent review','write_scope':'.tmp/evidence/review','implementation_involved':False}]; g['owners'][0]['paths'].remove('.tmp/evidence'); g['owners'][0]['paths'].extend(['.tmp/evidence/runtime','.tmp/evidence/parent']); g['owners'].append({'owner':'/root/c2_independent_review','paths':['.tmp/evidence/review'],'status':'active'}); g['checkpoint'].update({'status':'NOT_READY','next':'Fixed checks and isolated runtime restart; independent review pending','decisions':['Minimal producer-only repair; public DTO/TTL/list filters unchanged.','Parent owns all product/shared scope; shared writes forbidden. Reviewer owns review artifacts only.'],'verification_logs':['.tmp/evidence/seed-directory.json','.tmp/evidence/seed-barrier.json','.tmp/evidence/focused-1.json']}); p.write_text(json.dumps(g,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\\"\npython .tmp/evidence/run.py selector . python tools/harness-v2/harness.py select --goal .tmp/goal.json\npython .tmp/evidence/run.py wrangler-help . node node_modules/wrangler/bin/wrangler.js dev --help\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py design-1 . npm run check:design-contracts'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py stats-1 . npm run test:client-stats'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-1 . npm run test:worker'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py bundle-1 apps/worker npx --no-install wrangler deploy --dry-run'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py types-1 . npm run typecheck'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py lint-1 . npm run lint'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py real-do-restart-1 . python .tmp/evidence/runtime/restart.py'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content .tmp/evidence/review/boundary.test.mjs -Encoding UTF8\nGet-Content .tmp/evidence/runtime/restart-result.json -Encoding UTF8 | Select-Object -First 24'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py focused-2 . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs .tmp/comparison/c2-barrier.test.mjs'",
+      "exit_code": 1,
+      "status": "failed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content apps/worker/src/utils/validation.ts -Encoding UTF8 -TotalCount 22'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py focused-3 . node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs .tmp/comparison/c2-barrier.test.mjs\n git diff --check'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"New-Item -ItemType Directory -Force -Path .tmp/evidence/runtime2 | Out-Null\nCopy-Item -LiteralPath .tmp/evidence/runtime/entry.ts -Destination .tmp/evidence/runtime2/entry.ts\npython -c \\\"import json,sys; from pathlib import Path; sys.path.insert(0,'tools/harness-v2'); import harness; p=Path('.tmp/goal.json'); g=json.loads(p.read_text(encoding='utf-8')); g['owners'][0]['paths'].append('.tmp/evidence/runtime2'); g['artifact_ownership']={'parent':'.tmp/evidence except .tmp/evidence/review','reviewer':'.tmp/evidence/review','shared_writer':'parent (writes forbidden)'}; g['decisions']=[{'id':'D1-corrupt-storage','blocking':False,'affects':['apps/worker/src/durable/lobby-directory-object.ts'],'deadline':'before final validation','interim':'Resolved: reject corrupt storage without writes; preserve undefined helper/valid legacy map/scalar and known empty sentinel compatibility. Independent finding confirmed pre-existing but within explicit C2 prohibition.'},{'id':'D2-real-hibernation','blocking':False,'affects':[],'deadline':'final evidence','interim':'Real local workerd process restart is demonstrable. No actual DO hibernation/eviction control here; report Q05/AC8 unproven and final BLOCKED, not substitute new-instance tests.'}]; g['acceptance'].append({'id':'AC8','text':'Real DO hibernation/recovery guarantee must have direct runtime evidence; if unavailable mark unproven and do not claim full acceptance.'}); g['checkpoint'].update({'status':'BLOCKED','owner':'parent','owner_status':'active','stop_reason':'Actual DO hibernation evidence unavailable in isolated local environment; continue independent AC validation.','unfinished':['AC8'],'integration_complete':False,'fingerprint_kind':'publication diff hash (full Goal evidence fingerprint in executor.json avoids self-reference)','fingerprint':harness.publication_fingerprint(Path.cwd(),g['base_revision']),'next':'Finalize fixed checks, fresh runtime restart and independent review, then save executor/checkpoint and run complete gate.','evidence_path':'.tmp/evidence/executor.json','checkpoint_path':'.tmp/evidence/checkpoint.json','finding_disposition':[{'id':'R1-corrupt-helper','severity':'Must fix','disposition':'fixed; fresh independent verification pending'},{'id':'R2-corrupt-room','severity':'Must fix','disposition':'fixed; fresh independent verification pending'},{'id':'R3-unsafe-counter','severity':'Should fix','disposition':'fixed; fresh independent verification pending'}]}); p.write_text(json.dumps(g,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8')\\\"\npython .tmp/evidence/run.py selector-final . python tools/harness-v2/harness.py select --goal .tmp/goal.json\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py barrier-final . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py design-final . npm run check:design-contracts'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py stats-final . npm run test:client-stats'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-final . npm run test:worker'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py bundle-final apps/worker npx --no-install wrangler deploy --dry-run'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-types-final . npm --workspace @infinitas/worker run typecheck'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py lint-final . npm run lint'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py types-final . npm run typecheck'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py real-do-restart-final . python .tmp/evidence/runtime/restart.py .tmp/evidence/runtime2'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py selector-final2 . python tools/harness-v2/harness.py select --goal .tmp/goal.json'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'New-Item -ItemType Directory -Force -Path .tmp/evidence/runtime3 | Out-Null\nCopy-Item -LiteralPath .tmp/evidence/runtime/entry.ts -Destination .tmp/evidence/runtime3/entry.ts\nGet-Content .codex/config.toml -Encoding UTF8\n git diff -- apps/worker/src/durable/lobby-directory-object.ts\nGet-Content .github/workflows/validate-reusable.yml -Encoding UTF8 | Select-Object -Skip 30 -First 52'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py design-final2 . npm run check:design-contracts'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py barrier-final2 . node --import tsx --test .tmp/comparison/c2-barrier.test.mjs'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py stats-final2 . npm run test:client-stats'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-final2 . npm run test:worker'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py bundle-final2 apps/worker npx --no-install wrangler deploy --dry-run'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py worker-types-final2 . npm --workspace @infinitas/worker run typecheck'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py lint-final2 . npm run lint'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py types-final2 . npm run typecheck'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py real-do-restart-final2 . python .tmp/evidence/runtime/restart.py .tmp/evidence/runtime3'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content .tmp/evidence/snapshot-before.json -Encoding UTF8\nGet-Content apps/worker/src/durable/lobby-directory-object.ts -Encoding UTF8 | Select-Object -Skip 130 -First 78\nGet-Content .tmp/evidence/review/final-recheck.json -Encoding UTF8'",
+      "exit_code": 1,
+      "status": "failed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"rg --files .tmp/evidence/review\npython .tmp/evidence/run.py diff-check-final . git diff --check\npython .tmp/evidence/run.py environment-final . node -p 'JSON.stringify({version:process.version,execPath:process.execPath})'\npython .tmp/evidence/run.py root-membership . node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json --listFilesOnly\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content .tmp/evidence/review/report.json -Encoding UTF8\npython .tmp/evidence/finalize.py'",
+      "exit_code": 1,
+      "status": "failed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'python .tmp/evidence/run.py artifact-finalize . python .tmp/evidence/finalize.py\npython .tmp/evidence/run.py completion . python tools/harness-v2/harness.py complete --goal .tmp/goal.json --evidence .tmp/evidence/executor.json'",
+      "exit_code": 1,
+      "status": "failed"
+    },
+    {
+      "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"python -c \\\"import json; from pathlib import Path; p=Path('.tmp/evidence/executor.json'); e=json.loads(p.read_text(encoding='utf-8')); e['completion_gate']={'command':'python tools/harness-v2/harness.py complete --goal .tmp/goal.json --evidence .tmp/evidence/executor.json','metadata':'.tmp/evidence/completion.json','exit_code':2,'result':json.loads(Path('.tmp/evidence/completion.log').read_text(encoding='utf-8'))}; e['all_command_attempts'].extend(json.loads(Path('.tmp/evidence/'+n+'.json').read_text(encoding='utf-8')) for n in ['artifact-finalize','completion']); e['retries']['artifact_generation']='First finalize invocation failed because reviewer disposition enum differed from harness fixed enum; normalized in aggregate while preserving original independent report; next artifact-finalize exited 0. Product evidence was unchanged.'; p.write_text(json.dumps(e,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8'); print(json.dumps({'status':e['status'],'fingerprint':e['fingerprint'],'completion_gate':e['completion_gate']['result'],'review':e['review']['status'],'findings':[{k:f[k] for k in ['id','severity','disposition']} for f in e['findings']],'unproven_ac':[k for k,v in e['acceptance'].items() if v['status']=='unproven'],'all_attempts':len(e['all_command_attempts'])},ensure_ascii=True))\\\"\n git status --porcelain=v2 --branch\n git diff --stat\n git diff --check\"",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "authority": "Only isolated local product edits, validation, evidence and independent review; commit/push/GitHub write/merge/close/deploy/release/cleanup forbidden. User skill reads and pinned dependencies allowed."
+}

@@ -1,0 +1,198 @@
+{
+  "status": "pass",
+  "head": "56f25de0a5125e62f3ab71da56e7746aaa9e7f7a",
+  "branch": "codex/legacy-trial",
+  "initial_status_note": "First tool read observed clean status. initial-state.json was saved after adding the new test and before component repair.",
+  "final_status": "M apps/client/src/components/SongSearchModalView.tsx\n?? apps/client/src/features/room/picking-countdown-values-display.test.tsx",
+  "tracked": [
+    "apps/client/src/components/SongSearchModalView.tsx"
+  ],
+  "untracked": [
+    "apps/client/src/features/room/picking-countdown-values-display.test.tsx"
+  ],
+  "staged": [],
+  "formats": [
+    {
+      "file": "apps/client/src/components/SongSearchModalView.tsx",
+      "sha256": "2c00d443f3c934c53838eee3deac08f0b89659f9186f7cdc47393d089a4c67b0",
+      "bom": false,
+      "line_endings": {
+        "crlf": 0,
+        "lf": 442
+      }
+    },
+    {
+      "file": "apps/client/src/features/room/picking-countdown-values-display.test.tsx",
+      "sha256": "ec5642a4aaa70c7e3641787177523ee0ef395507930772baac7900cbdc6e6cd4",
+      "bom": false,
+      "line_endings": {
+        "crlf": 0,
+        "lf": 44
+      }
+    }
+  ],
+  "diff_sha256": "08976f5a3ecc3977e901c2fc19446a36ecc9d3d485422ff33314707ecd576737",
+  "product_snapshot_sha256": "460a7bcdfe04fc1160e691fd367cf4d3bb235378305d608b69a8d63ab1af3a8d",
+  "existing_test_unchanged": true,
+  "type_membership": [
+    {
+      "config": "tsconfig.json",
+      "new_test_included": true,
+      "existing_tsx_test_included": true
+    },
+    {
+      "config": "apps/client/tsconfig.json",
+      "new_test_included": true,
+      "existing_tsx_test_included": true
+    }
+  ],
+  "standard_test_membership": {
+    "existing_display_test": true,
+    "new_test": false,
+    "supplement": "node --import tsx --test apps/client/src/features/room/picking-countdown-values-display.test.tsx",
+    "record": "display-after-fix.json"
+  },
+  "browser_fixture_matches_reference": true,
+  "rows": [
+    {
+      "width": 320,
+      "role": "host",
+      "time": "null",
+      "text": "--:--",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": false,
+      "modal_image_hash_equal": true
+    },
+    {
+      "width": 320,
+      "role": "host",
+      "time": "0",
+      "text": "00:00",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": false,
+      "modal_image_hash_equal": false
+    },
+    {
+      "width": 320,
+      "role": "host",
+      "time": "65",
+      "text": "01:05",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": true,
+      "modal_image_hash_equal": false
+    },
+    {
+      "width": 320,
+      "role": "guest",
+      "time": "null",
+      "text": "--:--",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": true,
+      "modal_image_hash_equal": true
+    },
+    {
+      "width": 320,
+      "role": "guest",
+      "time": "0",
+      "text": "00:00",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": false,
+      "modal_image_hash_equal": false
+    },
+    {
+      "width": 320,
+      "role": "guest",
+      "time": "65",
+      "text": "01:05",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": true,
+      "modal_image_hash_equal": false
+    },
+    {
+      "width": 1024,
+      "role": "host",
+      "time": "null",
+      "text": "--:--",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": true,
+      "modal_image_hash_equal": true
+    },
+    {
+      "width": 1024,
+      "role": "host",
+      "time": "0",
+      "text": "00:00",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": false,
+      "modal_image_hash_equal": false
+    },
+    {
+      "width": 1024,
+      "role": "host",
+      "time": "65",
+      "text": "01:05",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": false,
+      "modal_image_hash_equal": false
+    },
+    {
+      "width": 1024,
+      "role": "guest",
+      "time": "null",
+      "text": "--:--",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": true,
+      "modal_image_hash_equal": true
+    },
+    {
+      "width": 1024,
+      "role": "guest",
+      "time": "0",
+      "text": "00:00",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": false,
+      "modal_image_hash_equal": false
+    },
+    {
+      "width": 1024,
+      "role": "guest",
+      "time": "65",
+      "text": "01:05",
+      "overflow": "pass",
+      "color": "unchanged",
+      "room_text": "unchanged",
+      "room_image_hash_equal": false,
+      "modal_image_hash_equal": false
+    }
+  ],
+  "owned_listener_closed": true,
+  "screenshot_comparison_note": "Full pixel equality is not an AC. First verification rejected animated RoomArena screenshot hash differences. Root viewed both 320-host-null-room images and observed animation phase differences. Independent reviewer judges visual parity; modal numeric text differences are required by AC.",
+  "not_run": {
+    "native": "unproven; no Tauri behavior changed or required in C1",
+    "source": "unproven; source unaffected",
+    "actual_DO_restart_hibernation": "unproven; no Worker/DO behavior changed",
+    "full_CI_native_and_worker_bundle": "not run; C1 fixed validation surface plus quick CI agents check; no full CI pass claim"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "reason": "Generic redaction boundary preserves fixed probe identifiers; independent auditor confirmed 18/18 and corrected P inputs",
+  "command": {
+    "argv": [
+      "python",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/harness-comparison",
+      "-p",
+      "test_compare.py"
+    ],
+    "cwd": "C:\\Users\\tts13\\.codex\\worktrees\\issue-198-harness-comparison\\infinitas_arena",
+    "start": "2026-10-27T06:36:00.794649+00:00",
+    "end": "2026-10-27T06:36:01.058618+00:00",
+    "wall_seconds": 0.26399060000039754,
+    "exit_code": 0,
+    "log": ".tmp\\i198-final-validation\\comparison-followup.log"
+  },
+  "previous_failed_fixture_test": "Temporary synthetic exporter integration fixture initially omitted C2 helper; changed that fixture to P case before passing. No experiment input or product change."
+}

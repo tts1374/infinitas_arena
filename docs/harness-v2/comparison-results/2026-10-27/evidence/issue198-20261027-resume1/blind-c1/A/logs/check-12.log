@@ -1,0 +1,5 @@
+
+> infinitas-arena@1.4.0 check:agents
+> node ./scripts/check-agent-definitions.mjs
+
+Agent definition check passed. (8 agents)

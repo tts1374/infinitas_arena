@@ -1,0 +1,13 @@
+diff --git a/apps/client/src/components/SongSearchModalView.tsx b/apps/client/src/components/SongSearchModalView.tsx
+index d8cb24f..36adeab 100644
+--- a/apps/client/src/components/SongSearchModalView.tsx
++++ b/apps/client/src/components/SongSearchModalView.tsx
+@@ -270,7 +270,7 @@ export function SongSearchModalView({
+                                     'text-cyan-400'
+                                 }`}>
+                                 {timeLeft === null
+-                                    ? "--:--"
++                                    ? "00:00"
+                                     : `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`}
+                             </span>
+                         </div>

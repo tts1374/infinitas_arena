@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-27T06:22:15.381091+00:00",
+  "method": "codex debug prompt-input with exact runtime profile/overrides; no model request",
+  "invocation_sha256": "c5b10b0e02d68778c08bdf1c7583e7dec828e0b8857f1d0fd66f0e666bfe62c9",
+  "profile_sha256": "254746c9695475d77eaa2e2270613f8e96f62f45ff18f61478a3944768efcda3",
+  "project_config_sha256": "4730451f38cf0cf673fae13f8b8fa0ec5cf7f1c6e67fd9c221625b78ecf81207",
+  "observed_concurrency_slots_including_parent": 4,
+  "expected_child_limit": 3,
+  "project_config_active": true,
+  "declared_model": "gpt-6.1-sol",
+  "declared_subagent_model": "gpt-6.1-sol",
+  "prompt_sha256": "bd63709e6578dddb731ffa42a3ab45c46d2ad729ba711411865b3dada75013ca",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "project_skill_assets": [
+    "submit-work",
+    "verify-change"
+  ],
+  "model_visible_project_skills_by_exact_path": [],
+  "limitation": "Exact-profile resolved prompt and unchanged config hash. Filesystem skill assets and exact paths in the model-visible catalog are separate fields; lazy discovery may not appear here. Actual model/effort/custom role/skill use is separately checked in run trace. Raw prompt is not exported."
+}

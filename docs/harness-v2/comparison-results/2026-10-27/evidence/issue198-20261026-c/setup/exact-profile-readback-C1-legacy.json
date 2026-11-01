@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-26T23:57:14.059032+00:00",
+  "method": "codex debug prompt-input with exact runtime profile/overrides; no model request",
+  "invocation_sha256": "6e7ebcef9d7485776a3d9d7eb2d1d071289113b278d4ca0324800963105eda43",
+  "profile_sha256": "59318e4b593b75a5c99af008ffe5b098ad6a218ec28f0b4c6ea3b13d210c2d66",
+  "project_config_sha256": "7d9f531b32700fa8a68f5b1df71dce87fa6a33b73a89e630946def28043a2972",
+  "observed_concurrency_slots_including_parent": 7,
+  "expected_child_limit": 6,
+  "project_config_active": true,
+  "declared_model": "gpt-6.1-sol",
+  "declared_subagent_model": "gpt-6.1-sol",
+  "prompt_sha256": "fdc07bbdf00383ec31319b1b67d731597bb0202ac7639e90d8d60f9954f7ec99",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "project_skill_names": [
+    "branch-latest-sync-flow",
+    "commit-pr-flow",
+    "fsm-protocol-guard",
+    "issue-authoring-flow",
+    "issue-close-evidence-flow",
+    "issue-implementation-flow",
+    "issue-readiness-check",
+    "issue-start-prompt-flow",
+    "phase-c-kickoff-flow",
+    "phase-c-review-response-flow",
+    "phase-d-followup-issue-flow",
+    "phase-d-release-flow",
+    "plan-mode-gate",
+    "post-approval-merge-flow",
+    "quality-check-matrix"
+  ],
+  "limitation": "Exact-profile resolved prompt and unchanged config hash. Actual model/effort/custom role use is separately checked in run trace. Raw prompt is not exported."
+}

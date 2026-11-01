@@ -13,6 +13,9 @@ Use this checklist when handling review feedback as a Phase C continuation.
 - [ ] Actionable unresolved threads are identified.
 - [ ] Informational, outdated, or already-resolved threads are separated.
 - [ ] Each actionable cluster maps to a bounded fix or explicit no-code response.
+- [ ] Findings are independently confirmed against current code and the original contract.
+- [ ] `Blocker` / `Must fix` evidence includes a nearby same-root-cause inspection within the changed responsibility.
+- [ ] If data acceptance is narrowed, producer transformations, stored values, reader acceptance, and affected round-trip compatibility are compared with the contract.
 
 ## 3. Risk Gate
 
@@ -34,3 +37,4 @@ Use this checklist when handling review feedback as a Phase C continuation.
 - [ ] Thread is resolved only after the reply is posted.
 - [ ] Re-review is requested only after no unresolved actionable thread remains.
 - [ ] Each GitHub write-back effect is confirmed by returned URL/id or read-back.
+- [ ] The report includes a fact-based retrospective without unrequested governance changes.

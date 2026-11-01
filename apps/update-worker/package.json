@@ -9,5 +9,8 @@
     "deploy": "wrangler deploy",
     "test": "tsx --test src/index.test.mjs src/lib/version.test.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "volta": {
+    "extends": "../../package.json"
   }
 }

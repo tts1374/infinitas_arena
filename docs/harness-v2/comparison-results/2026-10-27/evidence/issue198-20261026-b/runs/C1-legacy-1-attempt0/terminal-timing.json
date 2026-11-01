@@ -1,0 +1,7 @@
+{
+  "started_at": "2026-10-26T14:09:53.967293+00:00",
+  "model_terminal_at": "2026-10-26T14:19:00.794Z",
+  "wall_to_model_terminal_seconds": 546.826707,
+  "cli_exit_wall_seconds": null,
+  "scope": "Observed CLI launch start to parent persisted task_complete, excludes later launcher telemetry exception"
+}

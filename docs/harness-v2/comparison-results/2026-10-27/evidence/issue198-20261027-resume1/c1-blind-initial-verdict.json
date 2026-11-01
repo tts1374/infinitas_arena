@@ -1,0 +1,29 @@
+{
+  "source_agent": "/root/c1_blind_acceptance",
+  "at": "2026-10-27T00:09:05.157920+00:00",
+  "blind": true,
+  "aliases": {
+    "A": {
+      "product_verdict": "pass",
+      "AC": "pass",
+      "Q11": "pass",
+      "Q12": "pass",
+      "Q13-Q16": "unproven pending execution trace"
+    },
+    "B": {
+      "product_verdict": "pass",
+      "AC": "pass",
+      "Q11": "pass",
+      "Q12": "pass",
+      "Q13-Q16": "unproven pending execution trace"
+    }
+  },
+  "unresolved_product_blocker_or_must_fix": 0,
+  "notes": [
+    "baseline 320 null wrap",
+    "two-digit AC increases header height about14px at320 for both",
+    "modal close is synthetic isOpen controller",
+    "A additional test explicitly executed outside standard script"
+  ],
+  "costs_revealed_before_this_verdict": false
+}

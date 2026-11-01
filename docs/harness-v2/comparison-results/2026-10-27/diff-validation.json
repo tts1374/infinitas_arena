@@ -1,0 +1,504 @@
+{
+  "unqualified_git_diff_check_exit": 2,
+  "expected_patch_context_findings": 99,
+  "all_are_single_space_empty_patch_context": false,
+  "non_patch_staged_diff_check_exit": 2,
+  "reason": "Preserve exact patch bytes and seed hashes. Unified diff represents an empty unchanged source line as one space; do not strip it.",
+  "records": [
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-legacy-1.patch",
+      "line": 6,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-legacy-1.patch",
+      "line": 14,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-legacy-1.patch",
+      "line": 18,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-legacy-1.patch",
+      "line": 21,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-legacy-1.patch",
+      "line": 27,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-v2-1.patch",
+      "line": 6,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-v2-1.patch",
+      "line": 14,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-v2-1.patch",
+      "line": 18,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-v2-1.patch",
+      "line": 21,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-b/seeds/C2-v2-1.patch",
+      "line": 27,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-legacy-1-interrupted/tracked.patch",
+      "line": 45,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-legacy-1-interrupted/tracked.patch",
+      "line": 56,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-legacy-1-interrupted/tracked.patch",
+      "line": 59,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-legacy-1-interrupted/tracked.patch",
+      "line": 65,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "line": 168,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "line": 182,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "line": 202,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "line": 207,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "line": 219,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "line": 225,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "line": 229,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "line": 238,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/archives/C2-v2-1/tracked.patch",
+      "line": 249,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-legacy-1.patch",
+      "line": 6,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-legacy-1.patch",
+      "line": 14,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-legacy-1.patch",
+      "line": 18,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-legacy-1.patch",
+      "line": 21,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-legacy-1.patch",
+      "line": 27,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-v2-1.patch",
+      "line": 6,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-v2-1.patch",
+      "line": 14,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-v2-1.patch",
+      "line": 18,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-v2-1.patch",
+      "line": 21,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261026-c/seeds/C2-v2-1.patch",
+      "line": 27,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/tracked.patch",
+      "line": 42,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/tracked.patch",
+      "line": 49,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/tracked.patch",
+      "line": 60,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/tracked.patch",
+      "line": 63,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/archives/C2-legacy-1-environment-retry1/tracked.patch",
+      "line": 69,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "line": 6,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "line": 7,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "line": 8,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "line": 9,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "line": 10,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "line": 11,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "line": 12,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "line": 13,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-16.log",
+      "line": 14,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "line": 6,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "line": 7,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "line": 8,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "line": 9,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "line": 10,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "line": 11,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "line": 12,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "line": 13,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-17.log",
+      "line": 14,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "line": 6,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "line": 7,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "line": 8,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "line": 9,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "line": 10,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "line": 11,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "line": 12,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "line": 13,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/logs/check-18.log",
+      "line": 14,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "line": 168,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "line": 182,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "line": 202,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "line": 207,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "line": 219,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "line": 225,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "line": 229,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "line": 238,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/A/tracked.patch",
+      "line": 249,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-10.log",
+      "line": 11,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-10.log",
+      "line": 13,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-10.log",
+      "line": 39,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-10.log",
+      "line": 41,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-10.log",
+      "line": 61,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-10.log",
+      "line": 63,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "line": 6,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "line": 7,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "line": 8,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "line": 9,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "line": 10,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "line": 11,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "line": 12,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "line": 13,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/logs/check-3.log",
+      "line": 14,
+      "canonical_empty_patch_context": false
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/tracked.patch",
+      "line": 42,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/tracked.patch",
+      "line": 49,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/tracked.patch",
+      "line": 60,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/tracked.patch",
+      "line": 63,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/blind-c2/B/tracked.patch",
+      "line": 69,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/seeds/C2-legacy-1-environment-retry1.patch",
+      "line": 6,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/seeds/C2-legacy-1-environment-retry1.patch",
+      "line": 14,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/seeds/C2-legacy-1-environment-retry1.patch",
+      "line": 18,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/seeds/C2-legacy-1-environment-retry1.patch",
+      "line": 21,
+      "canonical_empty_patch_context": true
+    },
+    {
+      "path": "docs/harness-v2/comparison-results/2026-10-27/evidence/issue198-20261027-resume2/seeds/C2-legacy-1-environment-retry1.patch",
+      "line": 27,
+      "canonical_empty_patch_context": true
+    }
+  ]
+}

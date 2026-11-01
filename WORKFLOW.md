@@ -60,6 +60,20 @@
 - **D — Closure and release preparation**
   - follow-up 抽出、次サイクル化、リリース準備入力整理
 
+### 1.1 Issue 作業の入口
+
+Phase・risk・委譲・監査の判断は既存の担当 agent が行う。スキルは作業の入口と成果物を接続し、正本や権限を追加しない。
+
+| 依頼 | 入口 |
+| --- | --- |
+| 観測済み課題・確定仕様から Issue 本文を作る | [issue-authoring-flow](.codex/skills/issue-authoring-flow/SKILL.md) → 既存 readiness gate |
+| 確定済み Issue を実装する | [issue-implementation-flow](.codex/skills/issue-implementation-flow/SKILL.md) → 既存 A/B・C kickoff・検証 |
+| 次のチャット用の開始指示文を作る | [issue-start-prompt-flow](.codex/skills/issue-start-prompt-flow/SKILL.md)（指示文の完成で終了） |
+| PR review の指摘に対応する | [phase-c-review-response-flow](.codex/skills/phase-c-review-response-flow/SKILL.md) |
+| Phase D の findings を後続 Issue へ整える | [phase-d-followup-issue-flow](.codex/skills/phase-d-followup-issue-flow/SKILL.md) |
+
+Issue 実装の完了確認では、各 acceptance criterion と実装箇所・成果物・検証結果・未確認事項を対応付ける。資料は変更責務と判断に必要な箇所だけ参照し、親 Issue の全要件や却下済みの案を子 Issue へ暗黙に追加しない。
+
 ---
 
 ## 2. Plan Mode Gate
@@ -357,7 +371,9 @@ Phase D で follow-up を起票または起票準備する場合は、優先度�
 
 ### 6.6.1 Phase D Governance Feedback Loop
 
-Phase D 終了時は、必要に応じて governance / agent / skill / prompt/snippet 側の改善余地を確認する。
+実装・review 修正の結果を報告する直前に、現在までの事実から短く振り返る。Phase D 終了時にも、新しい事実があれば governance / agent / skill / prompt/snippet 側の改善余地へ反映する。初回の振り返りは将来の review や merge を待たない。
+
+観測したミス・user の訂正・独立確認した指摘・手戻りを根拠に、指示不足、既存指示の不履行、コード不具合、仕様不足を区別する。既存規則で十分なら重複追加せず、コード不具合は実装と回帰検証、仕様不足は正本へ戻す。未観測の失敗を想定して規則を増やさない。
 
 最低限の確認:
 - user が同じ制約や順序を複数回再指摘したか
@@ -376,6 +392,8 @@ Phase D 終了時は、必要に応じて governance / agent / skill / prompt/sn
 - `none`
 - `governance follow-up needed`
 - `governance patch applied by explicit request`
+
+選んだ出力に加え、観測した問題と対応、未反映候補と理由、または変更不要の理由を 1〜3 行で報告する。新事実がなければ前回の結論を短く参照し、振り返りだけの空 commit・定型文書・GitHub comment は作らない。
 
 ルール:
 - 上記確認は行うが、毎回 docs/skills/agents/snippets を自動変更しない

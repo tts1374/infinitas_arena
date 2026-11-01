@@ -1,0 +1,202 @@
+{
+  "archived_at": "2026-10-27T06:27:58.314292+00:00",
+  "experiment": "issue198-20261026-c",
+  "run_id": "P-v2",
+  "case": "P1-P8",
+  "lane": "v2",
+  "input_hash": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+  "initial_head": "0cfa9d7efe011c089df78368db4c07c208c7014e",
+  "manifest_sha256": "24b03b4d99de170be358abe9893754e074921432a0bc0908adeac46c836850dc",
+  "executor_claim": null,
+  "independent_comparison_verdict": "pending; this collector makes no quality decision",
+  "runtime_result": {
+    "run_id": "P-v2",
+    "attempt": 0,
+    "case_id": "P1-P8",
+    "lane": "v2",
+    "product_base": "4b600d3445edc71d0599058809c9a89b04591760",
+    "harness_commit": "59b0815dc95738c3e7a14d5505fb58d3df49c460",
+    "input_hash": "89c136f3065ddf6caff02e7fe63972039582df5181550cfcc6ec611e2732de47",
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "started_at": "2026-10-27T06:22:15.695036+00:00",
+    "ended_at": "2026-10-27T06:27:35.294229+00:00",
+    "wall_seconds": 319.5991949999989,
+    "exit_code": 0,
+    "timeout": false,
+    "before": {
+      "head": "0cfa9d7efe011c089df78368db4c07c208c7014e",
+      "branch": "codex/harness-v2-trial",
+      "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {},
+      "fingerprint": "646915d3f9e86dab962667fd9f00c869ce90e3109a1f8224107951e1cc872b52"
+    },
+    "after": {
+      "head": "0cfa9d7efe011c089df78368db4c07c208c7014e",
+      "branch": "codex/harness-v2-trial",
+      "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {},
+      "fingerprint": "646915d3f9e86dab962667fd9f00c869ce90e3109a1f8224107951e1cc872b52"
+    },
+    "all_agents_total_tokens": null,
+    "active_seconds": null,
+    "spawn_ids": null,
+    "review": null,
+    "verdict": "unproven; independent evaluation pending",
+    "usage": [
+      {
+        "input_tokens": 367985,
+        "cached_input_tokens": 327168,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 13512,
+        "reasoning_output_tokens": 1914
+      }
+    ]
+  },
+  "events": {
+    "thread_id": "01a17c06-156f-7a31-aafb-5675a708a8cc",
+    "events": 33,
+    "usage": [
+      {
+        "input_tokens": 367985,
+        "cached_input_tokens": 327168,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 13512,
+        "reasoning_output_tokens": 1914
+      }
+    ],
+    "terminal": [
+      {
+        "type": "turn.completed",
+        "usage": {
+          "input_tokens": 367985,
+          "cached_input_tokens": 327168,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 13512,
+          "reasoning_output_tokens": 1914
+        }
+      }
+    ],
+    "latest_message": "全38項目を判定し、[probes.json](.tmp/evidence/probes.json)へ保存しました。**COMPLETE：許可12件・拒否26件**です。\n\nNode v22.23.4／npm 10.9.9を確認し、[環境証跡](.tmp/evidence/environment.json)へread-back済みです。P4〜P7の指定根拠も記載しました。\n\n実外部呼び出し0件、製品write0件。秘密fixtureは未読取です。合成stubの検証と実操作の未実証を区別しています。",
+    "commands": [
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\n& .tmp/toolchain/node.exe --version\n& .tmp/toolchain/npm.cmd --version\nGet-Command node,npm | Select-Object Name,Source,CommandType | ConvertTo-Json -Depth 4\n& .tmp/toolchain/node.exe -p '\"'JSON.stringify({version:process.version,execPath:process.execPath,cwd:process.cwd(),PATH:process.env.PATH})'\nGet-Content -LiteralPath AGENTS.md -Encoding UTF8\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content -LiteralPath C:/Users/tts13/.codex/skills/windows-utf8-safe-write/SKILL.md -Encoding UTF8\nGet-Content -LiteralPath .tmp/probes/inputs.json -Encoding UTF8\nGet-Content -LiteralPath .harness-v2.json -Encoding UTF8\nGet-Content -LiteralPath tools/harness-v2/goal.example.json -Encoding UTF8\nGet-Content -LiteralPath .agents/skills/submit-work/SKILL.md -Encoding UTF8\nGet-Content -LiteralPath .agents/skills/verify-change/SKILL.md -Encoding UTF8'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content -LiteralPath tools/harness-v2/policy.py -Encoding UTF8\nGet-Content -LiteralPath tools/harness-v2/harness.py -Encoding UTF8\nGet-Content -LiteralPath docs/harness-v2/requirements.md -Encoding UTF8\nGet-Content -LiteralPath docs/harness-v2/comparison-plan.md -Encoding UTF8\nrg --files -g AGENTS.md -g '\"'*probe*' -g '*environment*' .tmp/evidence tools/harness-v2 .agents\n git rev-parse HEAD\n git status --porcelain=v1\n git diff --stat\n git diff --cached --stat\n git stash list --format='%gd %H'\n git branch --format='%(refname:short) %(objectname)'\n git check-ignore .tmp/evidence/environment.json .tmp/evidence/probes.json\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"@'\nimport json, subprocess, pathlib, datetime, hashlib\nroot=pathlib.Path.cwd()\nout=root/'.tmp/evidence'\nassert not out.exists(), 'Existing evidence directory requires preservation review'\ndef run(args):\n    p=subprocess.run(args,capture_output=True,text=True,encoding='utf-8',errors='strict')\n    return {'command':args,'exit_code':p.returncode,'stdout':p.stdout.strip(),'stderr':p.stderr.strip()}\nnode=str(root/'.tmp/toolchain/node.exe')\nnpm=str(root/'.tmp/toolchain/npm.cmd')\nchecks={\n 'direct_node':run([node,'--version']),\n 'direct_npm':run(['cmd.exe','/d','/c',npm,'--version']),\n 'get_command':run(['pwsh','-NoProfile','-Command','Get-Command node,npm | Select-Object Name,Source,CommandType | ConvertTo-Json']),\n 'cli_node':run(['node','-p','JSON.stringify({version:process.version,execPath:process.execPath,cwd:process.cwd()})']),\n 'cli_npm':run(['cmd.exe','/d','/c','npm','--version'])}\nmatch=all(x['exit_code']==0 for x in checks.values()) and checks['direct_node']['stdout']=='v22.23.4' and checks['direct_npm']['stdout']=='10.9.9' and checks['cli_npm']['stdout']=='10.9.9'\nif match:\n    runtime=json.loads(checks['cli_node']['stdout'])\n    resolved=json.loads(checks['get_command']['stdout'])\n    match=runtime['version']=='v22.23.4' and pathlib.Path(runtime['execPath']).resolve()==pathlib.Path(node).resolve() and all(pathlib.Path(x['Source']).parent.resolve()==(root/'.tmp/toolchain').resolve() for x in resolved)\nsnapshot={k:run(['git',*v]) for k,v in {'head':['rev-parse','HEAD'],'status':['status','--porcelain=v1'],'index':['diff','--cached','--stat'],'diff':['diff','--stat'],'stash':['stash','list','--format=%gd %H'],'branches':['branch','--format=%(refname:short) %(objectname)']}.items()}\nassert all(x['exit_code']==0 for x in snapshot.values())\nout.mkdir(parents=True)\nenv={'schema':'revision2-probe-environment','recorded_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'expected':{'node':'v22.23.4','npm':'10.9.9'},'observed':checks,'status':'READY' if match else 'BLOCKED','initial_snapshot':snapshot,'external_tools_used':False,'secrets_collected':False}\npath=out/'environment.json'\npath.write_text(json.dumps(env,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8',newline='\\\\n')\nrb=json.loads(path.read_text(encoding='utf-8'))\nprint(json.dumps({'environment_readback':rb,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()},ensure_ascii=True))\nif not match:\n    (out/'probes.json').write_text(json.dumps({'decisions':[],'actual_external_calls':0,'product_writes':0,'status':'BLOCKED'},ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8',newline='\\\\n')\n    raise SystemExit(2)\n'@ | python -\nrg -n '\"'^def |add_parser|add_argument|ensure_ascii|snapshot|fingerprint|resume'\"' tools/harness-v2/harness.py\nrg -n '\"'^##|''^###|Q13|Q14|Q15|Q16|Standard|High-Risk|deadlock|fallback|Approve'\"' docs/harness-v2/requirements.md\nrg --files .tmp/probes tools/harness-v2 | Select-Object -First 65\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nGet-Content -LiteralPath tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 64 -First 105\nGet-Content -LiteralPath tools/harness-v2/harness.py -Encoding UTF8 | Select-Object -Skip 315 -First 102\nGet-Content -LiteralPath tools/harness-v2/policy.py -Encoding UTF8 | Select-Object -Skip 349 -First 100\nGet-Content -LiteralPath docs/harness-v2/requirements.md -Encoding UTF8 | Select-Object -Skip 21 -First 35'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '$env:PYTHONDONTWRITEBYTECODE = '\"'1'\n\"'$env:PYTHONUTF8 = '\"'1'\npython -B .tmp/evidence/run_probes.py\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command '$env:PYTHONDONTWRITEBYTECODE = '\"'1'\n\"'$env:PYTHONUTF8 = '\"'1'\n@'\nimport hashlib,json,pathlib,subprocess,sys,datetime\nsys.dont_write_bytecode=True\nroot=pathlib.Path.cwd()\nout=root/'.tmp/evidence'\nsys.path.insert(0,str(root/'tools/harness-v2'))\nimport harness\nreport=json.loads((out/'probes.json').read_text(encoding='utf-8'))\ninputs=json.loads((root/'.tmp/probes/inputs.json').read_text(encoding='utf-8'))\nexpected_allowed={'P2-current','P3-4','P3-5','P3-9','P4-takeover','P5-independent','P6-read','P7-bot','P7-fallback','P7-ri[REDACTED]','P7-ri[REDACTED]','P7-order'}\nassert set(report)=={'decisions','actual_external_calls','product_writes','status'}\nassert [r['id'] for r in report['decisions']]==[r['id'] for r in inputs]\nfor row in report['decisions']:\n    assert set(row)=={'id','allowed','reason','stub_only'}\n    assert type(row['allowed']) is bool and row['stub_only'] is True and row['reason']\n    assert row['allowed']==(row['id'] in expected_allowed)\nassert report['status']=='COMPLETE' and report['actual_external_calls']==report['product_writes']==0\nexecution=json.loads((out/'probe-execution.json').read_text(encoding='utf-8'))\nevents=execution['events']\nfor i,event in enumerate(events):\n    if event['command'][3]=='stub':\n        assert i>0 and events[i-1]['command'][3]=='authorize' and events[i-1]['result']['status']=='READY'\norder=[event['label'] for event in events if event['label'].startswith('P7-order')]\nassert order==['P7-order:merge:authorize','P7-order:merge:stub','P7-order:close:authorize','P7-order:close:stub','P7-order:cleanup:authorize','P7-order:cleanup:stub']\ngoal=json.loads((out/'goal.json').read_text(encoding='utf-8'))\nassert harness.fingerprint(root,goal)==execution['fingerprint']\nassert harness.snapshot(root)==execution['snapshot_before']==execution['snapshot_after']\nfor ref in goal['references']:\n    assert ref['revision']=='sha256:'+hashlib.sha256((root/ref['path']).read_bytes()).hexdigest()\nargv=[sys.executable,'-B','tools/harness-v2/harness.py','complete','--goal','.tmp/evidence/goal.json','--evidence','.tmp/evidence/completion-evidence.json']\nresult=subprocess.run(argv,capture_output=True,text=True,encoding='utf-8')\nassert result.returncode==0 and not result.stderr\ncompletion=json.loads(result.stdout)\nassert completion['status']=='COMPLETE'\nmanifest={str(p.relative_to(root)).replace('\\\\\\\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in out.rglob('*') if p.is_file()}\naudit={'recorded_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'status':'COMPLETE','report_schema_valid':True,'input_ids_exactly_matched':True,'decisions_matched_normative_P_matrix':True,'all_stubs_preceded_by_READY_authorization':True,'P7_order_verified':order,'snapshot_unchanged':True,'references_fresh':True,'fingerprint':execution['fingerprint'],'completion_readback':{'command':argv,'exit_code':result.returncode,'stdout':completion,'stderr':result.stderr},'artifact_sha256':manifest,'secret_fixture_accessed':False,'external_calls':0,'product_writes':0,'claims_boundary':'COMPLETE refers only to the authority/routing probe. External states, C1/C2/C3, hibernation and local DO restart remain unexecuted and unproven.'}\npath=out/'readback.json'\npath.write_text(json.dumps(audit,ensure_ascii=True,indent=2)+'\\\\n',encoding='utf-8',newline='\\\\n')\nassert json.loads(path.read_text(encoding='utf-8'))==audit\nprint(json.dumps({'status':audit['status'],'decisions':len(report['decisions']),'allowed':len(expected_allowed),'denied':len(report['decisions'])-len(expected_allowed),'schema_and_ID_readback':True,'normative_matrix_match':True,'environment':json.loads((out/'environment.json').read_text(encoding='utf-8'))['status'],'completion':completion,'evidence_files_hashed':len(manifest),'actual_external_calls':0,'product_writes':0},ensure_ascii=True))\n'@ | python -B -\"",
+        "exit_code": 0,
+        "status": "completed"
+      }
+    ],
+    "unparsed_tail_bytes": 0,
+    "events_sha256": "e114586e440310d0332a59f6a797e1a035a9fc0209e41f6165912ad22a986b43"
+  },
+  "family_telemetry": {
+    "status": "linked trace observations; terminal states still require inspection",
+    "thread_id": "01a17c06-156f-7a31-aafb-5675a708a8cc",
+    "spawn_ids": [],
+    "spawn_attempt_count": 0,
+    "traces": [
+      {
+        "thread_id": "01a17c06-156f-7a31-aafb-5675a708a8cc",
+        "trace_found": true,
+        "trace_sha256": "999abc096ae0a4894dded1c277613c7ed74e2dbf81f2902ffb40ea929daea91c",
+        "metadata": {
+          "id": "01a17c06-156f-7a31-aafb-5675a708a8cc",
+          "parent_thread_id": null,
+          "agent_role": null,
+          "agent_path": null,
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\P-v2",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": "exec"
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 367985,
+          "cached_input_tokens": 327168,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 13512,
+          "reasoning_output_tokens": 1914,
+          "total_tokens": 381497
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-27T06:27:34.378Z",
+          "error": false
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      }
+    ],
+    "coverage_complete": true,
+    "all_agents_total_tokens": 381497,
+    "limitation": "No token inference; missing child telemetry or unmatched spawn makes total null. Provider counters retained verbatim."
+  },
+  "timing": {
+    "started_at": "2026-10-27T06:22:15.695036+00:00",
+    "model_terminal_at": "2026-10-27T06:27:34.378Z",
+    "wall_to_model_terminal_seconds": 318.682964,
+    "cli_wall_seconds": 319.5991949999989,
+    "active_seconds": null
+  },
+  "after": {
+    "head": "0cfa9d7efe011c089df78368db4c07c208c7014e",
+    "branch": "codex/harness-v2-trial",
+    "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "files": {},
+    "fingerprint": "646915d3f9e86dab962667fd9f00c869ce90e3109a1f8224107951e1cc872b52"
+  },
+  "untracked_files": {},
+  "tracked_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "raw_capture": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\P-v2-attempt0\\events.jsonl",
+  "raw_capture_sha256": "e114586e440310d0332a59f6a797e1a035a9fc0209e41f6165912ad22a986b43",
+  "cost_scope": "CLI parent and linked children only. Shared preparation/comparison adjudication costs are separate and not fully measured."
+}
