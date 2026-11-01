@@ -1,0 +1,25 @@
+{
+  "nodeVersion": "v22.23.4",
+  "nodeExit": 0,
+  "npmVersion": "10.9.9",
+  "npmExit": 0,
+  "nodeCommand": {
+    "Name": "node.exe",
+    "Source": "<trial>\\.tmp\\toolchain\\node.exe",
+    "CommandType": 32
+  },
+  "npmCommand": {
+    "Name": "npm.ps1",
+    "Source": "<trial>\\.tmp\\toolchain\\npm.ps1",
+    "CommandType": 16
+  },
+  "cli": {
+    "version": "v22.23.4",
+    "execPath": "<trial>\\.tmp\\toolchain\\node.exe",
+    "cwd": "<trial>",
+    "path": "C:\\Program Files\\PowerShell\\7;<trial>\\.tmp\\toolchain;C:\\Program Files\\PowerShell\\7;C:\\Users\\tts13\\.codex\\tmp\\arg0-windows\\codex-arg0ixuRcY;C:\\Users\\tts13\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\libheif\\libheif\\bin;C:\\Users\\tts13\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\jxrlib\\jxrlib\\bin;C:\\Users\\tts13\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\poppler\\Library\\bin;C:\\Users\\tts13\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\override;C:\\Program Files\\Volta\\;C:\\Python313\\Scripts\\;C:\\Python313\\;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files\\NVIDIA Corporation\\NVIDIA app\\NvDLISR;C:\\Program Files\\dotnet\\;C:\\ProgramData\\chocolatey\\bin;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Amazon\\AWSCLIV2\\;C:\\Program Files\\Microsoft VS Code\\bin;C:\\Program Files\\Rust stable LLVM 1.93\\bin;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Program Files\\OpenSSL-Win64\\bin;C:\\Program Files\\GitHub CLI\\;C:\\Program Files\\PowerShell\\7\\;C:\\Users\\tts13\\.grok\\bin;C:\\Users\\tts13\\.local\\bin;C:\\Users\\tts13\\AppData\\Local\\Volta\\bin;C:\\Users\\tts13\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell;C:\\Users\\tts13\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\tts13\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\tools\\flutter\\bin;C:\\Users\\tts13\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\tts13\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260224-ucrt-x86_64\\bin;C:\\Users\\tts13\\AppData\\Local\\Programs\\Espanso;C:\\Users\\tts13\\AppData\\Local\\Programs\\Ollama;C:\\Program Files\\Tesseract-OCR;C:\\Users\\tts13\\AppData\\Local\\Programs\\Antigravity IDE\\bin;C:\\Users\\tts13\\.dotnet\\tools;C:\\Users\\tts13\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\fallback;C:\\Users\\tts13\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin;C:\\Users\\tts13\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\git\\cmd;C:\\Users\\tts13\\AppData\\Local\\OpenAI\\Codex\\bin\\c602dfdab3808440;C:\\Users\\tts13\\AppData\\Local\\OpenAI\\Codex\\bin\\2993767bd1dfb009"
+  },
+  "cliExit": 0,
+  "npmCliVersion": "10.9.9",
+  "npmCliExit": 0
+}

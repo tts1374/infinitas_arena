@@ -1,0 +1,66 @@
+diff --git a/apps/worker/src/durable/lobby-directory-object.test.mjs b/apps/worker/src/durable/lobby-directory-object.test.mjs
+index 76b34d2..3ed1c79 100644
+--- a/apps/worker/src/durable/lobby-directory-object.test.mjs
++++ b/apps/worker/src/durable/lobby-directory-object.test.mjs
+@@ -198,4 +198,34 @@ test("persisted monotonic counter does not retain per-room tombstones after remo
+   assert.equal(storage.rooms["room-remove"], undefined);
+   assert.equal(storage.rooms["room-expire"], undefined);
+   assert.equal(typeof storage.lastUpdatedAtByRoomId, "number");
++  assert.deepEqual(Object.keys(storage).sort(), ["lastUpdatedAtByRoomId", "rooms"]);
++  assert.deepEqual(storage.rooms, {});
+ });
++
++for (const cleanup of ["remove", "expiry"]) {
++  test(`restores the scalar counter after ${cleanup} empties the directory and the clock moves back`, async () => {
++    const state = new TestDurableObjectState();
++    const original = new LobbyDirectoryDO(state);
++    await upsertRoom(original, 2_000);
++    const previousToken = (await (await listRooms(original, 2_000)).json()).rooms[0].updatedAt;
++
++    if (cleanup === "remove") {
++      await removeRoom(original, 2_000, { roomId: "room-1" });
++    } else {
++      await listRooms(original, 1_000 + READY_CHECK_TTL_MS + 1);
++    }
++    assert.deepEqual(state.storage.snapshot().rooms, {});
++    assert.equal(state.storage.snapshot().lastUpdatedAtByRoomId, previousToken);
++
++    const restored = new LobbyDirectoryDO(state);
++    await upsertRoom(restored, 1_000);
++    const delayedRemove = await removeRoom(restored, 1_000, {
++      roomId: "room-1",
++      expectedUpdatedAt: previousToken,
++    });
++    assert.equal((await delayedRemove.json()).removed, false);
++    const rooms = (await (await listRooms(restored, 1_000)).json()).rooms;
++    assert.equal(rooms.length, 1);
++    assert.ok(rooms[0].updatedAt > previousToken);
++  });
++}
+diff --git a/apps/worker/src/durable/lobby-directory-object.ts b/apps/worker/src/durable/lobby-directory-object.ts
+index bb357bc..677d228 100644
+--- a/apps/worker/src/durable/lobby-directory-object.ts
++++ b/apps/worker/src/durable/lobby-directory-object.ts
+@@ -162,7 +162,12 @@ function restoreLastIssuedUpdatedAt(
+ 
+   if (isFiniteNumber(input)) {
+     lastIssuedUpdatedAt = input;
+-
++  } else if (isRecord(input)) {
++    for (const updatedAt of Object.values(input)) {
++      if (isFiniteNumber(updatedAt)) {
++        lastIssuedUpdatedAt = Math.max(lastIssuedUpdatedAt, updatedAt);
++      }
++    }
+   }
+ 
+   for (const room of rooms.values()) {
+@@ -274,7 +279,7 @@ export class LobbyDirectoryDO {
+ 
+     const now = Date.now();
+     this.cleanupExpired(now);
+-    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt);
++    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt + 1);
+     this.lastIssuedUpdatedAt = nextUpdatedAt;
+ 
+     const normalized: LobbyRoomSummary = {

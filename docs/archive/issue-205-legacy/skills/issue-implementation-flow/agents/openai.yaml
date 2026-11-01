@@ -1,0 +1,4 @@
+interface:
+  display_name: "Issue Implementation Flow"
+  short_description: "確定 Issue を既存 Phase 運用へ接続し、実装と受け入れ条件の証跡をそろえる"
+  default_prompt: "Use $issue-implementation-flow to implement the specified Issue within its phase boundary and report acceptance evidence in Japanese."

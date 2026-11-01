@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-10-27T05:56:16.2604737Z",
+  "explicitNode": "v22.23.4",
+  "explicitNpm": "10.9.9",
+  "resolvedCommands": [
+    {
+      "Name": "node.exe",
+      "Source": "<trial>\\.tmp\\toolchain\\node.exe",
+      "CommandType": 32
+    },
+    {
+      "Name": "npm.ps1",
+      "Source": "<trial>\\.tmp\\toolchain\\npm.ps1",
+      "CommandType": 16
+    }
+  ],
+  "cli": {
+    "version": "v22.23.4",
+    "execPath": "<trial>\\.tmp\\toolchain\\node.exe",
+    "platform": "win32",
+    "arch": "x64",
+    "cwd": "<trial>",
+    "pathHead": "C:\\Program Files\\PowerShell\\7"
+  },
+  "cliNpm": "10.9.9",
+  "exits": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "expectedNode": "v22.23.4",
+  "expectedNpm": "10.9.9",
+  "match": true
+}

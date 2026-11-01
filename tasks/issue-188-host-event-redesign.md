@@ -1,5 +1,16 @@
 # Issue #188 再設計 — Phase B実行計画
 
+## 最新確認（2026-11-01、PR #189への製品実装集約）
+
+本節を現在の実行記録とする。後段の旧Phase/停止境界は当時の履歴であり、ユーザーの今回の統合・レビュー対応指示により更新する。旧ABCD・固定8役運用は再開しない。#206の正式採用、PR merge、Issue close、deploy/releaseは今回行わない。
+
+- 元#189 `90856a4` を含む検証済み#188 v2実装 `0dac1b0` に、現在のv1 `e89ea1f` を無衝突でmerge。旧#188/#192 branch、WIP、stash2件を保持し、統合branch `codex/issue189-integration` で作業。
+- `08c33b5`: 開催SUBMITを非負整数に制限し、無効値で永続化/成功ACK/提出枠/idempotencyを変更しない。終了保存後にcleanup setAlarmが失敗しても、再alarmで元のended_at+1800秒を再設定し、繰返し失敗はthrowを維持。#192のrestore期限自動通知補正も製品側へ抽出。既存recordのschema/readerは変更しない。
+- `9c241a1`: #192で実証したv3開催context/外部文字列IDの一意catalog照合を抽出。dev-control gate3行を除外した製品コードで、開発窓/broker/native制御/新依存を含めない。source-storeの6テストを既存標準entrypointへ登録。
+- 今回の追加3回帰は修正前に3件FAIL→修正後PASS。抽出後の全client159、Worker193、Host Event integration6、stats17、root型/lint、agent/契約検査、client build、cargo check/test20、Worker dry-runがPASS。独立read-onlyレビューもsource対象6/6、Worker対象86/86を再実行し、今回の差分に未解決Blocker/Must fixなし。
+- v3本人実プレー・通常3モード完走・合同/大会・実時計300秒通知の証拠は [#192の固定記録](https://github.com/tts1374/infinitas_arena/blob/3bc6140a86b48727ddf073202c9dcba27a17e830/docs/testing/dev-control.md) を参照。分離後のGUI/実入力・Cloudflare本番alarmは新たには実行せず、製品コードの一致と今回の回帰を根拠とする。#192固有のHost A/背景提出・操作窓読込エラー等を#188の完成へ混同しない。
+- 互換性は既存v2規範を維持。protocol/schema1の開催recordは原本保持のfail-closed、v2公開前のdrainは未実施。本番適用・成功を主張せず、mergeは人間の明示判断に残す。
+
 ## 目的・完了条件・現在の境界
 
 - task label: `#188-host-event-redesign`。

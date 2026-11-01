@@ -1,0 +1,491 @@
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+{
+  "root": "<trial>",
+  "directory": "<trial>\\.tmp\\comparison-visual",
+  "fixture_sha256": "35abef2cc6ef2c1e1bc3b35fe407463e828c4e6fcfa4eb15ebf3c6e9f022b871",
+  "html_sha256": "2ee6e8e4bc58e2cdeb2df3262ba482c140645192e159bb3a0fbe9255fed324e3",
+  "browser_path": "regular Playwright; Browser plugin not available",
+  "controller_limit": "open/close controls are a synthetic controller for isOpen; selection invokes the actual product onSelect callback",
+  "started_at": "2026-10-26T14:28:06.346Z",
+  "reference": false,
+  "playwright_path": "C:\\Users\\tts13\\AppData\\Local\\npm-cache\\_npx\\9833c18b2d85bc59\\node_modules\\playwright\\index.mjs",
+  "rows": [
+    {
+      "width": 320,
+      "role": "host",
+      "time": "null",
+      "errors": [],
+      "modal": {
+        "text": "--:--",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 208.8125,
+          "y": 91,
+          "width": 52.1875,
+          "height": 90
+        }
+      },
+      "expected_text": "--:--",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-host-null.png",
+      "screenshot_sha256": "34303fb976f4a78f9442787acbb9bacb4a614015d7f16b17b6d99ea373f3571b",
+      "room_countdown": "TIME REMAINING\n--:--",
+      "room_null_preserved": true,
+      "room_screenshot": "320-host-null-room.png",
+      "room_screenshot_sha256": "50b2200bd65e37b650cc3eabfa13c0020117ab53c0c5d7a6ba55daa31c59100f",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "host",
+      "time": "0",
+      "errors": [],
+      "modal": {
+        "text": "00:00",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-red-500",
+        "color": "rgb(239, 68, 68)",
+        "rect": {
+          "x": 186.015625,
+          "y": 95.25,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "00:00",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-red-500",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-host-0.png",
+      "screenshot_sha256": "0029ffbaa099e7eecdd80c311cc70889220ecfd6763026414c03c10ba3287abc",
+      "room_countdown": "TIME REMAINING\n0:00",
+      "room_null_preserved": true,
+      "room_screenshot": "320-host-0-room.png",
+      "room_screenshot_sha256": "292b039cdd550b2d9ff97ca3bf34fc975a79b8eecdc353bbf6e35ea27050e664",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "host",
+      "time": "65",
+      "errors": [],
+      "modal": {
+        "text": "01:05",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 186.015625,
+          "y": 95.25,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "01:05",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-host-65.png",
+      "screenshot_sha256": "554da8f9d69c9a08708191dbbe56e842108352911e8d3c5cac59ccc9e7418072",
+      "room_countdown": "TIME REMAINING\n1:05",
+      "room_null_preserved": true,
+      "room_screenshot": "320-host-65-room.png",
+      "room_screenshot_sha256": "4e46f29bad01f8d999ee9335261edaecac3416832a22967ff9432ee885f7eed8",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "guest",
+      "time": "null",
+      "errors": [],
+      "modal": {
+        "text": "--:--",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 208.8125,
+          "y": 91,
+          "width": 52.1875,
+          "height": 90
+        }
+      },
+      "expected_text": "--:--",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-guest-null.png",
+      "screenshot_sha256": "d7f3c09a80f8e8fbc11313b24aaa568461d8fa556f075843f24a62cd801613c3",
+      "room_countdown": "TIME REMAINING\n--:--",
+      "room_null_preserved": true,
+      "room_screenshot": "320-guest-null-room.png",
+      "room_screenshot_sha256": "433220eb7b6a5b76348ee94e28cfc186fd7220419e0a46d01214f740478e5692",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "guest",
+      "time": "0",
+      "errors": [],
+      "modal": {
+        "text": "00:00",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-red-500",
+        "color": "rgb(239, 68, 68)",
+        "rect": {
+          "x": 186.015625,
+          "y": 95.25,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "00:00",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-red-500",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-guest-0.png",
+      "screenshot_sha256": "23bb8d3ea915175f8457ff924b9ecdc3f538656c5fc7589d533c393d22ae6920",
+      "room_countdown": "TIME REMAINING\n0:00",
+      "room_null_preserved": true,
+      "room_screenshot": "320-guest-0-room.png",
+      "room_screenshot_sha256": "fe09688428ba09e510667411e30f8d3dfb58b9b64f634cb1f34d66190166e583",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 320,
+      "role": "guest",
+      "time": "65",
+      "errors": [],
+      "modal": {
+        "text": "01:05",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 186.015625,
+          "y": 95.25,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "01:05",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      },
+      "screenshot": "320-guest-65.png",
+      "screenshot_sha256": "487cf828d5f53ba1b0f69ba315fd7cc3f27091dedf8ebb9fc90fad99e4d51f04",
+      "room_countdown": "TIME REMAINING\n1:05",
+      "room_null_preserved": true,
+      "room_screenshot": "320-guest-65-room.png",
+      "room_screenshot_sha256": "de0fb341d1cae2f9165135d474bc144815de8cbc5b5bce792b67d7196f79c2d0",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "host",
+      "time": "null",
+      "errors": [],
+      "modal": {
+        "text": "--:--",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 722.015625,
+          "y": 81,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "--:--",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-host-null.png",
+      "screenshot_sha256": "bfe6ec199b794519d2b7d7aae485cd74da23ba0bbdb466dc3bb1cebb8d30af87",
+      "room_countdown": "TIME REMAINING\n--:--",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-host-null-room.png",
+      "room_screenshot_sha256": "d8e3b0eb1379a78d813c6fea67cc99ec642cdf1a0ba2687714c5b92dba926651",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "host",
+      "time": "0",
+      "errors": [],
+      "modal": {
+        "text": "00:00",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-red-500",
+        "color": "rgb(239, 68, 68)",
+        "rect": {
+          "x": 722.015625,
+          "y": 81,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "00:00",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-red-500",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-host-0.png",
+      "screenshot_sha256": "beeb789101398d6f1ec1eb5d27cf149bd75b6f38c41a3808c3cbbe90db784284",
+      "room_countdown": "TIME REMAINING\n0:00",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-host-0-room.png",
+      "room_screenshot_sha256": "567185a11871ea3c0befa6d4352b0495ece3b4d14063925a46db2060825d11bf",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "host",
+      "time": "65",
+      "errors": [],
+      "modal": {
+        "text": "01:05",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 722.015625,
+          "y": 81,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "01:05",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-host-65.png",
+      "screenshot_sha256": "aea3faee7f3738b5598f6bf1613b1040ad584e5826b3ee3e772dcd255fd451a7",
+      "room_countdown": "TIME REMAINING\n1:05",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-host-65-room.png",
+      "room_screenshot_sha256": "473638dd40b702e57bf2888c07f17bd863180457fc96825991e9ba8f57523f05",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "guest",
+      "time": "null",
+      "errors": [],
+      "modal": {
+        "text": "--:--",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 722.015625,
+          "y": 81,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "--:--",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-guest-null.png",
+      "screenshot_sha256": "177437529d8af3a4f61aec789cdc91c7ec160a1ce338798935571198b6139d8a",
+      "room_countdown": "TIME REMAINING\n--:--",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-guest-null-room.png",
+      "room_screenshot_sha256": "fd47f2d5d91a1fb152668871456a177f109f560534d28ab08b14f0fe2e5b5cba",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "guest",
+      "time": "0",
+      "errors": [],
+      "modal": {
+        "text": "00:00",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-red-500",
+        "color": "rgb(239, 68, 68)",
+        "rect": {
+          "x": 722.015625,
+          "y": 81,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "00:00",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-red-500",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-guest-0.png",
+      "screenshot_sha256": "dbd424cbcc29d1fa5209d523de9e07ea74619fb1d063f3c33ce5f83429dc977a",
+      "room_countdown": "TIME REMAINING\n0:00",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-guest-0-room.png",
+      "room_screenshot_sha256": "ddbe6be01767a63e40e94edc869a1eb39fe4fa984114e5aca89bd2ae042cec00",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    },
+    {
+      "width": 1024,
+      "role": "guest",
+      "time": "65",
+      "errors": [],
+      "modal": {
+        "text": "01:05",
+        "class_name": "text-3xl font-mono font-black italic tracking-tighter leading-none text-cyan-400",
+        "color": "rgb(34, 211, 238)",
+        "rect": {
+          "x": 722.015625,
+          "y": 81,
+          "width": 74.984375,
+          "height": 30
+        }
+      },
+      "expected_text": "01:05",
+      "countdown_matches_plan": true,
+      "expected_color_class": "text-cyan-400",
+      "color_class_preserved": true,
+      "baseline_gap": null,
+      "modal_countdown_visible": true,
+      "overflow": {
+        "viewport": 1024,
+        "document": 1024,
+        "body": 1024
+      },
+      "screenshot": "1024-guest-65.png",
+      "screenshot_sha256": "3e53e76a065b1a8b7dc2b4d0d19fa16277dbe183ff6413a2983db482149b81be",
+      "room_countdown": "TIME REMAINING\n1:05",
+      "room_null_preserved": true,
+      "room_screenshot": "1024-guest-65-room.png",
+      "room_screenshot_sha256": "165ae81f081f95377d021cb7800180e0a594380aab4b1fdb950647ee39c163ad",
+      "close_reopen": true,
+      "search_and_select": true,
+      "keyboard_tab_moves_focus": true,
+      "no_error_overlay": true,
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "status": "pass",
+  "url": "http://127.0.0.1:58680/.tmp/comparison-visual/index.html",
+  "browser_executable": "C:/Users/tts13/AppData/Local/ms-playwright/chromium-1208/chrome-win64/chrome.exe",
+  "browser_version": "145.0.7632.6",
+  "note": "Plan expectations are strict; baseline reference differences do not relax the AC.",
+  "ended_at": "2026-10-26T14:28:21.782Z"
+}

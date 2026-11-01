@@ -1,0 +1,4 @@
+interface:
+  display_name: "Phase C Review Response Flow"
+  short_description: "Handle bounded PR review iterations in Phase C"
+  default_prompt: "Prepare a bounded Phase C review-response artifact from a PR review or thread, including source of truth, actionable threads, validation/audit plan, and GitHub write-back steps."

@@ -285,6 +285,7 @@
 - action: `START_EVENT | CONFIRM_PICK | CANCEL_PICK | START_ROUND | SUBMIT | SKIP | CLOSE_ROUND | NEXT_PICK | INVALIDATE_ROUND | KICK | LEAVE | END_EVENT | STATE_GET | RESULTS_GET`。開催v2に`SET_READY`を定義せず、通常roomの`READY_SET`は維持する。
 - `START_ROUND`の条件は規範01 §12.1の確定譜面/当該曲対象1人以上/Host接続とcontext一致。参加者切断・通話休憩でも対象を保持し、Readyを条件にしない。
 - `SUBMIT`は`observed_key / metric_value / source_meta?`を含むが、全体revision一致を条件にせず、現行generation/event/round/expected_key/socket/資格/未提出をserverで検証する。
+- `SUBMIT.metric_value` は0以上の整数のみ受理する。負数・小数・非有限値は保存・成功ACKの前に拒否し、提出枠を消費しない。
 
 ### 6.2 server -> client
 

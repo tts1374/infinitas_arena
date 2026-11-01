@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-27T05:55:52.711500+00:00",
+  "method": "codex debug prompt-input with exact runtime profile/overrides; no model request",
+  "invocation_sha256": "8b08060eed11da39412ab84cc2fa81ad2b2af7ac4e860af5e6e021457eb805a2",
+  "profile_sha256": "a433cdb3be2a3f38bd4f5160a1ba91987ab8416e54d1cd464cb48d40577be93d",
+  "project_config_sha256": "7d9f531b32700fa8a68f5b1df71dce87fa6a33b73a89e630946def28043a2972",
+  "observed_concurrency_slots_including_parent": 7,
+  "expected_child_limit": 6,
+  "project_config_active": true,
+  "declared_model": "gpt-6.1-sol",
+  "declared_subagent_model": "gpt-6.1-sol",
+  "prompt_sha256": "cc5e903007498ed8cdae9f57cd7474ac7fa96e6b0acc42267076b18bf3038a91",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "project_skill_assets": [
+    "branch-latest-sync-flow",
+    "commit-pr-flow",
+    "fsm-protocol-guard",
+    "issue-authoring-flow",
+    "issue-close-evidence-flow",
+    "issue-implementation-flow",
+    "issue-readiness-check",
+    "issue-start-prompt-flow",
+    "phase-c-kickoff-flow",
+    "phase-c-review-response-flow",
+    "phase-d-followup-issue-flow",
+    "phase-d-release-flow",
+    "plan-mode-gate",
+    "post-approval-merge-flow",
+    "quality-check-matrix"
+  ],
+  "model_visible_project_skills_by_exact_path": [],
+  "limitation": "Exact-profile resolved prompt and unchanged config hash. Filesystem skill assets and exact paths in the model-visible catalog are separate fields; lazy discovery may not appear here. Actual model/effort/custom role/skill use is separately checked in run trace. Raw prompt is not exported."
+}

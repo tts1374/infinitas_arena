@@ -1,0 +1,188 @@
+[
+  {
+    "id": "check-1",
+    "argv": [
+      "npm",
+      "run",
+      "check:agents"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-1.log"
+  },
+  {
+    "id": "check-2",
+    "argv": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      ".tmp/comparison/c2-barrier.test.mjs"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-2.log"
+  },
+  {
+    "id": "check-3",
+    "argv": [
+      "npx",
+      "--no-install",
+      "wrangler",
+      "deploy",
+      "--dry-run"
+    ],
+    "cwd": "<trial>\\apps\\worker",
+    "exit_code": null,
+    "log": "logs/check-3.log"
+  },
+  {
+    "id": "check-4",
+    "argv": [
+      "npm",
+      "run",
+      "test:client-stats"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-4.log"
+  },
+  {
+    "id": "check-5",
+    "argv": [
+      "npm",
+      "run",
+      "check:design-contracts"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-5.log"
+  },
+  {
+    "id": "check-6",
+    "argv": [
+      ".tmp/toolchain/node.exe --version",
+      ".tmp/toolchain/npm.cmd --version",
+      "Get-Command node,npm | Select-Object Name,Source,CommandType",
+      "node -p JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch,cwd:process.cwd()})",
+      "npm --version"
+    ],
+    "cwd": null,
+    "exit_code": null,
+    "log": "logs/check-6.log"
+  },
+  {
+    "id": "check-7",
+    "argv": [
+      "node",
+      ".tmp/evidence/build-executor.mjs"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-7.log"
+  },
+  {
+    "id": "check-8",
+    "argv": [
+      "node",
+      ".tmp/evidence/verify-executor.mjs"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-8.log"
+  },
+  {
+    "id": "check-9",
+    "argv": "node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs",
+    "cwd": null,
+    "exit_code": null,
+    "log": "logs/check-9.log"
+  },
+  {
+    "id": "check-10",
+    "argv": "node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs",
+    "cwd": null,
+    "exit_code": null,
+    "log": "logs/check-10.log"
+  },
+  {
+    "id": "check-11",
+    "argv": "npm run test:worker",
+    "cwd": null,
+    "exit_code": null,
+    "log": "logs/check-11.log"
+  },
+  {
+    "id": "check-12",
+    "argv": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-12.log"
+  },
+  {
+    "id": "check-13",
+    "argv": [
+      "node",
+      ".tmp/evidence/redact-owned-logs.mjs"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-13.log"
+  },
+  {
+    "id": "check-14",
+    "argv": [
+      "node",
+      ".tmp/evidence/runtime-restart.mjs",
+      "attempt2"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-14.log"
+  },
+  {
+    "id": "check-15",
+    "argv": [
+      "node",
+      ".tmp/evidence/runtime-restart.mjs"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-15.log"
+  },
+  {
+    "id": "check-16",
+    "argv": [
+      "node",
+      ".tmp/evidence/capture-snapshot.mjs"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-16.log"
+  },
+  {
+    "id": "check-17",
+    "argv": [
+      "node",
+      ".tmp/evidence/capture-snapshot.mjs"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-17.log"
+  },
+  {
+    "id": "check-18",
+    "argv": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "cwd": "<trial>",
+    "exit_code": null,
+    "log": "logs/check-18.log"
+  }
+]

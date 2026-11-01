@@ -1,0 +1,100 @@
+{
+  "case_id": "C3",
+  "specification": "## C3: Client/Worker/Sharedの加法契約と旧保存互換\n\n**共通Goal:** 「比較実験内だけで、`RoomStateSnapshot.quick_chat_available?: boolean`を加法導入する。新Workerはtrueを配信し、新Clientはfalseなら入力欄を無効にし既存履歴は表示する。field欠落は従来挙動を維持する。既存FSM/操作権限/結果/期限/保存版を変えない。」これはハーネス評価用の合成要求であり、製品の採用予定機能ではない。\n\n- 入力: 基点の製品は無変更。追加fieldは基点で未定義であることを準備時に確認。仕様は本節と固定fixture（欠落/true/false、不正値、旧/新snapshot保存）。初期実装patchは与えない。\n- scope: shared snapshot型、Worker snapshot producer、Clientのsnapshot利用とquick-chat入力UI、直接test、実験用の契約説明。shared writerを親または明示一人に割当。現行Q保証や正規権限は編集不可。\n- 契約: optional boolean、欠落は現行の入力可否規則へfallback。trueでも現行のhost/player/state/観戦制約を上書きしない。falseは入力不可で履歴可。不正型は新Clientでfield欠落相当に扱い、他の正常snapshot部分を破壊しない。新Workerが不正型を生成しない。既存保存へのoptional追加なので同一schema版を維持、旧保存は読める。\n- 互換matrix: 旧Worker→新Client（欠落fallback）、新Worker→旧Client（未知fieldを無視し既存進行可）、新→新true、fixture false、legacy保存→新reader、新保存→旧reader。旧/新を同じ型へcastして互換確認を代用しない。\n- 権限/漏えい回帰: spectatorはtrueでも操作不可、private spectator snapshotのjoin_code redaction維持、LOBBY/PICKING外の既存投稿拒否維持。保存/再読込後にfalse表示が意図どおりで、履歴/統計を消さない。\n- 検証: root型/lint/client build、client標準・stats・worker tests、design-contract check、Worker dry-run、serialization/readerのmatrix、browser表示/操作。隔離実client+local Workerでcreate→ready→pick→play→result、duplicate pick、TIMEOUT/FORCE_ADVANCE/SKIP_HOST_ASSIGN拒否、ROOM_STATE_LOSTを既存E2Eまたは同等の実シナリオで確認する。sourceは既存reflux-reflux/mixed経路を使い正規watcherから受付まで相関する。直接WSだけの代替は不可。\n- 監査: 実装非担当がdocs/shared/producer/consumer/storageを照合、additive分類・旧新matrix・UI証拠を確認。契約と挙動の両面を担当可能なら一人でもよい。\n- 合格: 上記ACとQ01〜Q16の該当面、scope/権限を満たす。one-sided対応、欠落で新必須にする、schemaを不用意に上げる、旧データ破棄、実source未実証のPASS化は不合格。\n",
+  "scope_note": "Only the exact component/producer/consumer and directly required tests described in specification; directory grants do not authorize unrelated changes.",
+  "allowed_paths": [
+    "packages/shared/src",
+    "apps/worker/src/durable",
+    "apps/client/src",
+    "docs/design"
+  ],
+  "commands": [
+    [
+      "npm",
+      "run",
+      "lint"
+    ],
+    [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    [
+      "npm",
+      "run",
+      "test:client-stats"
+    ],
+    [
+      "npm",
+      "run",
+      "test:worker"
+    ],
+    [
+      "npm",
+      "run",
+      "build:client"
+    ],
+    [
+      "npm",
+      "--workspace",
+      "@infinitas/client",
+      "run",
+      "test"
+    ],
+    [
+      "npm",
+      "run",
+      "check:design-contracts"
+    ],
+    [
+      "npx",
+      "--no-install",
+      "wrangler",
+      "deploy",
+      "--dry-run"
+    ]
+  ],
+  "quality": [
+    "Q01",
+    "Q02",
+    "Q03",
+    "Q04",
+    "Q05",
+    "Q06",
+    "Q07",
+    "Q08",
+    "Q09",
+    "Q10",
+    "Q11",
+    "Q12",
+    "Q13",
+    "Q14",
+    "Q15",
+    "Q16"
+  ],
+  "fixture": {
+    "values": [
+      "missing",
+      true,
+      false,
+      null,
+      "invalid",
+      0,
+      1
+    ],
+    "matrix": [
+      "old-worker/new-client",
+      "new-worker/old-client",
+      "new/new/true",
+      "false fixture",
+      "legacy-save/new-reader",
+      "new-save/old-reader"
+    ],
+    "authority": [
+      "spectator",
+      "join_code redaction",
+      "state rejection"
+    ],
+    "native_e2e": "real watcher/parser->client->local Worker; direct WS is insufficient"
+  }
+}

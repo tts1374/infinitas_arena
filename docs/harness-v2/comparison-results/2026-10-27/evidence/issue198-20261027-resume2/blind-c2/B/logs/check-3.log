@@ -1,0 +1,16 @@
+
+ ⛅️ wrangler 4.76.0 (update available 4.153.0)
+──────────────────────────────────────────────
+Total Upload: 3449.57 KiB / gzip: 249.79 KiB
+Your Worker has access to the following bindings:
+Binding                                                                  Resource                  
+env.ROOM_DO (RoomDurableObject)                                          Durable Object            
+env.LOBBY_DIRECTORY_DO (LobbyDirectoryDO)                                Durable Object            
+env.MATCHMAKING_DO (MatchmakingDurableObject)                            Durable Object            
+env.FEEDBACK_KV (a03343c6198440b096eeb37bfacd1260)                       KV Namespace              
+env.REPO_OWNER_GITHUB ("tts1374")                                        Environment Variable      
+env.REPO_NAME_GITHUB ("infinitas_arena")                                 Environment Variable      
+env.APP_ENV ("production")                                               Environment Variable      
+env.MIN_SUPPORTED_CLIENT_VERSION ("1.4.0")                               Environment Variable      
+
+--dry-run: exiting now.

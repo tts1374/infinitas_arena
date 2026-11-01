@@ -1,0 +1,21 @@
+
+> infinitas-arena@1.4.0 test:client-stats
+> node -e "require('node:fs').rmSync('./.tmp/client-stats-tests', { recursive: true, force: true })" && node ./node_modules/typescript/bin/tsc -p apps/client/tsconfig.stats-test.json && node ./.tmp/client-stats-tests/apps/client/src/features/stats/stats.test.js
+
+ok: BPL rating is updated once per match from initial 1500 and history keeps round detail
+ok: rating series stay separated and PRIVATE matches do not affect rating
+ok: ARENA match rating uses pairwise pseudo matches from final standing
+ok: ARENA final standing resolves ties by EX total, then confirmation time, then shared rank
+ok: ARENA display rank keeps shared places when EX score breaks the internal tie
+ok: BPL detailed history shows tied rounds as 1-1 while preserving MISSCOUNT totals
+ok: BPL4 closed matches are complete and visible in BPL history
+ok: legacy BPL3/BPL4 storage entries are normalized and shown in BPL stats
+ok: DO-provided unrated decision blocks local rating updates
+ok: server-authoritative match_id separates rematches and fallback keeps room_id
+ok: match_id fallback resets to room_id after returning to LOBBY
+ok: snapshot current_match_id is preferred for active rematch session
+ok: late RESULT_READY with different match_id finalizes previous match
+ok: closed match without confirmed games does not create an empty match record
+ok: authoritative match_id promotion keeps rounds and rewrites provisional ids
+ok: chart rankings require three matches and stay separated by chart id, rule, and mode
+ok: stability uses the most recent twenty play results, keeps duplicates, includes PRIVATE, and excludes charts without bests

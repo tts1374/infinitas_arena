@@ -1,0 +1,380 @@
+{
+  "scope": "additional actual local restart/barrier records; not hibernation proof",
+  "files": [
+    {
+      "path": "barrier.json",
+      "original_sha256": "adb568bd531322dfab41acc4de42c3e8d9f50c2da08819397000d1b3f9f64097",
+      "redacted_content": "{\n  \"label\": \"barrier\",\n  \"command\": [\n    \"node\",\n    \"--import\",\n    \"tsx\",\n    \"--test\",\n    \".tmp/comparison/c2-barrier.test.mjs\"\n  ],\n  \"cwd\": \"<trial>\",\n  \"executable\": \"<trial>\\\\.tmp\\\\toolchain\\\\node.exe\",\n  \"args\": [\n    \"--import\",\n    \"tsx\",\n    \"--test\",\n    \".tmp/comparison/c2-barrier.test.mjs\"\n  ],\n  \"node\": \"v22.23.4\",\n  \"startedAt\": \"2026-10-27T05:59:16.770Z\",\n  \"log\": \"<trial>\\\\.tmp\\\\evidence\\\\barrier.log\",\n  \"exit\": 0,\n  \"signal\": null,\n  \"endedAt\": \"2026-10-27T05:59:17.170Z\"\n}\n"
+    },
+    {
+      "path": "runtime-restart-attempt2-result.json",
+      "original_sha256": "0949712ec87308278d093d5ed7ff10b4ecaebf5c75eb6fc303af0fe275efb150",
+      "redacted_content": "{\n  \"status\": \"pass\",\n  \"controllerPid\": 7800,\n  \"node\": \"v22.23.4\",\n  \"port\": 65118,\n  \"inspectorPort\": 65119,\n  \"host\": \"127.0.0.1\",\n  \"config\": \".tmp/evidence/runtime-wrangler.json\",\n  \"persistence\": \".tmp/p-attempt2\",\n  \"API\": \"wrangler.unstable_dev (local dev runtime)\",\n  \"clock\": \"test-only request header freezes Date.now around actual production fetch\",\n  \"hibernation\": \"unproven; local process/runtime restart only\",\n  \"spawned\": [\n    {\n      \"pid\": 32732,\n      \"executable\": \"<trial>\\\\node_modules\\\\@esbuild\\\\win32-x64\\\\esbuild.exe\",\n      \"startedAt\": \"2026-10-27T06:00:58.355Z\",\n      \"ownerPid\": 7800\n    },\n    {\n      \"pid\": 33684,\n      \"executable\": \"<trial>\\\\node_modules\\\\@cloudflare\\\\workerd-windows-64\\\\bin\\\\workerd.exe\",\n      \"startedAt\": \"2026-10-27T06:00:58.438Z\",\n      \"ownerPid\": 7800,\n      \"exit\": null,\n      \"signal\": \"SIGKILL\",\n      \"endedAt\": \"2026-10-27T06:00:58.735Z\"\n    },\n    {\n      \"pid\": 29312,\n      \"executable\": \"<trial>\\\\node_modules\\\\@cloudflare\\\\workerd-windows-64\\\\bin\\\\workerd.exe\",\n      \"startedAt\": \"2026-10-27T06:00:58.522Z\",\n      \"ownerPid\": 7800,\n      \"exit\": null,\n      \"signal\": \"SIGKILL\",\n      \"endedAt\": \"2026-10-27T06:00:58.736Z\"\n    },\n    {\n      \"pid\": 31100,\n      \"executable\": \"<trial>\\\\node_modules\\\\@cloudflare\\\\workerd-windows-64\\\\bin\\\\workerd.exe\",\n      \"startedAt\": \"2026-10-27T06:00:58.840Z\",\n      \"ownerPid\": 7800,\n      \"exit\": null,\n      \"signal\": \"SIGKILL\",\n      \"endedAt\": \"2026-10-27T06:00:59.096Z\"\n    },\n    {\n      \"pid\": 34748,\n      \"executable\": \"<trial>\\\\node_modules\\\\@cloudflare\\\\workerd-windows-64\\\\bin\\\\workerd.exe\",\n      \"startedAt\": \"2026-10-27T06:00:58.887Z\",\n      \"ownerPid\": 7800,\n      \"exit\": null,\n      \"signal\": \"SIGKILL\",\n      \"endedAt\": \"2026-10-27T06:00:59.094Z\"\n    },\n    {\n      \"pid\": 33440,\n      \"executable\": \"<trial>\\\\node_modules\\\\@cloudflare\\\\workerd-windows-64\\\\bin\\\\workerd.exe\",\n      \"startedAt\": \"2026-10-27T06:00:59.179Z\",\n      \"ownerPid\": 7800,\n      \"exit\": null,\n      \"signal\": \"SIGKILL\",\n      \"endedAt\": \"2026-10-27T06:00:59.414Z\"\n    },\n    {\n      \"pid\": 28720,\n      \"executable\": \"<trial>\\\\node_modules\\\\@cloudflare\\\\workerd-windows-64\\\\bin\\\\workerd.exe\",\n      \"startedAt\": \"2026-10-27T06:00:59.224Z\",\n      \"ownerPid\": 7800,\n      \"exit\": null,\n      \"signal\": \"SIGKILL\",\n      \"endedAt\": \"2026-10-27T06:00:59.415Z\"\n    }\n  ],\n  \"phases\": [\n    {\n      \"label\": \"initial\",\n      \"startedAt\": \"2026-10-27T06:00:58.557Z\",\n      \"address\": \"127.0.0.1\",\n      \"port\": 65118\n    },\n    {\n      \"label\": \"restored-with-live-room\",\n      \"startedAt\": \"2026-10-27T06:00:58.959Z\",\n      \"address\": \"127.0.0.1\",\n      \"port\": 65118\n    },\n    {\n      \"label\": \"restored-empty-directory\",\n      \"startedAt\": \"2026-10-27T06:00:59.300Z\",\n      \"address\": \"127.0.0.1\",\n      \"port\": 65118\n    }\n  ],\n  \"stopResults\": [\n    {\n      \"label\": \"initial\",\n      \"stoppedAt\": \"2026-10-27T06:00:58.817Z\",\n      \"portReleased\": true\n    },\n    {\n      \"label\": \"restored-with-live-room\",\n      \"stoppedAt\": \"2026-10-27T06:00:59.149Z\",\n      \"portReleased\": true\n    },\n    {\n      \"label\": \"restored-empty-directory\",\n      \"stoppedAt\": \"2026-10-27T06:00:59.487Z\",\n      \"portReleased\": true\n    }\n  ],\n  \"before\": {\n    \"list\": {\n      \"rooms\": [\n        {\n          \"roomId\": \"runtime-room\",\n          \"roomName\": \"Synthetic\",\n          \"ownerUserId\": \"fixture\",\n          \"ownerDisplayName\": \"Fixture\",\n          \"mode\": \"ARENA\",\n          \"playStyle\": \"SP\",\n          \"levelFilter\": \"ANY\",\n          \"winMetric\": \"SCORE\",\n          \"hasJoinCode\": false,\n          \"isPublic\": true,\n          \"currentPlayers\": 1,\n          \"maxPlayers\": 2,\n          \"isFull\": false,\n          \"status\": \"LOBBY\",\n          \"ttlStartedAt\": 1000,\n          \"createdAt\": 1000,\n          \"updatedAt\": 1001\n        }\n      ],\n      \"serverTime\": 1000\n    },\n    \"storage\": {\n      \"rooms\": {\n        \"runtime-room\": {\n          \"roomId\": \"runtime-room\",\n          \"roomName\": \"Synthetic\",\n          \"ownerUserId\": \"fixture\",\n          \"ownerDisplayName\": \"Fixture\",\n          \"mode\": \"ARENA\",\n          \"playStyle\": \"SP\",\n          \"levelFilter\": \"ANY\",\n          \"winMetric\": \"SCORE\",\n          \"hasJoinCode\": false,\n          \"isPublic\": true,\n          \"currentPlayers\": 1,\n          \"maxPlayers\": 2,\n          \"isFull\": false,\n          \"status\": \"LOBBY\",\n          \"ttlStartedAt\": 1000,\n          \"createdAt\": 1000,\n          \"updatedAt\": 1001\n        }\n      },\n      \"lastUpdatedAtByRoomId\": 1001,\n      \"keys\": [\n        \"lastUpdatedAtByRoomId\",\n        \"rooms\"\n      ]\n    }\n  },\n  \"afterFirstRestart\": {\n    \"list\": {\n      \"rooms\": [\n        {\n          \"roomId\": \"runtime-room\",\n          \"roomName\": \"Synthetic\",\n          \"ownerUserId\": \"fixture\",\n          \"ownerDisplayName\": \"Fixture\",\n          \"mode\": \"ARENA\",\n          \"playStyle\": \"SP\",\n          \"levelFilter\": \"ANY\",\n          \"winMetric\": \"SCORE\",\n          \"hasJoinCode\": false,\n          \"isPublic\": true,\n          \"currentPlayers\": 1,\n          \"maxPlayers\": 2,\n          \"isFull\": false,\n          \"status\": \"LOBBY\",\n          \"ttlStartedAt\": 1000,\n          \"createdAt\": 1000,\n          \"updatedAt\": 1001\n        }\n      ],\n      \"serverTime\": 999\n    },\n    \"storage\": {\n      \"rooms\": {\n        \"runtime-room\": {\n          \"roomId\": \"runtime-room\",\n          \"roomName\": \"Synthetic\",\n          \"ownerUserId\": \"fixture\",\n          \"ownerDisplayName\": \"Fixture\",\n          \"mode\": \"ARENA\",\n          \"playStyle\": \"SP\",\n          \"levelFilter\": \"ANY\",\n          \"winMetric\": \"SCORE\",\n          \"hasJoinCode\": false,\n          \"isPublic\": true,\n          \"currentPlayers\": 1,\n          \"maxPlayers\": 2,\n          \"isFull\": false,\n          \"status\": \"LOBBY\",\n          \"ttlStartedAt\": 1000,\n          \"createdAt\": 1000,\n          \"updatedAt\": 1001\n        }\n      },\n      \"lastUpdatedAtByRoomId\": 1001,\n      \"keys\": [\n        \"lastUpdatedAtByRoomId\",\n        \"rooms\"\n      ]\n    },\n    \"advanced\": {\n      \"rooms\": [\n        {\n          \"roomId\": \"runtime-room\",\n          \"roomName\": \"Synthetic\",\n          \"ownerUserId\": \"fixture\",\n          \"ownerDisplayName\": \"Fixture\",\n          \"mode\": \"ARENA\",\n          \"playStyle\": \"SP\",\n          \"levelFilter\": \"ANY\",\n          \"winMetric\": \"SCORE\",\n          \"hasJoinCode\": false,\n          \"isPublic\": true,\n          \"currentPlayers\": 1,\n          \"maxPlayers\": 2,\n          \"isFull\": false,\n          \"status\": \"LOBBY\",\n          \"ttlStartedAt\": 1000,\n          \"createdAt\": 1000,\n          \"updatedAt\": 1002\n        }\n      ],\n      \"serverTime\": 999\n    },\n    \"staleRemove\": {\n      \"ok\": true,\n      \"removed\": false\n    },\n    \"emptyStorage\": {\n      \"rooms\": {},\n      \"lastUpdatedAtByRoomId\": 1002,\n      \"keys\": [\n        \"lastUpdatedAtByRoomId\",\n        \"rooms\"\n      ]\n    }\n  },\n  \"afterSecondRestart\": {\n    \"empty\": {\n      \"rooms\": [],\n      \"serverTime\": 998\n    },\n    \"scalar\": {\n      \"rooms\": {},\n      \"lastUpdatedAtByRoomId\": 1002,\n      \"keys\": [\n        \"lastUpdatedAtByRoomId\",\n        \"rooms\"\n      ]\n    },\n    \"recreated\": {\n      \"rooms\": [\n        {\n          \"roomId\": \"runtime-room\",\n          \"roomName\": \"Synthetic\",\n          \"ownerUserId\": \"fixture\",\n          \"ownerDisplayName\": \"Fixture\",\n          \"mode\": \"ARENA\",\n          \"playStyle\": \"SP\",\n          \"levelFilter\": \"ANY\",\n          \"winMetric\": \"SCORE\",\n          \"hasJoinCode\": false,\n          \"isPublic\": true,\n          \"currentPlayers\": 1,\n          \"maxPlayers\": 2,\n          \"isFull\": false,\n          \"status\": \"LOBBY\",\n          \"ttlStartedAt\": 1000,\n          \"createdAt\": 1000,\n          \"updatedAt\": 1003\n        }\n      ],\n      \"serverTime\": 998\n    }\n  },\n  \"endedAt\": \"2026-10-27T06:00:59.487Z\"\n}\n"
+    },
+    {
+      "path": "runtime-restart-attempt2.json",
+      "original_sha256": "6d0a00a08eb3c4a72c667461db42f40f2b25a94931e291aac966ec24657352d7",
+      "redacted_content": "{\n  \"label\": \"runtime-restart-attempt2\",\n  \"command\": [\n    \"node\",\n    \".tmp/evidence/runtime-restart.mjs\",\n    \"attempt2\"\n  ],\n  \"cwd\": \"<trial>\",\n  \"executable\": \"<trial>\\\\.tmp\\\\toolchain\\\\node.exe\",\n  \"args\": [\n    \".tmp/evidence/runtime-restart.mjs\",\n    \"attempt2\"\n  ],\n  \"node\": \"v22.23.4\",\n  \"startedAt\": \"2026-10-27T06:00:57.377Z\",\n  \"log\": \"<trial>\\\\.tmp\\\\evidence\\\\runtime-restart-attempt2.log\",\n  \"exit\": 0,\n  \"signal\": null,\n  \"endedAt\": \"2026-10-27T06:00:59.502Z\"\n}\n"
+    },
+    {
+      "path": "runtime-restart-result.json",
+      "original_sha256": "c90817d6c2c72731ebba8db200db32c43738b02fbda147c81b9a604cc4ca3180",
+      "redacted_content": "{\n  \"status\": \"fail\",\n  \"controllerPid\": 29152,\n  \"node\": \"v22.23.4\",\n  \"port\": 52148,\n  \"inspectorPort\": 52150,\n  \"host\": \"127.0.0.1\",\n  \"config\": \".tmp/evidence/runtime-wrangler.json\",\n  \"persistence\": \".tmp/evidence/runtime-persistence\",\n  \"API\": \"wrangler.unstable_dev (local dev runtime)\",\n  \"clock\": \"test-only request header freezes Date.now around actual production fetch\",\n  \"hibernation\": \"unproven; local process/runtime restart only\",\n  \"spawned\": [\n    {\n      \"pid\": 32456,\n      \"executable\": \"<trial>\\\\node_modules\\\\@esbuild\\\\win32-x64\\\\esbuild.exe\",\n      \"startedAt\": \"2026-10-27T06:00:19.828Z\",\n      \"ownerPid\": 29152\n    },\n    {\n      \"pid\": 36068,\n      \"executable\": \"<trial>\\\\node_modules\\\\@cloudflare\\\\workerd-windows-64\\\\bin\\\\workerd.exe\",\n      \"startedAt\": \"2026-10-27T06:00:20.006Z\",\n      \"ownerPid\": 29152,\n      \"exit\": null,\n      \"signal\": \"SIGKILL\",\n      \"endedAt\": \"2026-10-27T06:00:20.379Z\"\n    },\n    {\n      \"pid\": 30452,\n      \"executable\": \"<trial>\\\\node_modules\\\\@cloudflare\\\\workerd-windows-64\\\\bin\\\\workerd.exe\",\n      \"startedAt\": \"2026-10-27T06:00:20.052Z\",\n      \"ownerPid\": 29152,\n      \"exit\": null,\n      \"signal\": \"SIGKILL\",\n      \"endedAt\": \"2026-10-27T06:00:20.380Z\"\n    }\n  ],\n  \"phases\": [\n    {\n      \"label\": \"initial\",\n      \"startedAt\": \"2026-10-27T06:00:20.132Z\",\n      \"address\": \"127.0.0.1\",\n      \"port\": 52148\n    }\n  ],\n  \"stopResults\": [\n    {\n      \"label\": \"finally\",\n      \"stoppedAt\": \"2026-10-27T06:00:20.381Z\",\n      \"portReleased\": true\n    }\n  ],\n  \"error\": \"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n\\n500 !== 200\\n\\n    at req (file:///<trial>/.tmp/evidence/runtime-restart.mjs:51:10)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\\n    at async file:///<trial>/.tmp/evidence/runtime-restart.mjs:57:45\",\n  \"endedAt\": \"2026-10-27T06:00:20.381Z\"\n}\n"
+    },
+    {
+      "path": "runtime-restart.json",
+      "original_sha256": "0221540b8bf1e00b95a3bf0485a399f47a0424ccda214ad308ffff62bae7489c",
+      "redacted_content": "{\n  \"label\": \"runtime-restart\",\n  \"command\": [\n    \"node\",\n    \".tmp/evidence/runtime-restart.mjs\"\n  ],\n  \"cwd\": \"<trial>\",\n  \"executable\": \"<trial>\\\\.tmp\\\\toolchain\\\\node.exe\",\n  \"args\": [\n    \".tmp/evidence/runtime-restart.mjs\"\n  ],\n  \"node\": \"v22.23.4\",\n  \"startedAt\": \"2026-10-27T06:00:18.623Z\",\n  \"log\": \"<trial>\\\\.tmp\\\\evidence\\\\runtime-restart.log\",\n  \"exit\": 1,\n  \"signal\": null,\n  \"endedAt\": \"2026-10-27T06:00:20.400Z\"\n}\n"
+    },
+    {
+      "path": "runtime-restart.mjs",
+      "original_sha256": "c8cc7b549836129c19b63ebb4e0ce4a4618e04af925ecb790a291472fc9baf4f",
+      "redacted_content": "import assert from 'node:assert/strict';\nimport { createServer } from 'node:net';\nimport { createRequire } from 'node:module';\nimport { resolve } from 'node:path';\nimport { writeFileSync } from 'node:fs';\nconst root = process.cwd();\nif (process.version !== 'v22.23.4') throw new Error('Wrong Node');\nconst require = createRequire(import.meta.url);\nconst cp = require('node:child_process');\nconst spawned = [];\nconst spawn = cp.spawn;\ncp.spawn = function (...args) {\n  const child = spawn.apply(this, args);\n  const entry = { pid:child.pid, executable:String(args[0]), startedAt:new Date().toISOString(), ownerPid:process.pid };\n  spawned.push(entry);\n  child.on('exit',(code,signal)=>Object.assign(entry,{exit:code,signal,endedAt:new Date().toISOString()}));\n  return child;\n};\nconst { unstable_dev } = require('wrangler');\nasync function freePort() {\n  const s=createServer(); await new Promise((r,j)=>{s.once('error',j);s.listen(0,'127.0.0.1',r);});\n  const p=s.address().port; await new Promise(r=>s.close(r)); return p;\n}\nconst attempt=process.argv[2]??'attempt2';\nconst port=await freePort(); const inspectorPort=await freePort();\nconst record={ status:'running', controllerPid:process.pid, node:process.version, port, inspectorPort,\n  host:'127.0.0.1', config:'.tmp/evidence/runtime-wrangler.json',\n  persistence:`.tmp/p-${attempt}`, API:'wrangler.unstable_dev (local dev runtime)',\n  clock:'test-only request header freezes Date.now around actual production fetch',\n  hibernation:'unproven; local process/runtime restart only', spawned, phases:[], stopResults:[] };\nlet runtime;\nasync function start(label) {\n  runtime=await unstable_dev(resolve(root,'.tmp/evidence/runtime-worker.ts'),{\n    config:resolve(root,record.config), ip:'127.0.0.1', port, inspectorPort,\n    local:true, persist:true, persistTo:resolve(root,record.persistence),\n    logLevel:'warn', inspect:false, experimental:{disableExperimentalWarning:true,disableDevRegistry:true,\n      forceLocal:true,showInteractiveDevSession:false,watch:false,fileBasedRegistry:false,enableContainers:false}\n  });\n  record.phases.push({label,startedAt:new Date().toISOString(),address:runtime.address,port:runtime.port});\n}\nasync function stop(label) {\n  await runtime.stop(); runtime=undefined;\n  const s=createServer();await new Promise((r,j)=>{s.once('error',j);s.listen(port,'127.0.0.1',r);});\n  await new Promise(r=>s.close(r));\n  record.stopResults.push({label,stoppedAt:new Date().toISOString(),portReleased:true});\n}\nasync function req(path,body,now=1000) {\n  const response=await fetch(`http://127.0.0.1:${port}/${path}`,{\n    method:body===undefined?'GET':'POST',headers:{'content-type':'application/json','x-fixture-now':String(now)},\n    ...(body===undefined?{}:{body:JSON.stringify(body)})\n  });\n  const bodyText=await response.text();\n  assert.equal(response.status,200,bodyText);return JSON.parse(bodyText);\n}\nconst summary={roomId:'runtime-room',roomName:'Synthetic',ownerUserId:'fixture',ownerDisplayName:'Fixture',\n  mode:'ARENA',playStyle:'SP',levelFilter:'ANY',winMetric:'SCORE',hasJoinCode:false,isPublic:true,\n  currentPlayers:1,maxPlayers:2,isFull:false,status:'LOBBY',ttlStartedAt:1000,createdAt:1000,updatedAt:1000};\ntry {\n  await start('initial'); assert.deepEqual((await req('internal/list')).rooms,[]);\n  await req('internal/upsert',summary);await req('internal/upsert',summary);\n  const before=await req('internal/list');const storageBefore=await req('fixture/storage');\n  assert.equal(before.rooms[0].updatedAt,1001);assert.equal(storageBefore.lastUpdatedAtByRoomId,1001);\n  record.before={list:before,storage:storageBefore};await stop('initial');\n  await start('restored-with-live-room');\n  const restored=await req('internal/list',undefined,999);const restoredStorage=await req('fixture/storage');\n  assert.deepEqual(restored.rooms,before.rooms);assert.deepEqual(restoredStorage,storageBefore);\n  await req('internal/upsert',summary,999);const advanced=await req('internal/list',undefined,999);\n  assert.equal(advanced.rooms[0].updatedAt,1002);\n  const stale=await req('internal/remove',{roomId:summary.roomId,expectedUpdatedAt:1001},999);\n  assert.equal(stale.removed,false);\n  const removed=await req('internal/remove',{roomId:summary.roomId,expectedUpdatedAt:1002},999);assert.equal(removed.removed,true);\n  record.afterFirstRestart={list:restored,storage:restoredStorage,advanced,staleRemove:stale,emptyStorage:await req('fixture/storage')};\n  await stop('restored-with-live-room');\n  await start('restored-empty-directory');\n  const empty=await req('internal/list',undefined,998);assert.deepEqual(empty.rooms,[]);\n  const scalar=await req('fixture/storage');assert.equal(scalar.lastUpdatedAtByRoomId,1002);\n  assert.equal(typeof scalar.lastUpdatedAtByRoomId,'number');assert.equal(scalar.keys.length,2);\n  await req('internal/upsert',summary,998);const recreated=await req('internal/list',undefined,998);\n  assert.equal(recreated.rooms[0].updatedAt,1003);\n  record.afterSecondRestart={empty,scalar,recreated};\n  await stop('restored-empty-directory');record.status='pass';\n} catch(e) { record.status='fail'; record.error=e.stack; process.exitCode=1; }\nfinally {\n  if(runtime) { try {await stop('finally');}catch(e){record.stopError=String(e);process.exitCode=1;} }\n  record.endedAt=new Date().toISOString();\n  writeFileSync(resolve(root,`.tmp/evidence/runtime-restart-${attempt}-result.json`),JSON.stringify(record,null,2)+'\\n');\n  console.log(JSON.stringify(record));\n}\n"
+    },
+    {
+      "path": "runtime-worker.ts",
+      "original_sha256": "d1ac73d9dc3853821cedb8c2386365ed3c68b018f8bd8691bd89b8e43d51785a",
+      "redacted_content": "import { LobbyDirectoryDO } from '../../apps/worker/src/durable/lobby-directory-object';\n\n// Test-only adapter: production methods/storage run in a real local Durable Object.\n// Storage inspection exists only in this isolated fixture, never in product routes.\nexport class D extends LobbyDirectoryDO {\n  private fixtureStorage: any;\n  constructor(state: any) {\n    super(state);\n    this.fixtureStorage = state.storage;\n  }\n  async fetch(request: Request): Promise<Response> {\n    if (new URL(request.url).pathname === '/fixture/storage') {\n      return Response.json({\n        rooms: await this.fixtureStorage.get('rooms'),\n        lastUpdatedAtByRoomId: await this.fixtureStorage.get('lastUpdatedAtByRoomId'),\n        keys: [...(await this.fixtureStorage.list()).keys()],\n      });\n    }\n    const now = request.headers.get('x-fixture-now');\n    if (now === null) return super.fetch(request);\n    const originalNow = Date.now;\n    Date.now = () => Number(now);\n    try {\n      return await super.fetch(request);\n    } finally {\n      Date.now = originalNow;\n    }\n  }\n}\nexport default {\n  fetch(request: Request, env: any) {\n    return env.DIRECTORY.get(env.DIRECTORY.idFromName('comparison-c2')).fetch(request);\n  },\n};\n"
+    },
+    {
+      "path": "runtime-wrangler.json",
+      "original_sha256": "69dec4ce1d520c97181f6635380dd8756f7abf57ddfee6b3cbe1ffbc2ab952bb",
+      "redacted_content": "{\n  \"name\": \"c2\",\n  \"main\": \"runtime-worker.ts\",\n  \"compatibility_date\": \"2025-01-01\",\n  \"durable_objects\": { \"bindings\": [{ \"name\": \"DIRECTORY\", \"class_name\": \"D\" }] },\n  \"migrations\": [{ \"tag\": \"fixture-v1\", \"new_sqlite_classes\": [\"D\"] }],\n  \"observability\": { \"enabled\": false }\n}\n"
+    }
+  ],
+  "command_records": [
+    {
+      "evidence": ".tmp/evidence/agents.json",
+      "label": "agents",
+      "command": [
+        "npm",
+        "run",
+        "check:agents"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        "<trial>\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "check:agents"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T05:58:52.075Z",
+      "log": "<trial>\\.tmp\\evidence\\agents.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T05:58:52.353Z"
+    },
+    {
+      "evidence": ".tmp/evidence/barrier.json",
+      "label": "barrier",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        ".tmp/comparison/c2-barrier.test.mjs"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        "--import",
+        "tsx",
+        "--test",
+        ".tmp/comparison/c2-barrier.test.mjs"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T05:59:16.770Z",
+      "log": "<trial>\\.tmp\\evidence\\barrier.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T05:59:17.170Z"
+    },
+    {
+      "evidence": ".tmp/evidence/bundle.json",
+      "label": "bundle",
+      "command": [
+        "npx",
+        "--no-install",
+        "wrangler",
+        "deploy",
+        "--dry-run"
+      ],
+      "cwd": "<trial>\\apps\\worker",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        "<trial>\\.tmp\\toolchain\\node_modules\\npm\\bin\\npx-cli.js",
+        "--no-install",
+        "wrangler",
+        "deploy",
+        "--dry-run"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T05:59:16.776Z",
+      "log": "<trial>\\.tmp\\evidence\\bundle.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T05:59:19.269Z"
+    },
+    {
+      "evidence": ".tmp/evidence/client-stats.json",
+      "label": "client-stats",
+      "command": [
+        "npm",
+        "run",
+        "test:client-stats"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        "<trial>\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "test:client-stats"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T05:58:49.721Z",
+      "log": "<trial>\\.tmp\\evidence\\client-stats.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T05:58:50.897Z"
+    },
+    {
+      "evidence": ".tmp/evidence/contracts.json",
+      "label": "contracts",
+      "command": [
+        "npm",
+        "run",
+        "check:design-contracts"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        "<trial>\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "check:design-contracts"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T05:58:51.354Z",
+      "log": "<trial>\\.tmp\\evidence\\contracts.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T05:58:51.576Z"
+    },
+    {
+      "evidence": ".tmp/evidence/environment-command.json",
+      "command": [
+        ".tmp/toolchain/node.exe --version",
+        ".tmp/toolchain/npm.cmd --version",
+        "Get-Command node,npm | Select-Object Name,Source,CommandType",
+        "node -p JSON.stringify({version:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch,cwd:process.cwd()})",
+        "npm --version"
+      ],
+      "exit": 0,
+      "log": ".tmp/evidence/environment.json",
+      "note": "Initial explicit and CLI read-back saved before product work. Shell runner prepends its PowerShell directory to PATH, but node/npm resolve to repository .tmp/toolchain and required versions. Validation runner explicitly puts repo toolchain first and uses its node executable/npm CLI. No alternative version used."
+    },
+    {
+      "evidence": ".tmp/evidence/executor-generation.json",
+      "label": "executor-generation",
+      "command": [
+        "node",
+        ".tmp/evidence/build-executor.mjs"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        ".tmp/evidence/build-executor.mjs"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T06:06:00.782Z",
+      "log": "<trial>\\.tmp\\evidence\\executor-generation.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T06:06:00.852Z"
+    },
+    {
+      "evidence": ".tmp/evidence/final-verification.json",
+      "label": "final-verification",
+      "command": [
+        "node",
+        ".tmp/evidence/verify-executor.mjs"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        ".tmp/evidence/verify-executor.mjs"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T06:06:32.494Z",
+      "log": "<trial>\\.tmp\\evidence\\final-verification.log",
+      "exit": 1,
+      "signal": null,
+      "endedAt": "2026-10-27T06:06:32.570Z"
+    },
+    {
+      "evidence": ".tmp/evidence/implementer-fixed-targeted-command.json",
+      "command": "node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs",
+      "log": "<trial>\\.tmp\\evidence\\implementer-fixed-targeted.log",
+      "npm": "10.9.9",
+      "exit": 0,
+      "node": "v22.23.4"
+    },
+    {
+      "evidence": ".tmp/evidence/implementer-seed-tests-command.json",
+      "exit": 1,
+      "npm": "10.9.9",
+      "log": "<trial>\\.tmp\\evidence\\implementer-seed-tests.log",
+      "command": "node --import tsx --test apps/worker/src/durable/lobby-directory-object.test.mjs apps/worker/src/routes/lobby.test.mjs",
+      "node": "v22.23.4"
+    },
+    {
+      "evidence": ".tmp/evidence/implementer-worker-standard-command.json",
+      "log": "<trial>\\.tmp\\evidence\\implementer-worker-standard.log",
+      "command": "npm run test:worker",
+      "npm": "10.9.9",
+      "node": "v22.23.4",
+      "exit": 0
+    },
+    {
+      "evidence": ".tmp/evidence/lint.json",
+      "label": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        "<trial>\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "lint"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T05:58:38.089Z",
+      "log": "<trial>\\.tmp\\evidence\\lint.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T05:58:43.291Z"
+    },
+    {
+      "evidence": ".tmp/evidence/redact.json",
+      "label": "redact",
+      "command": [
+        "node",
+        ".tmp/evidence/redact-owned-logs.mjs"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        ".tmp/evidence/redact-owned-logs.mjs"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T06:02:25.870Z",
+      "log": "<trial>\\.tmp\\evidence\\redact.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T06:02:25.929Z"
+    },
+    {
+      "evidence": ".tmp/evidence/runtime-restart-attempt2.json",
+      "label": "runtime-restart-attempt2",
+      "command": [
+        "node",
+        ".tmp/evidence/runtime-restart.mjs",
+        "attempt2"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        ".tmp/evidence/runtime-restart.mjs",
+        "attempt2"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T06:00:57.377Z",
+      "log": "<trial>\\.tmp\\evidence\\runtime-restart-attempt2.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T06:00:59.502Z"
+    },
+    {
+      "evidence": ".tmp/evidence/runtime-restart.json",
+      "label": "runtime-restart",
+      "command": [
+        "node",
+        ".tmp/evidence/runtime-restart.mjs"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        ".tmp/evidence/runtime-restart.mjs"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T06:00:18.623Z",
+      "log": "<trial>\\.tmp\\evidence\\runtime-restart.log",
+      "exit": 1,
+      "signal": null,
+      "endedAt": "2026-10-27T06:00:20.400Z"
+    },
+    {
+      "evidence": ".tmp/evidence/snapshot-command.json",
+      "label": "snapshot-command",
+      "command": [
+        "node",
+        ".tmp/evidence/capture-snapshot.mjs"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        ".tmp/evidence/capture-snapshot.mjs"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T06:03:17.389Z",
+      "log": "<trial>\\.tmp\\evidence\\snapshot-command.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T06:03:17.831Z"
+    },
+    {
+      "evidence": ".tmp/evidence/snapshot.json",
+      "label": "snapshot",
+      "command": [
+        "node",
+        ".tmp/evidence/capture-snapshot.mjs"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        ".tmp/evidence/capture-snapshot.mjs"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T06:01:35.597Z",
+      "log": "<trial>\\.tmp\\evidence\\snapshot.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T06:01:35.998Z"
+    },
+    {
+      "evidence": ".tmp/evidence/typecheck.json",
+      "label": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "cwd": "<trial>",
+      "executable": "<trial>\\.tmp\\toolchain\\node.exe",
+      "args": [
+        "<trial>\\.tmp\\toolchain\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck"
+      ],
+      "node": "v22.23.4",
+      "startedAt": "2026-10-27T05:58:43.764Z",
+      "log": "<trial>\\.tmp\\evidence\\typecheck.log",
+      "exit": 0,
+      "signal": null,
+      "endedAt": "2026-10-27T05:58:49.267Z"
+    }
+  ]
+}

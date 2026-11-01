@@ -1,0 +1,740 @@
+
+> infinitas-arena@1.4.0 test:worker
+> npm --workspace @infinitas/worker run test
+
+
+> @infinitas/worker@1.4.0 test
+> tsx --test src/durable/room-state.test.mjs src/durable/room-object.test.mjs src/durable/lobby-directory-object.test.mjs src/durable/matchmaking-object.test.mjs src/durable/contract-guards.test.mjs src/master/chart-master.test.mjs src/routes/join.test.mjs src/routes/lobby.test.mjs src/routes/matchmaking.test.mjs src/routes/rooms.test.mjs
+
+TAP version 13
+# Subtest: CloseReason contract includes ROOM_STATE_LOST
+ok 1 - CloseReason contract includes ROOM_STATE_LOST
+  ---
+  duration_ms: 0.9821
+  type: 'test'
+  ...
+# Subtest: RESULT_READY payload follows structured per_round/per_player contract
+ok 2 - RESULT_READY payload follows structured per_round/per_player contract
+  ---
+  duration_ms: 8.4857
+  type: 'test'
+  ...
+# Subtest: conditional remove does not delete a newer lobby summary from the same millisecond
+ok 3 - conditional remove does not delete a newer lobby summary from the same millisecond
+  ---
+  duration_ms: 38.0967
+  type: 'test'
+  ...
+# Subtest: conditional remove deletes the matching lobby summary
+ok 4 - conditional remove deletes the matching lobby summary
+  ---
+  duration_ms: 3.0491
+  type: 'test'
+  ...
+# Subtest: conditional remove does not delete a recreated summary from the same millisecond
+ok 5 - conditional remove does not delete a recreated summary from the same millisecond
+  ---
+  duration_ms: 4.265
+  type: 'test'
+  ...
+# Subtest: restores the monotonic updatedAt counter from legacy per-room storage
+ok 6 - restores the monotonic updatedAt counter from legacy per-room storage
+  ---
+  duration_ms: 32.6454
+  type: 'test'
+  ...
+# Subtest: persisted monotonic counter does not retain per-room tombstones after remove and expiry cleanup
+ok 7 - persisted monotonic counter does not retain per-room tombstones after remove and expiry cleanup
+  ---
+  duration_ms: 2.8082
+  type: 'test'
+  ...
+# Subtest: scalar counter survives cold restore after every room has been removed
+ok 8 - scalar counter survives cold restore after every room has been removed
+  ---
+  duration_ms: 5.2493
+  type: 'test'
+  ...
+# Subtest: restored summaries set a counter floor even when helper storage is missing or behind
+ok 9 - restored summaries set a counter floor even when helper storage is missing or behind
+  ---
+  duration_ms: 4.6293
+  type: 'test'
+  ...
+# Subtest: legacy migration and repeated remove/TTL churn keep only live rooms and a scalar
+ok 10 - legacy migration and repeated remove/TTL churn keep only live rooms and a scalar
+  ---
+  duration_ms: 105.4954
+  type: 'test'
+  ...
+# Subtest: counter advancement preserves public fields, TTL origin, filters and ordering
+ok 11 - counter advancement preserves public fields, TTL origin, filters and ordering
+  ---
+  duration_ms: 2.1254
+  type: 'test'
+  ...
+# Subtest: storage restore failure is observable and does not overwrite the stored state
+ok 12 - storage restore failure is observable and does not overwrite the stored state
+  ---
+  duration_ms: 1.2873
+  type: 'test'
+  ...
+# Subtest: enqueue reuses the active searching ticket for the same player
+ok 13 - enqueue reuses the active searching ticket for the same player
+  ---
+  duration_ms: 35.453
+  type: 'test'
+  ...
+# Subtest: matcher does not pair duplicate tickets from the same player
+ok 14 - matcher does not pair duplicate tickets from the same player
+  ---
+  duration_ms: 37.4005
+  type: 'test'
+  ...
+# Subtest: stale searching tickets are evicted before matching
+ok 15 - stale searching tickets are evicted before matching
+  ---
+  duration_ms: 1.7753
+  type: 'test'
+  ...
+# Subtest: waiting-count returns searching ticket count for exact condition
+ok 16 - waiting-count returns searching ticket count for exact condition
+  ---
+  duration_ms: 1.7924
+  type: 'test'
+  ...
+# Subtest: waiting-count evicts stale searching tickets before counting
+ok 17 - waiting-count evicts stale searching tickets before counting
+  ---
+  duration_ms: 1.5249
+  type: 'test'
+  ...
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.830Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.804Z","attached_at":"2026-10-27T00:05:15.804Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.832Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.831Z","attached_at":"2026-10-27T00:05:15.831Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.832Z","level":"INFO","component":"room-do","event":"socket.close","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","outcome":"ok","detail":{"trigger":"close","code":1006,"reason":"abnormal close","was_clean":false,"active_socket_count":2,"is_current_socket":true,"connection_id":"e80b9692-20d9-4f0a-a00c-fa6ef8fef109"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.835Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.834Z","attached_at":"2026-10-27T00:05:15.834Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.836Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"RECONNECT","joined_at":"2026-10-27T00:05:15.834Z","attached_at":"2026-10-27T00:05:15.835Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.836Z","level":"INFO","component":"room-do","event":"socket.close","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":null,"outcome":"ok","detail":{"trigger":"close","code":1000,"reason":"replaced","was_clean":true,"active_socket_count":2,"is_current_socket":false,"connection_id":null}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.837Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.836Z","attached_at":"2026-10-27T00:05:15.836Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.837Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"PING","client_msg_id":"msg-2","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.840Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.839Z","attached_at":"2026-10-27T00:05:15.839Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.840Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"START_MATCH","client_msg_id":"msg-2","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.841Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"START_MATCH","client_msg_id":"msg-2","request_id":"start-1","error_code":"AUTO_MATCH_ROOM_LOCKED","outcome":"rejected","detail":{"reason":"AUTO_MATCH_ROOM_LOCKED"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.842Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.841Z","attached_at":"2026-10-27T00:05:15.841Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.845Z","level":"INFO","component":"room-do","event":"fsm.transition","room_id":"room-1","room_state":"PICKING","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","close_reason":null,"outcome":"ok","detail":{"from_state":"LOBBY","to_state":"PICKING","trigger":"auto_match_start","join_type":"NEW","joined_at":"2026-10-27T00:05:15.842Z","attached_at":"2026-10-27T00:05:15.842Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.845Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"PICKING","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.842Z","attached_at":"2026-10-27T00:05:15.842Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.846Z","level":"WARN","component":"room-do","event":"fsm.transition","room_id":"room-1","room_state":"CLOSED","host_player_id":"host","close_reason":"ALL_ROUNDS_COMPLETED","outcome":"ok","detail":{"from_state":"RESULT","to_state":"CLOSED","trigger":"auto_match_result_due"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.847Z","level":"WARN","component":"room-do","event":"room.close","room_id":"room-1","room_state":"CLOSED","host_player_id":"host","close_reason":"ALL_ROUNDS_COMPLETED","outcome":"ok","detail":{"closed_at":"2026-10-27T00:05:15.846Z","include_unjoined":false,"result_ready":true}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.849Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.849Z","attached_at":"2026-10-27T00:05:15.849Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.850Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.850Z","attached_at":"2026-10-27T00:05:15.850Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.851Z","level":"INFO","component":"room-do","event":"fsm.transition","room_id":"room-1","room_state":"CLOSED","host_player_id":"host","close_reason":"MATCH_TTL_EXPIRED","outcome":"ok","detail":{"from_state":"RESULT","to_state":"CLOSED","trigger":"match_ttl"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.851Z","level":"WARN","component":"room-do","event":"room.close","room_id":"room-1","room_state":"CLOSED","host_player_id":"host","close_reason":"MATCH_TTL_EXPIRED","outcome":"ok","detail":{"closed_at":"2026-03-08T00:20:01.000Z","include_unjoined":false,"result_ready":true}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.852Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.852Z","attached_at":"2026-10-27T00:05:15.852Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.852Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"SOURCE_STATUS_SET","client_msg_id":"msg-2","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.853Z","level":"INFO","component":"room-do","event":"source.status_set","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"SOURCE_STATUS_SET","client_msg_id":"msg-2","request_id":"source-1","outcome":"ok","detail":{"available":true,"changed":false}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.854Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.853Z","attached_at":"2026-10-27T00:05:15.853Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.854Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"SOURCE_STATUS_SET","client_msg_id":"msg-2","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.854Z","level":"INFO","component":"room-do","event":"source.status_set","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"SOURCE_STATUS_SET","client_msg_id":"msg-2","request_id":"source-2","outcome":"ok","detail":{"available":false,"changed":true}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.856Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.856Z","attached_at":"2026-10-27T00:05:15.856Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.857Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.857Z","attached_at":"2026-10-27T00:05:15.857Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.858Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.858Z","attached_at":"2026-10-27T00:05:15.858Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.858Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.858Z","attached_at":"2026-10-27T00:05:15.858Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.860Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.859Z","attached_at":"2026-10-27T00:05:15.859Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.860Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.860Z","attached_at":"2026-10-27T00:05:15.860Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.861Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"RESULT","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"RETURN_TO_LOBBY","client_msg_id":"msg-3","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.862Z","level":"INFO","component":"room-do","event":"fsm.transition","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"RETURN_TO_LOBBY","client_msg_id":"msg-3","request_id":"return-1","close_reason":null,"outcome":"ok","detail":{"from_state":"RESULT","to_state":"LOBBY","trigger":"return_to_lobby"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.864Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.864Z","attached_at":"2026-10-27T00:05:15.864Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.865Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.865Z","attached_at":"2026-10-27T00:05:15.865Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.866Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.865Z","attached_at":"2026-10-27T00:05:15.865Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.866Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.866Z","attached_at":"2026-10-27T00:05:15.866Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.868Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.868Z","attached_at":"2026-10-27T00:05:15.868Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.868Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"READY_SET","client_msg_id":"msg-2","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.868Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"READY_SET","client_msg_id":"msg-2","error_code":"INVALID_STATE","outcome":"rejected","detail":{"reason":"STALE_GENERATION","observed_generation":2,"current_generation":1}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.869Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.869Z","attached_at":"2026-10-27T00:05:15.869Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.872Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.871Z","attached_at":"2026-10-27T00:05:15.871Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.873Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.873Z","attached_at":"2026-10-27T00:05:15.873Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.873Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"viewer-1","is_host":false,"source":null,"message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"SPECTATOR","attached_at":"2026-10-27T00:05:15.873Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.873Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-2","source":null,"message_type":"ROOM_JOIN","client_msg_id":"msg-1","error_code":"JOIN_CODE_INVALID","outcome":"rejected","detail":{"validation":"join_code_invalid"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"SPECTATOR","attached_at":"2026-10-27T00:05:15.874Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"READY_SET","client_msg_id":"msg-2","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"READY_SET","client_msg_id":"msg-2","error_code":"INVALID_STATE","outcome":"rejected","detail":{"validation":"spectator_read_only","rejected_type":"READY_SET"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"START_MATCH","client_msg_id":"msg-3","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"START_MATCH","client_msg_id":"msg-3","error_code":"INVALID_STATE","outcome":"rejected","detail":{"validation":"spectator_read_only","rejected_type":"START_MATCH"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"SOURCE_STATUS_SET","client_msg_id":"msg-4","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"QUICK_CHAT_POST","client_msg_id":"msg-5","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"PICK_SUBMIT","client_msg_id":"msg-6","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"SOURCE_STATUS_SET","client_msg_id":"msg-4","error_code":"INVALID_STATE","outcome":"rejected","detail":{"validation":"spectator_read_only","rejected_type":"SOURCE_STATUS_SET"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"QUICK_CHAT_POST","client_msg_id":"msg-5","error_code":"INVALID_STATE","outcome":"rejected","detail":{"validation":"spectator_read_only","rejected_type":"QUICK_CHAT_POST"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.874Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"PICK_SUBMIT","client_msg_id":"msg-6","error_code":"INVALID_STATE","outcome":"rejected","detail":{"validation":"spectator_read_only","rejected_type":"PICK_SUBMIT"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.875Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"RESULT_SUBMIT","client_msg_id":"msg-7","error_code":"INVALID_STATE","outcome":"rejected","detail":{"validation":"spectator_read_only","rejected_type":"RESULT_SUBMIT"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.875Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"RESULT_SUBMIT","client_msg_id":"msg-7","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.875Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"FORCE_ADVANCE","client_msg_id":"msg-8","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.875Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","player_id":"viewer-3","source":null,"message_type":"FORCE_ADVANCE","client_msg_id":"msg-8","error_code":"INVALID_STATE","outcome":"rejected","detail":{"validation":"spectator_read_only","rejected_type":"FORCE_ADVANCE"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.875Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.875Z","attached_at":"2026-10-27T00:05:15.875Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.876Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"viewer-4","is_host":false,"source":null,"message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"SPECTATOR","attached_at":"2026-10-27T00:05:15.876Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.876Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"READY_SET","client_msg_id":"msg-3","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.876Z","level":"INFO","component":"room-do","event":"ready.set","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"READY_SET","client_msg_id":"msg-3","outcome":"ok","detail":{"ready":true}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.877Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.876Z","attached_at":"2026-10-27T00:05:15.876Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.877Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.877Z","attached_at":"2026-10-27T00:05:15.877Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.877Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-3","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.877Z","level":"INFO","component":"room-do","event":"quick_chat.post","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-3","request_id":"chat-1","outcome":"ok","detail":{"message_id":"803e3dfd-5575-4114-9728-6e00a1d62cc3","phrase_count":2}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.878Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.878Z","attached_at":"2026-10-27T00:05:15.878Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.879Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-2","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.879Z","level":"INFO","component":"room-do","event":"quick_chat.post","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-2","request_id":"chat-1","outcome":"ok","detail":{"message_id":"b66af294-57e4-4437-94df-663323ba1dfb","phrase_count":1}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.879Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-3","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.880Z","level":"INFO","component":"room-do","event":"ws.duplicate","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-3","request_id":"chat-1","outcome":"duplicate","detail":{"dedupe_key":"request_id"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.881Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-1","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.880Z","attached_at":"2026-10-27T00:05:15.880Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.881Z","level":"INFO","component":"room-do","event":"room.join","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"guest","is_host":false,"source":"inf-notebook","message_type":"ROOM_JOIN","client_msg_id":"msg-2","outcome":"ok","detail":{"join_type":"NEW","joined_at":"2026-10-27T00:05:15.881Z","attached_at":"2026-10-27T00:05:15.881Z"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.882Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-3","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.882Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"LOBBY","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-3","request_id":"chat-invalid","error_code":"INVALID_STATE","outcome":"rejected","detail":{"reason":"INVALID_PHRASE_IDS"}}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.882Z","level":"INFO","component":"room-do","event":"ws.recv","room_id":"room-1","room_state":"PLAYING","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-4","outcome":"ok"}
+# {"schema_version":1,"ts":"2026-10-27T00:05:15.882Z","level":"WARN","component":"room-do","event":"ws.reject","room_id":"room-1","room_state":"PLAYING","host_player_id":"host","player_id":"host","is_host":true,"source":"inf-notebook","message_type":"QUICK_CHAT_POST","client_msg_id":"msg-4","request_id":"chat-playing","error_code":"INVALID_STATE","outcome":"rejected","detail":{"reason":"INVALID_STATE"}}
+# Subtest: webSocketClose marks player as temporarily disconnected
+ok 18 - webSocketClose marks player as temporarily disconnected
+  ---
+  duration_ms: 32.0763
+  type: 'test'
+  ...
+# Subtest: reconnect replaces old socket and stale close does not mark player disconnected again
+ok 19 - reconnect replaces old socket and stale close does not mark player disconnected again
+  ---
+  duration_ms: 2.2776
+  type: 'test'
+  ...
+# Subtest: PING receives PONG response
+ok 20 - PING receives PONG response
+  ---
+  duration_ms: 2.7042
+  type: 'test'
+  ...
+# Subtest: auto-match room rejects manual START_MATCH
+ok 21 - auto-match room rejects manual START_MATCH
+  ---
+  duration_ms: 2.1648
+  type: 'test'
+  ...
+# Subtest: auto-match room auto-starts on the final join and closes after the result deadline
+ok 22 - auto-match room auto-starts on the final join and closes after the result deadline
+  ---
+  duration_ms: 6.8937
+  type: 'test'
+  ...
+# Subtest: buildLobbySummary excludes auto-match rooms from public listing
+ok 23 - buildLobbySummary excludes auto-match rooms from public listing
+  ---
+  duration_ms: 0.3838
+  type: 'test'
+  ...
+# Subtest: MATCH_TTL_EXPIRED closes sockets and clears sessions
+ok 24 - MATCH_TTL_EXPIRED closes sockets and clears sessions
+  ---
+  duration_ms: 3.1474
+  type: 'test'
+  ...
+# Subtest: SOURCE_STATUS_SET no-op skips additional persist and alarm sync
+ok 25 - SOURCE_STATUS_SET no-op skips additional persist and alarm sync
+  ---
+  duration_ms: 1.2208
+  type: 'test'
+  ...
+# Subtest: SOURCE_STATUS_SET changed update persists and syncs alarm
+ok 26 - SOURCE_STATUS_SET changed update persists and syncs alarm
+  ---
+  duration_ms: 1.5981
+  type: 'test'
+  ...
+# Subtest: internal join-status returns recruiting for PUBLIC LOBBY room
+ok 27 - internal join-status returns recruiting for PUBLIC LOBBY room
+  ---
+  duration_ms: 1.0439
+  type: 'test'
+  ...
+# Subtest: internal join-status returns full when lobby is at capacity
+ok 28 - internal join-status returns full when lobby is at capacity
+  ---
+  duration_ms: 1.6219
+  type: 'test'
+  ...
+# Subtest: internal join-status returns closed after match has started
+ok 29 - internal join-status returns closed after match has started
+  ---
+  duration_ms: 1.7702
+  type: 'test'
+  ...
+# Subtest: internal join-status returns recruiting after host recreates room via RETURN_TO_LOBBY
+ok 30 - internal join-status returns recruiting after host recreates room via RETURN_TO_LOBBY
+  ---
+  duration_ms: 3.2871
+  type: 'test'
+  ...
+# Subtest: internal lobby-eligibility returns eligible for PUBLIC lobby rooms
+ok 31 - internal lobby-eligibility returns eligible for PUBLIC lobby rooms
+  ---
+  duration_ms: 0.6964
+  type: 'test'
+  ...
+# Subtest: internal lobby-eligibility returns false for auto-match rooms
+ok 32 - internal lobby-eligibility returns false for auto-match rooms
+  ---
+  duration_ms: 0.4768
+  type: 'test'
+  ...
+# Subtest: internal lobby-eligibility returns false when lobby is full
+ok 33 - internal lobby-eligibility returns false when lobby is full
+  ---
+  duration_ms: 1.4463
+  type: 'test'
+  ...
+# Subtest: internal lobby-eligibility returns false after match starts
+ok 34 - internal lobby-eligibility returns false after match starts
+  ---
+  duration_ms: 1.6011
+  type: 'test'
+  ...
+# Subtest: internal lobby-eligibility returns ROOM_STATE_LOST for uninitialized rooms
+ok 35 - internal lobby-eligibility returns ROOM_STATE_LOST for uninitialized rooms
+  ---
+  duration_ms: 0.4751
+  type: 'test'
+  ...
+# Subtest: READY_SET with stale generation is rejected
+ok 36 - READY_SET with stale generation is rejected
+  ---
+  duration_ms: 1.1478
+  type: 'test'
+  ...
+# Subtest: internal recreate increments generation for last host on closed room
+ok 37 - internal recreate increments generation for last host on closed room
+  ---
+  duration_ms: 2.1686
+  type: 'test'
+  ...
+# Subtest: internal recreate rejects when active generation exists
+ok 38 - internal recreate rejects when active generation exists
+  ---
+  duration_ms: 1.2909
+  type: 'test'
+  ...
+# Subtest: spectator join keeps player slots unchanged and receives redacted snapshot
+ok 39 - spectator join keeps player slots unchanged and receives redacted snapshot
+  ---
+  duration_ms: 0.8796
+  type: 'test'
+  ...
+# Subtest: spectator join rejects invalid join_code in PRIVATE room
+ok 40 - spectator join rejects invalid join_code in PRIVATE room
+  ---
+  duration_ms: 0.2944
+  type: 'test'
+  ...
+# Subtest: spectator mutation messages are rejected as read-only
+ok 41 - spectator mutation messages are rejected as read-only
+  ---
+  duration_ms: 1.2433
+  type: 'test'
+  ...
+# Subtest: ROOM_UPDATED is redacted for spectator and full for player
+ok 42 - ROOM_UPDATED is redacted for spectator and full for player
+  ---
+  duration_ms: 1.2351
+  type: 'test'
+  ...
+# Subtest: QUICK_CHAT_POST stores history, broadcasts posted message, and snapshots include recent messages
+ok 43 - QUICK_CHAT_POST stores history, broadcasts posted message, and snapshots include recent messages
+  ---
+  duration_ms: 1.7484
+  type: 'test'
+  ...
+# Subtest: QUICK_CHAT_POST duplicate request returns snapshot without duplicate history
+ok 44 - QUICK_CHAT_POST duplicate request returns snapshot without duplicate history
+  ---
+  duration_ms: 2.1808
+  type: 'test'
+  ...
+# Subtest: QUICK_CHAT_POST rejects invalid payload and PLAYING state
+ok 45 - QUICK_CHAT_POST rejects invalid payload and PLAYING state
+  ---
+  duration_ms: 2.1004
+  type: 'test'
+  ...
+# Subtest: quick chat post stores composed preset message in LOBBY snapshot
+ok 46 - quick chat post stores composed preset message in LOBBY snapshot
+  ---
+  duration_ms: 6.0222
+  type: 'test'
+  ...
+# Subtest: quick chat rejects invalid state, unknown phrase, long compose, and disconnected player
+ok 47 - quick chat rejects invalid state, unknown phrase, long compose, and disconnected player
+  ---
+  duration_ms: 2.1797
+  type: 'test'
+  ...
+# Subtest: quick chat history is bounded and restored from persistence
+ok 48 - quick chat history is bounded and restored from persistence
+  ---
+  duration_ms: 3.2491
+  type: 'test'
+  ...
+# Subtest: START_MATCH snapshot filter allows only shared unlock conditions
+ok 49 - START_MATCH snapshot filter allows only shared unlock conditions
+  ---
+  duration_ms: 0.7972
+  type: 'test'
+  ...
+# Subtest: START_MATCH filter stays fixed after reconnect capability change
+ok 50 - START_MATCH filter stays fixed after reconnect capability change
+  ---
+  duration_ms: 0.6465
+  type: 'test'
+  ...
+# Subtest: RESULT -> LOBBY clears ready and match transient state without auto-start
+ok 51 - RESULT -> LOBBY clears ready and match transient state without auto-start
+  ---
+  duration_ms: 4.0665
+  type: 'test'
+  ...
+# Subtest: auto-match room starts automatically when the final player joins
+ok 52 - auto-match room starts automatically when the final player joins
+  ---
+  duration_ms: 0.6862
+  type: 'test'
+  ...
+# Subtest: auto-match room closes after result deadline and blocks rematch/recreate
+ok 53 - auto-match room closes after result deadline and blocks rematch/recreate
+  ---
+  duration_ms: 1.2669
+  type: 'test'
+  ...
+# Subtest: BPL(3) keeps PICKING TTL at 120 seconds
+ok 54 - BPL(3) keeps PICKING TTL at 120 seconds
+  ---
+  duration_ms: 0.618
+  type: 'test'
+  ...
+# Subtest: BPL4 extends PICKING TTL to 180 seconds
+ok 55 - BPL4 extends PICKING TTL to 180 seconds
+  ---
+  duration_ms: 0.8231
+  type: 'test'
+  ...
+# Subtest: PRIVATE auto_rematch starts next match from RESULT after countdown
+ok 56 - PRIVATE auto_rematch starts next match from RESULT after countdown
+  ---
+  duration_ms: 2.407
+  type: 'test'
+  ...
+# Subtest: opt-out cancels auto_rematch when remaining participants become less than two
+ok 57 - opt-out cancels auto_rematch when remaining participants become less than two
+  ---
+  duration_ms: 0.628
+  type: 'test'
+  ...
+# Subtest: SOURCE_STATUS unavailable during RESULT cancels auto_rematch
+ok 58 - SOURCE_STATUS unavailable during RESULT cancels auto_rematch
+  ---
+  duration_ms: 1.109
+  type: 'test'
+  ...
+# Subtest: host can stop auto_rematch during RESULT
+ok 59 - host can stop auto_rematch during RESULT
+  ---
+  duration_ms: 0.6069
+  type: 'test'
+  ...
+# Subtest: HOST_ABORTED closes room immediately
+ok 60 - HOST_ABORTED closes room immediately
+  ---
+  duration_ms: 0.3151
+  type: 'test'
+  ...
+# Subtest: HOST_DISCONNECTED does not close immediately and can recover within cooldown
+ok 61 - HOST_DISCONNECTED does not close immediately and can recover within cooldown
+  ---
+  duration_ms: 0.3037
+  type: 'test'
+  ...
+# Subtest: reconnect is rejected after rejoin window expires
+ok 62 - reconnect is rejected after rejoin window expires
+  ---
+  duration_ms: 0.1714
+  type: 'test'
+  ...
+# Subtest: markPlayerDisconnected keeps slot and allows reconnect within grace
+ok 63 - markPlayerDisconnected keeps slot and allows reconnect within grace
+  ---
+  duration_ms: 0.2797
+  type: 'test'
+  ...
+# Subtest: HOST_DISCONNECTED closes room when cooldown expires
+ok 64 - HOST_DISCONNECTED closes room when cooldown expires
+  ---
+  duration_ms: 0.3013
+  type: 'test'
+  ...
+# Subtest: recreateAsLastHost increments generation and resets to empty LOBBY
+ok 65 - recreateAsLastHost increments generation and resets to empty LOBBY
+  ---
+  duration_ms: 0.2557
+  type: 'test'
+  ...
+# Subtest: recreateAsLastHost rejects when active generation exists
+ok 66 - recreateAsLastHost rejects when active generation exists
+  ---
+  duration_ms: 0.1547
+  type: 'test'
+  ...
+# Subtest: recreateAsLastHost rejects after recreate window expires
+ok 67 - recreateAsLastHost rejects after recreate window expires
+  ---
+  duration_ms: 0.1568
+  type: 'test'
+  ...
+# Subtest: strict rated match is true only on fully completed clean match
+ok 68 - strict rated match is true only on fully completed clean match
+  ---
+  duration_ms: 0.4514
+  type: 'test'
+  ...
+# Subtest: missing submission still generates RESULT_READY and marks the match unrated
+ok 69 - missing submission still generates RESULT_READY and marks the match unrated
+  ---
+  duration_ms: 0.5316
+  type: 'test'
+  ...
+# Subtest: SKIPPED blocks rating
+ok 70 - SKIPPED blocks rating
+  ---
+  duration_ms: 0.6794
+  type: 'test'
+  ...
+# Subtest: TIMEOUT blocks rating
+ok 71 - TIMEOUT blocks rating
+  ---
+  duration_ms: 0.6744
+  type: 'test'
+  ...
+# Subtest: FORCE_ADVANCE blocks rating
+ok 72 - FORCE_ADVANCE blocks rating
+  ---
+  duration_ms: 0.6813
+  type: 'test'
+  ...
+# Subtest: mismatched observed_key poisons the match even if the player later submits a correct result
+ok 73 - mismatched observed_key poisons the match even if the player later submits a correct result
+  ---
+  duration_ms: 0.6132
+  type: 'test'
+  ...
+# Subtest: BPL(3) always plays 3 stages before entering RESULT
+ok 74 - BPL(3) always plays 3 stages before entering RESULT
+  ---
+  duration_ms: 1.2748
+  type: 'test'
+  ...
+# Subtest: BPL(3) freezes two picks plus one random stage
+ok 75 - BPL(3) freezes two picks plus one random stage
+  ---
+  duration_ms: 0.4276
+  type: 'test'
+  ...
+# Subtest: BPL4 always plays 4 stages before entering RESULT
+ok 76 - BPL4 always plays 4 stages before entering RESULT
+  ---
+  duration_ms: 0.7922
+  type: 'test'
+  ...
+# Subtest: BPL4 freezes four stages from player picks in accepted order
+ok 77 - BPL4 freezes four stages from player picks in accepted order
+  ---
+  duration_ms: 0.3626
+  type: 'test'
+  ...
+# Subtest: BPL4 allows two picks per player and rejects a third pick
+ok 78 - BPL4 allows two picks per player and rejects a third pick
+  ---
+  duration_ms: 0.3065
+  type: 'test'
+  ...
+# Subtest: conflicting final result blocks rating
+ok 79 - conflicting final result blocks rating
+  ---
+  duration_ms: 0.4797
+  type: 'test'
+  ...
+# Subtest: MATCH_TTL expires in RESULT and closes room
+ok 80 - MATCH_TTL expires in RESULT and closes room
+  ---
+  duration_ms: 0.5043
+  type: 'test'
+  ...
+# Subtest: RESULT_READY summary uses server-authoritative match_id and rematch rotates it
+ok 81 - RESULT_READY summary uses server-authoritative match_id and rematch rotates it
+  ---
+  duration_ms: 0.5921
+  type: 'test'
+  ...
+# Subtest: hydrate legacy RESULT_READY payload without match_id falls back to room_id
+ok 82 - hydrate legacy RESULT_READY payload without match_id falls back to room_id
+  ---
+  duration_ms: 0.9661
+  type: 'test'
+  ...
+# Subtest: searchCharts applies filters and pagination
+ok 83 - searchCharts applies filters and pagination
+  ---
+  duration_ms: 1.462
+  type: 'test'
+  ...
+# Subtest: searchCharts filters by version
+ok 84 - searchCharts filters by version
+  ---
+  duration_ms: 1.1504
+  type: 'test'
+  ...
+# Subtest: resolvePickChartKey supports direct and alias lookup
+ok 85 - resolvePickChartKey supports direct and alias lookup
+  ---
+  duration_ms: 1.1023
+  type: 'test'
+  ...
+# Subtest: resolvePickChartKey resolves compatibility-normalized title_search_key picks
+ok 86 - resolvePickChartKey resolves compatibility-normalized title_search_key picks
+  ---
+  duration_ms: 0.7094
+  type: 'test'
+  ...
+# Subtest: resolveAliasExact matches trim-only exact aliases
+ok 87 - resolveAliasExact matches trim-only exact aliases
+  ---
+  duration_ms: 0.4927
+  type: 'test'
+  ...
+# Subtest: pickRandomUnusedChart respects preferred options and used chart keys
+ok 88 - pickRandomUnusedChart respects preferred options and used chart keys
+  ---
+  duration_ms: 0.6798
+  type: 'test'
+  ...
+# Subtest: unlock filter applies to search and resolve
+ok 89 - unlock filter applies to search and resolve
+  ---
+  duration_ms: 0.628
+  type: 'test'
+  ...
+# Subtest: handleGetJoin returns expired payload when r query is missing
+ok 90 - handleGetJoin returns expired payload when r query is missing
+  ---
+  duration_ms: 33.7963
+  type: 'test'
+  ...
+# Subtest: handleGetJoin returns room payload when DO join-status is available
+ok 91 - handleGetJoin returns room payload when DO join-status is available
+  ---
+  duration_ms: 1.6421
+  type: 'test'
+  ...
+# Subtest: handleGetJoin falls back to expired payload when DO returns not found
+ok 92 - handleGetJoin falls back to expired payload when DO returns not found
+  ---
+  duration_ms: 1.7106
+  type: 'test'
+  ...
+# Subtest: handleGetLobby removes stale eligibility failures but keeps response schema intact
+ok 93 - handleGetLobby removes stale eligibility failures but keeps response schema intact
+  ---
+  duration_ms: 55.0992
+  type: 'test'
+  ...
+# Subtest: handleGetLobby fail-open keeps lobby response when eligibility probes reject
+ok 94 - handleGetLobby fail-open keeps lobby response when eligibility probes reject
+  ---
+  duration_ms: 3.1683
+  type: 'test'
+  ...
+# Subtest: handleGetLobby excludes rooms that probe as stale on the same response
+ok 95 - handleGetLobby excludes rooms that probe as stale on the same response
+  ---
+  duration_ms: 4.404
+  type: 'test'
+  ...
+# Subtest: handleGetLobby keeps stale rooms excluded when cleanup removal fails
+ok 96 - handleGetLobby keeps stale rooms excluded when cleanup removal fails
+  ---
+  duration_ms: 2.1536
+  type: 'test'
+  ...
+# Subtest: delayed lobby probe preserves same-ms newer summary (lost=false, recreate=false)
+ok 97 - delayed lobby probe preserves same-ms newer summary (lost=false, recreate=false)
+  ---
+  duration_ms: 4.8833
+  type: 'test'
+  ...
+# Subtest: delayed lobby probe preserves same-ms newer summary (lost=false, recreate=true)
+ok 98 - delayed lobby probe preserves same-ms newer summary (lost=false, recreate=true)
+  ---
+  duration_ms: 5.7418
+  type: 'test'
+  ...
+# Subtest: delayed lobby probe preserves same-ms newer summary (lost=true, recreate=false)
+ok 99 - delayed lobby probe preserves same-ms newer summary (lost=true, recreate=false)
+  ---
+  duration_ms: 4.3784
+  type: 'test'
+  ...
+# Subtest: delayed lobby probe preserves same-ms newer summary (lost=true, recreate=true)
+ok 100 - delayed lobby probe preserves same-ms newer summary (lost=true, recreate=true)
+  ---
+  duration_ms: 3.0461
+  type: 'test'
+  ...
+# Subtest: matchMatchmakingQueueTicketPath decodes ticket id
+ok 101 - matchMatchmakingQueueTicketPath decodes ticket id
+  ---
+  duration_ms: 1.0797
+  type: 'test'
+  ...
+# Subtest: handlePostMatchmakingQueue forwards to matchmaking do
+ok 102 - handlePostMatchmakingQueue forwards to matchmaking do
+  ---
+  duration_ms: 27.4696
+  type: 'test'
+  ...
+# Subtest: handleGetMatchmakingQueueTicket and handleDeleteMatchmakingQueueTicket return do responses
+ok 103 - handleGetMatchmakingQueueTicket and handleDeleteMatchmakingQueueTicket return do responses
+  ---
+  duration_ms: 1.9988
+  type: 'test'
+  ...
+# Subtest: handleGetMatchmakingWaitingCount returns waiting_count from matchmaking do
+ok 104 - handleGetMatchmakingWaitingCount returns waiting_count from matchmaking do
+  ---
+  duration_ms: 1.6369
+  type: 'test'
+  ...
+# Subtest: handleGetMatchmakingWaitingCount rejects invalid query
+ok 105 - handleGetMatchmakingWaitingCount rejects invalid query
+  ---
+  duration_ms: 1.045
+  type: 'test'
+  ...
+# Subtest: handlePostRooms does not upsert lobby when visibility is PUBLIC and auto_match is true
+ok 106 - handlePostRooms does not upsert lobby when visibility is PUBLIC and auto_match is true
+  ---
+  duration_ms: 29.9869
+  type: 'test'
+  ...
+# Subtest: handlePostRooms keeps lobby upsert when visibility is PUBLIC without auto_match
+ok 107 - handlePostRooms keeps lobby upsert when visibility is PUBLIC without auto_match
+  ---
+  duration_ms: 2.5195
+  type: 'test'
+  ...
+1..107
+# tests 107
+# suites 0
+# pass 107
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1796.4672

@@ -1,4 +1,4 @@
-# 製品検証（Issue #192 暫定適用）
+# 製品検証
 
 検証面の正本は現在の `.github/workflows/validate-reusable.yml` と各package script。
 製品テスト・契約検査を削除/弱体化しない。変更testが標準対象外なら明示実行する。
@@ -16,4 +16,4 @@
 
 重要契約変更は独立レビューを受ける。findingには処置・検証証拠・残リスクを対応付ける。
 未解決Blocker/Must fixと必須検証の未完を残したままCOMPLETEとしない。
-旧統治方式だけを検査する `check:agents` は、この試作では有効Custom Agent/project Skillが0であることを検査する。
+`check:agents` は、有効Custom Agent/project Skillが0であることを検査する。

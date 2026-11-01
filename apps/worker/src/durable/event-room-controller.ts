@@ -231,7 +231,9 @@ export class EventRoomController {
       }
       this.broadcastState();
     }
-    if (!this.stateMachine.toSnapshot().ended_at) await this.syncAlarm();
+    // A previous attempt may have persisted the terminal state before setAlarm
+    // failed. Re-arm its original cleanup deadline on every successful retry.
+    await this.syncAlarm();
   }
 
   async chartSearch(url: URL): Promise<Response> {

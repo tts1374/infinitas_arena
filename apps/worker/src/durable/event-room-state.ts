@@ -832,7 +832,7 @@ export class EventRoomState {
     if (!sameExpectedKey(round.chart.expected_key, observedKey, participant.source)) {
       return { ok: false, reason: "RESULT_KEY_MISMATCH" };
     }
-    if (!Number.isFinite(metricValue)) return { ok: false, reason: "INVALID_METRIC" };
+    if (!Number.isInteger(metricValue) || metricValue < 0) return { ok: false, reason: "INVALID_METRIC" };
     round.submissions[playerId] = {
       status: "SUBMITTED",
       metric_value: metricValue,

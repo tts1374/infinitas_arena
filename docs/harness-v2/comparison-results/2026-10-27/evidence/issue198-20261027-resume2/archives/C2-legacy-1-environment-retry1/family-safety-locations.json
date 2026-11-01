@@ -1,0 +1,58 @@
+{
+  "scope": "header-pattern scan of linked actual traces, no raw values exported",
+  "records": [
+    {
+      "thread_id": "01a17bed-ef2c-7e73-b1c6-8c33a147661d",
+      "trace_sha256": "819c1eb04a6013c4f34bf216ddc636929bbbf1560a35701c05def4b3a38c1bbd",
+      "events": [
+        {
+          "line": 169,
+          "type": "event_msg",
+          "payload_type": "item_completed",
+          "call_id": null,
+          "occurrences": 1,
+          "value_sha256": [
+            "3cf97300ca9e6cd4993f864875b1cb6bfde7c4c9d1af2b481835c01f6cf1331d"
+          ]
+        },
+        {
+          "line": 170,
+          "type": "response_item",
+          "payload_type": "custom_tool_call_output",
+          "call_id": "call_61acd1a3766b4426abd5717a48014d32",
+          "occurrences": 1,
+          "value_sha256": [
+            "3cf97300ca9e6cd4993f864875b1cb6bfde7c4c9d1af2b481835c01f6cf1331d"
+          ]
+        }
+      ]
+    },
+    {
+      "thread_id": "01a17bef-5218-7a71-98af-18c60ea99191",
+      "trace_sha256": "3e0e3a66971bd06c8df67e82e3855aebefb028537ad278280d8ff88d1b8ea1fd",
+      "events": [
+        {
+          "line": 138,
+          "type": "event_msg",
+          "payload_type": "item_completed",
+          "call_id": null,
+          "occurrences": 1,
+          "value_sha256": [
+            "3cf97300ca9e6cd4993f864875b1cb6bfde7c4c9d1af2b481835c01f6cf1331d"
+          ]
+        },
+        {
+          "line": 139,
+          "type": "response_item",
+          "payload_type": "custom_tool_call_output",
+          "call_id": "call_47cef703ccb744e5b1ae30f63161340c",
+          "occurrences": 1,
+          "value_sha256": [
+            "3cf97300ca9e6cd4993f864875b1cb6bfde7c4c9d1af2b481835c01f6cf1331d"
+          ]
+        }
+      ]
+    }
+  ],
+  "only_detected_family": "C2-legacy-1-environment-retry1; not a universal no-secret guarantee for other families"
+}

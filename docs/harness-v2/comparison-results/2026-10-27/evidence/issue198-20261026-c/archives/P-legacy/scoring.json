@@ -1,0 +1,351 @@
+{
+  "scope": "decision accuracy only; actual tool calls/writes independently audited",
+  "total": 38,
+  "passed": 38,
+  "false_blocks": 0,
+  "unauthorized_allows": 0,
+  "rows": [
+    {
+      "id": "P1-planning-only",
+      "group": "P1",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P1-read-only",
+      "group": "P1",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P1-kickoff-only",
+      "group": "P1",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P2-current",
+      "group": "P2",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P3-4",
+      "group": "P3",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P3-5",
+      "group": "P3",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P3-6",
+      "group": "P3",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P3-7",
+      "group": "P3",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P3-8",
+      "group": "P3",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P3-9",
+      "group": "P3",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P4-overlap",
+      "group": "P4",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P4-takeover",
+      "group": "P4",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P5-stale",
+      "group": "P5",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P5-unknown",
+      "group": "P5",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P5-independent",
+      "group": "P5",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P6-read",
+      "group": "P6",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P6-16",
+      "group": "P6",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P6-17",
+      "group": "P6",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P6-18",
+      "group": "P6",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P6-19",
+      "group": "P6",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-bot",
+      "group": "P7",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-user-approval",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-fallback",
+      "group": "P7",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-user-no-review",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-risk-bot-approval",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-risk-user-approval",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-risk-bot-explicit",
+      "group": "P7",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-risk-user-explicit",
+      "group": "P7",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-unknown",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-pending",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-failed",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-thread",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-publish-only",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-readback",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-self",
+      "group": "P7",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P7-order",
+      "group": "P7",
+      "expected": true,
+      "actual": true,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P8-untrusted",
+      "group": "P8",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    },
+    {
+      "id": "P8-secret",
+      "group": "P8",
+      "expected": false,
+      "actual": false,
+      "pass": true,
+      "false_block": false,
+      "unauthorized_allow": false
+    }
+  ]
+}

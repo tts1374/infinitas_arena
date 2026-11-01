@@ -1,0 +1,191 @@
+{
+  "archived_at": "2026-10-26T23:53:55.942648+00:00",
+  "experiment": "issue198-20261026-c",
+  "run_id": "C1-v2-1",
+  "case": "C1",
+  "lane": "v2",
+  "input_hash": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+  "initial_head": "49559e9835440af58d211cadc5aa3cd8c2208515",
+  "manifest_sha256": "24b03b4d99de170be358abe9893754e074921432a0bc0908adeac46c836850dc",
+  "executor_claim": null,
+  "independent_comparison_verdict": "pending; this collector makes no quality decision",
+  "runtime_result": {
+    "run_id": "C1-v2-1",
+    "attempt": 0,
+    "case_id": "C1",
+    "lane": "v2",
+    "product_base": "4b600d3445edc71d0599058809c9a89b04591760",
+    "harness_commit": "59b0815dc95738c3e7a14d5505fb58d3df49c460",
+    "input_hash": "83995ed9603ff2618674c9c218b67fd042d41e92c8316b9f00472704a380e485",
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "started_at": "2026-10-26T14:36:22.470117+00:00",
+    "ended_at": "2026-10-26T14:36:54.206154+00:00",
+    "wall_seconds": 31.73603870000079,
+    "exit_code": 1,
+    "timeout": false,
+    "before": {
+      "head": "49559e9835440af58d211cadc5aa3cd8c2208515",
+      "branch": "codex/harness-v2-trial",
+      "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {},
+      "fingerprint": "645f624012d9b527331b9698cafd05219907a340271005b2779f3a3d83edc45b"
+    },
+    "after": {
+      "head": "49559e9835440af58d211cadc5aa3cd8c2208515",
+      "branch": "codex/harness-v2-trial",
+      "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": {},
+      "fingerprint": "645f624012d9b527331b9698cafd05219907a340271005b2779f3a3d83edc45b"
+    },
+    "all_agents_total_tokens": null,
+    "active_seconds": null,
+    "spawn_ids": null,
+    "review": null,
+    "verdict": "unproven; independent evaluation pending",
+    "usage": null
+  },
+  "events": {
+    "thread_id": "01a178a4-1938-7872-8435-b0f5c7d7ffc4",
+    "events": 25,
+    "usage": null,
+    "terminal": [
+      {
+        "type": "error",
+        "message": "You’ve hit your usage limit. Upgrade to Pro (https://chatgpt.com/explore/pro), visit https://chatgpt.com/settings/usage to purchase more credits or try again at Oct 27th, 2026 3:21 AM."
+      },
+      {
+        "type": "turn.failed",
+        "error": {
+          "message": "You’ve hit your usage limit. Upgrade to Pro (https://chatgpt.com/explore/pro), visit https://chatgpt.com/settings/usage to purchase more credits or try again at Oct 27th, 2026 3:21 AM."
+        }
+      }
+    ],
+    "latest_message": "指定の Node v22.23.4 / npm 10.9.9 が、PATH経由でも使われていることを確認しました。対象はC1です。固定ACでは分のゼロ埋めも必要なため、modal内の表示だけを最小修正します。検証には `verify-change`、編集には `windows-utf8-safe-write` スキルを適用します。\n",
+    "commands": [
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Encoding UTF8 AGENTS.md; Get-Content -Encoding UTF8 .tmp/comparison/input.json; Get-Content -Encoding UTF8 .harness-v2.json; & .tmp/toolchain/node.exe --version; & .tmp/toolchain/npm.cmd --version; Get-Command node,npm | Select-Object Name,Source,CommandType | ConvertTo-Json -Compress; node -p \"JSON.stringify({node:process.version,execPath:process.execPath,platform:process.platform,arch:process.arch})\"; npm --version'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Encoding UTF8 C:/Users/tts13/.codex/skills/.system/verify-change/SKILL.md'",
+        "exit_code": 1,
+        "status": "failed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content -Encoding UTF8 .agents/skills/verify-change/SKILL.md; Get-Content -Encoding UTF8 C:/Users/tts13/.codex/skills/windows-utf8-safe-write/SKILL.md; Get-Content -Encoding UTF8 tools/harness-v2/goal.example.json; Get-Content -Encoding UTF8 .tmp/comparison/runtime.json; Get-Content -Encoding UTF8 .tmp/comparison/reference/visual.json; Get-Content -Encoding UTF8 package.json; git status --porcelain=v1; git rev-parse HEAD; git diff --stat; git branch --format='%(refname:short) %(objectname)'; git stash list\"",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Encoding UTF8 .tmp/comparison/browser_fixture.mjs; Get-Content -Encoding UTF8 docs/harness-v2/requirements.md; Get-Content -Encoding UTF8 apps/client/src/components/SongSearchModalView.tsx; Get-Content -Encoding UTF8 apps/client/package.json'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Encoding UTF8 docs/harness-v2/requirements.md'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Encoding UTF8 tools/harness-v2/harness.py'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command 'Get-Content -Encoding UTF8 .tmp/comparison/browser_fixture.mjs'",
+        "exit_code": 0,
+        "status": "completed"
+      },
+      {
+        "command": "\"C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe\" -Command \"Get-Content -Encoding UTF8 apps/client/src/features/room/picking-countdown-display.test.tsx; Get-Content -Encoding UTF8 package.json; Get-Content -Encoding UTF8 apps/client/tsconfig.json; Get-Content -Encoding UTF8 tsconfig.base.json; Get-Content -Encoding UTF8 docs/harness-v2/comparison-plan.md; git status --porcelain=v1; git rev-parse HEAD; git diff --stat; rg --files -g AGENTS.md -g '*test*' .agents tools/harness-v2 .tmp/comparison\"",
+        "exit_code": 0,
+        "status": "completed"
+      }
+    ],
+    "unparsed_tail_bytes": 0,
+    "events_sha256": "da048d4837c99b396f010bffa8c4019499b98895f625836383c00c0b74bbea97"
+  },
+  "family_telemetry": {
+    "status": "linked trace observations; terminal states still require inspection",
+    "thread_id": "01a178a4-1938-7872-8435-b0f5c7d7ffc4",
+    "spawn_ids": [],
+    "spawn_attempt_count": 0,
+    "traces": [
+      {
+        "thread_id": "01a178a4-1938-7872-8435-b0f5c7d7ffc4",
+        "trace_found": true,
+        "trace_sha256": "cf488a93c697063305099788d9965641b4b47363c6b633a1656b5424bcda5404",
+        "metadata": {
+          "id": "01a178a4-1938-7872-8435-b0f5c7d7ffc4",
+          "parent_thread_id": null,
+          "agent_role": null,
+          "agent_path": null,
+          "cwd": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\trials\\C1-v2-1",
+          "cli_version": "0.164.0-alpha.11.1",
+          "model_provider": "openai",
+          "source": "exec"
+        },
+        "turn_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "effort": "high",
+            "approval_policy": "never",
+            "sandbox_policy": {
+              "type": "danger-full-access"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 70640,
+          "cached_input_tokens": 45952,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 899,
+          "reasoning_output_tokens": 52,
+          "total_tokens": 71539
+        },
+        "spawn_calls": [],
+        "spawn_ids": null,
+        "terminal": {
+          "type": "task_complete",
+          "at": "2026-10-26T14:36:54.029Z",
+          "error": true
+        },
+        "malformed_lines": 0,
+        "limitation": "Parent trace only; child identities/usage must be linked before reporting all-agent totals. Encrypted payloads are not copied."
+      }
+    ],
+    "coverage_complete": true,
+    "all_agents_total_tokens": null,
+    "limitation": "No token inference; missing child telemetry or unmatched spawn makes total null. Provider counters retained verbatim."
+  },
+  "timing": {
+    "started_at": "2026-10-26T14:36:22.470117+00:00",
+    "model_terminal_at": "2026-10-26T14:36:54.029Z",
+    "wall_to_model_terminal_seconds": 31.558883,
+    "cli_wall_seconds": 31.73603870000079,
+    "active_seconds": null
+  },
+  "after": {
+    "head": "49559e9835440af58d211cadc5aa3cd8c2208515",
+    "branch": "codex/harness-v2-trial",
+    "status_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "index_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_diff_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stash_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "files": {},
+    "fingerprint": "645f624012d9b527331b9698cafd05219907a340271005b2779f3a3d83edc45b"
+  },
+  "untracked_files": {},
+  "tracked_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "raw_capture": "C:\\Users\\tts13\\Documents\\Codex\\experiments\\issue198-20261026-c\\runs\\C1-v2-1-attempt0\\events.jsonl",
+  "raw_capture_sha256": "da048d4837c99b396f010bffa8c4019499b98895f625836383c00c0b74bbea97",
+  "cost_scope": "CLI parent and linked children only. Shared preparation/comparison adjudication costs are separate and not fully measured."
+}

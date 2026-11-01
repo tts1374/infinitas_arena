@@ -1,0 +1,70 @@
+diff --git a/apps/worker/src/durable/lobby-directory-object.test.mjs b/apps/worker/src/durable/lobby-directory-object.test.mjs
+index 76b34d2..7afd4e7 100644
+--- a/apps/worker/src/durable/lobby-directory-object.test.mjs
++++ b/apps/worker/src/durable/lobby-directory-object.test.mjs
+@@ -178,6 +178,38 @@ test("restores the monotonic updatedAt counter from legacy per-room storage", as
+   const listPayload = await listResponse.json();
+   const roomNew = listPayload.rooms.find((room) => room.roomId === "room-new");
+   assert.equal(roomNew?.updatedAt, 2_501);
++  assert.equal(state.storage.snapshot().lastUpdatedAtByRoomId, 2_501);
++});
++
++test("restores the persisted scalar counter after all rooms were removed and the clock moved backwards", async () => {
++  const state = new TestDurableObjectState();
++  const lobbyDirectory = new LobbyDirectoryDO(state);
++  await upsertRoom(lobbyDirectory, 1_000);
++  await upsertRoom(lobbyDirectory, 1_000);
++  const removeResponse = await removeRoom(lobbyDirectory, 1_000, {
++    roomId: "room-1",
++    expectedUpdatedAt: 1_001,
++  });
++  assert.equal((await removeResponse.json()).removed, true);
++
++  const snapshot = structuredClone(state.storage.snapshot());
++  assert.deepEqual(snapshot.rooms, {});
++  assert.equal(snapshot.lastUpdatedAtByRoomId, 1_001);
++  const restoredState = new TestDurableObjectState();
++  for (const [key, value] of Object.entries(snapshot)) {
++    await restoredState.storage.put(key, value);
++  }
++  const restoredDirectory = new LobbyDirectoryDO(restoredState);
++  await upsertRoom(restoredDirectory, 999);
++  const staleRemoveResponse = await removeRoom(restoredDirectory, 999, {
++    roomId: "room-1",
++    expectedUpdatedAt: 1_001,
++  });
++  assert.equal((await staleRemoveResponse.json()).removed, false);
++  const listPayload = await (await listRooms(restoredDirectory, 999)).json();
++  assert.equal(listPayload.rooms.length, 1);
++  assert.equal(listPayload.rooms[0].updatedAt, 1_002);
++  assert.equal(restoredState.storage.snapshot().lastUpdatedAtByRoomId, 1_002);
+ });
+ 
+ test("persisted monotonic counter does not retain per-room tombstones after remove and expiry cleanup", async () => {
+diff --git a/apps/worker/src/durable/lobby-directory-object.ts b/apps/worker/src/durable/lobby-directory-object.ts
+index bb357bc..677d228 100644
+--- a/apps/worker/src/durable/lobby-directory-object.ts
++++ b/apps/worker/src/durable/lobby-directory-object.ts
+@@ -162,7 +162,12 @@ function restoreLastIssuedUpdatedAt(
+ 
+   if (isFiniteNumber(input)) {
+     lastIssuedUpdatedAt = input;
+-
++  } else if (isRecord(input)) {
++    for (const updatedAt of Object.values(input)) {
++      if (isFiniteNumber(updatedAt)) {
++        lastIssuedUpdatedAt = Math.max(lastIssuedUpdatedAt, updatedAt);
++      }
++    }
+   }
+ 
+   for (const room of rooms.values()) {
+@@ -274,7 +279,7 @@ export class LobbyDirectoryDO {
+ 
+     const now = Date.now();
+     this.cleanupExpired(now);
+-    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt);
++    const nextUpdatedAt = Math.max(now, this.lastIssuedUpdatedAt + 1);
+     this.lastIssuedUpdatedAt = nextUpdatedAt;
+ 
+     const normalized: LobbyRoomSummary = {

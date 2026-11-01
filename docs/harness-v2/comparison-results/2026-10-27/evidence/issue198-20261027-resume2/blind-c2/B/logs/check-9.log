@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: conditional remove does not delete a newer lobby summary from the same millisecond
+ok 1 - conditional remove does not delete a newer lobby summary from the same millisecond
+  ---
+  duration_ms: 16.8368
+  type: 'test'
+  ...
+# Subtest: conditional remove deletes the matching lobby summary
+ok 2 - conditional remove deletes the matching lobby summary
+  ---
+  duration_ms: 1.4318
+  type: 'test'
+  ...
+# Subtest: conditional remove does not delete a recreated summary from the same millisecond
+ok 3 - conditional remove does not delete a recreated summary from the same millisecond
+  ---
+  duration_ms: 1.4664
+  type: 'test'
+  ...
+# Subtest: restores the monotonic updatedAt counter from legacy per-room storage
+ok 4 - restores the monotonic updatedAt counter from legacy per-room storage
+  ---
+  duration_ms: 7.9536
+  type: 'test'
+  ...
+# Subtest: restores the persisted scalar counter after all rooms were removed and the clock moved backwards
+ok 5 - restores the persisted scalar counter after all rooms were removed and the clock moved backwards
+  ---
+  duration_ms: 1.9058
+  type: 'test'
+  ...
+# Subtest: persisted monotonic counter does not retain per-room tombstones after remove and expiry cleanup
+ok 6 - persisted monotonic counter does not retain per-room tombstones after remove and expiry cleanup
+  ---
+  duration_ms: 0.7973
+  type: 'test'
+  ...
+# Subtest: handleGetLobby removes stale eligibility failures but keeps response schema intact
+ok 7 - handleGetLobby removes stale eligibility failures but keeps response schema intact
+  ---
+  duration_ms: 29.1176
+  type: 'test'
+  ...
+# Subtest: handleGetLobby fail-open keeps lobby response when eligibility probes reject
+ok 8 - handleGetLobby fail-open keeps lobby response when eligibility probes reject
+  ---
+  duration_ms: 1.5433
+  type: 'test'
+  ...
+# Subtest: handleGetLobby excludes rooms that probe as stale on the same response
+ok 9 - handleGetLobby excludes rooms that probe as stale on the same response
+  ---
+  duration_ms: 1.2563
+  type: 'test'
+  ...
+# Subtest: handleGetLobby keeps stale rooms excluded when cleanup removal fails
+ok 10 - handleGetLobby keeps stale rooms excluded when cleanup removal fails
+  ---
+  duration_ms: 1.791
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 624.0812

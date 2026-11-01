@@ -1,0 +1,4 @@
+interface:
+  display_name: "Issue Close Evidence Flow"
+  short_description: "Prepare compliant issue closure evidence comments"
+  default_prompt: "Prepare closure evidence comments for issues or milestone management issues using the repository template and current completion status."

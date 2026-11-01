@@ -1,0 +1,4 @@
+interface:
+  display_name: "Phase C Kickoff Flow"
+  short_description: "Create pre-implementation C kickoff artifacts"
+  default_prompt: "Prepare a Phase C kickoff artifact from an issue or task plan, including execution profile, spawn gate result, and delegation execution record."

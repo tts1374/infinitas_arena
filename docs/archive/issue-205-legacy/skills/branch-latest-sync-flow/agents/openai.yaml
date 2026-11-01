@@ -1,0 +1,4 @@
+interface:
+  display_name: "Branch Latest Sync Flow"
+  short_description: "Safely sync a base/default branch to upstream while preserving real WIP"
+  default_prompt: "Use this skill to sync a branch such as v1 to the latest upstream state with dirty-path classification, safe stash handling, and final branch hygiene reporting."

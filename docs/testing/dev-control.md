@@ -1,5 +1,15 @@
 # #192 開発コントロール基盤・検証記録
 
+## 統合後の再開入口（2026-11-01）
+
+ユーザーの採用承認により#189を `956f0fc`、#206を `9b98b97` としてv1へmerge済み。#188 v2本体・v3連携・Host期限通知・非負整数の提出検証・終了後cleanup再試行は既定branchの製品機能となった。軽量フローは正式採用され、root/local規約・config・zero定義検査は採用版を正本とする。旧Phase/試作の停止条件は履歴として扱う。
+
+#192は元の `3bc6140` を祖先に保持して追随し、PR #208はv1基点のDraftを維持する。退避先のrename競合はarchive192の54ファイルとarchive205の57ファイルをそれぞれ元commitとblob一致で両保全。有効なCustom Agent/project Skillは0、既存Playwrightとdev-controlの標準テスト/CIを維持し、Node 22.23.4を保持した。Worker製品コード/テストは採用版と一致、v3 source-storeは検証済み3bc版（採用版との差はdev gate3行）、client標準テストは親の全対象と既存dev3本を含む。
+
+追随後quick: control120/client179/Worker193/integration6/stats17、root型/lint/契約/agentsがPASS。競合解消を独立read-only確認し、今回の欠落・上書きの指摘なし。新しい対戦/実プレーは行っておらず、既存の実機証拠と受入未完を引き継ぐ。
+
+残作業: Host A・本人Aの開催画面外提出/履歴再読込、BPLの手動再戦等の証拠照合、native定期読込エラーの原因/再現頻度調査。BPL4完走/手動再戦・固定Workerの起動/編集耐性・実時計300秒通知は確認済みで、繰返しを起点にしない。#208のmerge、Issue close、deploy/release、既存branch/worktree/stash削除は今回の承認に含まれない。
+
 ## 最新確認（2026-11-01、BPL4実機完走）
 
 本人からアプリ起動・BPL4完走の再開指示を受け、新session `s20261101083610-940460f0` を起動。旧session/WIP/stashを保持。実Workerは起動時に固定したbundle/configを使用する。本人A入室前に元Worker source/configへコメントを4秒間追加し、同じbyte列へ復元した。Bは同室/同generation、transportEpoch=3、CONNECTEDを維持し、失敗観測なし。固定bundle/configのSHA256も起動記録と一致。本人の対戦中にはこの編集試験を行わない。
