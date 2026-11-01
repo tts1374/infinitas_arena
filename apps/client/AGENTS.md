@@ -15,8 +15,8 @@
 
 共通ガバナンス:
 - root `AGENTS.md`
-- `WORKFLOW.md`
-- `QUALITY.md`
+- root `AGENTS.md` の進め方
+- `QUALITY.md` の製品検証
 - `packages/shared/AGENTS.md`（sharedを触る場合）
 
 ---
@@ -42,7 +42,7 @@
 - reconnect/recovery 意味変更
 
 上記に該当する場合:
-- Plan/監査要否は `WORKFLOW.md` に従う
+- root `AGENTS.md` に従い、変更リスクに応じた検証と独立レビューを行う
 - 検証は `QUALITY.md` の該当マトリクスを満たす
 
 ---
