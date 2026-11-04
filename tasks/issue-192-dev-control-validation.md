@@ -1,5 +1,19 @@
 # #192 AC・検証・準備判定台帳
 
+## 現在の受入差分（2026-11-05）
+
+最新の正本は [再開入口](../docs/testing/dev-control.md)。下記以降の旧Phase B計画・停止条件は履歴であり、現在の実装許可や軽量フローを巻き戻さない。
+
+| AC | 今回の補完・既存証拠の扱い | 残作業 |
+| --- | --- | --- |
+| 01/03/04/06/07/09/10 | 既存の配布拒否・A実連携・3source・切断/期限・遅延/失効・保存/停止証拠を維持。今回もnative実起動・bundle read-back・完全停止を確認 | native当時エラーの原因/頻度は未確定。診断修正成功とは別扱い |
+| 02 | ARENA/BPL4の完走・再戦開始、BPLの3曲完走は再実施せず保持。BPL旧rawでreturnToLobbyなし、start初回のみを独立確認 | BPLのRESULT→LOBBY→本人Ready→新match開始の不足区間 |
+| 05 | `s20261104144955-6aaad819` でHost A合同の作成・2曲・次曲・終了を本人操作で実証。旧Host B開催と区別 | Host A大会の本人導線。合同成功で代替しない |
+| 08 | 同sessionの2曲目PLEASE DON'T GO SPAをAアプリのロビー表示中に実source提出・accepted ACK/rev14・SUBMITTEDで確認。開催へ戻ったA画像886、Ctrl+R後の履歴2曲/完全と専用v2 JSONを確認 | 必要に応じ大会側でも同経路を補完。再読込後の画像は履歴一覧で、詳細画面画像ではない |
+| 11 | Host選曲を通常対戦部品へ統一、実nativeでcursor追加読込5回・自由選曲・明示確定/開始を確認。作成文言と参加2択を補正 | 新規close/Escape/Tab/focus・小幅表示の実GUI補完。従来70表示/3幅はmock証拠 |
+
+技術検証: control120/client185/Worker193/integration6/stats17、root型/lint/契約/agents0、production build、cargo check/Rust36、Worker dry-run PASS。radio最終差分は対象5件・root型/scoped lint・client185・専用native build/通常production build/Hosted CIでも確認。独立code/受入差分レビューに未処理Blocker/Must fixなし。user使用量による実機停止を受け、残検証は次回へ。**#192全体は未完・PR #208はDraft維持**。
+
 2026-10-23 JST。正本: [実行計画](issue-192-dev-control-window.md) / [bounded tasks](issue-192-dev-control-tasks.md)。本書のV1〜V9は**将来Cで必須の計画**であり、Bで実行済みではない。
 
 ## AC → task → 検証 → 保存証拠

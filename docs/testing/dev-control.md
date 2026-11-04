@@ -1,5 +1,38 @@
 # #192 開発コントロール基盤・検証記録
 
+## 最新の再開入口（2026-11-05、実機を停止して引継ぎ）
+
+ユーザーの使用量残9%のため、追加の大会・BPL確認は次回へ回す。指定worktreeとbranchは変更せず、軽量フローを継続。以下が11/01記録より新しい現在地であり、過去の完走や解決済み事項へ戻らない。#192全体は未完、PR #208はDraftを維持する。merge/Issue close/deploy/release/破壊的cleanupは未許可・未実施。
+
+今回の修正は `f208433`（native読込失敗の安全な診断）、`1a9a72c`（Host選曲UI・作成文言）、`3b68e18`（自分の参加を常時表示2択へ）としてcommit/push済み。Hostの先頭数曲しか選べないように見える問題は、APIが1ページ10譜面を返すのに旧画面がnext_cursorを読まないことが原因。通常対戦のSongSearchModalViewを再利用し、検索/難易度/レベル/バージョン/追加読込に対応した。選択→内容確認→明示確定→Host開始は維持。作成画面は「自分もプレーする」「進行だけ担当する」「順位の決め方」等にし、初期値・開催ルールは維持した。新testは標準client testへ登録済み。
+
+### 今回完了した実機確認
+
+- 成功session `s20261104144955-6aaad819`、Host A合同、event `26fefe36-3ea6-42bd-ad61-d9adda0efec3`。A実v3、B実client＋隔離Reflux（毎曲500/MISS10）。Aの作成→開催開始→2曲→次曲進行→終了を本人操作で確認。新しい選曲UIのcursor付き追加読込5回も実観測した。
+- 第1曲ANTHEM LANDING SPAはA2474/B500で受付。第1曲ではAアプリが開催画面にあり、背景提出の成功証拠にはしていない。
+- 第2曲PLEASE DON'T GO SPAはA886/B500。Aアプリの「対戦ロビーを探す」表示を14:58:05Z・14:59:41ZにPENDINGで確認し、15:00:17ZもロビーのままRESULT/SUBMITTEDを確認。実source解析sequence74→SUBMIT75→accepted ACK77/applied_revision14、request `5311acea-afba-4c92-ba2d-8e1a14840354`、round `d4034c02-1f68-4af3-98b1-90275141cf38` が一致。本人が「開催へ戻る」後の実画像 `clients/A/spool/captures/73e061bd-7a24-41ca-b187-795ad15a5e70.png` で886を目視した。
+- 本人が開催終了→通常対戦へ戻る→Ctrl+R→開催履歴を実行。navigation type=reload、専用localStorage v2のCOMPLETE/2曲/HOST_ENDEDと再読込後の履歴一覧を確認。A専用profileの `event-results/26fefe36-3ea6-42bd-ad61-d9adda0efec3.v2.json` SHA256は `872e44e739e0b5087d00b25b797d7e22940c824489e36df85f5ee44c87b71d1c`。一覧画像は `clients/A/spool/captures/0663d084-e336-4d4e-b6b3-ce31263cc894.png`。この画像は一覧の2曲/完全表示であり、再読込後の詳細画面画像ではない。
+- 補助観測は同sessionの `evidence/resume-20261104/` に保存。Aの背景前後・受付相関・履歴再読込・選曲request要約を記録し、元source全日入力は収集していない。補助観測はbundle外のsession記録で、raw通信証拠はcontroller-spool内にある。
+- 最終bundle `bundle-1793804698748695800` はsaved/missing[]、停止前保存済み。15:04:55.440Z→15:05:07.233Zでstopped/complete/errors[]、processesVerified/portsVerified=true。native操作窓のread-backと別のprocess/port再列挙でも残存0。旧bundle/受付/画像を保持し、実IIDX・実counterは停止対象にしていない。途中bundleはBの入力画面をprivacy拒否してpartial、Bを結果画面へ戻した再保存は欠落なしとなった。
+
+### 調査・検証と限界
+
+- 11/01のnativeエラーはbroker読込失敗後のoffline確認エラーを共通文言へ丸めていた。同期PowerShell/CIM列挙がbrokerを一時停止させるtimeout候補だが、当時の失敗理由を保存しておらず原因/頻度は確定不能。列挙5回は643〜672msで5秒超過を再現せず。今後はbroker timeout/connect/http/body等とoffline runtime-present等の固定codeで切り分ける。raw URL/stderr/秘密値は表示しない。停止判定・poll・timeout・製品通知の意味は変更していない。今回成功sessionでは同エラーを観測していない。11/01のサーバー300秒自動通知成功とは別件。
+- 新起動 `s20261104142128-9bb8d546` は子processの所有情報を確定できず安全停止。再列挙で残存0。対象PID/欠落fieldの記録がないためexact causeは未確定で、unknownを無条件採用する変更はしていない。後続3起動は成功した。
+- `s20261104142345-17b1cd40` はHost A作成/自動B入室まで確認したが、旧選曲UIの修正のため停止。`s20261104144313-8b452166` は専任Hostで誤作成後に本人が終了し、新部屋へ作り直した。操作窓はsession最初の部屋へ固定されるため、そのまま継続せず保存・停止した。両sessionも停止/port残存なし。
+- 終了押下の無反応は、親のPlaywright CDP接続にdialog listenerがなく確認ダイアログを自動dismissした検証側の干渉だった。listener登録後、本人の再押下・確認で終了成功。**次回もCDP接続直後に全pageへdialog listenerを登録し、本人のconfirmを代理accept/dismissしない。** 製品終了処理は変更していない。
+- 検証: control120/client185/Worker193/integration6/stats17、root型/lint/契約/agents0、client production build、cargo check・Rust全36、Worker dry-runがPASS。最後のradio変更は対象5件・root型/scoped lint・client全185に加え、専用native buildと通常production buildも成功。`3b68e18`のPR CIもsuccess。Rust本文timeout試験の初版はHTTP fixtureのrequest未読で失敗し、fixture補正後の限定15件と全36件をPASS。古い実機証拠と今回の実GUI成功を分けて扱う。
+- code独立レビューはnative・UI・radioとも未解決重大findingなし。native本文timeoutのOther包みのShould fixは補正・実HTTP回帰で解消。受入差分レビューもHost A合同/背景/履歴の証拠対応を確認。新選曲の実操作はdesktopで確認し、新規close/focus/responsiveの全幅実GUI確認は未完。
+
+### 次回に残す作業
+
+1. **Host A大会**の本人作成・開始・選曲・進行・終了。合同の今回実証で代替しない。必要なら大会でも背景提出/履歴再読込を確認する。本人の参加可否をその時点で確認し、代理操作しない。
+2. **BPL手動再戦**の不足区間。旧BPL `s20261029002846-23896aa8` は3曲完走済みだが、operationsにreturnToLobby=0、startは初回1件。room fallback→初回matchのID変化を再戦としない。完走をやり直すことを既定にせず、新sessionの正規Host強制進行等でRESULTを作り、復帰→本人Ready→新match PICKINGだけを補完できるか検討する（実プレー完走の証拠とは分ける）。
+3. 新選曲UIのclose/Escape/Tab/focus・小幅表示の実GUI補完、AC全体照合と最終レビュー。mock/単体成功を実GUI成功へ丸めない。
+4. native当時エラーの原因/頻度は未確定として維持。固定診断を使って再発時に切り分ける。起動時の一過性所有情報欠落も再発時に調査する。
+
+全runtimeは停止済み。古いroomへ再入室せず、次の専用起動から開始する。大会起動例: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev-control.ps1 -Mode TOURNAMENT -HostClient A -SelfSource daken_counter_v3 -SelfPort 8767 -OpponentSource reflux -VisibleOpponents 1 -PlayerCount 2`。本人は「自分もプレーする」を明示選択し、参加コードは空欄で自動生成可。旧controller/証拠/branch/worktree/stashを削除しない。
+
 ## 統合後の再開入口（2026-11-01）
 
 ユーザーの採用承認により#189を `956f0fc`、#206を `9b98b97` としてv1へmerge済み。#188 v2本体・v3連携・Host期限通知・非負整数の提出検証・終了後cleanup再試行は既定branchの製品機能となった。軽量フローは正式採用され、root/local規約・config・zero定義検査は採用版を正本とする。旧Phase/試作の停止条件は履歴として扱う。
