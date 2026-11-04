@@ -83,6 +83,22 @@ test("Host LOBBY with zero participants shows invite and keeps start disabled", 
   assert.match(markup, /<button[^>]*disabled=""[^>]*>開催開始<\/button>/);
 });
 
+test("Host uses the shared music picker without a countdown; guests and disconnected Hosts cannot pick", () => {
+  const picking = { ...baseSnapshot, selected_chart: null, current_round_id: null } satisfies EventRoomSnapshot;
+  const host = render(picking, { playerId: "host", sessionRole: "HOST" });
+  assert.match(host, /Pick Music/);
+  assert.match(host, /曲名・アーティストで検索/);
+  assert.match(host, /全員が遊べる譜面を確認しています/);
+  assert.match(host, /曲選択を閉じる/);
+  assert.doesNotMatch(host, /Time Left/);
+  assert.match(host, /<button[^>]*disabled=""[^>]*>この譜面を確定<\/button>/);
+  const guest = render(picking);
+  assert.doesNotMatch(guest, /Pick Music|曲名・アーティストで検索|この譜面を確定/);
+  const disconnected = render({ ...picking, host: { ...picking.host, connected: false } }, { playerId: "host", sessionRole: "HOST" });
+  assert.doesNotMatch(disconnected, /Pick Music/);
+  assert.match(disconnected, /<button[^>]*disabled=""[^>]*>曲を選ぶ<\/button>/);
+});
+
 test("20-player ACTIVE view preserves responsive layout and source failure skip guidance", () => {
   const participants = Array.from({ length: 20 }, (_, index) => participant(index + 1, {
     round_status: index === 0 ? "PENDING" : index === 19 ? "ABSENT" : "SUBMITTED",

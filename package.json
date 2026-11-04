@@ -20,6 +20,7 @@
     "build:web": "npm --workspace @infinitas/web run build",
     "test:web": "npm --workspace @infinitas/web run test",
     "test:worker": "npm --workspace @infinitas/worker run test",
+    "test:dev-control": "node --test --test-concurrency=1 scripts/dev-control/*.test.mjs scripts/dev-control/sources/*.test.mjs",
     "test:client-stats": "node -e \"require('node:fs').rmSync('./.tmp/client-stats-tests', { recursive: true, force: true })\" && node ./node_modules/typescript/bin/tsc -p apps/client/tsconfig.stats-test.json && node ./.tmp/client-stats-tests/apps/client/src/features/stats/stats.test.js"
   },
   "devDependencies": {

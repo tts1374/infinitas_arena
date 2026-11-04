@@ -56,6 +56,16 @@ function Accept-WebSocketContext(
   [System.Net.HttpListenerContext]$Context,
   [string]$PreferredSubProtocol
 ) {
+  # HTTP.sys owns the socket (PID 4); a child-only nonce attests this launcher.
+  $readyToken = $env:INF_ARENA_DEV_CONTROL_SOURCE_NONCE
+  if ($readyToken -and $Context.Request.Url.AbsolutePath -eq '/__dev_control_ready' -and $Context.Request.Headers['X-Dev-Control-Source'] -eq $readyToken) {
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes((@{ pid=$PID; port=$Port; token=$readyToken } | ConvertTo-Json -Compress))
+    $Context.Response.ContentType = 'application/json'
+    $Context.Response.ContentLength64 = $bytes.Length
+    $Context.Response.OutputStream.Write($bytes, 0, $bytes.Length)
+    $Context.Response.Close()
+    return $null
+  }
   if (-not $Context.Request.IsWebSocketRequest) {
     $Context.Response.StatusCode = 400
     $Context.Response.Close()

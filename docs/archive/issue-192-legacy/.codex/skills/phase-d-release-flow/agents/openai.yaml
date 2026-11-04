@@ -1,0 +1,4 @@
+interface:
+  display_name: "Phase D Release Flow"
+  short_description: "Automate Phase D release steps"
+  default_prompt: "Use this skill to run Phase D release operations: bump version, commit/push, conditional deploy workflows, and GitHub Release note update."

@@ -56,6 +56,9 @@ jobs:
       - name: Run client unit tests
         run: npm --workspace @infinitas/client run test
 
+      - name: Run development control tests
+        run: npm run test:dev-control
+
       - name: Run Worker tests
         run: npm run test:worker
 

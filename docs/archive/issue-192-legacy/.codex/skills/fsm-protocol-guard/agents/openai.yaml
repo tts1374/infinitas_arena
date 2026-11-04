@@ -1,0 +1,4 @@
+interface:
+  display_name: "FSM Protocol Guard"
+  short_description: "Reference skill for high-risk FSM/protocol review support"
+  default_prompt: "Use this only to support orchestrator or reviewer judgment for high-risk FSM/protocol work. Do not bypass stage/routing/audit decisions."

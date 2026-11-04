@@ -1,0 +1,4 @@
+interface:
+  display_name: "Quality Check Matrix"
+  short_description: "Reference skill for validation-scope and artifact-evidence selection"
+  default_prompt: "Use this only to support validation-scope selection for an orchestrator, implementer, or auditor, including workflow-artifact evidence when relevant. Do not replace audit or completion decisions."
