@@ -206,26 +206,58 @@ fn offline_request(auth: &Authority, request: Option<Value>) -> Result<Value, St
         child.stdin.take().ok_or("Offline request pipe unavailable")?.write_all(&serde_json::to_vec(&request).map_err(|e|e.to_string())?).map_err(|e|e.to_string())?;
     }
     let output = child.wait_with_output().map_err(|e| e.to_string())?;
-    if !output.status.success() { return Err("Offline runtime verification failed; records remain exportable".into()); }
+    if !output.status.success() {
+        let code = if String::from_utf8_lossy(&output.stderr).contains("Runtime is still present and shutdown was not requested.") { "offline:runtime-present" } else { "offline:verification-failed" };
+        return Err(format!("Offline runtime verification failed; records remain exportable [{code}]"));
+    }
     if output.stdout.len() as u64 > MAX_BODY { return Err("Offline response too large".into()); }
     serde_json::from_slice(&output.stdout).map_err(|e| e.to_string())
 }
 
+#[derive(Debug)]
+struct BrokerReadFailure { code: &'static str, message: String }
+
+impl BrokerReadFailure {
+    fn new(code: &'static str, message: impl ToString) -> Self { Self { code, message: message.to_string() } }
+    fn transport(error: reqwest::Error) -> Self {
+        Self::new(if error.is_timeout() { "broker:timeout" } else if error.is_connect() { "broker:connect" } else { "broker:transport" }, error)
+    }
+    fn body(error: std::io::Error) -> Self {
+        let timeout = error.kind() == std::io::ErrorKind::TimedOut || error.get_ref().and_then(|source| source.downcast_ref::<reqwest::Error>()).is_some_and(reqwest::Error::is_timeout);
+        Self::new(if timeout { "broker:timeout" } else { "broker:body" }, error)
+    }
+}
+
+fn state_read_failure(broker: BrokerReadFailure, offline: &str) -> String {
+    // Only fixed codes cross this boundary. HTTP errors, child stderr and URLs
+    // can contain private values and must not be copied into the controller UI.
+    let offline_code = if offline.contains("[offline:runtime-present]") { "offline:runtime-present" } else { "offline:verification-failed" };
+    format!("最新状態を読み込めません。記録は保持されています。[{};{offline_code}] 「最新の状態を確認」で再試行してください。", broker.code)
+}
+
+fn state_fallback(auth: &Authority, failure: BrokerReadFailure) -> Result<Value, String> {
+    offline_state(auth).map_err(|offline| state_read_failure(failure, &offline))
+}
+
 fn request_broker(auth: &Authority, route: &str, request: Option<Value>) -> Result<Value, String> {
-    let port = auth.manifest["broker"]["port"].as_u64().filter(|p| *p > 0 && *p < 65536).ok_or("Invalid broker port")?;
+    request_broker_detailed(auth, route, request).map_err(|failure| failure.message)
+}
+
+fn request_broker_detailed(auth: &Authority, route: &str, request: Option<Value>) -> Result<Value, BrokerReadFailure> {
+    let port = auth.manifest["broker"]["port"].as_u64().filter(|p| *p > 0 && *p < 65536).ok_or_else(|| BrokerReadFailure::new("broker:config", "Invalid broker port"))?;
     let timeout = if route == "collect" { 20 } else { 5 };
-    let client = reqwest::blocking::Client::builder().redirect(reqwest::redirect::Policy::none()).timeout(Duration::from_secs(timeout)).build().map_err(|e| e.to_string())?;
+    let client = reqwest::blocking::Client::builder().redirect(reqwest::redirect::Policy::none()).timeout(Duration::from_secs(timeout)).build().map_err(|e| BrokerReadFailure::new("broker:config", e))?;
     let url = format!("http://127.0.0.1:{port}/{route}");
     let builder = if let Some(body) = request { client.post(url).json(&body) } else { client.get(url) };
     let response = builder.header("Authorization", format!("Bearer {}", auth.token))
-        .header("X-Dev-Control-Client", required(&auth.client, "clientId")?).send().map_err(|e| e.to_string())?;
+        .header("X-Dev-Control-Client", required(&auth.client, "clientId").map_err(|e| BrokerReadFailure::new("broker:config", e))?).send().map_err(BrokerReadFailure::transport)?;
     let status = response.status();
-    if response.content_length().is_some_and(|length| length > MAX_BODY) { return Err("Body too large".into()); }
+    if response.content_length().is_some_and(|length| length > MAX_BODY) { return Err(BrokerReadFailure::new("broker:body", "Body too large")); }
     let mut bytes = Vec::new();
-    response.take(MAX_BODY + 1).read_to_end(&mut bytes).map_err(|e| e.to_string())?;
-    if bytes.len() as u64 > MAX_BODY { return Err("Body too large".into()); }
-    let result: Value = serde_json::from_slice(&bytes).map_err(|e| e.to_string())?;
-    if !status.is_success() { return Err(result["error"].as_str().unwrap_or("Broker refused request").to_string()); }
+    response.take(MAX_BODY + 1).read_to_end(&mut bytes).map_err(BrokerReadFailure::body)?;
+    if bytes.len() as u64 > MAX_BODY { return Err(BrokerReadFailure::new("broker:body", "Body too large")); }
+    let result: Value = serde_json::from_slice(&bytes).map_err(|e| BrokerReadFailure::new("broker:body", e))?;
+    if !status.is_success() { return Err(BrokerReadFailure::new("broker:http", result["error"].as_str().unwrap_or("Broker refused request"))); }
     Ok(result)
 }
 
@@ -239,17 +271,17 @@ pub fn dev_control_identity(window: tauri::WebviewWindow) -> Result<Value, Strin
 pub fn dev_control_state(window: tauri::WebviewWindow) -> Result<Value, String> {
     let auth = authority(&window)?;
     controller(&auth)?;
-    match request_broker(&auth, "state", None) {
+    match request_broker_detailed(&auth, "state", None) {
         Ok(value) => {
             if stop_export_id(&value).is_some() && value["save"]["status"] == "exporting" {
                 // Collection is complete; this native writer acknowledges its durable
                 // bundle before the broker is allowed to terminate the runtime.
                 let _ = export_for_authority(&auth)?;
-                return request_broker(&auth, "state", None).or_else(|_| offline_state(&auth));
+                return request_broker_detailed(&auth, "state", None).or_else(|failure| state_fallback(&auth, failure));
             }
             Ok(value)
         },
-        Err(_) => offline_state(&auth),
+        Err(failure) => state_fallback(&auth, failure),
     }
 }
 
@@ -573,6 +605,67 @@ pub fn dev_control_restart(window: tauri::WebviewWindow, request: RestartRequest
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn state_read_diagnostics_distinguish_http_and_body_without_exposing_private_errors() {
+        for (status, body, expected) in [("403 Forbidden", "{\"error\":\"private-token http://private.invalid/path\"}", "broker:http"), ("200 OK", "private-token invalid-json", "broker:body")] {
+            let mut auth = export_fixture();
+            let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+            auth.manifest["broker"]["port"] = json!(listener.local_addr().unwrap().port());
+            let server = std::thread::spawn(move || {
+                let (mut stream, _) = listener.accept().unwrap();
+                stream.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+                let mut request = Vec::new(); let mut chunk = [0u8; 4096];
+                while !request.windows(4).any(|part| part == b"\r\n\r\n") { let count = stream.read(&mut chunk).unwrap(); assert!(count > 0); request.extend_from_slice(&chunk[..count]); }
+                assert!(String::from_utf8_lossy(&request).starts_with("GET /state "));
+                write!(stream, "HTTP/1.1 {status}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()).unwrap();
+            });
+            let failure = request_broker_detailed(&auth, "state", None).unwrap_err();
+            server.join().unwrap();
+            assert_eq!(failure.code, expected);
+            let display = state_read_failure(failure, "unknown child error private-token C:/private/path");
+            assert!(display.contains(expected)); assert!(display.contains("offline:verification-failed"));
+            for private in ["private-token", "private.invalid", "C:/private/path"] { assert!(!display.contains(private)); }
+            assert!(display.contains("最新の状態を確認"));
+        }
+        let display = state_read_failure(BrokerReadFailure::new("broker:timeout", "private-token"), "Offline runtime verification failed [offline:runtime-present] private-token");
+        assert!(display.contains("broker:timeout;offline:runtime-present"));
+        assert!(!display.contains("private-token"));
+    }
+    #[test]
+    fn broker_transport_diagnostics_distinguish_connection_refusal_and_timeout() {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap(); drop(listener);
+        let error = reqwest::blocking::get(format!("http://{address}/state")).unwrap_err();
+        assert_eq!(BrokerReadFailure::transport(error).code, "broker:connect");
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = std::thread::spawn(move || { let (_stream, _) = listener.accept().unwrap(); std::thread::sleep(Duration::from_millis(100)); });
+        let error = reqwest::blocking::Client::builder().timeout(Duration::from_millis(20)).build().unwrap().get(format!("http://{address}/state")).send().unwrap_err();
+        server.join().unwrap();
+        assert_eq!(BrokerReadFailure::transport(error).code, "broker:timeout");
+    }
+    #[test]
+    fn broker_body_diagnostic_recognizes_other_wrapped_reqwest_timeout() {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = std::thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            stream.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+            let mut request = Vec::new(); let mut chunk = [0u8; 4096];
+            while !request.windows(4).any(|part| part == b"\r\n\r\n") { let count = stream.read(&mut chunk).unwrap(); assert!(count > 0); request.extend_from_slice(&chunk[..count]); }
+            assert!(String::from_utf8_lossy(&request).starts_with("GET /state "));
+            stream.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{").unwrap();
+            std::thread::sleep(Duration::from_millis(400));
+        });
+        let mut response = reqwest::blocking::Client::builder().timeout(Duration::from_millis(200)).build().unwrap().get(format!("http://{address}/state")).send().unwrap();
+        let error = response.read_to_end(&mut Vec::new()).unwrap_err();
+        server.join().unwrap();
+        assert_eq!(error.kind(), std::io::ErrorKind::Other);
+        assert!(error.get_ref().and_then(|source| source.downcast_ref::<reqwest::Error>()).is_some_and(reqwest::Error::is_timeout));
+        assert_eq!(BrokerReadFailure::body(error).code, "broker:timeout");
+        assert_eq!(BrokerReadFailure::body(std::io::Error::other("not a timeout")).code, "broker:body");
+        assert_eq!(BrokerReadFailure::body(std::io::ErrorKind::TimedOut.into()).code, "broker:timeout");
+    }
     fn export_fixture() -> Authority {
         let nonce = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
         let root = std::env::temp_dir().join(format!("dev-control-export-{nonce}"));
