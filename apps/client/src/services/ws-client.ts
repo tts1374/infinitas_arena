@@ -12,6 +12,17 @@ import clientPackageJson from "../../package.json";
 export type SocketConnectionState = "CONNECTING" | "JOINING" | "CONNECTED" | "DISCONNECTED";
 
 const APP_VERSION = typeof clientPackageJson.version === "string" ? clientPackageJson.version : "unknown";
+const devClients = new Map<string, RoomSocketClient>();
+const devObservers = new Set<(stage: "sent" | "received", message: unknown) => void>();
+export function observeRoomTransportForDevControl(observer: (stage: "sent" | "received", message: unknown) => void): () => void {
+  devObservers.add(observer); return () => { devObservers.delete(observer); };
+}
+export function pauseRoomTransportForDevControl(roomId: string, playerId: string, paused: boolean): boolean {
+  if (import.meta.env?.MODE !== "dev-control") return false;
+  const client = devClients.get(`${roomId}:${playerId}`);
+  if (!client) return false;
+  client.setDevControlPaused(paused); return true;
+}
 
 interface RoomSocketClientOptions {
   apiBaseUrl: string;
@@ -50,7 +61,19 @@ function buildWebSocketUrl(baseUrl: string, roomId: string): string {
 export class RoomSocketClient {
   private socket: WebSocket | null = null;
 
-  constructor(private readonly options: RoomSocketClientOptions) {}
+  constructor(private readonly options: RoomSocketClientOptions) {
+    if (import.meta.env?.MODE === "dev-control") devClients.set(`${options.roomId}:${options.playerId}`, this);
+  }
+
+  setDevControlPaused(paused: boolean): void {
+    if (import.meta.env?.MODE !== "dev-control") return;
+    if (paused) {
+      const socket = this.socket;
+      this.socket = null;
+      socket?.close(4001, "Development manual disconnect");
+      this.options.onStateChange?.("DISCONNECTED", "Development manual disconnect (automatic reconnect paused).");
+    } else this.connect();
+  }
 
   connect(): void {
     if (this.socket !== null) {
@@ -64,6 +87,7 @@ export class RoomSocketClient {
     this.socket = socket;
 
     socket.addEventListener("open", () => {
+      if (this.socket !== socket) return;
       this.options.onStateChange?.("JOINING", "Sending ROOM_JOIN.");
       this.send("ROOM_JOIN", {
         display_name: this.options.displayName,
@@ -84,14 +108,17 @@ export class RoomSocketClient {
     });
 
     socket.addEventListener("message", (event) => {
+      if (this.socket !== socket) return;
       this.handleMessage(event);
     });
 
     socket.addEventListener("error", () => {
+      if (this.socket !== socket) return;
       this.options.onError?.(new Error("WebSocket transport error."));
     });
 
     socket.addEventListener("close", (event) => {
+      if (this.socket !== socket) return;
       this.socket = null;
       this.options.onStateChange?.("DISCONNECTED", `Socket closed (${event.code}).`);
       this.options.onClose?.(event);
@@ -139,6 +166,7 @@ export class RoomSocketClient {
     };
 
     socket.send(JSON.stringify(message));
+    for (const observer of devObservers) observer("sent", message);
     void logE2EEvent("websocket_message_sent", {
       messageType: type,
       roomId: this.options.roomId,
@@ -170,6 +198,7 @@ export class RoomSocketClient {
     }
 
     const message = parsed as ServerMessage;
+    for (const observer of devObservers) observer("received", message);
 
     if (message.type === "PONG") {
       // Heartbeat acknowledgment; no store update required.

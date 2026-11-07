@@ -1,0 +1,4 @@
+interface:
+  display_name: "Issue Readiness Check"
+  short_description: "Phase A exit gate with repository-aligned readiness statuses"
+  default_prompt: "Assess whether an issue is ready for execution planning, identify blocking gaps or human decision gates, and return READY, NOT_READY, or WAITING_FOR_HUMAN_DECISION with concrete next steps."

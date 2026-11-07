@@ -1,0 +1,4 @@
+interface:
+  display_name: "Phase D Follow-up Issue Flow"
+  short_description: "Turn Phase D findings into issue-ready artifacts"
+  default_prompt: "Convert Phase D findings into issue-ready follow-up artifacts with scope, acceptance criteria, validation, and execution-mode guidance."

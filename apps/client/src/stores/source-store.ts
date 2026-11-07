@@ -22,6 +22,7 @@ import {
 } from "../services/source-submission";
 import { listCharts, resolveChartAlias } from "../services/worker-api-client";
 import { runtimeConfig } from "../runtime/runtime-config";
+import { isDevControlObservationCurrent } from "../dev-control/adapter-source-gate";
 import { roomStore } from "./room-store";
 import { eventRoomStore } from "./event-room-store";
 import { createExternalStore, useExternalStore } from "./create-store";
@@ -898,6 +899,8 @@ async function handleDakenCounterV3SocketMessage(
       }
       return;
     }
+    if (import.meta.env?.MODE === "dev-control" && !isDevControlObservationCurrent({ source: DAKEN_COUNTER_V3_SOURCE,
+      timestamp: entry.observation.timestamp, sourceFingerprint: entry.fingerprint })) continue;
     const parsedChange: ParsedSourceChangePayload = {
       source: DAKEN_COUNTER_V3_SOURCE,
       filePath: buildDakenCounterV3Endpoint(currentDakenCounterV3Port()),

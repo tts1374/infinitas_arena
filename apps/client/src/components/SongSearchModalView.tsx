@@ -155,6 +155,9 @@ export interface SongSearchModalViewProps {
     subtitle?: string;
     footerLabel?: string;
     selectionProgressLabel?: string;
+    onClose?: () => void;
+    statusContent?: React.ReactNode;
+    hideTimer?: boolean;
 }
 
 export function SongSearchModalView({
@@ -178,11 +181,30 @@ export function SongSearchModalView({
     subtitle = 'Infinitas Arena Battle System',
     footerLabel = 'Project INFINITAS Arena',
     selectionProgressLabel,
+    onClose,
+    statusContent,
+    hideTimer = false,
 }: SongSearchModalViewProps) {
     const listViewportRef = useRef<HTMLDivElement | null>(null);
     const loadMoreRef = useRef<HTMLDivElement | null>(null);
     const versionMenuRef = useRef<HTMLDivElement | null>(null);
+    const dialogRef = useRef<HTMLDivElement | null>(null);
     const [isVersionMenuOpen, setIsVersionMenuOpen] = useState(false);
+
+    useEffect(() => {
+        if (!isOpen || !onClose) return;
+        dialogRef.current?.querySelector<HTMLInputElement>('input')?.focus();
+        const close = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') onClose();
+            if (event.key !== 'Tab') return;
+            const controls = dialogRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), [tabindex="0"]');
+            const first = controls?.[0], last = controls?.[controls.length - 1];
+            if (event.shiftKey && document.activeElement === first && last) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && document.activeElement === last && first) { event.preventDefault(); first.focus(); }
+        };
+        window.addEventListener('keydown', close);
+        return () => window.removeEventListener('keydown', close);
+    }, [isOpen, onClose]);
 
     useEffect(() => {
         if (!isOpen || !hasMore || isLoadingMore || onLoadMore === undefined || typeof IntersectionObserver === 'undefined') {
@@ -242,9 +264,10 @@ export function SongSearchModalView({
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
 
-            <div className="relative w-full max-w-2xl bg-[#1e1e1f] border border-white/10 rounded-3xl overflow-hidden flex flex-col h-[90vh] shadow-2xl">
+            <div ref={dialogRef} role={onClose ? "dialog" : undefined} aria-modal={onClose ? true : undefined} aria-label={onClose ? "曲選択" : undefined} className="relative w-full max-w-2xl bg-[#1e1e1f] border border-white/10 rounded-3xl overflow-hidden flex flex-col h-[90vh] shadow-2xl">
                 <header className="p-4 sm:px-6 sm:py-4 border-b border-white/5 bg-gradient-to-r from-cyan-500/20 to-transparent">
                     <div className="flex justify-between items-center mb-4">
+                        {onClose ? <button type="button" onClick={onClose} className="absolute right-4 top-2 text-sm text-gray-300" aria-label="曲選択を閉じる">閉じる</button> : null}
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-cyan-500 text-black rounded-lg shadow-[0_0_15px_rgba(6,182,212,0.4)]">
                                 <Music size={20} />
@@ -260,7 +283,7 @@ export function SongSearchModalView({
                             </div>
                         </div>
 
-                        <div className={`flex flex-col items-end px-6 py-2 rounded-xl border-2 transition-all ${timeLeft !== null && timeLeft <= 10 ? 'border-red-500 bg-red-500/10 shadow-[0_0_20px_rgba(239,68,68,0.2)] animate-pulse' :
+                        {!hideTimer ? <div className={`flex flex-col items-end px-6 py-2 rounded-xl border-2 transition-all ${timeLeft !== null && timeLeft <= 10 ? 'border-red-500 bg-red-500/10 shadow-[0_0_20px_rgba(239,68,68,0.2)] animate-pulse' :
                             timeLeft !== null && timeLeft <= 30 ? 'border-amber-500 bg-amber-500/10' :
                                 'border-cyan-500/30 bg-cyan-500/5'
                             }`}>
@@ -273,7 +296,7 @@ export function SongSearchModalView({
                                     ? "--:--"
                                     : `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`}
                             </span>
-                        </div>
+                        </div> : null}
                     </div>
 
                     <div className="relative group">
@@ -376,6 +399,7 @@ export function SongSearchModalView({
                 </div>
 
                 <div ref={listViewportRef} className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
+                    {statusContent}
                     {displayedSongs.length > 0 ? (
                         <>
                             {displayedSongs.map(song => {
@@ -421,7 +445,7 @@ export function SongSearchModalView({
                                 </div>
                             ) : null}
                         </>
-                    ) : (
+                    ) : statusContent ? null : (
                         <div className="flex-1 flex flex-col items-center justify-center text-gray-600 gap-4 py-12">
                             <Search size={48} />
                             <p className="font-black italic tracking-widest uppercase">No Music Found</p>

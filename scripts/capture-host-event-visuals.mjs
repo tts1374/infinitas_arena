@@ -13,7 +13,7 @@ const cases = [
   { id: "event-twenty-source", role: "PLAYER", phase: "PLAYING", participants: 20, required: ["提出・欠場確定 0/20人", "PLAYER 20", "結果取得元を利用できません"] },
   { id: "event-disconnected-round-result", role: "HOST", phase: "PLAYING", participants: 3, required: ["Host再接続待ち", "1位", "欠場", "次の曲を選ぶ"] },
   { id: "event-tie-absence-final", role: "HOST", phase: "RESULT", participants: 3, required: ["最終結果", "1位", "欠場", "終了理由：Hostが開催を終了しました"] },
-  { id: "event-casual-final-mobile", role: "HOST", phase: "RESULT", participants: 1, required: ["最終結果", "第1曲", "第2曲", "SCORE 2456"] },
+  { id: "event-casual-final-mobile", role: "HOST", phase: "RESULT", participants: 1, required: ["最終結果", "第1曲", "第2曲", "EXスコア 2456"] },
 ];
 const viewports = [
   { name: "desktop", width: 1280, height: 800 },

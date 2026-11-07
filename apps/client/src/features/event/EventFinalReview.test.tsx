@@ -17,8 +17,8 @@ const rounds = ["First Song", "Second Song"].map((title, index) => ({
 
 test("CASUAL final review renders every synchronized song", () => {
   const markup = renderToStaticMarkup(<EventRoundsReview rounds={rounds} metricLabel="SCORE" isTournament={false} selfPlayerId="player" />);
-  assert.match(markup, /第1曲 First Song/);
-  assert.match(markup, /第2曲 Second Song/);
+  assert.match(markup, /第1曲 First Song\(SPA\)/);
+  assert.match(markup, /第2曲 Second Song\(SPA\)/);
   assert.match(markup, /grid-cols-\[52px_minmax\(0,1fr\)\]/);
   assert.match(markup, /sm:grid-cols-\[60px_minmax\(0,1fr\)_150px_80px\]/);
   assert.doesNotMatch(markup, /grid-cols-\[60px_1fr_150px_80px\]/);

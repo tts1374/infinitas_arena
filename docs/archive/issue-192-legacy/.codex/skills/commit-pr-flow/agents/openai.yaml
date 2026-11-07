@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit PR Flow"
+  short_description: "Run Phase C commit and PR flow with strict scope and validation gates"
+  default_prompt: "Use this skill to run Phase C commit and PR flow from bounded plan items with strict scope and validation gating."

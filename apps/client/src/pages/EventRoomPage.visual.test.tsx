@@ -65,7 +65,7 @@ function render(snapshot: EventRoomSnapshot, state: Partial<EventRoomStoreState>
     errorMessage: null,
     ...state,
   });
-  return renderToStaticMarkup(<EventRoomPage onReturnToLobby={() => undefined} />);
+  return renderToStaticMarkup(<EventRoomPage onReturnToEntry={() => undefined} />);
 }
 
 test("participant waits for Host without Ready or unready exclusion", () => {
@@ -81,6 +81,22 @@ test("Host LOBBY with zero participants shows invite and keeps start disabled", 
   assert.match(markup, /VISUAL01/);
   assert.match(markup, /参加者はいません。Hostは待機または終了できます。/);
   assert.match(markup, /<button[^>]*disabled=""[^>]*>開催開始<\/button>/);
+});
+
+test("Host uses the shared music picker without a countdown; guests and disconnected Hosts cannot pick", () => {
+  const picking = { ...baseSnapshot, selected_chart: null, current_round_id: null } satisfies EventRoomSnapshot;
+  const host = render(picking, { playerId: "host", sessionRole: "HOST" });
+  assert.match(host, /Pick Music/);
+  assert.match(host, /曲名・アーティストで検索/);
+  assert.match(host, /全員が遊べる譜面を確認しています/);
+  assert.match(host, /曲選択を閉じる/);
+  assert.doesNotMatch(host, /Time Left/);
+  assert.match(host, /<button[^>]*disabled=""[^>]*>この譜面を確定<\/button>/);
+  const guest = render(picking);
+  assert.doesNotMatch(guest, /Pick Music|曲名・アーティストで検索|この譜面を確定/);
+  const disconnected = render({ ...picking, host: { ...picking.host, connected: false } }, { playerId: "host", sessionRole: "HOST" });
+  assert.doesNotMatch(disconnected, /Pick Music/);
+  assert.match(disconnected, /<button[^>]*disabled=""[^>]*>曲を選ぶ<\/button>/);
 });
 
 test("20-player ACTIVE view preserves responsive layout and source failure skip guidance", () => {
@@ -127,6 +143,9 @@ test("disconnected Host and tournament result expose wait, tie, absence, and end
   const finalMarkup = render({ ...baseSnapshot, settings: { ...baseSnapshot.settings, event_type: "TOURNAMENT", host_plays: true }, phase: "RESULT", round_phase: null, participants: [participant(1), participant(2), participant(3)], fixed_roster_player_ids: ["player-1", "player-2", "player-3"], scoring_size_n: 3, latest_result: round, overall_results: [{ player_id: "player-1", display_name: "PLAYER_01", total_points: 3, rank: 1 }], ended_at: "2026-09-11T00:04:00.000Z", end_reason: "HOST_ENDED" }, { resultRounds: [round] });
   assert.match(finalMarkup, /最終結果/);
   assert.match(finalMarkup, /終了理由：Hostが開催を終了しました/);
+  assert.match(finalMarkup, /Stargaze\(SPA\)/);
+  assert.doesNotMatch(finalMarkup, /固定N|受信範囲|完全記録|通常対戦へ/);
+  assert.match(finalMarkup, /合同・大会へ戻る/);
 });
 
 test("submitted Kicked participant retains submission status; participant connection is shown separately", () => {
@@ -141,5 +160,5 @@ test("complete all-invalid tournament shows no winner while incomplete receiving
   const snapshot = { ...baseSnapshot, phase: "RESULT", round_phase: null, settings: { ...baseSnapshot.settings, event_type: "TOURNAMENT" }, ended_at: "2026-09-11T00:04:00.000Z", end_reason: "HOST_ENDED" } satisfies EventRoomSnapshot;
   assert.match(render(snapshot), /優勝者はありません/);
   assert.doesNotMatch(render(snapshot, { resultsSyncComplete: false }), /優勝者はありません/);
-  assert.match(render(snapshot, { resultsSyncComplete: false }), /公開結果を受信しています/);
+  assert.match(render(snapshot, { resultsSyncComplete: false }), /結果を読み込み中です/);
 });

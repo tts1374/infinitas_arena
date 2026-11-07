@@ -1,0 +1,660 @@
+{
+  "purpose": "Issue #192 pause handoff; read-only inspection plus new documentation only",
+  "capturedAt": "2026-10-26T08:49:19.4637732+09:00",
+  "worktree": "C:\\Users\\tts13\\.codex\\worktrees\\issue-188-phase-c-host-led\\infinitas_arena",
+  "branch": "codex/issue-192-dev-control",
+  "head": "0dac1b02d3b23d9449d1e63d7ca3f822f98f9e50",
+  "stagedChanges": [],
+  "status": [
+    " M apps/client/package.json",
+    " M apps/client/src-tauri/src/commands/mod.rs",
+    " M apps/client/src-tauri/src/lib.rs",
+    " M apps/client/src/app/App.tsx",
+    " M apps/client/src/app/AppBootstrap.tsx",
+    " M apps/client/src/services/e2e-observability.ts",
+    " M apps/client/src/services/e2e-scenario-runner.ts",
+    " M apps/client/src/services/event-ws-client.ts",
+    " M apps/client/src/services/source-observation.ts",
+    " M apps/client/src/services/source-submission.ts",
+    " M apps/client/src/services/ws-client.ts",
+    " M apps/client/src/stores/source-store.ts",
+    "?? apps/client/src-tauri/src/commands/dev_control.rs",
+    "?? apps/client/src/dev-control/adapter-source-gate.ts",
+    "?? apps/client/src/dev-control/adapter.test.ts",
+    "?? apps/client/src/dev-control/adapter.ts",
+    "?? apps/client/src/dev-control/capture-policy.ts",
+    "?? apps/client/src/dev-control/protocol.ts",
+    "?? apps/client/src/dev-control/transport.ts",
+    "?? apps/client/src/features/dev-control/DevControlView.test.tsx",
+    "?? apps/client/src/features/dev-control/DevControlView.tsx",
+    "?? apps/client/src/features/dev-control/RecoveryStatus.tsx",
+    "?? apps/client/src/features/dev-control/dev-control.css",
+    "?? apps/client/src/features/dev-control/presentation.test.ts",
+    "?? apps/client/src/features/dev-control/presentation.ts",
+    "?? apps/client/src/features/dev-control/ui.test-fixtures.ts",
+    "?? apps/client/src/pages/DevControlWindow.tsx",
+    "?? apps/client/src/stores/source-store.test.ts",
+    "?? docs/testing/dev-control.md",
+    "?? docs/ux/issue-192-dev-control/README.md",
+    "?? docs/ux/issue-192-dev-control/control-boundary.md",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-control-window-v3.html",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-confirmation.png",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-default.png",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-input-route.png",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-mobile-footer.png",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-mobile.png",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-preparation.png",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-status.png",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-correction-review.md",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-operation-matrix.md",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-phase-a-draft.md",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-rereview-contract.md",
+    "?? docs/ux/issue-192-dev-control/phase-a/issue-192-rereview-ux.md",
+    "?? scripts/dev-control/action-policy.mjs",
+    "?? scripts/dev-control/broker.mjs",
+    "?? scripts/dev-control/broker.test.mjs",
+    "?? scripts/dev-control/build-client.mjs",
+    "?? scripts/dev-control/build-client.test.mjs",
+    "?? scripts/dev-control/delivery.test.mjs",
+    "?? scripts/dev-control/evidence.mjs",
+    "?? scripts/dev-control/evidence.test.mjs",
+    "?? scripts/dev-control/guards.mjs",
+    "?? scripts/dev-control/guards.test.mjs",
+    "?? scripts/dev-control/launch.mjs",
+    "?? scripts/dev-control/offline.mjs",
+    "?? scripts/dev-control/peer.mjs",
+    "?? scripts/dev-control/peer.test.mjs",
+    "?? scripts/dev-control/processes.mjs",
+    "?? scripts/dev-control/processes.ps1",
+    "?? scripts/dev-control/processes.test.mjs",
+    "?? scripts/dev-control/protocol.mjs",
+    "?? scripts/dev-control/receipts.mjs",
+    "?? scripts/dev-control/receipts.test.mjs",
+    "?? scripts/dev-control/reopen.mjs",
+    "?? scripts/dev-control/restart.mjs",
+    "?? scripts/dev-control/restart.test.mjs",
+    "?? scripts/dev-control/scheduler.mjs",
+    "?? scripts/dev-control/scheduler.test.mjs",
+    "?? scripts/dev-control/sources/supplier.mjs",
+    "?? scripts/dev-control/sources/supplier.test.mjs",
+    "?? scripts/dev-control/sources/v3-runtime.test.mjs",
+    "?? scripts/dev-control/window.ps1",
+    "?? scripts/start-dev-control.ps1",
+    "?? tasks/issue-192-design-source-manifest.md",
+    "?? tasks/issue-192-dev-control-tasks.md",
+    "?? tasks/issue-192-dev-control-validation.md",
+    "?? tasks/issue-192-dev-control-window.md",
+    "?? tasks/issue-192-phase-c-execution.md"
+  ],
+  "trackedModifiedCount": 12,
+  "untrackedFileCount": 67,
+  "stash": [
+    "stash@{0}: On v1: issue-188-phase-a-b-originals-published-pr-191",
+    "stash@{1}: On v1: codex-pr3-before-sync"
+  ],
+  "worktrees": [
+    "C:/work/infinitas_arena/infinitas_arena                                     b854780 [codex/ddrgp-workflow-adoption]",
+    "C:/Users/tts13/.codex/worktrees/gpt61-sol-governance/infinitas_arena        90fffc8 [codex/gpt61-sol-governance]",
+    "C:/Users/tts13/.codex/worktrees/issue-188-design-plan/infinitas_arena       0c0e47e [codex/issue-188-design-plan]",
+    "C:/Users/tts13/.codex/worktrees/issue-188-phase-c-host-led/infinitas_arena  0dac1b0 [codex/issue-192-dev-control]",
+    "C:/Users/tts13/Documents/Codex/2026-10-21/git/work/node-security-arena      06a1f1b [codex/node-security-october-2026]",
+    "C:/work/infinitas_arena/infinitas_arena_issue163_pr                         4ad24e0 [codex/issue-163-room-pure-view-controlled-only]"
+  ],
+  "files": [
+    {
+      "path": "apps/client/package.json",
+      "kind": "tracked-modified",
+      "bytes": 2245,
+      "sha256": "890586f560ab61b6fd7c3586348d3bb44cd532bf50d702d83b876e6a648a2bd8",
+      "lastWriteUtc": "2026-10-25T01:48:12.3229603Z"
+    },
+    {
+      "path": "apps/client/src-tauri/src/commands/dev_control.rs",
+      "kind": "untracked",
+      "bytes": 32249,
+      "sha256": "ad2cbacd4510eae25ec2ab318a59f1181b75f3de2dcc76b5f137ad95bc10f657",
+      "lastWriteUtc": "2026-10-25T13:00:55.8290724Z"
+    },
+    {
+      "path": "apps/client/src-tauri/src/commands/mod.rs",
+      "kind": "tracked-modified",
+      "bytes": 614,
+      "sha256": "aabba882d626ad57d2a4072bea7ae277fd0799b9a18e9cec988585c29120202f",
+      "lastWriteUtc": "2026-10-25T08:30:24.3386969Z"
+    },
+    {
+      "path": "apps/client/src-tauri/src/lib.rs",
+      "kind": "tracked-modified",
+      "bytes": 3108,
+      "sha256": "1d156512348140e7030cdc4f4bdc6632ab0e4ba84d1c47377d2f92e41bb0bd54",
+      "lastWriteUtc": "2026-10-25T08:30:24.3376861Z"
+    },
+    {
+      "path": "apps/client/src/app/App.tsx",
+      "kind": "tracked-modified",
+      "bytes": 28254,
+      "sha256": "ffc0bfe668f1c7b46b4029a200e8c887baa3490f817049477835ca78d9383b1b",
+      "lastWriteUtc": "2026-10-24T01:16:28.6585244Z"
+    },
+    {
+      "path": "apps/client/src/app/AppBootstrap.tsx",
+      "kind": "tracked-modified",
+      "bytes": 2494,
+      "sha256": "605cd57cf860d35fbde839691e03e100f9f44e6f05d4c6bfc0eb61637360a274",
+      "lastWriteUtc": "2026-10-24T09:43:01.5502827Z"
+    },
+    {
+      "path": "apps/client/src/dev-control/adapter-source-gate.ts",
+      "kind": "untracked",
+      "bytes": 1199,
+      "sha256": "23fe297dda1fabaf4c7061df4f49bb3d323e20ace08febeed075f6e8d4b9fdeb",
+      "lastWriteUtc": "2026-10-24T09:41:03.5838693Z"
+    },
+    {
+      "path": "apps/client/src/dev-control/adapter.test.ts",
+      "kind": "untracked",
+      "bytes": 5583,
+      "sha256": "664a3b0c38244b8196e8b11ee1d588791de30875ae30f7c02bbc25b7f371fce6",
+      "lastWriteUtc": "2026-10-25T12:50:39.6095709Z"
+    },
+    {
+      "path": "apps/client/src/dev-control/adapter.ts",
+      "kind": "untracked",
+      "bytes": 12014,
+      "sha256": "df4c2acd17e60d4ea5fc44a1a87161245d22e23bd5c7ff926260b8c886008749",
+      "lastWriteUtc": "2026-10-25T12:57:01.4064209Z"
+    },
+    {
+      "path": "apps/client/src/dev-control/capture-policy.ts",
+      "kind": "untracked",
+      "bytes": 753,
+      "sha256": "63869b0e195c93e1e825999c40f7e81aa68d577c5fb61db27794e6da7e4eb213",
+      "lastWriteUtc": "2026-10-25T12:50:39.6085698Z"
+    },
+    {
+      "path": "apps/client/src/dev-control/protocol.ts",
+      "kind": "untracked",
+      "bytes": 7051,
+      "sha256": "03f4c763fe69625f10b7b11a0df0f3387c284e7d5f305859a0e70857e5b0c9a9",
+      "lastWriteUtc": "2026-10-25T08:24:53.0776037Z"
+    },
+    {
+      "path": "apps/client/src/dev-control/transport.ts",
+      "kind": "untracked",
+      "bytes": 1973,
+      "sha256": "66e6372f08a6626c49e0f86651cf9ade6bdad7f2cc13c429a374d1ce0eda6396",
+      "lastWriteUtc": "2026-10-25T08:24:53.0786050Z"
+    },
+    {
+      "path": "apps/client/src/features/dev-control/dev-control.css",
+      "kind": "untracked",
+      "bytes": 12786,
+      "sha256": "7eb8e5b2d169121c1b84d4924a848550fb2e9239cb079e92d1553b7fc6692b27",
+      "lastWriteUtc": "2026-10-25T01:51:26.9010025Z"
+    },
+    {
+      "path": "apps/client/src/features/dev-control/DevControlView.test.tsx",
+      "kind": "untracked",
+      "bytes": 9085,
+      "sha256": "3d970e4072128971f5df1ab6a2d4d44b45e4b8d17776f0eeb100d451a9582ce2",
+      "lastWriteUtc": "2026-10-25T12:48:12.6845475Z"
+    },
+    {
+      "path": "apps/client/src/features/dev-control/DevControlView.tsx",
+      "kind": "untracked",
+      "bytes": 29251,
+      "sha256": "fb5424e107eae22ee92f0233dc92e29a3d6e4bed380232a89a1aa911643888e8",
+      "lastWriteUtc": "2026-10-25T12:48:12.6785521Z"
+    },
+    {
+      "path": "apps/client/src/features/dev-control/presentation.test.ts",
+      "kind": "untracked",
+      "bytes": 2104,
+      "sha256": "bd963952554a9f4046d8d99a7d319fb834afb0398bf0bb86179d26f8e82ca64d",
+      "lastWriteUtc": "2026-10-25T08:23:45.8517150Z"
+    },
+    {
+      "path": "apps/client/src/features/dev-control/presentation.ts",
+      "kind": "untracked",
+      "bytes": 8114,
+      "sha256": "10cb8bbfe9dc876900898ed1f8f79ddff564e8258a046bf01e005ffc5f91e49f",
+      "lastWriteUtc": "2026-10-25T08:23:45.8389753Z"
+    },
+    {
+      "path": "apps/client/src/features/dev-control/RecoveryStatus.tsx",
+      "kind": "untracked",
+      "bytes": 3537,
+      "sha256": "4c3dae07faa17cac322b6975d7b5381393c3c83c5992b5aedd3a83c1e157cc2d",
+      "lastWriteUtc": "2026-10-25T12:48:12.6715475Z"
+    },
+    {
+      "path": "apps/client/src/features/dev-control/ui.test-fixtures.ts",
+      "kind": "untracked",
+      "bytes": 5395,
+      "sha256": "b815fe0157de086070080b29c31cc955c459f4c5f6ae0106250d67fc165c42f5",
+      "lastWriteUtc": "2026-10-25T01:51:09.6205048Z"
+    },
+    {
+      "path": "apps/client/src/pages/DevControlWindow.tsx",
+      "kind": "untracked",
+      "bytes": 5916,
+      "sha256": "ebf14bd15134b1cb95ef38db55973dae04632df29a3a7d28d8e4bf6badb39bd6",
+      "lastWriteUtc": "2026-10-25T08:25:08.6693269Z"
+    },
+    {
+      "path": "apps/client/src/services/e2e-observability.ts",
+      "kind": "tracked-modified",
+      "bytes": 5301,
+      "sha256": "88c0b788cd89c33ad854b00f4d7ac1069c65c9e158196be9f39d9c5aff9eff41",
+      "lastWriteUtc": "2026-10-25T08:26:56.8221460Z"
+    },
+    {
+      "path": "apps/client/src/services/e2e-scenario-runner.ts",
+      "kind": "tracked-modified",
+      "bytes": 30581,
+      "sha256": "de3fe19b8db77158c2ded797ba0aab3a492cb5cfd0303167d649361b58783c18",
+      "lastWriteUtc": "2026-10-24T01:14:06.9816724Z"
+    },
+    {
+      "path": "apps/client/src/services/event-ws-client.ts",
+      "kind": "tracked-modified",
+      "bytes": 15574,
+      "sha256": "a5e07d4958a71295524494f5cb392a2746a08ea40afddb73cb6dded86d21d383",
+      "lastWriteUtc": "2026-10-24T09:26:39.2908945Z"
+    },
+    {
+      "path": "apps/client/src/services/source-observation.ts",
+      "kind": "tracked-modified",
+      "bytes": 1988,
+      "sha256": "585e5101787278a6c5fcf5d9ba6490064874e94154c5328f4c2d2ca2f75f3884",
+      "lastWriteUtc": "2026-10-24T09:40:39.5941283Z"
+    },
+    {
+      "path": "apps/client/src/services/source-submission.ts",
+      "kind": "tracked-modified",
+      "bytes": 24265,
+      "sha256": "6023b90cf194965b2906139ddb04ce74bfc86e79ee45efe9019e4d82992deaf4",
+      "lastWriteUtc": "2026-10-24T09:43:16.7722339Z"
+    },
+    {
+      "path": "apps/client/src/services/ws-client.ts",
+      "kind": "tracked-modified",
+      "bytes": 6806,
+      "sha256": "f72c166885f4d9dcb43c36d632c094ab25379a31b7ede086e8ba75579062bcb8",
+      "lastWriteUtc": "2026-10-24T09:26:39.2908945Z"
+    },
+    {
+      "path": "apps/client/src/stores/source-store.test.ts",
+      "kind": "untracked",
+      "bytes": 14836,
+      "sha256": "f1e0c785c6f7670accb4d778542c86b052658f448f0db41968dfb2d1694d011b",
+      "lastWriteUtc": "2026-10-25T01:53:30.1025434Z"
+    },
+    {
+      "path": "apps/client/src/stores/source-store.ts",
+      "kind": "tracked-modified",
+      "bytes": 55070,
+      "sha256": "e8927b2aad2046c485bbb66cc7ebcc57bc8b9d28714004b7f0b1fbbdfb904bb4",
+      "lastWriteUtc": "2026-10-25T01:53:05.6707946Z"
+    },
+    {
+      "path": "docs/testing/dev-control.md",
+      "kind": "untracked",
+      "bytes": 10188,
+      "sha256": "14cbea9a55213c27cf31c6616aaebf4ede382ad3d8f9e12198b86e11ebe304c1",
+      "lastWriteUtc": "2026-10-25T01:49:17.9617739Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/control-boundary.md",
+      "kind": "untracked",
+      "bytes": 23041,
+      "sha256": "ace419729eb3a9d44dddfceaab8612de79187a2f061311fd0e3ec83da557b672",
+      "lastWriteUtc": "2026-10-25T08:31:27.0279499Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-control-window-v3.html",
+      "kind": "untracked",
+      "bytes": 50857,
+      "sha256": "6c7093e7686b1eaa881e490000368c67eed8521423df9f4a623bf447110498f3",
+      "lastWriteUtc": "2026-10-18T03:18:43.3785250Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-confirmation.png",
+      "kind": "untracked",
+      "bytes": 137416,
+      "sha256": "7bf93536bf9e67b3abe6daf013944e56da1539bee0d620c20cac56982e03a39d",
+      "lastWriteUtc": "2026-10-18T03:16:33.0664161Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-default.png",
+      "kind": "untracked",
+      "bytes": 91645,
+      "sha256": "53f01577ce0747a6994238088d9b783ad357f96f32b3c4fee5df2891e75e49d0",
+      "lastWriteUtc": "2026-10-18T03:19:57.5278090Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-input-route.png",
+      "kind": "untracked",
+      "bytes": 139028,
+      "sha256": "fbd07f172c71074bdc277103961046d7161705cf04103bb7b877b0d11c10eed4",
+      "lastWriteUtc": "2026-10-18T03:17:46.3218750Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-mobile-footer.png",
+      "kind": "untracked",
+      "bytes": 8382,
+      "sha256": "bfbb5b90a58f957a5a2d17103aad4bead4ae1e07e694eecbe83df79e7c76a9e1",
+      "lastWriteUtc": "2026-10-18T03:19:14.7155014Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-mobile.png",
+      "kind": "untracked",
+      "bytes": 42205,
+      "sha256": "e18589ab651388078b06aa1ca90486643b4410ac7deaaa315a51f222791d3f62",
+      "lastWriteUtc": "2026-10-18T03:18:12.6737538Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-preparation.png",
+      "kind": "untracked",
+      "bytes": 111147,
+      "sha256": "1ea108e8f91db7125d93a8d5c778659d70794c50008091a4c70f1c2a7ff8d3d2",
+      "lastWriteUtc": "2026-10-18T03:16:21.0246761Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-corrected-status.png",
+      "kind": "untracked",
+      "bytes": 107718,
+      "sha256": "ddead39f6e09d8dc2b46b73de5d2320e94f90270b0d639576a1d0922e5622b15",
+      "lastWriteUtc": "2026-10-18T03:16:57.2422678Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-correction-review.md",
+      "kind": "untracked",
+      "bytes": 11878,
+      "sha256": "31efd1d45c02813fca1b9c7e754884503a9548709ff3fd0924b63591bf2695ec",
+      "lastWriteUtc": "2026-10-18T03:25:17.0023313Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-operation-matrix.md",
+      "kind": "untracked",
+      "bytes": 24893,
+      "sha256": "2a1ce3f6b1818dc13ad82ca07842f7a3da92128ff2bedd1049df6e07fb0b0163",
+      "lastWriteUtc": "2026-10-18T03:25:16.9963321Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-phase-a-draft.md",
+      "kind": "untracked",
+      "bytes": 40606,
+      "sha256": "cb6482bdcbdc34a9b5271de4c1aa5da0cb8edfcb7894833ca16015074b230a30",
+      "lastWriteUtc": "2026-10-18T03:25:16.9893313Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-rereview-contract.md",
+      "kind": "untracked",
+      "bytes": 11973,
+      "sha256": "304a96dc91e46706741d5affe315a5eccb6beb07d0c7df11e9cb394e782737f6",
+      "lastWriteUtc": "2026-10-18T03:17:54.8882395Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/phase-a/issue-192-rereview-ux.md",
+      "kind": "untracked",
+      "bytes": 15020,
+      "sha256": "24e3472f17048202142610dc9e8dfdc660eb9877a5420e2c88cc8e0015a085d2",
+      "lastWriteUtc": "2026-10-18T03:20:18.9391051Z"
+    },
+    {
+      "path": "docs/ux/issue-192-dev-control/README.md",
+      "kind": "untracked",
+      "bytes": 4732,
+      "sha256": "9e411b732e3feabc28a0e36506afe5b71e9f963c7ad378e3d701450a344c3286",
+      "lastWriteUtc": "2026-10-23T11:55:09.0792709Z"
+    },
+    {
+      "path": "scripts/dev-control/action-policy.mjs",
+      "kind": "untracked",
+      "bytes": 5945,
+      "sha256": "0eee248ca59bab2c948fd0a1b08a147ac3af105ccd4d41dffbcef84e97b1766e",
+      "lastWriteUtc": "2026-10-24T09:39:42.9450824Z"
+    },
+    {
+      "path": "scripts/dev-control/broker.mjs",
+      "kind": "untracked",
+      "bytes": 35364,
+      "sha256": "286d85c16456c01aefe7fca0282ed1589815ee9a46ae450ff8445e38db260be5",
+      "lastWriteUtc": "2026-10-25T13:00:55.8200718Z"
+    },
+    {
+      "path": "scripts/dev-control/broker.test.mjs",
+      "kind": "untracked",
+      "bytes": 3350,
+      "sha256": "eb5b9c410de1d0a7837634a174c21e61906242e46435c72f6c0786a04d1410cb",
+      "lastWriteUtc": "2026-10-24T09:41:44.5274480Z"
+    },
+    {
+      "path": "scripts/dev-control/build-client.mjs",
+      "kind": "untracked",
+      "bytes": 1550,
+      "sha256": "8d6b38aab84b04d050f12aa380dee452fbc27d46db05bd742f0c6f5b0d254625",
+      "lastWriteUtc": "2026-10-25T12:53:36.8432593Z"
+    },
+    {
+      "path": "scripts/dev-control/build-client.test.mjs",
+      "kind": "untracked",
+      "bytes": 2048,
+      "sha256": "f472ff961c24cfedfeddf7fef1fd1cef322dfaa425fb7e0f867bd79a340b1461",
+      "lastWriteUtc": "2026-10-25T12:54:39.6595445Z"
+    },
+    {
+      "path": "scripts/dev-control/delivery.test.mjs",
+      "kind": "untracked",
+      "bytes": 15930,
+      "sha256": "77b82cfde82aa20977ee5ec6c907a77cc65f0387ffa75491de97771179b17912",
+      "lastWriteUtc": "2026-10-25T12:56:05.0707020Z"
+    },
+    {
+      "path": "scripts/dev-control/evidence.mjs",
+      "kind": "untracked",
+      "bytes": 4094,
+      "sha256": "a1b6144d919e64c5828e15363c82d498668a1d43c1e3845038815ae603cdbd99",
+      "lastWriteUtc": "2026-10-25T13:00:55.8210718Z"
+    },
+    {
+      "path": "scripts/dev-control/evidence.test.mjs",
+      "kind": "untracked",
+      "bytes": 3463,
+      "sha256": "a530bfc6e5f2fd81112a276376ad7a866ffa37a9bbf8419da1131146306708b6",
+      "lastWriteUtc": "2026-10-25T12:52:31.6926144Z"
+    },
+    {
+      "path": "scripts/dev-control/guards.mjs",
+      "kind": "untracked",
+      "bytes": 5183,
+      "sha256": "467dc259eb119fa3384107a6583c278b03847bbcdc2d75d10e0da649b8c999c9",
+      "lastWriteUtc": "2026-10-24T01:10:56.0398612Z"
+    },
+    {
+      "path": "scripts/dev-control/guards.test.mjs",
+      "kind": "untracked",
+      "bytes": 4277,
+      "sha256": "15f4a389c26311dcee575dbb90ed9698689e634f6102a4e15e9be69951cf52cd",
+      "lastWriteUtc": "2026-10-24T01:11:13.2405279Z"
+    },
+    {
+      "path": "scripts/dev-control/launch.mjs",
+      "kind": "untracked",
+      "bytes": 19090,
+      "sha256": "3414bfc6a343a15b04ac62a52cee4f5663b28921dcefbab5160839c4a754b1df",
+      "lastWriteUtc": "2026-10-25T12:56:05.0697007Z"
+    },
+    {
+      "path": "scripts/dev-control/offline.mjs",
+      "kind": "untracked",
+      "bytes": 2445,
+      "sha256": "3fcb71854e56a135134ea26c37a6c25411bff3235257d0f31350a0d289d0bfcb",
+      "lastWriteUtc": "2026-10-25T12:53:36.8352738Z"
+    },
+    {
+      "path": "scripts/dev-control/peer.mjs",
+      "kind": "untracked",
+      "bytes": 5025,
+      "sha256": "3e7d5b990c686970a2507be10b537c0716d630157ae1c720d1c95b2de51929a4",
+      "lastWriteUtc": "2026-10-24T01:15:18.8707746Z"
+    },
+    {
+      "path": "scripts/dev-control/peer.test.mjs",
+      "kind": "untracked",
+      "bytes": 2288,
+      "sha256": "3b9237fb7c0ff8af66ec406b9d56b92bd4ccd1170ee48322bfd8b58ba8698f26",
+      "lastWriteUtc": "2026-10-24T09:32:22.6914186Z"
+    },
+    {
+      "path": "scripts/dev-control/processes.mjs",
+      "kind": "untracked",
+      "bytes": 1144,
+      "sha256": "45306d14752471830e1937de64d970809c03040d2358952dd9bdb297a0e46510",
+      "lastWriteUtc": "2026-10-24T01:07:24.2970699Z"
+    },
+    {
+      "path": "scripts/dev-control/processes.ps1",
+      "kind": "untracked",
+      "bytes": 1838,
+      "sha256": "1be28610a999611ff61053d82569a6575da88a75a61eb33213573ef5ac9adf4f",
+      "lastWriteUtc": "2026-10-24T01:13:35.9111432Z"
+    },
+    {
+      "path": "scripts/dev-control/processes.test.mjs",
+      "kind": "untracked",
+      "bytes": 1109,
+      "sha256": "2488001df776c3f240c02a5c2c2ba41a230b8f5d05cd260189d4e26142f653f9",
+      "lastWriteUtc": "2026-10-24T01:10:05.1190494Z"
+    },
+    {
+      "path": "scripts/dev-control/protocol.mjs",
+      "kind": "untracked",
+      "bytes": 5335,
+      "sha256": "4383ed862b5cb47b2293576633c096dd5c77362e59b059ca6dec32464576a6f7",
+      "lastWriteUtc": "2026-10-24T01:17:21.8881199Z"
+    },
+    {
+      "path": "scripts/dev-control/receipts.mjs",
+      "kind": "untracked",
+      "bytes": 11451,
+      "sha256": "f3a273545281135347900359440b9a9952c2ce548330bda7a05e0573f35aa627",
+      "lastWriteUtc": "2026-10-25T12:58:39.9735275Z"
+    },
+    {
+      "path": "scripts/dev-control/receipts.test.mjs",
+      "kind": "untracked",
+      "bytes": 6140,
+      "sha256": "882e7f3e7e8d86b10976d65a3eebd92b7f298ab62716acbd7a1b694a9f5736c0",
+      "lastWriteUtc": "2026-10-25T12:52:31.6916142Z"
+    },
+    {
+      "path": "scripts/dev-control/reopen.mjs",
+      "kind": "untracked",
+      "bytes": 2774,
+      "sha256": "084cfcbafa0346c2795885b79505835571f1b3fad25150098fb9b941ff22fba9",
+      "lastWriteUtc": "2026-10-25T12:57:01.4054209Z"
+    },
+    {
+      "path": "scripts/dev-control/restart.mjs",
+      "kind": "untracked",
+      "bytes": 2243,
+      "sha256": "1630e08d04643938ac237ffcc467bff770305b357190899a24557fb059a07036",
+      "lastWriteUtc": "2026-10-24T09:39:42.9510827Z"
+    },
+    {
+      "path": "scripts/dev-control/restart.test.mjs",
+      "kind": "untracked",
+      "bytes": 2406,
+      "sha256": "f32f131519c2c2cef6b4a61dc266b28fa1b39d3a53186422c0d7df413ec6c36c",
+      "lastWriteUtc": "2026-10-24T09:41:44.5214485Z"
+    },
+    {
+      "path": "scripts/dev-control/scheduler.mjs",
+      "kind": "untracked",
+      "bytes": 1566,
+      "sha256": "fabb1d4fb26197de6d79d35b402e8348d5f92c796751a1855ec5f747c13692c0",
+      "lastWriteUtc": "2026-10-24T01:13:54.9901246Z"
+    },
+    {
+      "path": "scripts/dev-control/scheduler.test.mjs",
+      "kind": "untracked",
+      "bytes": 1762,
+      "sha256": "ffddbad56dab9fc3efd5823b7dc08cc0ff605c4ca2bd6b3620664dde37e3f6e5",
+      "lastWriteUtc": "2026-10-24T01:13:35.9131433Z"
+    },
+    {
+      "path": "scripts/dev-control/sources/supplier.mjs",
+      "kind": "untracked",
+      "bytes": 7719,
+      "sha256": "879da634fd4e8dc36eb73a48eeee0ff4d9b29d2fc7d12ed6f8de1ef1129c7bb9",
+      "lastWriteUtc": "2026-10-24T09:40:39.5961296Z"
+    },
+    {
+      "path": "scripts/dev-control/sources/supplier.test.mjs",
+      "kind": "untracked",
+      "bytes": 6393,
+      "sha256": "af837f93743bf43781a2693b2baf291e41ac614e4e174a3a8567431bafb9d9f9",
+      "lastWriteUtc": "2026-10-25T01:49:06.9118746Z"
+    },
+    {
+      "path": "scripts/dev-control/sources/v3-runtime.test.mjs",
+      "kind": "untracked",
+      "bytes": 4479,
+      "sha256": "b07f68a8ac717a911fa270b6225a9ed82379a8fc9c3063c626f851f9f79005c2",
+      "lastWriteUtc": "2026-10-25T01:49:06.9028755Z"
+    },
+    {
+      "path": "scripts/dev-control/window.ps1",
+      "kind": "untracked",
+      "bytes": 3393,
+      "sha256": "ca14a13180a1ac20c94bbbc50dcdc9b0e61e62b2730465a250ed434aab355998",
+      "lastWriteUtc": "2026-10-25T08:28:13.2345811Z"
+    },
+    {
+      "path": "scripts/start-dev-control.ps1",
+      "kind": "untracked",
+      "bytes": 1543,
+      "sha256": "14dc442ff586a5783f0545278ab0bdd54910308eaab5792603739ffc0ad497ef",
+      "lastWriteUtc": "2026-10-25T12:48:02.4507112Z"
+    },
+    {
+      "path": "tasks/issue-192-design-source-manifest.md",
+      "kind": "untracked",
+      "bytes": 4163,
+      "sha256": "855004dbc0b2ad3b50b33cf1aadab7817d6eaf578b95ce6545ff227bf1aaf0f0",
+      "lastWriteUtc": "2026-10-23T11:35:20.2582504Z"
+    },
+    {
+      "path": "tasks/issue-192-dev-control-tasks.md",
+      "kind": "untracked",
+      "bytes": 21414,
+      "sha256": "cf8bc69e20796459e9bdac5f7102fd869778dd04137d7310284c2c878ccc7272",
+      "lastWriteUtc": "2026-10-23T11:42:12.1670351Z"
+    },
+    {
+      "path": "tasks/issue-192-dev-control-validation.md",
+      "kind": "untracked",
+      "bytes": 19801,
+      "sha256": "3a7f00eb181eb63852d5dfbf2ac933c7ff19d6596f72203fc2414c96d834c604",
+      "lastWriteUtc": "2026-10-23T11:42:50.1246862Z"
+    },
+    {
+      "path": "tasks/issue-192-dev-control-window.md",
+      "kind": "untracked",
+      "bytes": 27709,
+      "sha256": "4e4c6a06123b20c7bc6097143ee44f218687a9a14dc3d48a5e2e9a60df38c33b",
+      "lastWriteUtc": "2026-10-23T11:42:50.1236858Z"
+    },
+    {
+      "path": "tasks/issue-192-phase-c-execution.md",
+      "kind": "untracked",
+      "bytes": 43477,
+      "sha256": "89afe8c3ff5febc216bb122145a92af186c82bb60a7767bdb94b2e3911f231ba",
+      "lastWriteUtc": "2026-10-25T12:57:37.3458259Z"
+    }
+  ],
+  "excluded": "Ignored runtime evidence/build outputs and the pause handoff artifacts themselves are not included in this file hash inventory. Existing ignored evidence is preserved in place. No secret file contents collected.",
+  "executionStop": "Parent thread and sub-agent stop state not inspected or controlled from this side conversation."
+}

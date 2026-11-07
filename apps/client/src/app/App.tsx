@@ -32,6 +32,7 @@ import { sourceStore, useSourceStore } from "../stores/source-store";
 import { isRoomEntryReady, settingsStore, useSettingsStore } from "../stores/settings-store";
 import { eventRoomStore, useEventRoomStore } from "../stores/event-room-store";
 import { resolveEventJoinParticipantEquipment } from "../services/event-join-policy";
+import { getActiveParticipationMode, resolveParticipationView } from "../services/participation-mode";
 import { createEventRoom, getCapabilities, HostEventCapabilitiesTracker } from "../services/worker-api-client";
 
 function parseJoinRoomRefFromDeepLink(rawUrl: string): string | null {
@@ -72,6 +73,7 @@ export function App() {
   const sourceUnresolvedDialog = useSourceStore((state) => state.activeUnresolvedDialog);
   const eventSnapshot = useEventRoomStore((state) => state.snapshot);
   const eventConnectionStatus = useEventRoomStore((state) => state.connectionStatus);
+  const eventRoomId = useEventRoomStore((state) => state.roomId);
   const [eventCreateDraft, setEventCreateDraft] = useState<EventRoomSettings>(INITIAL_EVENT_DRAFT);
   const [eventJoinDraft, setEventJoinDraft] = useState<EventJoinDraft>({ roomId: "", joinCode: "" });
   const [eventEntryError, setEventEntryError] = useState<string | null>(null);
@@ -132,6 +134,13 @@ export function App() {
   }, [activeView, roomSnapshot]);
 
   useEffect(() => {
+    if (eventRoomId !== null) {
+      const view = resolveParticipationView(activeView, "HOST_EVENT");
+      if (view !== activeView) startTransition(() => setActiveView(view));
+    }
+  }, [activeView, eventRoomId]);
+
+  useEffect(() => {
     if (runtimeConfig.e2e.enabled && runtimeConfig.e2e.roomKind === "HOST_EVENT" && eventSnapshot !== null && !e2eEventViewOpenedRef.current) {
       e2eEventViewOpenedRef.current = true;
       setActiveView("event-room");
@@ -154,7 +163,7 @@ export function App() {
       activeView === "event-room" &&
       (eventConnectionStatus === "DISCONNECTED" || eventConnectionStatus === "IDLE")
     ) {
-      startTransition(() => setActiveView("lobby"));
+      startTransition(() => setActiveView("event-entry"));
     }
   }, [activeView, eventConnectionStatus, eventSnapshot]);
 
@@ -374,6 +383,7 @@ export function App() {
       }
 
       const hasActiveRoom =
+        getActiveParticipationMode() === "HOST_EVENT" ||
         roomSnapshotRef.current !== null ||
         roomConnectionStatusRef.current === "CONNECTING" ||
         roomConnectionStatusRef.current === "JOINING" ||
@@ -450,9 +460,20 @@ export function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (import.meta.env.MODE !== "dev-control") return;
+    let disposed = false;
+    let stop: (() => void) | undefined;
+    void import("../dev-control/adapter").then(async ({ startDevControlAdapter }) => {
+      const cleanup = await startDevControlAdapter();
+      if (disposed) cleanup(); else stop = cleanup;
+    }).catch((error: unknown) => { roomStore.noteLocalEvent(error instanceof Error ? error.message : "Development adapter unavailable."); });
+    return () => { disposed = true; stop?.(); };
+  }, []);
+
   function navigate(view: AppView): void {
     startTransition(() => {
-      setActiveView(view);
+      setActiveView(resolveParticipationView(view, getActiveParticipationMode()));
     });
   }
 
@@ -597,8 +618,8 @@ export function App() {
       {activeView !== "room" && activeView !== "automatch" && activeView !== "spectate" ? (
         <AppSidebar
           activeView={activeView}
-          hasRoom={roomSnapshot !== null}
-          hasEventRoom={eventSnapshot !== null}
+          hasRoom={roomSnapshot !== null || roomConnectionStatus !== "DISCONNECTED"}
+          hasEventRoom={eventRoomId !== null || eventSnapshot !== null}
           isOpeningMatchHistory={isOpeningMatchHistory}
           onNavigate={navigate}
           onOpenMatchHistory={() => {
@@ -650,7 +671,7 @@ export function App() {
         {activeView === "event-entry" ? <EventEntryPage available={hostEventsAvailable} creationAvailable={hostEventCreationAvailable} hasEvent={eventSnapshot !== null || eventConnectionStatus === "CONNECTING" || eventConnectionStatus === "JOINING"} normalActive={roomConnectionStatus !== "DISCONNECTED"} onJoin={() => navigate("event-join")} onCreate={() => navigate("event-create")} onReturn={() => navigate("event-room")} onHistory={() => navigate("event-history")} /> : null}
         {activeView === "event-create" ? <EventCreatePage draft={eventCreateDraft} onChange={setEventCreateDraft} busy={creatingEvent} error={eventEntryError} identityReady={savedSettings.playerId.length > 0 && savedSettings.displayName.length > 0} sourceReady={isRoomEntryReady(savedSettings)} onBack={() => navigate("event-entry")} onSubmit={() => { void createHostEvent(); }} /> : null}
         {activeView === "event-join" ? <EventJoinPage draft={eventJoinDraft} onChange={setEventJoinDraft} available={hostEventsAvailable} identityReady={savedSettings.playerId.length > 0 && savedSettings.displayName.length > 0} error={eventEntryError} onBack={() => navigate("event-entry")} onJoin={() => joinHostEvent(eventJoinDraft)} /> : null}
-        {activeView === "event-room" ? <EventRoomPage onReturnToLobby={() => navigate("lobby")} /> : null}
+        {activeView === "event-room" ? <EventRoomPage onReturnToEntry={() => navigate("event-entry")} /> : null}
         {activeView === "event-history" ? <EventHistoryPage /> : null}
         {activeView === "automatch" ? (
           <AutoMatchPage

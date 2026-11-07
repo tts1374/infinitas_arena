@@ -14,6 +14,18 @@ import { isEventSyncAction } from "./event-action-policy";
 export type EventSocketState = "CONNECTING" | "JOINING" | "CONNECTED" | "DISCONNECTED";
 
 const APP_VERSION = typeof clientPackageJson.version === "string" ? clientPackageJson.version : "unknown";
+const devClients = new Map<string, EventSocketClient>();
+const devObservers = new Set<(stage: "sent" | "received", message: unknown) => void>();
+export function observeEventTransportForDevControl(observer: (stage: "sent" | "received", message: unknown) => void): () => void {
+  devObservers.add(observer); return () => { devObservers.delete(observer); };
+}
+export function pauseEventTransportForDevControl(roomId: string, playerId: string, paused: boolean): boolean {
+  if (import.meta.env?.MODE !== "dev-control") return false;
+  const client = devClients.get(`${roomId}:${playerId}`);
+  if (!client) return false;
+  client.setDevControlPaused(paused);
+  return true;
+}
 const HEARTBEAT_INTERVAL_MS = PING_INTERVAL_SECONDS * 1_000;
 const HEARTBEAT_TIMEOUT_MS = HEARTBEAT_INTERVAL_MS * PING_TIMEOUT_MISSES;
 const RECONNECT_DELAY_MS = 1_000;
@@ -131,7 +143,14 @@ export class EventSocketClient {
   private nextReconnectDelayMs = RECONNECT_DELAY_MS;
   private readonly pendingMutationActions = new Map<string, EventRoomAction>();
 
-  constructor(private readonly options: EventSocketClientOptions) {}
+  constructor(private readonly options: EventSocketClientOptions) {
+    if (import.meta.env?.MODE === "dev-control") devClients.set(`${options.roomId}:${options.playerId}`, this);
+  }
+  setDevControlPaused(paused: boolean): void {
+    if (import.meta.env?.MODE !== "dev-control") return;
+    if (paused) { this.disconnect(); this.options.onStateChange?.("DISCONNECTED", "Development manual disconnect (automatic reconnect paused)."); }
+    else this.connect();
+  }
 
   connect(): void {
     if (this.socket !== null) return;
@@ -140,6 +159,7 @@ export class EventSocketClient {
     const socket = new WebSocket(buildWebSocketUrl(this.options.apiBaseUrl, this.options.roomId));
     this.socket = socket;
     socket.addEventListener("open", () => {
+      if (this.socket !== socket) return;
       this.startHeartbeat();
       this.options.onStateChange?.("JOINING", "Sending EVENT_JOIN.");
       const message: ClientMessage<"EVENT_JOIN"> = {
@@ -187,6 +207,7 @@ export class EventSocketClient {
     };
     if (!isEventSyncAction(action)) this.pendingMutationActions.set(action.request_id, action);
     this.socket.send(JSON.stringify(message));
+    for (const observer of devObservers) observer("sent", message);
   }
 
   acknowledge(requestId: string): void {
@@ -264,6 +285,7 @@ export class EventSocketClient {
         this.socket?.send(JSON.stringify(replay));
       }
     }
+    for (const observer of devObservers) observer("received", parsed);
     this.options.onMessage(parsed as ServerMessage);
   }
 

@@ -20,8 +20,38 @@ test("dedicated Host requires identity; playing Host additionally requires a sou
   const dedicated = renderToStaticMarkup(<EventCreatePage {...props} />);
   assert.doesNotMatch(dedicated, /disabled=""/);
   const playing = renderToStaticMarkup(<EventCreatePage {...props} draft={{ ...INITIAL_EVENT_DRAFT, host_plays: true }} />);
-  assert.match(playing, /DATA SOURCE設定が必要/);
+  assert.match(playing, /設定画面で結果の取得元を設定/);
   assert.match(playing, /disabled=""/);
+});
+
+test("event creation explains participation, automatic codes, and tournament roster in plain language", () => {
+  const props = { draft: { ...INITIAL_EVENT_DRAFT, event_type: "TOURNAMENT" as const }, onChange: () => undefined, busy: false, error: null, identityReady: true, sourceReady: true, onSubmit: () => undefined, onBack: () => undefined } satisfies Parameters<typeof EventCreatePage>[0];
+  const markup = renderToStaticMarkup(<EventCreatePage {...props} />);
+  assert.match(markup, /進行だけ担当する（プレーしない）/);
+  assert.match(markup, /参加コード（空欄なら自動生成）/);
+  assert.match(markup, /開始時の参加人数で順位の配点/);
+  assert.match(markup, /開始後は新しい参加者を追加できません/);
+  assert.doesNotMatch(markup, /固定N|PRIVATE|専任Host/);
+});
+
+test("event creation always shows both participation options with exactly the current draft selected", () => {
+  const props = { draft: INITIAL_EVENT_DRAFT, onChange: () => undefined, busy: false, error: null, identityReady: true, sourceReady: true, onSubmit: () => undefined, onBack: () => undefined } satisfies Parameters<typeof EventCreatePage>[0];
+  assert.equal(INITIAL_EVENT_DRAFT.host_plays, false);
+  for (const hostPlays of [false, true]) {
+    const markup = renderToStaticMarkup(<EventCreatePage {...props} draft={{ ...INITIAL_EVENT_DRAFT, host_plays: hostPlays }} />);
+    assert.match(markup, /<fieldset[^>]*><legend[^>]*>自分の参加<\/legend>/);
+    assert.match(markup, /自分もプレーする/);
+    assert.match(markup, /進行だけ担当する（プレーしない）/);
+    assert.doesNotMatch(markup, /role="switch"/);
+    const radios = markup.match(/<input[^>]*type="radio"[^>]*>/g) ?? [];
+    assert.equal(radios.length, 2);
+    assert.equal(radios.filter(radio => radio.includes('checked=""')).length, 1);
+    const play = radios.find(radio => radio.includes('value="play"'));
+    const hostOnly = radios.find(radio => radio.includes('value="host-only"'));
+    assert.ok(play); assert.ok(hostOnly);
+    assert.equal(play.includes('checked=""'), hostPlays);
+    assert.equal(hostOnly.includes('checked=""'), !hostPlays);
+  }
 });
 test("join displays caller-owned draft and rejects incomplete ID/code", () => {
   const props = { draft: { roomId: "room", joinCode: "ABCDEFGH" }, onChange: () => undefined, identityReady: true, available: true, error: null, onJoin: () => undefined, onBack: () => undefined } satisfies Parameters<typeof EventJoinPage>[0];
