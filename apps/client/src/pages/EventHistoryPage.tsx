@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { eventEndReasonLabel } from "../features/event/event-presentation";
+import { eventEndReasonLabel, eventMetricLabel } from "../features/event/event-presentation";
 import { displayEventName } from "../features/event/event-name";
 import { EventOverallResults, EventRoundsReview } from "../features/event/EventFinalReview";
 import { eventHistoryService, isReadableEventHistory, type EventHistoryDocument } from "../services/event-history";
 
 function eventSummary(history: EventHistoryDocument): string {
   const kind = history.settings.event_type === "TOURNAMENT"
-    ? `大会・固定${history.scoring_size_n ?? "未確定"}人`
+    ? `大会${history.scoring_size_n === null ? "" : `・${history.scoring_size_n}人`}`
     : "合同プレー";
-  const completeness = history.completeness === "COMPLETE" ? "完全" : "部分";
-  return `${kind}・同期済み${history.synced_round_count}曲・${completeness}`;
+  const incomplete = history.completeness === "COMPLETE" ? "" : "・一部の結果のみ";
+  return `${kind}・${history.synced_round_count}曲${incomplete}`;
 }
 
 export function EventHistoryPage() {
@@ -21,7 +21,7 @@ export function EventHistoryPage() {
       <div className="mx-auto max-w-5xl text-white">
         <button type="button" onClick={() => setSelected(null)} className="mb-4 text-cyan-300">← 一覧へ</button>
         <h1 className="text-2xl font-black">{displayEventName(selected.settings)}</h1>
-        <p className="mt-1 text-sm text-gray-400">{eventSummary(selected)} · 最後の受信：{new Date(selected.last_received_at).toLocaleString()} · 保存版{selected.schema_version}</p>
+        <p className="mt-1 text-sm text-gray-400">{eventSummary(selected)}</p>
         <p className="mt-2 text-sm text-gray-400">終了理由：{eventEndReasonLabel(selected.end_reason)}</p>
         <div className="mt-5 space-y-4">
           {selected.settings.event_type === "TOURNAMENT" ? (
@@ -30,7 +30,7 @@ export function EventHistoryPage() {
               {selected.results_sync_complete && selected.rounds.every((round) => round.invalidated_at !== null) ? <p>有効な確定曲はありません。優勝者はありません。</p> : <EventOverallResults entries={selected.overall_results ?? []} selfPlayerId={null} />}
             </section>
           ) : null}
-          <EventRoundsReview rounds={selected.rounds} metricLabel={selected.settings.win_metric} isTournament={selected.settings.event_type === "TOURNAMENT"} selfPlayerId={null} />
+          <EventRoundsReview rounds={selected.rounds} metricLabel={eventMetricLabel(selected.settings.win_metric)} isTournament={selected.settings.event_type === "TOURNAMENT"} selfPlayerId={null} />
         </div>
       </div>
     );
@@ -60,7 +60,7 @@ export function EventHistoryPage() {
             <div key={history.storage_key} className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5">
               <b className="text-amber-200">未対応バージョンの開催履歴</b>
               <p className="mt-1 text-sm text-amber-100/70">
-                Event ID: {history.event_id ?? "不明"}／schema: {String(history.schema_version ?? "不明")}。原本を保持しています。
+                この履歴は現在のバージョンでは開けません。
               </p>
             </div>
           )

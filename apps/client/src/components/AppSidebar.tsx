@@ -23,14 +23,14 @@ export function AppSidebar({
   return (
     <nav className="app-event-sidebar flex w-[70px] shrink-0 flex-col items-center border-r border-white/5 bg-[#252526] py-6">
       <div className="flex flex-1 flex-col gap-2">
-        <SidebarButton
+        {!hasEventRoom ? <SidebarButton
           active={activeView === "lobby"}
           label="通常対戦"
           onClick={() => onNavigate("lobby")}
         >
           <Home size={24} />
-        </SidebarButton>
-        <SidebarButton active={["event-entry", "event-create", "event-join"].includes(activeView)} label="合同・大会" onClick={() => onNavigate(hasEventRoom ? "event-room" : "event-entry")}><CalendarClock size={24} /></SidebarButton>
+        </SidebarButton> : null}
+        {!hasRoom && !hasEventRoom ? <SidebarButton active={["event-entry", "event-create", "event-join"].includes(activeView)} label="合同・大会" onClick={() => onNavigate("event-entry")}><CalendarClock size={24} /></SidebarButton> : null}
         <SidebarButton
           active={activeView === "stats"}
           label="成績"
@@ -99,6 +99,7 @@ function SidebarButton({ active, disabled = false, label, onClick, children }: S
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
+      aria-current={active ? "page" : undefined}
       title={label}
       className={`rounded-xl p-3 transition-all ${
         active

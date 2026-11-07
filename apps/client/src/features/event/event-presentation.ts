@@ -1,4 +1,13 @@
 import { HOST_EVENT_DISCONNECT_GRACE_SECONDS, type EventParticipantState, type EventRoomSnapshot, type EventRoundResult, type EventRoundResultEntry } from "@infinitas/shared";
+import { getDifficultyShortLabel } from "../room/presentation-shared";
+
+export function eventChartLabel(chart: EventRoundResult["chart"]): string {
+  return `${chart.display.title}(${chart.expected_key.play_style}${getDifficultyShortLabel(chart.expected_key.difficulty)})`;
+}
+
+export function eventMetricLabel(metric: "SCORE" | "MISSCOUNT"): string {
+  return metric === "SCORE" ? "EXスコア" : "ミスカウント";
+}
 
 export type EventChartSearchStatus = "IDLE" | "LOADING" | "READY" | "ERROR";
 

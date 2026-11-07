@@ -65,7 +65,7 @@ function render(snapshot: EventRoomSnapshot, state: Partial<EventRoomStoreState>
     errorMessage: null,
     ...state,
   });
-  return renderToStaticMarkup(<EventRoomPage onReturnToLobby={() => undefined} />);
+  return renderToStaticMarkup(<EventRoomPage onReturnToEntry={() => undefined} />);
 }
 
 test("participant waits for Host without Ready or unready exclusion", () => {
@@ -143,6 +143,9 @@ test("disconnected Host and tournament result expose wait, tie, absence, and end
   const finalMarkup = render({ ...baseSnapshot, settings: { ...baseSnapshot.settings, event_type: "TOURNAMENT", host_plays: true }, phase: "RESULT", round_phase: null, participants: [participant(1), participant(2), participant(3)], fixed_roster_player_ids: ["player-1", "player-2", "player-3"], scoring_size_n: 3, latest_result: round, overall_results: [{ player_id: "player-1", display_name: "PLAYER_01", total_points: 3, rank: 1 }], ended_at: "2026-09-11T00:04:00.000Z", end_reason: "HOST_ENDED" }, { resultRounds: [round] });
   assert.match(finalMarkup, /最終結果/);
   assert.match(finalMarkup, /終了理由：Hostが開催を終了しました/);
+  assert.match(finalMarkup, /Stargaze\(SPA\)/);
+  assert.doesNotMatch(finalMarkup, /固定N|受信範囲|完全記録|通常対戦へ/);
+  assert.match(finalMarkup, /合同・大会へ戻る/);
 });
 
 test("submitted Kicked participant retains submission status; participant connection is shown separately", () => {
@@ -157,5 +160,5 @@ test("complete all-invalid tournament shows no winner while incomplete receiving
   const snapshot = { ...baseSnapshot, phase: "RESULT", round_phase: null, settings: { ...baseSnapshot.settings, event_type: "TOURNAMENT" }, ended_at: "2026-09-11T00:04:00.000Z", end_reason: "HOST_ENDED" } satisfies EventRoomSnapshot;
   assert.match(render(snapshot), /優勝者はありません/);
   assert.doesNotMatch(render(snapshot, { resultsSyncComplete: false }), /優勝者はありません/);
-  assert.match(render(snapshot, { resultsSyncComplete: false }), /公開結果を受信しています/);
+  assert.match(render(snapshot, { resultsSyncComplete: false }), /結果を読み込み中です/);
 });

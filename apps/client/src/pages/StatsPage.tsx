@@ -406,7 +406,7 @@ export function StatsPage({ onNavigateToLobby }: StatsPageProps) {
             className="group mb-4 flex items-center gap-2 text-sm font-bold text-gray-500 transition-colors hover:text-white"
           >
             <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-1" />
-            ロビーに戻る
+            戻る
           </button>
 
           <h1 className="flex items-center gap-3 text-4xl font-black italic uppercase tracking-tighter text-white">
