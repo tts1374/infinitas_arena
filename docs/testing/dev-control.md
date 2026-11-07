@@ -2,6 +2,10 @@
 
 ## 現在の受入判定（2026-11-07、ユーザーUX確認済み）
 
+PR #208レビュー指摘 `discussion_r4501943540`（P2）対応: 操作窓の候補検索に残っていたSP/ANY固定を、reportされたsnapshotのplay_style/level_filterへ変更。レベル制限を持たない合同/大会はANYを使用する。通常3モードのSP/DP・制限あり/なしと合同/大会DPの6条件をprivate HTTP report→候補取得→相手選曲commandの配送で回帰確認。修正前は非既定の5条件で失敗し、修正後は全条件PASS。これはbroker HTTP回帰であり新しい実ゲーム/実source証拠とは扱わない。control127/client186/Worker193/integration6/stats17、root型/lint/契約/agentsとNode構文検査がPASS。
+
+同原因の点検ではprivate brokerの候補検索以外に固定queryなし。Host B用launcherの新規作成時SP/ANYは既定値の指定であり、今回の既存Host Aルーム検索とは区別して維持。client adapterは返されたchartKeyを正規roomStore.submitPickへ渡す。WorkerのsearchCharts/submitPickとshared enumの契約を確認し、製品の検索・選曲規則、権限、WS schemaは変更していない。コード不具合と回帰試験で対応し、新たなガバナンス規則は追加しない。
+
 ユーザーから修正後の表示について「上記問題なし」と確認を受けた。残技術検証・人間のUX判断とも **COMPLETE**。AC-01〜11は既存実証と今回の模擬入力/GUI補完で充足し、追加実プレーや画面操作の要求はない。開催中は「通常対戦」「合同・大会」を隠し、「開催へ戻る」だけを表示する4状態の導線も承認済み。
 
 native過去エラーの原因/頻度未確定はNoteとして維持し、安全停止・固定診断・回復/保存の既存証拠と回帰結果で受入。再発時に記録を収集して別途調査する。未処理Blocker/Must fixなし。検証用runtime/割当portは停止済み。保存のprivacy拒否によるpartialと別採取GUI画像を区別した記録も保持する。

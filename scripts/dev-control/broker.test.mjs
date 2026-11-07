@@ -64,6 +64,61 @@ test('native/broker authority: role/token/context and protected self are enforce
   }finally{await broker.stop();await broker.close();}
 });
 
+test('Host A chart candidates follow the reported normal/event room settings',async t=>{
+  const realFetch=globalThis.fetch,queries=[];
+  t.mock.method(globalThis,'fetch',async(url,options)=>{
+    const requestUrl=new URL(url);
+    if(requestUrl.origin!=='http://127.0.0.1:19999')return realFetch(url,options);
+    queries.push(requestUrl);
+    const style=requestUrl.searchParams.get('play_style');
+    return Response.json({charts:[{chart_key:`${style}::ANOTHER::song`,title:'Song',play_style:style,difficulty:'ANOTHER',title_search_key:'song',chart_id:123}]});
+  });
+  const cases=[
+    ['ARENA','SP','ANY'],['BPL','DP','ANY'],['BPL4','SP','LV11'],['ARENA','DP','LV8_10'],
+    ['CASUAL','DP',undefined],['TOURNAMENT','DP',undefined],
+  ];
+  for(const [mode,playStyle,levelFilter] of cases)await t.test(`${mode} ${playStyle} ${levelFilter??'no level filter'}`,async()=>{
+    mkdirSync('testdata/runtime/dev-control',{recursive:true});
+    const root=mkdtempSync(join(process.cwd(),'testdata/runtime/dev-control/broker-charts-'));
+    const socket=net.createServer();await new Promise(res=>socket.listen(0,'127.0.0.1',res));
+    const port=socket.address().port;await new Promise(res=>socket.close(res));
+    const keys={controller:'c'.repeat(64),A:'a'.repeat(64),B:'b'.repeat(64)};
+    const manifest={sessionId:'chart-session',sourceHead:'0'.repeat(40),runtimeRoot:root,broker:{port},mode,hostClientId:'A',apiBaseUrl:'http://127.0.0.1:19999',clients:[
+      {clientId:'controller',playerId:null,role:'controller',transport:null},
+      {clientId:'A',playerId:'a',role:'self',transport:'real-client'},
+      {clientId:'B',playerId:'b',role:'participant',transport:'real-client'},
+    ]};
+    const broker=await createBroker({manifest,keys});await broker.listen();
+    const request=async(route,payload,clientId='controller')=>{
+      const response=await fetch(`http://127.0.0.1:${port}/${route}`,{method:payload===undefined?'GET':'POST',headers:{Authorization:`Bearer ${keys[clientId]}`,'X-Dev-Control-Client':clientId},...(payload===undefined?{}:{body:JSON.stringify(payload)})});
+      const body=await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;
+    };
+    const event=['CASUAL','TOURNAMENT'].includes(mode);
+    const settings={mode,play_style:playStyle,win_metric:'SCORE',join_code:'ABCD2345',...(levelFilter?{level_filter:levelFilter}:{})};
+    const normal={room_id:'host-a-room',generation:1,current_match_id:'match',room_state:'PICKING',host_player_id:'a',settings,players:[{player_id:'a',ready:false},{player_id:'b',ready:false}],picks:[]};
+    const eventSnapshot={room_id:'host-a-room',generation:1,event_id:'event',revision:1,phase:'PICKING',host:{player_id:'a',connected:true},settings,participants:[{player_id:'a',connection_state:'CONNECTED',round_status:null},{player_id:'b',connection_state:'CONNECTED',round_status:null}],current_playing_player_ids:[],current_round_id:null,selected_chart:null,selection_revision:0};
+    const report=()=>({normalSnapshot:event?null:normal,eventSnapshot:event?eventSnapshot:null,connection:'CONNECTED',transportEpoch:1,events:[]});
+    try{
+      await request('report',report(),'A');
+      await request('report',report(),'B');
+      const query=queries.at(-1);
+      assert.equal(query.pathname,'/api/rooms/host-a-room/charts');
+      assert.equal(query.searchParams.get('play_style'),playStyle);
+      assert.equal(query.searchParams.get('level_filter'),levelFilter??'ANY');
+      assert.equal(query.searchParams.get('limit'),'100');
+      const state=await request('state');
+      assert.equal(state.chartCandidates[0].expectedKey.play_style,playStyle);
+      if(!event){
+        const client=state.clients.find(c=>c.manifest.clientId==='B');
+        const chartKey=state.chartCandidates[0].chartKey;
+        await request('command',{protocolVersion:1,operationId:'pick-candidate',sessionId:manifest.sessionId,actorClientId:'controller',targetClientId:'B',context:client.context,action:'pick.submit',payload:{chartKey}});
+        const [command]=await request('poll',undefined,'B');
+        assert.equal(command.payload.chartKey,`${playStyle}::ANOTHER::song`);
+      }
+    }finally{await broker.stop();await broker.close();}
+  });
+});
+
 // Exercise receipts through the existing adapter HTTP routes, including batched raw events.
 async function receiptBroker(event=false){
   mkdirSync('testdata/runtime/dev-control',{recursive:true});

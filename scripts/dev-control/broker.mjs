@@ -363,7 +363,9 @@ export async function createBroker({ manifest, keys, onStop = async () => {}, cr
         }
         beginPeers();
         if(state.roomId&&(client.normalSnapshot?.room_state==='PICKING'||client.eventSnapshot?.phase==='PICKING')){
-          const token=structuredClone(client.context);const candidates=await productRequest(`/api/rooms/${encodeURIComponent(state.roomId)}/charts?play_style=SP&level_filter=ANY&limit=100`);
+          const token=structuredClone(client.context),settings=(client.eventSnapshot??client.normalSnapshot).settings;
+          const query=new URLSearchParams({play_style:settings.play_style,level_filter:settings.level_filter??'ANY',limit:'100'});
+          const candidates=await productRequest(`/api/rooms/${encodeURIComponent(state.roomId)}/charts?${query}`);
           if(sameContext(token,client.context))state.chartCandidates=(candidates.charts??[]).map(chart=>({chartKey:chart.chart_key,title:chart.title,expectedKey:{play_style:chart.play_style,difficulty:chart.difficulty,title_search_key:chart.title_search_key,...(chart.chart_id?{chart_id:chart.chart_id}:{})}}));
         }
         recalculateActions(client);considerAuto(client);flush();value={};
