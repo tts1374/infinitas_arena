@@ -1,6 +1,85 @@
 # #192 開発コントロール基盤・検証記録
 
-## 最新の再開入口（2026-11-05、実機を停止して引継ぎ）
+## 現在の受入判定（2026-11-07、ユーザーUX確認済み）
+
+ユーザーから修正後の表示について「上記問題なし」と確認を受けた。残技術検証・人間のUX判断とも **COMPLETE**。AC-01〜11は既存実証と今回の模擬入力/GUI補完で充足し、追加実プレーや画面操作の要求はない。開催中は「通常対戦」「合同・大会」を隠し、「開催へ戻る」だけを表示する4状態の導線も承認済み。
+
+native過去エラーの原因/頻度未確定はNoteとして維持し、安全停止・固定診断・回復/保存の既存証拠と回帰結果で受入。再発時に記録を収集して別途調査する。未処理Blocker/Must fixなし。検証用runtime/割当portは停止済み。保存のprivacy拒否によるpartialと別採取GUI画像を区別した記録も保持する。
+
+既存PR #208へコード・受入記録を反映する。merge / Issue close / deploy / release / branch・worktree・既存証拠の削除は引き続き未許可。以下は実装・検証時の履歴で、「未commit/未push」「UX判断待ち」は各記録時点の状態を示す。
+
+## UX修正記録（2026-11-07、代表画像確認後の指摘反映）
+
+追加の導線指示を反映し、未参加時だけ「合同・大会」を表示する。参加中は「通常対戦」「合同・大会」を隠し、「開催へ戻る」に一本化。開催画面では同ボタンを選択中（aria-current=page）とする。終了後の「合同・大会へ戻る」で参加解除→入口への遷移は既存の修正を維持。client186/root型/lint PASS。既存visual fixtureのブラウザーGUIでも、入口2つの非表示、選択状態、履歴から開催への復帰、終了後の参加解除と作成/参加入口の再表示を確認した（実Worker/sourceの再実証ではない）。補助証拠は `sidebar-check.json` / `sidebar-event-only.png`。未commit/未push。
+
+ユーザーの「ゲームの補助ツール・個人開発であり、完全な情報は不要」という指摘を表示の判断基準にした。通常対戦と合同・大会の参加中は相互の参加導線を出さず、設定/成績からの戻りも現在の参加先へ戻す。開催中の「通常対戦へ」を削除し、終了後は「合同・大会へ戻る」に変更。接続開始時とdeep linkも既存の参加モードに従う。参加の排他・提出・配点・履歴schemaは変更していない。
+
+「固定N」と正常時の受信範囲/完全記録を削除。これまでの曲・過去曲詳細・履歴は `.59(SPA)` 形式。履歴の「同期済み」「保存版」「最後の受信」や未対応履歴の生ID/schemaも削除し、一部しか残っていない場合だけ「一部の結果のみ」と表示する。指標はEXスコア/ミスカウントへ統一。source障害、結果読込中など利用判断に必要な案内は残す。正本の [UX原稿](../ux/issue-188-redesign/issue-188-draft.md) に今回の表示方針を反映した。
+
+- 実装/技術検証: **COMPLETE**。client186、control120、Worker193、integration6、stats17、root typecheck/lint、契約/agents、production buildがPASS。Rust/Worker製品コードに変更なし。新しい依存/フレームワークなし。
+- 最終GUI session `s20261107130004-27fe6c10`。最新未commit差分を含む実nativeアプリで2人入室を待ち、大会作成→設定→戻る→選曲/開始→隔離RefluxからA800/B500→終了→履歴詳細→開催へ戻る→合同・大会の入口を操作。A/Bとも開催参加中は通常ロビーへの入口なし。結果・履歴の譜面表記、内部情報の非表示、320px表示を確認。Aの正規SUBMIT51→ACK53/rev6、B61→ACK63/rev8。本人の実プレー・表示store直接変更なし。
+- 先行GUI session `s20261107125550-d88325f3` はB入室前に1人で開始したため、2人進行の証拠にはしない。自動接続クライアントにも開催画面への誘導を補完後、上記sessionで再確認。2つのsessionとも停止complete/errors[]、停止後の別inventoryで所有runtime/割当port残存0。native保存は入力画面画像のprivacy拒否を伴うpartial、ログはread-back済み。GUI画像はPlaywright別証拠。
+- 補助証拠rootは下節と同じ。最新画像は `ux-round-result.png`（曲別/譜面表記）、`ux-final.png`（総合/戻り先/内部情報なし）、`ux-final-320.png`（小幅）、`ux-history.png`（履歴の簡略表示）。`ux-start-final.json` / `ux-evidence.json` / `ux-product.patch` に操作結果、受付、停止、検証した未commitコード差分のhashを保存。画面ごとの全状態キャプチャは追加していない。
+- 人間のUX判断は、前回画像への今回の指摘を反映した状態。修正後の代表画像を返し、追加の実プレーやユーザーの画面操作は求めない。記録・コードは同じworktreeに未commit/未pushで保持。merge/Issue close/deploy/releaseなし。
+
+## 初回の代替検証結果（2026-11-07、追加実プレーなし・UX修正前）
+
+ユーザー承認の新方針により、追加のINFINITAS実プレーと本人の手動GUI操作を残検証の前提から外した。変更前後・AC-01〜11の分類と代替根拠は [受入台帳の最新節](../../tasks/issue-192-dev-control-validation.md) に保持。既存の実プレー/3source実証を再利用し、残る大会・BPL再戦・選曲UIを自動補完した。**技術検証: COMPLETE。人間のUX判断: WAITING_FOR_HUMAN_DECISION。** PR #208はDraftのまま、merge / Issue close / deploy / release / 破壊的cleanupは未実施。製品コード、通常動作、権限・秘密保護、依存、CIは変更していない。
+
+指定worktree `C:/Users/tts13/.codex/worktrees/issue-188-phase-c-host-led/infinitas_arena` / branch `codex/issue-192-dev-control` / HEAD `88f84ef` を継続。今回の新session以外のworktree/branch/stash/証拠を保持した。以下の補助証拠rootは `C:/Users/tts13/.codex/visualizations/2026/11/07/01a1b5f7-815a-7182-bc52-ab61dec09192/pr208/`。rawログ/native保存はworktree内の `testdata/runtime/dev-control/<session>/`。今回のharnessと画像はrepo外で、製品へテスト用の強制状態変更は追加していない。
+
+### Host A大会（実native/parser/Worker、入力は模擬Reflux）
+
+- session `s20261107122608-726dc3ac`、room `5fec66fc-214d-4f08-96c3-d4deda43c83d`、event `b47d0749-834e-4081-9419-294a29b22131`。Aのsource参照先を今回専用の `self-reflux-tournament` に指定し、Bは既存supplierの隔離fixtureを使用。本人の実Refluxソフト・実ゲームが生成した入力とは扱わない。Aのbroker代理コマンド拒否は維持し、作成・参加選択・開始・選曲・次曲・終了はAの通常GUIをPlaywright/CDPで操作した。
+- `.59 SPA` を2曲、毎曲Readyなし。両曲ともA800/MISS10、B500/MISS10、固定名簿/N=2、曲別2pt/1pt、最終4pt/2pt、`HOST_ENDED`。Aを通常ロビー表示へ移動してから模擬ファイルを投入し、開催へ戻ると結果を表示。終了→通常対戦→reload→開催履歴で「大会・固定2人・同期済み2曲・完全」を確認した。
+- round `f85c5feb-892a-4236-8c18-fd5607e83602`: A parsed37→SUBMIT38→同request accepted ACK40/rev6→SUBMITTED snapshot41。B parsed47→SUBMIT48→ACK50/rev8→snapshot51。
+- round `200b603b-444d-4f89-809d-573001bfc3a4`: A parsed68→SUBMIT69→ACK71/rev12→snapshot72。B parsed74→SUBMIT75→ACK77/rev14→snapshot78。4提出すべてsource=`reflux`/unresolved=0、observed=expected、request/round/sessionの相関を確認。詳細は `tournament-correlations.json`。
+- 第2曲は同じ譜面/同じ値。古いファイルのまま新round開始後2.2秒を経過しても両者PENDINGで、Aは新timestamp `20261107-213204`、Bは `20261107-213205` の新着だけを受付。第1曲A/Bは `213116`/`213118`。重複入力の無条件再投入や鮮度条件の緩和はしていない。`input-<round>.json` と `same-chart-stale-check.json` を保存。
+- 停止前native bundle `bundle-1794054794019842500` はsaved/missing[]。途中のBが通常ロビーにある画像はprivacy拒否でpartial、Bを開催結果へ戻して再保存したものと区別。停止は12:33:11.404Z→12:33:21.925Z、stopped/complete/errors[]、process/port確認true。停止後の別inventoryでも所有runtime/割当port残存0。停止後controllerは証拠の再表示用として保持。
+
+### BPLの不足区間（完走証拠の再利用＋正規Host操作による状態準備）
+
+- session `s20261107123332-a87ce036`、room `47b0efba-fbc0-4b06-a847-e62a184c4d6f`。A/Bは実native検証クライアント、sourceは隔離Reflux設定。Aは通常GUIで入室/Ready/選曲、Bは通常GUIと既存controlを使用。3曲は正規Host `FORCE_ADVANCE` で未提出TIMEOUTとしてRESULTを構築した。時計・store・Worker保存状態の直接書換えなし。このrunではsource結果投入はせず、BPLの実プレー完走は旧 `s20261029002846-23896aa8` の証拠を再利用する。
+- 旧match `e3ff1ee6-dffe-4618-98fb-67ddb8aa1551` のRESULT→controlの手動RETURN_TO_LOBBY（B raw送信sequence100、B LOBBY snapshot101）→Aの通常GUI Ready（A raw105、全員ReadyのB snapshot109）→controlの明示START_MATCH（B raw113、B PICKING snapshot115）を確認。BのReadyは既存検証clientの自動Readyであり、AのReadyと区別した。
+- 新match `a7f33bda-060c-4d4f-b859-834f4eef34f8`、同じroom/generation1。両matchともroom IDとは異なり、LOBBY中のroom-ID fallbackを再戦成功へ数えていない。`bpl-rematch.json` にrawの正規送信・LOBBY/Ready/PICKINGのauthoritative snapshotを保存。新matchの追加プレーはしていない。
+- 停止前native bundle `bundle-1794055214170266700` はpartial。A/Bの選曲入力フォーム画像は既存privacy規則が拒否し、ログはnative書出し/read-back済み。GUI証拠は別途Playwrightで安全な代表状態を保存し、native画像欠落を隠してsavedと呼ばない。停止は12:40:12.889Z→12:40:22.626Z、complete/errors[]。別inventoryでも所有runtime/割当port残存0。`final-evidence.json` は両sessionの停止状態・bundle read-back情報・別列挙結果を保持する。
+
+### 選曲UI・技術確認と人間UXの分離
+
+Browser pluginはこのsessionにないため既存Playwrightを使用。対象は実native WebView2の通常GUI（`http://tauri.localhost/index.html`、title=`INFINITAS Arena`）、local Worker。ブラウザー版/mock表示をnative検証へ数えていない。
+
+| 技術確認 | 結果・証拠 |
+| --- | --- |
+| 初期focus・Tab/Shift+Tab | PASS。検索欄へ初期focus、dialogの先頭/末尾で循環。ui-check.json |
+| close / Escape・focus復帰 | PASS。両方でdialogが閉じ、「曲を選ぶ」へ復帰。再表示と選択→明示確定→開始も成功 |
+| 1024/736/320px × 700px | PASS。dialogの左右境界・scrollWidth/clientWidthを測定、横はみ出しなし。小幅でも検索/難易度/レベル/曲一覧/閉じるが到達可能 |
+| 表示・例外 | PASS。実アプリ内容を確認、framework overlayなし。該当UI操作中console warning/error/pageerrorなし。起動前console全体の収集を意味しない。空検索の案内を取得 |
+| 通常経路と証拠 | PASS。source parsed→送信→ACK/確認→snapshot、鮮度/同曲識別、履歴reload、保存/停止を照合。表示store直接編集なし |
+| 新しい回帰実行 | control120/client185/native dev_control15（接続/本文timeout・診断・原子保存・read-back・停止競合・失敗再試行・partialを含む）すべてPASS。ログは補助証拠rootに保存 |
+| 既存full/独立レビュー | 11/05のfull・Hosted CIと既存独立監査を再利用。3b68e18以降の製品コード変更なし（88f84efは記録のみ）。今回は製品コード/契約を変更しておらずfull全体の再実行はしていない |
+| 検証harnessの補正 | 初回のselector表記、popover開放状態、native spool反映待ちの不足はharness内で補正。操作結果はraw通信と最終snapshotで再照合し、失敗した待機を製品成功の根拠にしない。製品修正なし |
+
+人間の確認対象は情報配置・視認性・文言・操作フローの重大な問題。以下の代表キャプチャのみを提示し、全状態の網羅キャプチャや本人による操作/実プレーは要求しない。細かな見た目だけでPR完了を遅らせない。**自動技術検証の成功は、人間のUX承認を代行しない。**
+
+| 補助証拠root内の画像 | 対象/状態 | 人間の確認目的 |
+| --- | --- | --- |
+| tournament-create.png | 大会作成、自分もプレーするを選択 | 作成文言・参加2択・説明が判断に十分か |
+| song-search-1024.png | 選曲、desktop正常状態 | 検索/絞込/一覧/閉じる/確定の案内の配置と視認性 |
+| song-search-320.png | 選曲、小幅正常状態 | 検索と絞込、一覧の高さ、追加読込と確定案内の読みやすさ |
+| song-search-empty.png | 選曲、検索結果なし | 原因と次の操作が分かるか |
+| tournament-final.png | 大会、2曲終了後の総合結果 | 曲別/総合、順位/点数、固定N、記録の完全性、戻る導線 |
+| tournament-history-reload.png | 再読込後の開催履歴 | 記録の識別、曲数/完全の表現 |
+| bpl-rematch-lobby.png / bpl-rematch-picking.png | BPL、再戦待機/新match選曲 | Readyから選曲へ進んだ状態の確認用（主なUX変更の対象外） |
+
+### 未解明事項の扱い・次の判断
+
+11/01 native読込エラー、11/04一過性の起動所有情報欠落は原因/頻度未確定のNoteとして保持。今回の両sessionでは再現せず、既存の固定診断・安全停止・回復/保存の実証と今回15件のnative回帰を根拠に、原因完全解明をPRの絶対条件から外す。再発時は固定code・時刻・identityで切り分け、再現性/影響が分かれば別Issue化する。現時点で新Issueの起票はしていない。
+
+受入条件の分類3（今回の残検証で、既存証拠/模擬入力では代替不能な実機固有項目）はなし。実ゲームや外部ソフトの将来変化、OS環境差は運用上の一般的な残リスクで、追加実プレーでは解消を保証できず、今回の停止条件へ戻さない。
+
+次は代表画像で人間のUX判断を受ける。重大な問題がなければ今回の残検証を完了とし、実プレー手順を再開しない。merge/close/deployは引き続き別許可。今回の差分は検証記録2ファイルのみで、既存worktreeに保持（未commit/未push）。
+
+## 過去の再開入口（2026-11-05、履歴）
 
 ユーザーの使用量残9%のため、追加の大会・BPL確認は次回へ回す。指定worktreeとbranchは変更せず、軽量フローを継続。以下が11/01記録より新しい現在地であり、過去の完走や解決済み事項へ戻らない。#192全体は未完、PR #208はDraftを維持する。merge/Issue close/deploy/release/破壊的cleanupは未許可・未実施。
 

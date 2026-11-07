@@ -1,6 +1,48 @@
 # #192 AC・検証・準備判定台帳
 
-## 現在の受入差分（2026-11-05）
+## 最終受入（2026-11-07）
+
+修正後の代表画像と4状態の導線についてユーザーが「上記問題なし」と確認済み。**技術検証 COMPLETE / 人間UX COMPLETE**。AC-01〜11の不足区間は既存実証・模擬入力・正規parser/通信/受付・GUI自動操作で充足した。追加の実プレーを必要とする分類3なし。過去nativeエラーの原因/頻度未確定は、安全停止・診断・回復の証拠に基づくNoteとして受入済み。未処理Blocker/Must fixなし。
+
+コード/仕様原稿/受入記録を既存PR #208へ反映する。merge / Issue close / deploy / release / 破壊的cleanupは今回も行わない。詳細と証拠は [現在の受入判定](../docs/testing/dev-control.md)。以下の未完・未commit・人間判断待ちの記述は各時点の履歴であり、現在の受入判定を巻き戻さない。
+
+## 検証方針の承認変更（2026-11-07、履歴）
+
+同日の代表画像確認後、ユーザーから通常対戦/開催の導線分離、固定N/受信診断の非表示、曲名への譜面表記、同様の履歴表示の簡略化を追加承認された。これらは実装・実native GUI確認済み。現在の正本は [最新UX修正](../docs/testing/dev-control.md)。下記の「製品コード変更なし」「UX判断待ち」は初回代替検証時点の記録であり、後続の修正実行を制限しない。ゲーム補助・個人開発として必要な操作と結果を優先し、完全な情報開示や診断の充実を今回の完了要件へ追加しない。実プレー不要、merge/close/deploy未許可は継続。
+
+本節はユーザーの「#192 / PR #208 残検証方針の変更指示」を反映する現在の受入境界。下の11/05以前の実プレー・本人手動操作・原因完全解明の要求は履歴として保持し、本節に反する部分を再開条件にしない。製品のルール、Aへの開発コマンド拒否、正規source経路、停止・秘密保護は変更しない。merge / Issue close / deploy / release / 既存資産削除は未許可。
+
+目的は追加のINFINITAS実プレーなしで残検証を完了し、代表画像に基づく人間のUX判断へ渡すこと。StageはCの残検証、今回の差分は検証記録のみ、契約変更なし、Standard（既存ローカル検証の単一bounded task）、Plan Mode不要。delegation execution record: spawned: no / agent id: N/A。親が証拠・GUI検証・記録を一貫して所有し、製品実装や既監査の契約を変更しないため新たな委譲はしない。新しい製品仕様・権限・互換変更が必要なら停止して再判断する。
+
+| AC | 分類 | 元の条件との差分・代替根拠 | 証拠・今回の確認 |
+| --- | --- | --- | --- |
+| AC-01 起動・別窓・通常/配布拒否 | 1 充足済み | 実native起動、通常/release IPC拒否の既存証拠を再利用 | 11/05以前の起動/配布拒否記録。今回も専用native3窓を起動 |
+| AC-02 通常3mode・完走・再戦 | 1＋2 | ARENA/BPL/BPL4完走、ARENA/BPL4再戦は維持。BPL不足区間のみ模擬入力でRESULTを構築し、正規RETURN_TO_LOBBY→Ready→別match PICKINGを補完 | BPL既存完走 s20261029002846-23896aa8。今回の不足区間は下の実施結果へ記録 |
+| AC-03 A実連携・本人保全 | 1 充足済み | A実連携は過去証拠で成立。今回Aは外部の隔離Refluxテストファイルを明示指定し、通常GUIを自動操作。brokerのA代理mutation拒否を緩めない | 既存のA通常/合同/大会実連携、11/05のA実v3。本人sourceや普段のprofileへ書き込まない |
+| AC-04 3sourceの解析・通信受付 | 1 充足済み | 3source×通常/合同/大会の実client/parser/受付は維持。今回の模擬Reflux＋実native経路は実ゲーム/実Refluxソフトの再実証とは区別 | 既存3source記録＋今回のsource解析→SUBMIT→同request ACK→同round snapshot |
+| AC-05 開催2種・Host A大会 | 1＋2 | 合同とHost B大会は既存実証。Host A大会の本人手動/実プレー条件を、Host A通常GUI自動操作＋模擬source2曲へ変更。大会固有の固定N・配点・終了は大会として確認 | s20261107122608-726dc3ac: Host A大会、.59 SPAを2曲、固定N=2、A各800/B各500、最終4pt/2pt、HOST_ENDED |
+| AC-06 切断/復帰・退出・Host期限 | 1 充足済み | 既存の実時計300秒通知、切断中提出/公開保留等を再利用 | 11/01大会 s20261101085429-0da85750: 期限→自動EVENT_STATE、追加STATE_GET=0 |
+| AC-07 値・遅延・失効・重複排除 | 1 充足済み＋2 補強 | 既存単体/実sourceの10秒・取消・失効を再利用。同曲同値を新roundへ誤採用しない条件は維持 | 今回は同譜面再選択後2.2秒も両者PENDING、新timestamp投入後だけ受付。same-chart-stale-check.json |
+| AC-08 背景提出・復帰・履歴 | 1 充足済み＋2 補強 | 合同のA実v3背景提出/履歴は維持。大会もAを通常ロビー表示にし、模擬入力→受付→開催へ戻る→終了→reload→履歴を自動補完 | 今回大会2曲の背景提出、reload後「固定2人・同期済み2曲・完全」。tournament-end.json |
+| AC-09 段階/保存/秘匿 | 1 充足済み＋2 補強 | 既存の受付相関/保存失敗/再試行/privacy拒否を維持。store直接編集による成功扱いなし | 今回のraw observations、入力fixture、native bundleとread-back。画像privacy拒否のpartialと再保存savedを区別 |
+| AC-10 保護・停止・再起動・証拠保持 | 1 充足済み＋2 補強 | 既存の保護/restart証拠を再利用。新sessionの所有runtime停止/port再列挙は別途確認 | 今回大会stopped/complete/errors[]、processesVerified/portsVerified=true、saved/missing[] |
+| AC-11 操作表・GUI・新選曲UI | 1＋2、人間UXは別判定 | 既存の70表示/mockは種類を維持。新UIのclose/Escape/Tab/focus/3幅を実native GUI自動操作で確認。全画面の網羅キャプチャ要求を代表状態へ変更 | ui-check.json: 初期focus、Tab/Shift+Tab閉込め、close/Escape後の起点復帰、1024/736/320px横はみ出しなし、空検索。代表画像を保存 |
+
+分類3（実機固有で代替不能な未検証AC）は現時点でなし。実ゲーム/外部連携ソフトの将来の仕様変更、OS依存の一過性読込/所有情報取得は運用上の残リスクだが、今回変更していない外部境界の再実プレーでは完全な解明を保証できない。過去実連携証拠、今回の正規parser/通信経路、既存の安全停止・診断・回復回帰で評価する。
+
+nativeの11/01読込エラーと11/04起動所有情報欠落のexact cause/頻度は未確定のNoteとして残す。11/05診断修正は原因解明とは区別する。失敗時はunknownを採用せず停止/再試行、秘密を含まない固定code、旧spool保持を維持し、120件のcontrol回帰（今回再実行PASS）、既存Rust36件と安全停止/回復実証を根拠に、原因完全解明をPR完了の絶対条件から外す。再発時はcode・時刻・対象identityを収集し、再現性またはデータ損失/危険な停止が判明した場合に別Issue化する。今回は再現なし。実プレーの再開は代替調査としない。
+
+今回の補助証拠root（repo外）: `C:/Users/tts13/.codex/visualizations/2026/11/07/01a1b5f7-815a-7182-bc52-ab61dec09192/pr208/`。raw/native証拠は既存worktreeの `testdata/runtime/dev-control/<session>/` に保存。画像の対象/状態/目的と最終結果は [再開入口](../docs/testing/dev-control.md) の最新節へ集約する。自動技術検証PASSと人間UX承認は分け、後者をCodexが代行しない。
+
+### 11/07 実施後の判定
+
+分類2の不足区間はすべて補完。BPL session `s20261107123332-a87ce036` は正規Host FORCE_ADVANCEでRESULTを構築し、B RETURN_TO_LOBBY100→LOBBY101→A GUI Ready105→全員Ready109→B明示START_MATCH113→PICKING115をrawとsnapshotで照合。旧match `e3ff1ee6-dffe-4618-98fb-67ddb8aa1551` → 新match `a7f33bda-060c-4d4f-b859-834f4eef34f8`、同室/同generation1、両matchともroom IDと異なる。新matchの完走を追加要求しない。
+
+Host A大会/同曲同値/背景/履歴とBPL不足区間、新選曲UIの技術確認はCOMPLETE。control120/client185/native15は今回PASS。製品コード変更なしのため既存full/独立レビューを再利用。両sessionのnative停止確認と、停止後の別process/port列挙で所有runtime残存0。大会bundleはsaved/missing[]、BPL bundleは選曲フォーム画像のprivacy拒否によりpartial（rawログは保存、GUI画像はPlaywright別証拠）。詳細・画像と目的の対応は [最新検証結果](../docs/testing/dev-control.md)。
+
+**技術検証: COMPLETE / 人間UX: WAITING_FOR_HUMAN_DECISION。** 未処理Blocker/Must fixなし。native原因未解明は上記Note/再発時調査へ明示再スコープ。UI/UXの人間の判断は未取得であり、PR全体の最終受入をCodexだけで完了扱いにしない。今回の記録は既存worktree内の2文書に保存し、未commit/未push。PRのDraft/merge状態・Issue状態・deployは変更していない。
+
+## 過去の受入差分（2026-11-05、履歴）
 
 最新の正本は [再開入口](../docs/testing/dev-control.md)。下記以降の旧Phase B計画・停止条件は履歴であり、現在の実装許可や軽量フローを巻き戻さない。
 
