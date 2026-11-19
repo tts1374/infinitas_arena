@@ -8,7 +8,7 @@ for (const directory of ['.codex/agents', '.codex/skills', '.agents/skills']) {
     `${directory}: lightweight workflow requires zero project definitions`);
 }
 const config = readFileSync('.codex/config.toml', 'utf8');
-assert.match(config, /^model = "gpt-6\.1-sol"$/m);
+assert.match(config, /^model = "gpt-6\.2-sol"$/m);
 assert.match(config, /^model_reasoning_effort = "high"$/m);
 assert.ok(config.split(/\r?\n/).every(line => !line.trim() ||
   /^(model|model_reasoning_effort) = "[^"]+"$/.test(line)),
